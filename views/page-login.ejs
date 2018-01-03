@@ -1,0 +1,32 @@
+<% include header %>
+  </head>
+  <body>
+    <section class="material-half-bg">
+      <div class="cover"></div>
+    </section>
+    <section class="login-content">
+      <div class="logo">
+        <h1><%= appName %></h1>
+      </div>
+      <div class="login-box">
+        <form class="login-form" action="/login" method="post">
+          <h3 class="login-head"><i class="fa fa-lg fa-fw fa-user"></i>CONNEXION</h3>
+          <% if (typeof message != 'undefined') { %>
+          <p class="text-danger"><i class="fa fa-exclamation-circle" aria-hidden="true"></i> <%=message%></p>
+          <% } %>
+          <div class="form-group">
+            <label class="control-label">IDENTIFIANT</label>
+            <input class="form-control" name="username" type="text" placeholder="Identifiant" autofocus>
+          </div>
+          <div class="form-group">
+            <label class="control-label">MOT DE PASSE</label>
+            <input class="form-control" name="password" type="password" placeholder="Mot de passe">
+          </div>
+          <div class="form-group btn-container">
+            <button type="submit" class="btn btn-primary btn-block"><i class="fa fa-sign-in fa-lg fa-fw"></i>Connexion</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </body>
+</html>

@@ -1,0 +1,245 @@
+<% include header %>
+    <link rel="stylesheet" type="text/css" href="/css/pikaday.css">
+    <style>
+        .aside-cart .row {
+            margin-left: 0px;
+            margin-right: 0px;
+        }
+        .aside-cart .row > p {
+            float: left;
+        }
+    </style>
+  </head>
+  <body class="fixed">
+    <div class="wrapper">
+      <!-- Navbar-->
+      <header class="main-header hidden-print"><a class="logo" href="/"><%= appName %></a>
+        <nav class="navbar navbar-static-top">
+          <!-- Sidebar toggle button-->
+          <label class="sidebar-toggle" title="Afficher/Masquer la barre latérale" for="toggle-sidebar"></label>
+          <!-- Navbar Right Menu-->
+          <div class="navbar-custom-menu">
+            <ul class="top-nav">
+              <li>
+                <a href="/cart" title="Voir le panier">
+                  <i class="fa fa-shopping-cart fa-lg"></i><span class="badge"><%=count%></span></i>
+                </a>
+              </li>
+              <!-- User Menu-->
+              <li class="dropdown">
+                <a class="dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user fa-lg"></i></a>
+                <ul class="dropdown-menu settings-menu">
+                  <li><a href="/logout"><i class="fa fa-sign-out fa-lg"></i> Se déconnecter</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </header>
+      <!-- Side-Nav-->
+      <input id="toggle-sidebar" type="checkbox">
+      <aside class="main-sidebar hidden-print">
+        <section class="sidebar">
+          <!-- Sidebar Menu-->
+          <ul class="sidebar-menu">
+            <li><a href="/"><i class="fa fa-dashboard"></i><span>Tableau de bord</span></a></li>
+            <li><a href="/search"><i class="fa fa-search-plus"></i><span>Recherche avancée</span></a></li>
+            <li><a href="/add"><i class="fa fa-edit"></i><span>Ajouter un article</span></a> </li>
+            <li><a href="/sales"><i class="fa fa-th-list"></i><span>Ventes</span></a></li>
+            <li> <hr style="width:80%"> </li>
+            <li><a href="/list"><i class="fa fa-file-text"></i><span>Articles</span></a></li>
+            <li><a href="/zero"><i class="fa fa-repeat"></i><span>À renouveler</span></a></li>
+            <li><a href="/ordered"><i class="fa fa-truck"></i><span>Commandés, en attente</span></a></li>
+            <li><a href="/bestsales"><i class="fa fa-line-chart"></i><span>Meilleures ventes</span></a></li>
+            <li><a href="/stats"><i class="fa fa-pie-chart"></i><span>Statistiques</span></a></li>
+            <li><a href="/advanced"><i class="fa fa-laptop"></i><span>Avancé…</span></a></li>
+          </ul>
+        </section>
+      </aside>
+      <div class="content-wrapper">
+        <div class="row">
+          <div class="col-md-10 col-md-offset-1">
+            <div class="card">
+              <h3 class="card-title">Panier <% if (count > 0) { %> - <%=count%> article<%= count===1?'':'s'%> <%}%></h3>
+
+              <% if (items.length === 0) { %>
+              <div class="card-body">
+                  <% if (typeof message !== 'undefined') { %>
+                      <div class="alert alert-dismissible alert-info fade in">
+                        <button class="close" type="button" data-dismiss="alert">×</button>
+                        <%=message%>
+                      </div>
+                  <% } %>
+                  Aucun article dans le panier.
+              </div>
+              <% } else { %>
+              <div class="card-body">
+                  <form action="cart/remove" method="post">
+                      <table class="table">
+                          <thead>
+                              <tr>
+                                  <th>Article</th>
+                                  <th>Prix unitaire</th>
+                                  <th>Quantité</th>
+                                  <th>Prix total</th>
+                                  <th></th>
+                                  <th></th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                          <% for (var i=0; i < items.length; i++) {
+                          var item = items[i]; %>
+                          <tr>
+                              <td>
+                                <% if (item.sale_item_id.split(',')[1].length > 0) { %>
+                                <a href="/show/<%=item.sale_item_id.split(',')[1]%>" title="Voir l'article">
+                                    <%= item.title%>
+                                </a>
+                                <% } else { %>
+                                    <%= item.title%>
+                                <% } %>
+                              </td>
+                              <td><%= item.price %> €</td>
+                              <td><%= item.quantity || 1 %></td>
+                              <td><%= (item.price * item.quantity).toFixed(2) %> €</td>
+                              <td>
+                                  <div class="pull-right">
+                                      <button value="<%=item.sale_item_id%>" type="submit" name="id"
+                                          class="btn btn-warning btn-sm" title="Enlever du panier">
+                                          <i class="fa fa-trash"></i>
+                                      </button>
+                                  </div>
+                              </td>
+                          </tr>
+                          <% } %>
+                          </tbody>
+                      </table>
+                  </form>
+              </div>
+              <div class="card-footer">
+                  <div class="row">
+                          <p>
+                              <strong style="font-size:18px">Total: <%=total%>€</strong>
+                          </p>
+                      <div class="col-md-4">
+                        <% if (asideCount === 0) { %>
+                        <form action="cart" method="post">
+                            <button type="submit" name="action" value="put-aside" class="btn btn-primary icon-btn">
+                                <i class="fa fa-hourglass-start"></i>Mettre de côté
+                            </button>
+                        </form>
+                        <% } %>
+                      </div>
+                      <div class="col-md-8">
+                          <form action="cart/pay" method="post" class="form-inline pull-right">
+                              <div class="form-group">
+                                  <label class="control-label" for="date">Date</label>
+                                  <input class="form-control" type="text" name="date" id="date" value="<%=date%>" maxlength="10" style="width:10em"/>
+                              </div>
+                              <select class="form-control" name="type">
+                                  <option value="cash">Espèces</option>
+                                  <option value="card">Carte bleue</option>
+                                  <option value="check">Chèque</option>
+                                  <option value="check-lire">Chèque lire</option>
+                              </select>
+                              <input type="number" name="amount" id="amount" placeholder="montant" step="0.01" min="0" class="form-control" style="width:7em"/>
+                              <button name="pay" type="submit" value="pay" class="btn btn-primary icon-btn">
+                                  <i class="fa fa-check-circle"></i> Payer
+                              </button>
+                          </form>
+                      </div>
+                  </div>
+              </div>
+              <% } %>
+
+            </div>
+            <% if (asideCount > 0) { %>
+            <div class="card aside-cart">
+              <h3 class="card-title">Panier en attente</h3>
+
+              <div class="card-body">
+                <div class="row">
+                    <p><%= asideCount %> article<%= asideCount===1?'':'s'%> en attente pour <%= asideTotal %>€</p>
+                    <form class="form-inline pull-right" action="cart" method="post">
+                        <button name="action" value="reactivate" type="submit" class="btn btn-primary icon-btn" <% if (items.length > 0) { %> style="display:none" <% } %>>
+                            <i class="fa fa-share-square-o"></i> Réactiver
+                        </button>
+                    </form>
+                </div>
+              </div>
+            </div>
+            <% } %>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Javascripts-->
+    <script type="text/javascript" src="/js/lib/bootstrap-native.min.js"></script>
+    <script src="/js/lib/pikaday.min.js"></script>
+    <script src="js/main.js?v=2"></script>
+    <script type="text/javascript">
+
+      datepicker('date');
+
+      var typeSelect = document.querySelector('select[name=type]')
+      var inputAmount = document.getElementById('amount')
+      if (typeSelect && inputAmount) {
+          typeSelect.addEventListener('change', function(e) {
+              inputAmount.style.display = e.target.value === 'cash' ? '' : 'none'
+          })
+      }
+      function clickOnTable(e) {
+          var button = null;
+          if (e.target.nodeName === 'BUTTON') {
+              button = e.target;
+          } else if (e.target.nodeName === 'I' && /fa-trash/.test(e.target.className)) {
+              button = e.target.parentNode;
+          }
+          if (button) {
+              e.preventDefault();
+              var request = new XMLHttpRequest();
+              request.onload = function() {
+                  if (request.status >= 200 && request.status < 400) {
+                      var response = JSON.parse(request.response);
+                      var badge = document.querySelector('.top-nav .badge');
+                      badge.textContent = response.count;
+                      var cardTitle = document.querySelector('.card-title');
+                      if (!response.count) {
+                          cardTitle.textContent = 'Panier';
+                          document.querySelector('.card-body').textContent = 'Aucun article dans le panier';
+                          document.querySelector('.card-footer').remove();
+                          var reactivateButton = document.querySelector('.aside-cart button');
+                          if (reactivateButton) {
+                            reactivateButton.style.display = '';
+                          }
+                          return;
+                      }
+                      cardTitle.textContent = 'Panier - ' + response.count +
+                      ' article' + (response.count > 1 ? 's' :'');
+                      var total = document.querySelector('.card-footer p>strong');
+                      total.textContent = 'Total: ' + response.total + '€';
+                      var tr = button.parentNode.parentNode.parentNode;
+                      if (tr.nodeName === 'TR') {
+                          tr.remove();
+                      }
+                  } else {
+                      console.error('Unable to remove from cart');
+                  }
+              }
+              request.onerror = function() {
+                  console.error('Unable to remove from cart');
+              }
+              request.open('POST', '/cart/remove');
+              request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+              request.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+              request.send('id='+button.value);
+          }
+      }
+      var table = document.querySelector('.table');
+      if (table) {
+          table.addEventListener('click', clickOnTable);
+      }
+
+    </script>
+  </body>
+</html>

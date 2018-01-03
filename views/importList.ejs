@@ -1,0 +1,114 @@
+<% include header %>
+  </head>
+  <body class="fixed">
+    <div class="wrapper">
+      <!-- Navbar-->
+      <header class="main-header hidden-print"><a class="logo" href="/"><%= appName %></a>
+        <nav class="navbar navbar-static-top">
+          <!-- Sidebar toggle button-->
+          <label class="sidebar-toggle" title="Afficher/Masquer la barre latérale" for="toggle-sidebar"></label>
+          <!-- Navbar Right Menu-->
+          <div class="navbar-custom-menu">
+            <ul class="top-nav">
+              <li>
+                <a href="/cart" title="Voir le panier">
+                  <i class="fa fa-shopping-cart fa-lg"></i><span class="badge"><%=cart.count%></span></i>
+                </a>
+              </li>
+              <!-- User Menu-->
+              <li class="dropdown">
+                <a class="dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user fa-lg"></i></a>
+                <ul class="dropdown-menu settings-menu">
+                  <li><a href="/logout"><i class="fa fa-sign-out fa-lg"></i> Se déconnecter</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </nav>
+      </header>
+      <!-- Side-Nav-->
+      <input id="toggle-sidebar" type="checkbox">
+      <aside class="main-sidebar hidden-print">
+        <section class="sidebar">
+          <!-- Sidebar Menu-->
+          <ul class="sidebar-menu">
+            <li><a href="/"><i class="fa fa-dashboard"></i><span>Tableau de bord</span></a></li>
+            <li><a href="/search"><i class="fa fa-search-plus"></i><span>Recherche avancée</span></a></li>
+            <li><a href="/add"><i class="fa fa-edit"></i><span>Ajouter un article</span></a> </li>
+            <li><a href="/sales"><i class="fa fa-th-list"></i><span>Ventes</span></a></li>
+            <li> <hr style="width:80%"> </li>
+            <li><a href="/list"><i class="fa fa-file-text"></i><span>Articles</span></a></li>
+            <li><a href="/zero"><i class="fa fa-repeat"></i><span>À renouveler</span></a></li>
+            <li><a href="/ordered"><i class="fa fa-truck"></i><span>Commandés, en attente</span></a></li>
+            <li><a href="/bestsales"><i class="fa fa-line-chart"></i><span>Meilleures ventes</span></a></li>
+            <li><a href="/stats"><i class="fa fa-pie-chart"></i><span>Statistiques</span></a></li>
+            <li class="active"><a href="/advanced"><i class="fa fa-laptop"></i><span>Avancé…</span></a></li>
+          </ul>
+        </section>
+      </aside>
+      <div class="content-wrapper">
+        <div class="row">
+          <div class="col-md-10 col-md-offset-1">
+            <div class="card">
+                <h3 class="card-title">Import du fichier <%= data.filename %></h3>
+              <form action="/finalizeImport" method="post" id="importForm">
+                <div class="card-body">
+                    <% if (typeof error !== 'undefined') { %>
+                      <div class="alert alert-dismissible alert-danger fade in">
+                        <button class="close" type="button" data-dismiss="alert">×</button>
+                        <%=error%>
+                      </div>
+                    <% } %>
+                    <p><strong>Veuillez vérifier les champs "Prix".</strong></p>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>EAN</th>
+                                <th>Titre</th>
+                                <th>Auteur</th>
+                                <th>Éditeur</th>
+                                <th>Distributeur</th>
+                                <th>Stock</th>
+                                <th>Prix</th>
+                                <th>TVA</th>
+                                <th>Quantité</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <%
+                            for (var i=0; i < data.books.length; i++) {
+                            var book = data.books[i]
+                            %>
+                            <tr>
+                                <td> <%= book.EAN %> </td>
+                                <td> <%= book.title %> </td>
+                                <td> <%= book.author %> </td>
+                                <td> <%= book.publisher %> </td>
+                                <td> <%= book.distributor %> </td>
+                                <td> <%= book._id ? book.amount :'Nouveau' %> </td>
+                                <td class="price"> <input type="text" name="price" size="2" value="<%= book.price %>"/>€ </td>
+                                <td> 5.5% </td>
+                                <td> <%= book.qty %> </td>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                        <input type="hidden" name="data" value="<%= JSON.stringify(data) %>">
+                    </table>
+                </div>
+                  <div class="card-footer">
+                      <button class="btn btn-primary icon-btn" type="submit" name="submit" value="Valider">
+                        <i class="fa fa-check-circle"></i> Valider
+                      </button>
+                      <a class="btn btn-default icon-btn" href="/advanced">
+                        <i class="fa fa-times-circle"></i> Annuler
+                      </a>
+                  </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="text/javascript" src="/js/lib/bootstrap-native.min.js"></script>
+  </body>
+</html>

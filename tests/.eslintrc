@@ -1,0 +1,13 @@
+{
+  "plugins": [
+    "testcafe"
+  ],
+  "extends": "plugin:testcafe/recommended",
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": 8
+  },
+  "rules": {
+    "semi": [1, "always"]
+  }
+}
