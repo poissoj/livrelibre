@@ -5,17 +5,13 @@ const compress = require('compression')
 const cookieParser = require('cookie-parser')
 const database = require('./database')
 const log = require('./log')
+const settings = require('./settings')
 const createRoutes = require('./createRoutes');
 
 (function initServer () {
     'use strict'
 
-    const settings = {}
     let app
-
-    function setupVariables () {
-        settings.port = process.env.PORT || 8888
-    }
 
     function terminator (sig) {
         database.close()
@@ -54,12 +50,12 @@ const createRoutes = require('./createRoutes');
         app.set('view engine', 'ejs')
         app.use(compress())
         app.use(express.static('static', { maxAge : 31536000000000 })) // one year
-            .use(cookieParser('38cwimbiaJO9MDYMNZRX2jT!Y7x4UFdiP+q07JHa9Vv5'))
+            .use(cookieParser(settings.cookieSecret))
             .use(favicon('static/images/tracteur.png'))
             .use(bodyParser.urlencoded({extended:false}))
             .use(bodyParser.json())
             .use(auth)
-        app.locals.appName = 'Livre Libre'
+        app.locals.appName = settings.appName
 
         createRoutes(app)
 
@@ -93,7 +89,6 @@ const createRoutes = require('./createRoutes');
     }
 
     function initialize () {
-        setupVariables()
         setupTerminationHandlers()
         initializeServer()
     }

@@ -2,8 +2,7 @@
 
 const MongoClient = require('mongodb').MongoClient
 const log = require('./log')
-
-const connection_string = process.env.MONGOLAB_URL || 'mongodb://127.0.0.1:27017/tsavant'
+const { connection_string } = require('./settings')
 
 let database
 
