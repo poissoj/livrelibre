@@ -531,12 +531,17 @@ function createRoutes (app) {
         .post(function(req, res, next) {
             if (req.body && req.body.id) {
                 const id = req.body.id.split(',')
-                log.info('Deleted ' + id)
                 collection('sales')
                     .findOneAndUpdate({ _id: ObjectId(id[0]) }, { $set: { deleted: true } })
-                    .then(r => r.value.quantity || 1)
-                    .then(amount => collection('books').updateOne({ _id: ObjectId(id[1]) }, { $inc: { amount } }))
-                    .then(() => {
+                    .then(r => {
+                        const item = r.value
+                        log.info(`Deleted sale ${item.id} (${item.quantity} * ${item.price}€ - ${item.date})`)
+                        return item.quantity || 1
+                    })
+                    .then(amount => collection('books').findOneAndUpdate({ _id: ObjectId(id[1]) }, { $inc: { amount } }))
+                    .then(r => {
+                        const item = r.value
+                        log.info(`Item deleted : ${item.title} by ${item.author}`)
                         res.redirect('/sale/' + req.params.date)
                     })
                     .catch(next)
@@ -661,6 +666,7 @@ function createRoutes (app) {
             }
             if (req.body.action === 'put-aside') {
                 // TODO: check if asideCart is empty
+                log.info('Set cart aside')
                 collection('cart')
                     .aggregate([ { $match: {} }, { $out: 'asideCart' } ])
                     .toArray()
@@ -669,6 +675,7 @@ function createRoutes (app) {
                     .catch(next)
             } else if (req.body.action === 'reactivate') {
                 // TODO: check if cart is empty
+                log.info('Reactivate aside cart')
                 collection('asideCart')
                     .aggregate([ { $match: {} }, { $out: 'cart' } ])
                     .toArray()
