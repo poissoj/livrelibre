@@ -536,9 +536,15 @@ function createRoutes (app) {
                     .then(r => {
                         const item = r.value
                         log.info(`Deleted sale ${item.id} (${item.quantity} * ${item.price}€ - ${item.date})`)
-                        return item.quantity || 1
+                        return item
                     })
-                    .then(amount => collection('books').findOneAndUpdate({ _id: ObjectId(id[1]) }, { $inc: { amount } }))
+                    .then(item => {
+                        if (id[1]) {
+                            const amount = item.quantity || 1
+                            return collection('books').findOneAndUpdate({ _id: ObjectId(id[1]) }, { $inc: { amount } })
+                        }
+                        return { value: item }
+                    })
                     .then(r => {
                         const item = r.value
                         log.info(`Item deleted : ${item.title} by ${item.author}`)
