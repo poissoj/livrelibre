@@ -16,7 +16,7 @@ const createRoutes = require('./createRoutes');
     function terminator (sig) {
         database.close()
         if (typeof sig === 'string') {
-            log.info('Received ' + sig + ' - terminating ' + app.locals.name + '…')
+            log.info('Received ' + sig + ' - terminating ' + app.locals.appName + '…')
             process.exit(1)
         }
         log.info('Node server stopped.')
