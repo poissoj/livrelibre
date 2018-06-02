@@ -4,8 +4,8 @@ const log = require('./log')
 const norm = require('./normalize')
 const renderItemListPage = require('./pagination')
 
-const normalizedFields = ['author', 'title']
-const ignoreCaseFields = ['nmAuthor', 'nmTitle', 'keywords', 'comments']
+const normalizedFields = ['author', 'title', 'publisher', 'distributor']
+const ignoreCaseFields = ['nmAuthor', 'nmTitle', 'keywords', 'comments', 'nmPublisher', 'nmDistributor']
 
 const doSearch = (generateCriteria, cardTitle) => (req, res, next) => {
     if (!req.query) {
