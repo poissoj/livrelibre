@@ -226,6 +226,8 @@ function change(doc, res, id) {
     newDoc.starred = doc.starred === 'true'
     newDoc.nmAuthor = norm(doc.author)
     newDoc.nmTitle = norm(doc.title)
+    newDoc.nmPublisher = norm(doc.publisher)
+    newDoc.nmDistributor = norm(doc.distributor)
     collection('books')
         .updateOne({ _id: ObjectId(id) }, newDoc)
         .then(() => {
@@ -770,6 +772,8 @@ function createRoutes (app) {
                 newBook.prix_achat = newBook.prix_achat.replace(',', '.')
                 newBook.nmAuthor = norm(newBook.author)
                 newBook.nmTitle = norm(newBook.title)
+                newBook.nmPublisher = norm(newBook.publisher)
+                newBook.nmDistributor = norm(newBook.distributor)
                 log.info('Add new item:', newBook)
                 doc.title = newBook.title
                 return collection('books')
@@ -949,6 +953,8 @@ function createRoutes (app) {
                     book.type = 'book'
                     book.nmAuthor = norm(book.author)
                     book.nmTitle = norm(book.title)
+                    book.nmPublisher = norm(book.publisher)
+                    book.nmDistributor = norm(book.distributor)
                     delete book.EAN
                     delete book.qty
                     delete book.availability
