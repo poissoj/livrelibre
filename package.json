@@ -12,18 +12,18 @@
     "test": "MONGOLAB_URL=mongodb://127.0.0.1:27017/testDb testcafe chromium tests/tests.js"
   },
   "dependencies": {
-    "body-parser": "1.18.2",
+    "body-parser": "1.18.3",
     "cheerio": "0.22.0",
-    "compression": "1.7.1",
+    "compression": "1.7.2",
     "cookie-parser": "1.4.3",
-    "ejs": "2.5.7",
-    "express": "4.16.2",
+    "ejs": "2.6.1",
+    "express": "4.16.3",
     "harb": "0.1.1",
-    "mongodb": "2.2.33",
+    "mongodb": "3.0.9",
     "multer": "1.3.0",
-    "pikaday": "1.6.1",
-    "request": "2.83.0",
-    "serve-favicon": "2.4.5"
+    "pikaday": "1.7.0",
+    "request": "2.87.0",
+    "serve-favicon": "2.5.0"
   },
   "engines": {
     "node": "8.4.0"
