@@ -169,6 +169,20 @@
               </div>
             </div>
             <% } %>
+            <div class="card">
+              <h3 class="card-title">Articles - Recherche rapide</h3>
+              <form action="/quicksearch" method="get">
+                  <div class="input-group">
+                      <input class="form-control" type="text" name="search" placeholder="ISBN, titre, auteur" aria-labelledby="search">
+                      <span class="input-group-btn">
+                          <button class="btn btn-primary icon-btn" type="submit" id="search">
+                              <i class="fa fa-search"></i> Rechercher
+                          </button>
+                      </span>
+                  </div>
+              </form>
+
+            </div>
           </div>
         </div>
       </div>
