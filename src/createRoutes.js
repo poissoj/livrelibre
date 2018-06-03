@@ -229,7 +229,7 @@ function change(doc, res, id) {
     newDoc.nmPublisher = norm(doc.publisher)
     newDoc.nmDistributor = norm(doc.distributor)
     collection('books')
-        .updateOne({ _id: ObjectId(id) }, newDoc)
+        .updateOne({ _id: ObjectId(id) }, { $set: newDoc })
         .then(() => {
             log.info(id + ' saved.')
             res.redirect('/show/' + id + '?status=updated')
