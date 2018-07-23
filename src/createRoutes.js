@@ -674,22 +674,25 @@ function createRoutes (app) {
                 redirectToCart()
                 return
             }
+            const { username } = res.locals
             if (req.body.action === 'put-aside') {
                 // TODO: check if asideCart is empty
-                log.info('Set cart aside')
+                log.info(`Set cart aside (${username})`)
                 collection('cart')
-                    .aggregate([ { $match: {} }, { $out: 'asideCart' } ])
+                    .find({ username })
                     .toArray()
-                    .then(() => collection('cart').remove({}))
+                    .then(items => collection('asideCart').insert(items))
+                    .then(collection('cart').remove({ username }))
                     .then(redirectToCart)
                     .catch(next)
             } else if (req.body.action === 'reactivate') {
                 // TODO: check if cart is empty
-                log.info('Reactivate aside cart')
+                log.info(`Reactivate aside cart (${username})`)
                 collection('asideCart')
-                    .aggregate([ { $match: {} }, { $out: 'cart' } ])
+                    .find({ username })
                     .toArray()
-                    .then(() => collection('asideCart').remove({}))
+                    .then(items => collection('cart').insert(items))
+                    .then(collection('asideCart').remove({ username }))
                     .then(redirectToCart)
                     .catch(next)
             } else {
