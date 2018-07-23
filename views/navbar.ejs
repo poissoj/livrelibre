@@ -6,17 +6,18 @@
     <!-- Navbar Right Menu-->
     <div class="navbar-custom-menu">
     <ul class="top-nav">
+        <li><span style="color:white"><%=username%></span></li>
         <li>
-        <a href="/cart" title="Voir le panier">
-            <i class="fa fa-shopping-cart fa-lg"></i><span class="badge"><%=cart.count%></span></i>
-        </a>
+            <a href="/cart" title="Voir le panier">
+                <i class="fa fa-shopping-cart fa-lg"></i><span class="badge"><%=cart.count%></span></i>
+            </a>
         </li>
         <!-- User Menu-->
         <li class="dropdown">
-        <a class="dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user fa-lg"></i></a>
-        <ul class="dropdown-menu settings-menu">
-            <li><a href="/logout"><i class="fa fa-sign-out fa-lg"></i> Se déconnecter</a></li>
-        </ul>
+            <a class="dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><i class="fa fa-user fa-lg"></i></a>
+            <ul class="dropdown-menu settings-menu">
+                <li><a href="/logout"><i class="fa fa-sign-out fa-lg"></i> Se déconnecter</a></li>
+            </ul>
         </li>
     </ul>
     </div>
