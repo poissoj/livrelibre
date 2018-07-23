@@ -806,9 +806,10 @@ function createRoutes (app) {
             return
         }
         let param = ''
+        const { username } = res.locals
 
         collection('cart')
-            .find()
+            .find({ username })
             .toArray()
             .then(items => {
                 if (items.length === 0) {
@@ -834,7 +835,7 @@ function createRoutes (app) {
                 return sales
             })
             .then(sales => collection('sales').insertMany(sales))
-            .then(() => collection('cart').deleteMany({}))
+            .then(() => collection('cart').deleteMany({ username }))
             .then(() => res.redirect('/cart' + param))
             .catch(err => {
                 if (err.message === 'No items in cart') {
