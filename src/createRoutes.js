@@ -659,7 +659,7 @@ function createRoutes (app) {
                         total,
                         date: formatDate(new Date()),
                         message,
-                        count,
+                        cart: { count },
                         asideTotal,
                         asideCount
                     })
