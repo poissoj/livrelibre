@@ -262,14 +262,15 @@ function ordered(doc, res, id) {
         })
 }
 
-function addToCart(body, res, id) {
+function addToCart(body, res, id, username) {
     const doc = {
         itemId:ObjectId(id),
         type:body.type,
         title:body.title,
         price:body.price,
         tva:body.tva,
-        quantity:+body.quantity
+        quantity:+body.quantity,
+        username
     }
     collection('books')
         .updateOne({ _id: ObjectId(id) }, { $inc: { amount: -body.quantity } })
@@ -585,7 +586,7 @@ function createRoutes (app) {
                     submit
                 ]
                 if (action) {
-                    action(req.body, res, id)
+                    action(req.body, res, id, res.locals.username)
                 }
             } else {
                 res.redirect('/')
@@ -724,7 +725,8 @@ function createRoutes (app) {
                     title: item.title,
                     price: item.price,
                     tva: item.tva,
-                    quantity: 1
+                    quantity: 1,
+                    username: res.locals.username
                 }
                 log.info('Add ' + doc.title + ' (' + item._id + ') to cart')
                 return doc
