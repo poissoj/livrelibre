@@ -8,11 +8,11 @@ const reduce = function(item,res) {
     res.count += item.quantity
 }
 
-const getCart = () =>
+const getCart = username =>
     database
         .getDb()
         .collection('cart')
-        .group([], {}, { total: 0, count: 0 }, reduce, true)
+        .group([], { username }, { total: 0, count: 0 }, reduce, true)
         .then(results => {
             const cart = results[0] || {total:0}
             cart.total = (cart.total / 100).toFixed(2)

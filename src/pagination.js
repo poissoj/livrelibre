@@ -7,7 +7,7 @@ const collection = name => database.getDb().collection(name)
 function renderItemListPage({ query, sortParams, cardTitle, pageTitle, rootURL, subtitle }) {
     return (pageNumber, res, next) => {
         Promise.all([
-            getCart(),
+            getCart(res.locals.username),
             collection('books').count(query),
             collection('books')
                 .find(query)

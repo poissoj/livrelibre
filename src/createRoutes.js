@@ -64,7 +64,7 @@ function salesByMonth(res, next, month) {
             {$match:{month}}
         ])
         .toArray()
-    Promise.all([getCart(), salesPromise])
+    Promise.all([getCart(res.locals.username), salesPromise])
         .then(([cart, results]) => {
 
             const sales = results && results.length ? results : []
@@ -190,7 +190,7 @@ const getItemById = (template, pageTitle) => (req, res, next) => {
                 { $limit: 12 }
             ]).toArray()
     )
-    Promise.all([getCart(), docPromise, countPromise, lastSalesPromise])
+    Promise.all([getCart(res.locals.username), docPromise, countPromise, lastSalesPromise])
         .then(([cart, doc, count, lastSales]) => {
             doc.count = count.length > 0 ? count[0].total : 0
             const salesByMonth = []
@@ -239,7 +239,7 @@ function change(doc, res, id) {
             doc.error = true
             doc._id = id
             doc.pageTitle = APP_NAME + ' - Modifier un article'
-            getCart().then(cart => res.render('change', Object.assign({}, doc, { cart })))
+            getCart(res.locals.username).then(cart => res.render('change', Object.assign({}, doc, { cart })))
         })
 }
 
@@ -254,7 +254,7 @@ function ordered(doc, res, id) {
             log.error(err)
             doc.error = true
         })
-        .then(getCart)
+        .then(() => getCart(res.locals.username))
         .then(cart => {
             doc._id = id
             doc.pageTitle = APP_NAME + ' - Modifier un article'
@@ -330,7 +330,7 @@ function createRoutes (app) {
                 .find({ starred: true })
                 .sort({ title: 1 })
                 .toArray()
-            Promise.all([getCart(), booksPromise]).then(([cart, books]) =>
+            Promise.all([getCart(res.locals.username), booksPromise]).then(([cart, books]) =>
                 res.render('dashboard', {
                     pageTitle: APP_NAME + ' - Tableau de bord',
                     books,
@@ -356,7 +356,7 @@ function createRoutes (app) {
                 .insertOne(newSale)
                 .then(() =>
                     Promise.all([
-                        getCart(),
+                        getCart(res.locals.username),
                         collection('books')
                         .find({ starred: true })
                         .sort({ title: 1 })
@@ -375,7 +375,7 @@ function createRoutes (app) {
         })
 
     app.get('/add', function(req, res) {
-        getCart().then(cart =>
+        getCart(res.locals.username).then(cart =>
             res.render('add', {
                 pageTitle: APP_NAME + ' - Ajouter un article',
                 date: formatDate(new Date()),
@@ -402,7 +402,7 @@ function createRoutes (app) {
             .find({ _id: { $in: sales.map(v => v._id) } })
             .toArray()
         )
-        Promise.all([getCart(), salesPromise, booksPromise])
+        Promise.all([getCart(res.locals.username), salesPromise, booksPromise])
             .then(([cart, sales, books]) => {
                 books.forEach(function(book) {
                     let i = 0
@@ -435,7 +435,7 @@ function createRoutes (app) {
                 { $project: { _id: 0, date: '$_id.month', amount: 1, count: 1 } }
             ])
             .toArray()
-        Promise.all([getCart(), salesPromise])
+        Promise.all([getCart(res.locals.username), salesPromise])
             .then(([cart, results]) => {
                 const sales =
                     results && results.length
@@ -484,7 +484,7 @@ function createRoutes (app) {
                         .find({ _id: { $in: book_ids } })
                         .toArray()
                 })
-            Promise.all([getCart(), resultsPromise, booksPromise])
+            Promise.all([getCart(res.locals.username), resultsPromise, booksPromise])
                 .then(([cart, results, books]) => {
                     const tva = {}
                     let salesCount = 0
@@ -561,13 +561,13 @@ function createRoutes (app) {
     app.get('/ordered', (req, res, next) => renderOrderedPage(app.locals.appName)(Number(req.query.page || 1), res, next))
 
     app.get('/search', function(req, res) {
-        getCart().then(cart =>
+        getCart(res.locals.username).then(cart =>
             res.render('search', { pageTitle: APP_NAME + ' - Chercher un article', cart })
         )
     })
 
     app.get('/advanced', onlyAdmin, function(req, res) {
-        getCart().then(cart => res.render('advanced', { pageTitle: APP_NAME + ' - Avancé', cart }))
+        getCart(res.locals.username).then(cart => res.render('advanced', { pageTitle: APP_NAME + ' - Avancé', cart }))
     })
 
     app.get('/show/:id', getItemById('item', 'Voir un article'))
@@ -645,9 +645,10 @@ function createRoutes (app) {
                 log.info('Cart, change = ' + p.query.a)
                 message = 'À rendre : ' + formatChange(p.query.a)
             }
+            const { username } = res.locals
             Promise.all( [
-                collection('cart').find().toArray(),
-                collection('asideCart').find().toArray()
+                collection('cart').find({ username }).toArray(),
+                collection('asideCart').find({ username }).toArray()
             ]).then(([results, asideItems]) => {
                     const total = (results.reduce((sum, item) => sum + item.price * item.quantity * 100, 0) / 100).toFixed(2)
                     const count = results.reduce((sum, item) => sum + item.quantity, 0)
@@ -700,7 +701,7 @@ function createRoutes (app) {
         const salesPromise = collection('sales')
             .find({ deleted: { $exists: false } }, { _id: 1 })
             .toArray()
-        Promise.all([getCart(), salesPromise])
+        Promise.all([getCart(res.locals.username), salesPromise])
             .then(([cart, sales]) => {
                 const hours = sales.map(sale => sale._id.getTimestamp().getHours())
                 const days = sales.map(sale => sale._id.getTimestamp().getDay())
@@ -748,7 +749,7 @@ function createRoutes (app) {
             return
         }
         if (req.body.author === '' || req.body.title === '') {
-            getCart().then(cart => res.render('add', {
+            getCart(res.locals.username).then(cart => res.render('add', {
                 pageTitle: APP_NAME + ' - Ajouter un article',
                 date: formatDate(new Date()),
                 message: 'Le titre et l\'auteur sont obligatoires',
@@ -787,7 +788,7 @@ function createRoutes (app) {
                     })
                     .then(() => doc)
             })
-            .then(doc => Promise.all([getCart(), doc]))
+            .then(doc => Promise.all([getCart(res.locals.username), doc]))
             .then(([cart, doc]) => res.render('add', Object.assign({}, doc, {cart})))
             .catch(next)
 
@@ -864,7 +865,7 @@ function createRoutes (app) {
             .catch(err => log.error(err))
             .then(() => {
                 if (req.xhr) {
-                    getCart().then(cart => res.json(cart))
+                    getCart(res.locals.username).then(cart => res.json(cart))
                 } else {
                     res.redirect('/cart')
                 }
@@ -882,7 +883,7 @@ function createRoutes (app) {
         log.info('Importing ' + data.filename)
         const LENGTH = data.books.length
         if (LENGTH === 0) {
-            getCart().then(cart =>
+            getCart(res.locals.username).then(cart =>
                 res.render('importList', { pageTitle: APP_NAME + ' - Importer un fichier DILICOM', data, cart })
             )
             return
@@ -891,7 +892,7 @@ function createRoutes (app) {
         function cb(n, book_data) {
             Object.assign(data.books[n], book_data)
             if (count++ === LENGTH) {
-                getCart().then(cart =>
+                getCart(res.locals.username).then(cart =>
                     res.render('importList', { pageTitle: APP_NAME + ' - Importer un fichier DILICOM', data, cart })
                 )
             }
@@ -920,7 +921,7 @@ function createRoutes (app) {
         log.info('finalizeImport', data.filename)
 
         function render(err) {
-            getCart().then(cart =>
+            getCart(res.locals.username).then(cart =>
                 res.render('advanced', {
                     pageTitle: APP_NAME + ' - Importer un fichier DILICOM',
                     message: err || 'Fichier importé.',
@@ -930,7 +931,7 @@ function createRoutes (app) {
         }
 
         if (req.body.price.some(price => price.length === 0)) {
-            getCart().then(cart =>
+            getCart(res.locals.username).then(cart =>
                 res.render('importList', {
                     pageTitle: APP_NAME + ' - Importer un fichier DILICOM',
                     error: 'Merci de renseigner tous les prix.',
