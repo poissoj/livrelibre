@@ -345,12 +345,14 @@ function createRoutes (app) {
             }
             const price = req.body.price.replace(',', '.')
             log.info('New sale for ' + price + '€ : ' + req.body.title)
+            const { username } = res.locals
             const newSale = {
                 type: req.body.type,
                 title: req.body.title || 'Article indépendant',
                 price,
                 tva: req.body.tva,
-                quantity: 1
+                quantity: 1,
+                username
             }
             collection('cart')
                 .insertOne(newSale)
