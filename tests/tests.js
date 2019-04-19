@@ -32,7 +32,7 @@ test('Correct login goes to Dashboard', async t => {
         .useRole(admin)
         .navigateTo(HOSTNAME)
         .expect(Selector('.sidebar-menu .active').innerText)
-        .eql('Tableau de bord\n');
+        .eql('Tableau de bord');
 });
 
 
