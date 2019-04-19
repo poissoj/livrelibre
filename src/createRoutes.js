@@ -274,11 +274,12 @@ function addToCart(body, res, id, username) {
     }
     collection('books')
         .updateOne({ _id: ObjectId(id) }, { $inc: { amount: -body.quantity } })
-        .then(collection('cart').insertOne(doc))
+        .then(() => collection('cart').insertOne(doc))
         .catch(err => log.error('Error adding to cart', err))
         .then(res.redirect('/show/' + id))
 }
 
+// eslint-disable-next-line max-statements
 function createRoutes (app) {
 
     app.get('/star/:id', star(true))
