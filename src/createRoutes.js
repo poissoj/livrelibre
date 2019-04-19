@@ -684,7 +684,7 @@ function createRoutes (app) {
                     .find({ username })
                     .toArray()
                     .then(items => collection('asideCart').insert(items))
-                    .then(collection('cart').remove({ username }))
+                    .then(() => collection('cart').remove({ username }))
                     .then(redirectToCart)
                     .catch(next)
             } else if (req.body.action === 'reactivate') {
@@ -694,7 +694,7 @@ function createRoutes (app) {
                     .find({ username })
                     .toArray()
                     .then(items => collection('cart').insert(items))
-                    .then(collection('asideCart').remove({ username }))
+                    .then(() => collection('asideCart').remove({ username }))
                     .then(redirectToCart)
                     .catch(next)
             } else {
