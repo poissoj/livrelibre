@@ -52,8 +52,8 @@ const createRoutes = require('./createRoutes');
         app.use(express.static('static', { maxAge : 31536000000000 })) // one year
             .use(cookieParser(settings.cookieSecret))
             .use(favicon('static/images/tracteur.png'))
-            .use(bodyParser.urlencoded({extended:false}))
-            .use(bodyParser.json())
+            .use(bodyParser.urlencoded({limit:'50mb', extended:false, parameterLimit: 10000}))
+            .use(bodyParser.json({limit:'50mb'}))
             .use(auth)
         app.locals.appName = settings.appName
 
