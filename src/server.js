@@ -104,6 +104,7 @@ const createRoutes = require('./createRoutes');
             .catch(err => {
                 log.error('Unable to start server')
                 log.error(err)
+                process.exit(1)
             })
     }
 
