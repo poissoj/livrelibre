@@ -6,8 +6,13 @@ const { connection_string } = require('./settings')
 
 let mongoClient
 
+const OPTIONS = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+}
+
 const connect = () =>
-    MongoClient.connect(connection_string)
+    MongoClient.connect(connection_string, OPTIONS)
         .then(client => {
             mongoClient = client
             const database = client.db()
