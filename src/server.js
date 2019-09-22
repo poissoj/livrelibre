@@ -20,14 +20,13 @@ function terminator (sig) {
 }
 
 function setupTerminationHandlers () {
-    process.on('exit', function() { terminator() });
+    process.on('exit', () => terminator());
 
-    // Removed 'SIGPIPE' from the list - bugz 852598.
     ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT',
         'SIGBUS', 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM'
-    ].forEach(function(element) {
-        process.on(element, function() { terminator(element) })
-    })
+    ].forEach(element =>
+        process.on(element, () => terminator(element))
+    )
 }
 
 function auth(req, res, next) {
@@ -84,15 +83,12 @@ function initializeServer () {
     })
 }
 
-function initialize () {
-    setupTerminationHandlers()
-    initializeServer()
-}
-
 function start() {
+    setupTerminationHandlers()
     database
         .connect()
         .then(() => {
+            initializeServer()
             app.listen(settings.port, function() {
                 log.info('Node server started on localhost:' + settings.port + '...')
             })
@@ -104,5 +100,4 @@ function start() {
         })
 }
 
-initialize()
 start()
