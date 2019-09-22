@@ -1,8 +1,8 @@
-const database = require('./database')
-const getCart = require('./getCart')
+const database = require('./database');
+const getCart = require('./getCart');
 
-const ITEMS_PER_PAGE = 50
-const collection = name => database.getDb().collection(name)
+const ITEMS_PER_PAGE = 50;
+const collection = name => database.getDb().collection(name);
 
 function renderItemListPage({ query, sortParams, cardTitle, pageTitle, rootURL, subtitle }) {
     return (pageNumber, res, next) => {
@@ -17,10 +17,10 @@ function renderItemListPage({ query, sortParams, cardTitle, pageTitle, rootURL, 
                 .toArray()
         ])
             .then(([cart, count, results]) => {
-                let suffix = ''
-                const pageCount = Math.ceil(count / ITEMS_PER_PAGE)
+                let suffix = '';
+                const pageCount = Math.ceil(count / ITEMS_PER_PAGE);
                 if (pageCount > 1) {
-                    suffix = ` - Page ${pageNumber} sur ${pageCount}`
+                    suffix = ` - Page ${pageNumber} sur ${pageCount}`;
                 }
                 res.render('books', {
                     books: results || [],
@@ -31,10 +31,10 @@ function renderItemListPage({ query, sortParams, cardTitle, pageTitle, rootURL, 
                     pageTitle: pageTitle + suffix,
                     rootURL,
                     subtitle: subtitle ? subtitle(count) : ''
-                })
+                });
             })
-            .catch(next)
-    }
+            .catch(next);
+    };
 }
 
-module.exports = renderItemListPage
+module.exports = renderItemListPage;
