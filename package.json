@@ -16,6 +16,7 @@
     "cheerio": "0.22.0",
     "compression": "1.7.4",
     "cookie-parser": "1.4.4",
+    "dotenv": "8.2.0",
     "ejs": "2.7.1",
     "express": "4.17.1",
     "harb": "0.1.1",
