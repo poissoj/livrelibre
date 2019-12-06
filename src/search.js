@@ -7,6 +7,8 @@ const renderItemListPage = require('./pagination');
 const normalizedFields = ['author', 'title', 'publisher', 'distributor'];
 const ignoreCaseFields = ['nmAuthor', 'nmTitle', 'keywords', 'comments', 'nmPublisher', 'nmDistributor'];
 
+const sanitize = string => string.replace(/[#-.]|[[-^]|[?|{}]/g, '\\$&');
+
 const doSearch = (generateCriteria, cardTitle) => (req, res, next) => {
     if (!req.query) {
         res.redirect('/');
@@ -31,7 +33,7 @@ function addRegexp(object) {
         if (object[key] === '') {
             delete object[key];
         } else if (ignoreCaseFields.indexOf(key) !== -1) {
-            object[key] = new RegExp(object[key], 'i');
+            object[key] = new RegExp(sanitize(object[key]), 'i');
         }
     }
 }
@@ -56,7 +58,7 @@ function generateSearchCriteria(query) {
             list.push(
                 ...body[key].source
                 .split(/\s+/)
-                .map(str => ({ [key]: new RegExp(str.replace(/\?/g, '\\?'), 'i') }))
+                .map(str => ({ [key]: new RegExp(sanitize(str), 'i') }))
             );
         } else {
             o[key] = body[key];
@@ -78,17 +80,17 @@ function generateSearchCriteria(query) {
 }
 
 function generateQuickSearchCriteria(query) {
-    const search = query.search.trim().replace(/\?/g, '\\?');
+    const search = query.search.trim();
     log.info('Search', search);
     let criteria;
     if (/^\d{13,}$/.test(search)) {
         criteria = { 'isbn' : search.slice(0,13) };
     } else if (/\s/.test(search)) {
-        const titleCriteria = search.split(/\s+/).map( str => ({'nmTitle' : new RegExp(norm(str),'i')}));
+        const titleCriteria = search.split(/\s+/).map( str => ({'nmTitle' : new RegExp(sanitize(norm(str)),'i')}));
         const authorCriteria = titleCriteria.map(o => ({'nmAuthor':o.nmTitle}));
         criteria = {$or:[{$and:titleCriteria}, {$and:authorCriteria}]};
     } else {
-        const crit = new RegExp(norm(search), 'i');
+        const crit = new RegExp(sanitize(norm(search)), 'i');
         criteria = {$or: [{ 'nmTitle' : crit }, { 'nmAuthor' : crit }]};
     }
     return { criteria, searchCriteria: search };
