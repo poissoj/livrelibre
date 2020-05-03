@@ -1,4 +1,4 @@
-<% include header %>
+<%- include('header') %>
     <style>
         tr.deleted {
             font-style: italic;
@@ -8,7 +8,7 @@
   </head>
   <body class="fixed">
     <div class="wrapper">
-      <% include navbar %>
+      <%- include('navbar') %>
       <!-- Side-Nav-->
       <input id="toggle-sidebar" type="checkbox">
       <aside class="main-sidebar hidden-print">
