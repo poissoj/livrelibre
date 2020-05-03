@@ -187,7 +187,7 @@ const getItemById = (template, pageTitle) => (req, res, next) => {
                 { $project: { 'date': { $concat: ['$year', '-', '$month'] }, quantity: 1 } },
                 { $group: { '_id': '$date', total: { $sum: '$quantity' } } },
                 { $sort: { _id: -1 } },
-                { $limit: 12 }
+                { $limit: 24 }
             ]).toArray()
     );
     Promise.all([getCart(res.locals.username), docPromise, countPromise, lastSalesPromise])
@@ -195,7 +195,7 @@ const getItemById = (template, pageTitle) => (req, res, next) => {
             doc.count = count.length > 0 ? count[0].total : 0;
             const salesByMonth = [];
             const date = new Date();
-            for (let i = 0; i < 12; i++) {
+            for (let i = 0; i < 24; i++) {
                 const month = ('0' + (date.getMonth() + 1)).substr(-2);
                 const year = date.getFullYear();
                 const id = year + '-' + month;

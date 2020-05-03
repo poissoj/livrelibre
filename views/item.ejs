@@ -160,7 +160,7 @@
 
             </div>
             <div class="card">
-              <h3 class="card-title">Ventes des 12 derniers mois</h3>
+              <h3 class="card-title">Ventes des 2 dernières années</h3>
               <svg id="salesChart"  data-sales="<%=salesByMonth%>"   class="chart"></svg>
             </div>
           </div>
@@ -182,16 +182,18 @@
         var shortMonths = ['janv. ', 'févr. ', 'mars ', 'avril ', 'mai ', 'juin ', 'juil. ', 'août ', 'sept. ', 'oct. ', 'nov. ', 'déc.'];
 
         var dataMonths = JSON.parse(document.getElementById("salesChart").getAttribute("data-sales"))
-        dataMonths.forEach(function(month) {
-            var monthIndex = month.id.split('-')[1];
-            month.id = shortMonths[monthIndex-1];
-        });
+
+        function formatMonth(month) {
+            var monthIndex = month.split('-')[1];
+            return shortMonths[monthIndex-1];
+        }
 
         var formatCount = d3.format(",.0f")
 
-        var margin = {top: 10, right: 10, bottom: 20, left: 10},
-            width = 483 - margin.left - margin.right,
-            height = 400 - margin.top - margin.bottom
+        var margin = {top: 10, right: 10, bottom: 20, left: 10};
+        var cardWidth = document.getElementById("salesChart").parentElement.offsetWidth - 40; // 40 = padding
+        var width = cardWidth - margin.left - margin.right;
+        var height = 400 - margin.top - margin.bottom;
 
         var x = d3.scaleBand()
             .domain(dataMonths.map(function(month) { return month.id }))
@@ -233,7 +235,7 @@
                 .call(d3.axisBottom(x).tickFormat(tickFormat))
         }
 
-        makeSVG("salesChart", height - 100, dataMonths, x, "id", "value", x.bandwidth())
+        makeSVG("salesChart", height - 100, dataMonths, x, "id", "value", x.bandwidth(), formatMonth)
 
     </script>
   </body>
