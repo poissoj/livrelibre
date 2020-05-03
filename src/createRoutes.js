@@ -432,10 +432,19 @@ function createRoutes (app) {
                     $group: {
                         _id: { month: { $substr: ['$date', 3, 7] } },
                         amount: { $sum: '$price' },
-                        count: { $sum: '$quantity' }
-                    }
+                        count: { $sum: '$quantity' },
+                        carts: { $addToSet: '$cartId' },
+                    },
                 },
-                { $project: { _id: 0, date: '$_id.month', amount: 1, count: 1 } }
+                {
+                    $project: {
+                        _id: 0,
+                        date: '$_id.month',
+                        amount: 1,
+                        count: 1,
+                        carts: { $size: '$carts' },
+                    },
+                },
             ])
             .toArray();
         Promise.all([getCart(res.locals.username), salesPromise])
@@ -443,7 +452,8 @@ function createRoutes (app) {
                 const sales =
                     results && results.length
                     ? results.map(function(sale) {
-                        sale.amount = +sale.amount.toFixed(2);
+                        sale.amount = Number(sale.amount.toFixed(2));
+                        sale.avg = Number((sale.amount / sale.carts).toFixed(2));
                         return sale;
                     })
                     : [];

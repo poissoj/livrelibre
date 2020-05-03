@@ -38,6 +38,9 @@
                     <th><%= typeof stats === 'undefined' ? 'Mois' : 'Jour'%></th>
                     <th>Nombre de ventes</th>
                     <th>Recette totale</th>
+                    <% if (typeof stats === 'undefined') { %>
+                    <th>Panier moyen</th>
+                    <% } %>
                     <th></th>
                   </tr>
                 </thead>
@@ -47,6 +50,9 @@
                     <td><%= sales[i].date %></td>
                     <td><%= sales[i].count %></td>
                     <td><%= sales[i].amount %>€</td>
+                    <% if (typeof stats === 'undefined') { %>
+                    <td><%= sales[i].avg === Infinity ? "Inconnu" : sales[i].avg + "€" %></td>
+                    <% } %>
                     <td>
                       <a href="/sale/<%=sales[i].date.replace(/\//g,'-')%>" class="btn btn-default icon-btn btn-sm">
                         <i class="fa fa-eye"></i> Détails
