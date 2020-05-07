@@ -11,6 +11,7 @@ const database = require('./database');
 const getCart = require('./getCart');
 const renderItemListPage = require('./pagination');
 const { search, quicksearch } = require('./search');
+const { PAYMENT_METHODS } = require('./constants');
 
 const storage = multer.memoryStorage();
 
@@ -96,7 +97,7 @@ function salesByMonth(res, next, month) {
 
             stats = Object.keys(stats).map(item => {
                 const [tva, typeId] = (item || 'Inconnu,').split(',');
-                const type = {'cash':'Espèces', 'card':'Carte bleue', 'check': 'Chèque', 'check-lire': 'Chèque lire'}[typeId] || 'Inconnu';
+                const type = PAYMENT_METHODS[typeId] || 'Inconnu';
                 return [tva, type, stats[item].nb, stats[item].totalPrice.toFixed(2)];
             });
 
@@ -503,12 +504,7 @@ function createRoutes (app) {
                     let salesCount = 0;
                     const sales = results.map(function(s) {
                         let i = 0;
-                        s.type = {
-                            cash: 'Espèces',
-                            card: 'Carte bleue',
-                            check: 'Chèque',
-                            'check-lire': 'Chèque lire'
-                        }[s.type];
+                        s.type = PAYMENT_METHODS[s.type];
                         const key = (s.tva || 'Inconnu') + ',' + (s.type || 'Inconnu');
                         if (!tva[key]) {
                             tva[key] = { count: 0, total: 0 };
