@@ -26,6 +26,9 @@ const getCart = (username) =>
                             ],
                         },
                     },
+                    count: {
+                        $sum: '$quantity'
+                    }
                 },
             },
         ])
