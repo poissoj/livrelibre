@@ -3,6 +3,7 @@ const PAYMENT_METHODS = {
     card: 'Carte bleue',
     check: 'Chèque',
     'check-lire': 'Chèque lire',
+    transfer: 'Virement',
 };
 
 module.exports = {
