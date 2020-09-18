@@ -1,5 +1,8 @@
 {
   "extends": "eslint:recommended",
+  "parserOptions": {
+    "ecmaVersion": 2020
+  },
   "root":true,
   "env": {
     "es6": true,
@@ -7,7 +10,7 @@
   },
   "rules": {
     "block-scoped-var":2,
-    "complexity":[1,5],
+    "complexity":[1,7],
     "consistent-return":2,
     "curly":2,
     "max-depth":[1,3],
