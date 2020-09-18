@@ -20,7 +20,14 @@ function formatDate (date) {
 }
 
 let APP_NAME;
-const TYPES = {'postcard':'Carte postale', 'stationery': 'Papeterie', 'game': 'Jeu', 'book': 'Livre', 'unknown':'Inconnu'};
+const TYPES = {
+    postcard: 'Carte postale',
+    stationery: 'Papeterie',
+    game: 'Jeu',
+    book: 'Livre',
+    unknown: 'Inconnu',
+    dvd: 'DVD',
+};
 
 const formatChange = change => change.replace(/(\d\d)$/,',$1€');
 
