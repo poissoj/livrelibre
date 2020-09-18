@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config();
 const ftp = require('basic-ftp');
 
 const database = require('./database');
@@ -33,11 +33,11 @@ const sendToFtp = async () => {
 
         });
         await client.uploadFrom(FILENAME, FILENAME);
-    } catch(error) {
+    } catch (error) {
         console.error(error);
     }
     client.close();
-}
+};
 
 database
     .connect()
