@@ -8,7 +8,7 @@ function renderItemListPage({ query, sortParams, cardTitle, pageTitle, rootURL, 
     return (pageNumber, res, next) => {
         Promise.all([
             getCart(res.locals.username),
-            collection('books').count(query),
+            collection('books').countDocuments(query),
             collection('books')
                 .find(query)
                 .sort(sortParams)
