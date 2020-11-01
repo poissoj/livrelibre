@@ -126,24 +126,6 @@ function salesByMonth(res, next, month) {
         .catch(next);
 }
 
-const renderToOrderPage = name => renderItemListPage({
-    query: { amount: 0, ordered: false },
-    sortParams: { distributor: 1, isbn: 1 },
-    cardTitle: 'Articles à renouveler',
-    pageTitle: name + ' - Liste des articles à renouveler',
-    rootURL: '/zero?',
-    subtitle: count => `${count} articles à renouveler`
-});
-
-const renderOrderedPage = name => renderItemListPage({
-    query: { amount: 0, ordered: true },
-    sortParams: { distributor: 1, isbn: 1 },
-    cardTitle: 'Articles commandés, en attente',
-    pageTitle: name + ' - Liste des articles commandés',
-    rootURL: '/ordered?',
-    subtitle: count => `${count} articles commandés`
-});
-
 const getItemById = (template, pageTitle) => (req, res, next) => {
     if (!/^[a-f\d]{24}$/i.test(req.params.id)) {
         next();
@@ -228,7 +210,6 @@ const getItemById = (template, pageTitle) => (req, res, next) => {
 
 function change(doc, res, id) {
     const newDoc = Object.assign({}, doc);
-    newDoc.ordered = doc.ordered === 'true' && doc.amount === 0;
     newDoc.price = doc.price.replace(',','.');
     newDoc.prix_achat = doc.prix_achat.replace(',','.');
     newDoc.starred = doc.starred === 'true';
@@ -248,25 +229,6 @@ function change(doc, res, id) {
             doc._id = id;
             doc.pageTitle = APP_NAME + ' - Modifier un article';
             getCart(res.locals.username).then(cart => res.render('change', Object.assign({}, doc, { cart })));
-        });
-}
-
-function ordered(doc, res, id) {
-    collection('books').updateOne({_id:ObjectId(id)}, {$set : {ordered:true}})
-        .then(() => {
-            doc.message = 'Commandé.';
-            doc.ordered = true;
-            doc.error = false;
-        })
-        .catch(err => {
-            log.error(err);
-            doc.error = true;
-        })
-        .then(() => getCart(res.locals.username))
-        .then(cart => {
-            doc._id = id;
-            doc.pageTitle = APP_NAME + ' - Modifier un article';
-            res.render('change', Object.assign({}, doc, {cart}));
         });
 }
 
@@ -573,9 +535,6 @@ function createRoutes (app) {
             }
         });
 
-    app.get('/zero', (req, res, next) => renderToOrderPage(app.locals.appName)(Number(req.query.page || 1), res, next));
-    app.get('/ordered', (req, res, next) => renderOrderedPage(app.locals.appName)(Number(req.query.page || 1), res, next));
-
     app.get('/search', function(req, res) {
         getCart(res.locals.username).then(cart =>
             res.render('search', { pageTitle: APP_NAME + ' - Chercher un article', cart })
@@ -598,7 +557,7 @@ function createRoutes (app) {
                 req.body.amount *= 1;
                 delete req.body.submit;
                 log.info(submit, req.body, id);
-                const action = { Modifier: change, 'Ajouter au panier': addToCart, Commandé: ordered }[
+                const action = { Modifier: change, 'Ajouter au panier': addToCart }[
                     submit
                 ];
                 if (action) {
@@ -789,7 +748,6 @@ function createRoutes (app) {
                 }
                 const newBook = Object.assign({}, req.body);
                 newBook.amount *= 1;
-                newBook.ordered = false;
                 newBook.price = newBook.price.replace(',', '.');
                 newBook.prix_achat = newBook.prix_achat.replace(',', '.');
                 newBook.nmAuthor = norm(newBook.author);
@@ -970,7 +928,6 @@ function createRoutes (app) {
                     book.amount = book.qty;
                     book.datebought = today;
                     book.isbn = book.EAN + '';
-                    book.ordered = false;
                     book.price = price;
                     book.tva = '5.5';
                     book.type = 'book';

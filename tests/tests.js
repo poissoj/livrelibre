@@ -73,24 +73,6 @@ test('Displays "All items" page', async t => {
         .expect(Selector('.card-body>p').innerText).eql('0 articles');
 });
 
-test('Displays "Items to order" page', async t => {
-    await t
-        .useRole(admin)
-        .navigateTo(HOSTNAME + '/zero')
-        .expect(Selector('.card-title').nth(1).innerText)
-        .eql('Articles à renouveler')
-        .expect(Selector('.card-body>p').innerText).eql('0 articles à renouveler');
-});
-
-test('Displays "Items ordered" page', async t => {
-    await t
-        .useRole(admin)
-        .navigateTo(HOSTNAME + '/ordered')
-        .expect(Selector('.card-title').nth(1).innerText)
-        .eql('Articles commandés, en attente')
-        .expect(Selector('.card-body>p').innerText).eql('0 articles commandés');
-});
-
 test('Displays "Best sales" page', async t => {
     await t
         .useRole(admin)
