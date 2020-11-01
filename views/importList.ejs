@@ -1,4 +1,12 @@
 <%- include('header') %>
+  <style>
+    .price {
+      white-space: nowrap;
+    }
+    .price > input {
+      text-align: right;
+    }
+  </style>
   </head>
   <body class="fixed">
     <div class="wrapper">
@@ -61,7 +69,9 @@
                                 <td> <%= book.publisher %> </td>
                                 <td> <%= book.distributor %> </td>
                                 <td> <%= book._id ? book.amount :'Nouveau' %> </td>
-                                <td class="price"> <input type="text" name="price" size="2" value="<%= book.price %>"/>€ </td>
+                                <td class="price">
+                                  <input type="text" name="price" size="4" value="<%= book.price %>" pattern="\d+(\.\d\d?)?"/> €
+                                </td>
                                 <td> 5.5% </td>
                                 <td> <%= book.qty %> </td>
                             </tr>
