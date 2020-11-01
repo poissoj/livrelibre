@@ -868,7 +868,9 @@ function createRoutes (app) {
         }
         let count = 1;
         function cb(n, book_data) {
-            Object.assign(data.books[n], book_data);
+            const strPrice = data.books[n].price || book_data.price;
+            const price = Number(String(strPrice).replace(',', '.')).toFixed(2);
+            Object.assign(data.books[n], book_data, { price });
             if (count++ === LENGTH) {
                 getCart(res.locals.username).then(cart =>
                     res.render('importList', { pageTitle: APP_NAME + ' - Importer un fichier DILICOM', data, cart })
