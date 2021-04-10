@@ -8,7 +8,7 @@ Il est possible d'utiliser une base de données distante, telle que fournie par 
 
 ## Installation
 ```
-git clone https://github.com/Balkoth/livrelibre.git
+git clone https://github.com/poissoj/livrelibre.git
 cd livrelibre && npm install
 ```
 
