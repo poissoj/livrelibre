@@ -11,7 +11,7 @@ const CustomStyles = createGlobalStyle`
   }
 `;
 
-const GlobalStyles = () => (
+const GlobalStyles = (): JSX.Element => (
   <>
     <BaseStyles />
     <CustomStyles />

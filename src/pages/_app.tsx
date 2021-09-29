@@ -1,7 +1,7 @@
 import { AppProps } from "next/dist/shared/lib/router/router";
 import GlobalStyles from "./../components/GlobalStyles";
 
-function MyApp({ Component, pageProps }: AppProps) {
+function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return (
     <>
       <GlobalStyles />
