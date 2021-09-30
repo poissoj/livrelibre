@@ -6,7 +6,7 @@ type MainProps = {
 };
 export const Main = ({ className, children }: MainProps): JSX.Element => {
   return (
-    <main className={className} tw="p-lg">
+    <main className={className} tw="p-lg flex">
       {children}
     </main>
   );
