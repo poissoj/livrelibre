@@ -1,4 +1,3 @@
-import React from "react";
 import { createGlobalStyle } from "styled-components";
 import tw, { GlobalStyles as BaseStyles } from "twin.macro";
 import { config } from "@fortawesome/fontawesome-svg-core";
@@ -11,6 +10,13 @@ const CustomStyles = createGlobalStyle`
   }
   body {
     ${tw`antialiased bg-gray-light text-gray-dark font-sans`}
+  }
+  @font-face {
+    font-family: 'Niconne';
+    font-style: normal;
+    font-weight: 400;
+    src: url(/fonts/Niconne.woff2) format('woff2');
+    font-display: fallback;
   }
 `;
 
