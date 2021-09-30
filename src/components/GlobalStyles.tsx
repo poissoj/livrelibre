@@ -1,15 +1,16 @@
 import React from "react";
 import { createGlobalStyle } from "styled-components";
-const bodyBgColor = theme`colors.indigo.200`;
 import tw, { GlobalStyles as BaseStyles } from "twin.macro";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 config.autoAddCss = false;
 
 const CustomStyles = createGlobalStyle`
+  html, body, #__next {
+    height: 100%;
+  }
   body {
-    background-color: ${bodyBgColor};
-    ${tw`antialiased`}
+    ${tw`antialiased bg-gray-light text-gray-dark font-sans`}
   }
 `;
 
