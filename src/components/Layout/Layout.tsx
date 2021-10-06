@@ -16,7 +16,7 @@ const Layout = ({ children }: LayoutProps): JSX.Element => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
-      <div tw="flex flex-1">
+      <div tw="flex flex-1 overflow-hidden">
         <Sidebar />
         <Main tw="flex-1">{children}</Main>
       </div>
