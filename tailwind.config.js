@@ -6,6 +6,8 @@ module.exports = {
       primary: {
         default: "hsl(174deg 100% 29%)",
         dark: "hsl(174deg 100% 25%)",
+        darker: "hsl(174.5deg 100% 25.5%)",
+        darkest: "hsl(174deg 100% 20%)",
       },
       gray: {
         light: "hsl(220deg 13% 91%)",
@@ -15,6 +17,7 @@ module.exports = {
         darkest: "hsl(197.1deg 21.2% 6.5%)",
       },
       white: "#FFF",
+      black: "hsl(210deg 10.8% 14.5%)",
     },
     extend: {
       spacing: {

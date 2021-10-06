@@ -9,7 +9,7 @@ const CustomStyles = createGlobalStyle`
     height: 100%;
   }
   body {
-    ${tw`antialiased bg-gray-light text-gray-dark font-sans`}
+    ${tw`antialiased bg-gray-light text-black font-sans`}
   }
   @font-face {
     font-family: 'Niconne';
