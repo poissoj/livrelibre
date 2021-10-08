@@ -18,7 +18,7 @@ import tw, { styled } from "twin.macro";
 
 const StyledLink = styled.a({
   ...tw`block p-md transition-colors duration-300 ease-out border-l-4 border-transparent`,
-  "&:hover, &[aria-current]": tw`border-primary-default bg-gray-darkest`,
+  "&:hover, &:focus, &[aria-current]": tw`border-primary-default bg-gray-darkest`,
 });
 
 type NavLinkProps = {
