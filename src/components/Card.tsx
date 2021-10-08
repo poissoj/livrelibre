@@ -1,5 +1,7 @@
-import "twin.macro";
+import { ErrorBoundary } from "react-error-boundary";
 import tw, { styled } from "twin.macro";
+import { ErrorMessage } from "@/components/ErrorMessage";
+
 type CardProps = {
   title: string;
   className?: string;
@@ -24,7 +26,11 @@ export const Card = ({
   return (
     <Wrapper className={className}>
       <h3 tw="text-2xl font-bold mb-lg">{title}</h3>
-      <div tw="overflow-auto">{children}</div>
+      <div tw="overflow-auto">
+        <ErrorBoundary FallbackComponent={ErrorMessage}>
+          {children}
+        </ErrorBoundary>
+      </div>
     </Wrapper>
   );
 };
