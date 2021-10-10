@@ -6,7 +6,7 @@ import "twin.macro";
 
 export const Dashboard = (): JSX.Element => {
   return (
-    <div tw="flex align-items[flex-start] gap-lg flex-1">
+    <div tw="flex align-items[flex-start] gap-lg flex-1 flex-wrap">
       <Title>Tableau de bord</Title>
       <Bookmarks />
       <div tw="flex flex-col gap-lg flex-1">

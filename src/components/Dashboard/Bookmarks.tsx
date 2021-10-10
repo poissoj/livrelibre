@@ -57,7 +57,10 @@ const BookmarksLoader = (): JSX.Element | null => {
 };
 
 export const Bookmarks = (): JSX.Element => (
-  <Card title="Favoris" tw="flex-1 max-h-full overflow-hidden flex flex-col">
+  <Card
+    title="Favoris"
+    tw="flex-1 max-h-full overflow-hidden flex flex-col min-width[24rem]"
+  >
     <BookmarksLoader />
   </Card>
 );

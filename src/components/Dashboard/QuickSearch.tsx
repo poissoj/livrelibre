@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "twin.macro";
 
 export const QuickSearch = (): JSX.Element => (
-  <Card title="Articles - Recherche rapide">
+  <Card title="Articles - Recherche rapide" tw="min-width[24rem]">
     <form tw="flex p-sm">
       <InputWithButton
         type="text"

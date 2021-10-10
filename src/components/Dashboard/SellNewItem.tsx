@@ -7,7 +7,7 @@ import { FormRow } from "@/components/FormRow";
 import "twin.macro";
 
 export const SellNewItem = (): JSX.Element => (
-  <Card title="Vendre un article non répertorié">
+  <Card title="Vendre un article non répertorié" tw="mb-lg">
     <form tw="flex flex-col">
       <FormRow label="Prix">
         <Input type="text" name="price" />
