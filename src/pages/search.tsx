@@ -6,6 +6,7 @@ import { Title } from "@/components/Title";
 import { FormRow } from "@/components/FormRow";
 import { Button } from "@/components/Button";
 import tw from "twin.macro";
+import { ITEM_TYPES } from "@/utils/item";
 
 const Column = tw.div`flex-1 min-width[20rem]`;
 
@@ -18,14 +19,13 @@ const Search = (): JSX.Element => {
           <div tw="flex flex-wrap gap-lg">
             <Column>
               <FormRow label="Type">
-                <Select name="type" defaultValue="ignore">
+                <Select name="type" defaultValue="">
                   <option value="">--ignorer--</option>
-                  <option value="book">Livre</option>
-                  <option value="game">Jeu</option>
-                  <option value="postcard">Carte postale</option>
-                  <option value="stationery">Papeterie</option>
-                  <option value="dvd">DVD</option>
-                  <option value="unknown">Inconnu</option>
+                  {Object.entries(ITEM_TYPES).map(([key, label]) => (
+                    <option value={key} key={key}>
+                      {label}
+                    </option>
+                  ))}
                 </Select>
               </FormRow>
               <FormRow label="ISBN">

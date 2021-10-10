@@ -11,6 +11,7 @@ import {
 import { Button, ButtonWithInput } from "@/components/Button";
 import tw from "twin.macro";
 import { faPlus, faSearch } from "@fortawesome/free-solid-svg-icons";
+import { ITEM_TYPES } from "@/utils/item";
 
 const Column = tw.div`flex-1 min-width[20rem]`;
 
@@ -24,12 +25,11 @@ const Add = (): JSX.Element => {
             <Column>
               <FormRow label="Type">
                 <Select name="type" defaultValue="book">
-                  <option value="book">Livre</option>
-                  <option value="game">Jeu</option>
-                  <option value="postcard">Carte postale</option>
-                  <option value="stationery">Papeterie</option>
-                  <option value="dvd">DVD</option>
-                  <option value="unknown">Inconnu</option>
+                  {Object.entries(ITEM_TYPES).map(([key, label]) => (
+                    <option value={key} key={key}>
+                      {label}
+                    </option>
+                  ))}
                 </Select>
               </FormRow>
               <FormRow label="ISBN">

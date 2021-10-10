@@ -5,6 +5,7 @@ import { Button } from "@/components/Button";
 import { Input, Select } from "@/components/FormControls";
 import { FormRow } from "@/components/FormRow";
 import "twin.macro";
+import { ITEM_TYPES } from "@/utils/item";
 
 export const SellNewItem = (): JSX.Element => (
   <Card title="Vendre un article non répertorié" tw="mb-lg">
@@ -17,12 +18,11 @@ export const SellNewItem = (): JSX.Element => (
       </FormRow>
       <FormRow label="Type">
         <Select name="type" defaultValue="book">
-          <option value="unknown">Inconnu</option>
-          <option value="book">Livre</option>
-          <option value="game">Jeu</option>
-          <option value="postcard">Carte postale</option>
-          <option value="stationery">Papeterie</option>
-          <option value="dvd">DVD</option>
+          {Object.entries(ITEM_TYPES).map(([key, label]) => (
+            <option value={key} key={key}>
+              {label}
+            </option>
+          ))}
         </Select>
       </FormRow>
       <FormRow label="TVA">
