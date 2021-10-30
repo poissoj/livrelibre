@@ -13,7 +13,7 @@ type BookmarksContentProps = {
 const BookmarksContent = ({
   bookmarks,
 }: BookmarksContentProps): JSX.Element => (
-  <ul>
+  <ul tw="flex-1">
     {bookmarks.map((bookmark) => (
       <li
         key={bookmark._id}

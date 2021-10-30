@@ -15,7 +15,7 @@ const Search = (): JSX.Element => {
     <div tw="margin-left[10%] margin-right[10%] flex-1">
       <Title>Chercher un article</Title>
       <Card title="Chercher un article" tw="mb-lg">
-        <form>
+        <form tw="flex-1">
           <div tw="flex flex-wrap gap-lg">
             <Column>
               <FormRow label="Type">

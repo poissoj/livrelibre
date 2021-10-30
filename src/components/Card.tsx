@@ -26,7 +26,7 @@ export const Card = ({
   return (
     <Wrapper className={className}>
       <h3 tw="text-2xl font-bold mb-lg">{title}</h3>
-      <div tw="overflow-auto">
+      <div tw="overflow-auto flex align-items[flex-start]">
         <ErrorBoundary FallbackComponent={ErrorMessage}>
           {children}
         </ErrorBoundary>

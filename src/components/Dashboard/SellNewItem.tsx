@@ -9,7 +9,7 @@ import { ITEM_TYPES } from "@/utils/item";
 
 export const SellNewItem = (): JSX.Element => (
   <Card title="Vendre un article non répertorié" tw="mb-lg">
-    <form tw="flex flex-col">
+    <form tw="flex flex-col flex-1">
       <FormRow label="Prix">
         <Input type="text" name="price" />
       </FormRow>

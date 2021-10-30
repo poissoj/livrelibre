@@ -7,7 +7,7 @@ import "twin.macro";
 
 export const QuickSearch = (): JSX.Element => (
   <Card title="Articles - Recherche rapide" tw="min-width[24rem]">
-    <form tw="flex p-sm">
+    <form tw="flex p-sm flex-1">
       <InputWithButton
         type="text"
         placeholder="ISBN, titre, auteur"

@@ -20,7 +20,7 @@ const Add = (): JSX.Element => {
     <div tw="margin-left[10%] margin-right[10%] flex-1">
       <Title>Ajouter un article</Title>
       <Card title="Ajouter un article" tw="mb-lg">
-        <form>
+        <form tw="flex-1">
           <div tw="flex flex-wrap gap-lg">
             <Column>
               <FormRow label="Type">
