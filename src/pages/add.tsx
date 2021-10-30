@@ -13,7 +13,7 @@ import tw from "twin.macro";
 import { faPlus, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { ITEM_TYPES } from "@/utils/item";
 
-const Column = tw.div`flex-1 min-width[20rem]`;
+const Column = tw.div`flex-1 min-width[20rem] ml-md`;
 
 const Add = (): JSX.Element => {
   return (
@@ -21,7 +21,7 @@ const Add = (): JSX.Element => {
       <Title>Ajouter un article</Title>
       <Card title="Ajouter un article" tw="mb-lg">
         <form tw="flex-1">
-          <div tw="flex flex-wrap gap-lg">
+          <div tw="flex flex-wrap">
             <Column>
               <FormRow label="Type">
                 <Select name="type" defaultValue="book">
