@@ -1,4 +1,5 @@
 import { getBookmarks } from "@/server/bookmarks";
+import { getSales } from "@/server/sales";
 import { getItem } from "@/server/searchItem";
 import * as trpc from "@trpc/server";
 import * as trpcNext from "@trpc/server/adapters/next";
@@ -9,6 +10,11 @@ export const appRouter = trpc
   .query("bookmarks", {
     async resolve() {
       return await getBookmarks();
+    },
+  })
+  .query("sales", {
+    async resolve() {
+      return await getSales();
     },
   })
   .query("searchItem", {
