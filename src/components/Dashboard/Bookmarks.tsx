@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Card } from "@/components/Card";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus, faStar } from "@fortawesome/free-solid-svg-icons";
@@ -20,7 +21,7 @@ const BookmarksContent = ({
         tw="flex text-primary-dark hover:bg-gray-light pl-sm pr-xs"
       >
         <span tw="flex flex-1 align-items[center] text-primary-darkest">
-          <a href={`/item/${bookmark._id}`}>{bookmark.title}</a>
+          <Link href={`/item/${bookmark._id}`}>{bookmark.title}</Link>
         </span>
         <button
           tw="p-xs mr-xs"
