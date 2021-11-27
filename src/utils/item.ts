@@ -1,3 +1,5 @@
+import { ObjectId } from "mongodb";
+
 export const ITEM_TYPES: Record<string, string> = {
   postcard: "Carte postale",
   stationery: "Papeterie",
@@ -11,7 +13,7 @@ export const ITEM_TYPES: Record<string, string> = {
 type TVA = "0" | "2.1" | "5.5" | "20";
 
 export type Item = {
-  _id: string;
+  _id: ObjectId;
   type: string;
   isbn: string;
   author: string;

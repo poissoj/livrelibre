@@ -1,3 +1,4 @@
+import { getBestSales } from "@/server/bestSales";
 import { getBookmarks } from "@/server/bookmarks";
 import { getItems } from "@/server/items";
 import { getSales } from "@/server/sales";
@@ -27,6 +28,11 @@ export const appRouter = trpc
   .query("items", {
     async resolve() {
       return await getItems();
+    },
+  })
+  .query("bestsales", {
+    async resolve() {
+      return await getBestSales();
     },
   });
 
