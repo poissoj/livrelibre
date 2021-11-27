@@ -1,4 +1,5 @@
 import { getBookmarks } from "@/server/bookmarks";
+import { getItems } from "@/server/items";
 import { getSales } from "@/server/sales";
 import { getItem } from "@/server/searchItem";
 import * as trpc from "@trpc/server";
@@ -21,6 +22,11 @@ export const appRouter = trpc
     input: z.string().length(24),
     async resolve({ input }) {
       return await getItem(input);
+    },
+  })
+  .query("items", {
+    async resolve() {
+      return await getItems();
     },
   });
 

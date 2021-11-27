@@ -6,6 +6,7 @@ type CardProps = {
   title: string;
   className?: string;
   children: React.ReactNode;
+  subtitle?: React.ReactNode;
 };
 
 const SHADOW = `
@@ -21,12 +22,14 @@ const Wrapper = styled.section({
 export const Card = ({
   title,
   children,
+  subtitle,
   className,
 }: CardProps): JSX.Element => {
   return (
     <Wrapper className={className}>
-      <h3 tw="text-2xl font-bold mb-lg">{title}</h3>
-      <div tw="overflow-auto flex align-items[flex-start]">
+      <h3 tw="text-2xl font-bold">{title}</h3>
+      {subtitle}
+      <div tw="mt-md overflow-auto flex align-items[flex-start]">
         <ErrorBoundary FallbackComponent={ErrorMessage}>
           {children}
         </ErrorBoundary>

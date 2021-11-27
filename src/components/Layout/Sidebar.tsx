@@ -67,7 +67,7 @@ export const Sidebar = (): JSX.Element => {
           <hr tw="mx-lg my-md" />
         </li>
         <li>
-          <NavLink href="/list" icon={faFileAlt}>
+          <NavLink href="/items" icon={faFileAlt}>
             Articles
           </NavLink>
         </li>
