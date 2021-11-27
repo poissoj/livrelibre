@@ -8,7 +8,7 @@ import Link from "next/link";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
 const ItemsTable = ({ items }: { items: (Item & { count: number })[] }) => (
-  <table tw="flex-1">
+  <table tw="flex-1 border-collapse[separate] border-spacing[2px 0.5rem]">
     <thead>
       <tr>
         <StickyTh>#</StickyTh>
@@ -19,7 +19,7 @@ const ItemsTable = ({ items }: { items: (Item & { count: number })[] }) => (
         <StickyTh></StickyTh>
       </tr>
     </thead>
-    <tbody tw="line-height[2.3rem]">
+    <tbody>
       {items.map((item, i) => (
         <tr key={i}>
           <td>{i + 1}</td>

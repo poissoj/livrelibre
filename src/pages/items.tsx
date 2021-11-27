@@ -10,7 +10,7 @@ import { QuickSearch } from "@/components/Dashboard/QuickSearch";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
 const ItemsTable = ({ items }: { items: Item[] }) => (
-  <table tw="flex-1">
+  <table tw="flex-1 border-collapse[separate] border-spacing[2px 0.5rem]">
     <thead>
       <tr>
         <StickyTh>Distributeur</StickyTh>
@@ -20,7 +20,7 @@ const ItemsTable = ({ items }: { items: Item[] }) => (
         <StickyTh></StickyTh>
       </tr>
     </thead>
-    <tbody tw="line-height[2.3rem]">
+    <tbody>
       {items.map((item, i) => (
         <tr key={i}>
           <td>{item.distributor}</td>
