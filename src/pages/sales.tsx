@@ -7,6 +7,7 @@ import tw from "twin.macro";
 import { trpc } from "@/utils/trpc";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import type { Sale } from "@/server/sales";
+import Link from "next/link";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
 const Cell = tw.td`text-center`;
@@ -54,14 +55,12 @@ const SalesTable = ({ sales }: { sales: Sale[] }): JSX.Element => {
             </Cell>
             <Cell>{sale.avg ? `${formatPrice(sale.avg)}` : "Inconnu"}</Cell>
             <Cell>
-              <Button
-                as="a"
-                href={makeSaleURL(sale)}
-                tw="background-color[#666]"
-              >
-                <FontAwesomeIcon icon={faEye} tw="mr-sm" />
-                Détails
-              </Button>
+              <Link href={makeSaleURL(sale)} passHref>
+                <Button as="a" tw="background-color[#666]">
+                  <FontAwesomeIcon icon={faEye} tw="mr-sm" />
+                  Détails
+                </Button>
+              </Link>
             </Cell>
           </tr>
         ))}
