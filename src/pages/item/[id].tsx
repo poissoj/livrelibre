@@ -5,7 +5,7 @@ import { Title } from "@/components/Title";
 import { Card } from "@/components/Card";
 import { QuickSearch } from "@/components/Dashboard/QuickSearch";
 import { trpc } from "@/utils/trpc";
-import { Item, ITEM_TYPES } from "@/utils/item";
+import { ItemWithCount, ITEM_TYPES } from "@/utils/item";
 import tw from "twin.macro";
 
 const DL = tw.dl`flex flex-wrap min-width[24rem]`;
@@ -14,7 +14,7 @@ const DD = tw.dd`flex[1 0 70%] p-sm`;
 
 const formatPrice = (price: string) => (price ? `${price}€` : "");
 
-const ItemDetails = ({ item }: { item: Item }) => {
+const ItemDetails = ({ item }: { item: ItemWithCount }) => {
   return (
     <DL>
       <DT>Type</DT>
@@ -45,6 +45,8 @@ const ItemDetails = ({ item }: { item: Item }) => {
       <DD>{item.amount}</DD>
       <DT>TVA</DT>
       <DD>{item.tva}%</DD>
+      <DT>Vendu</DT>
+      <DD>{item.count} fois</DD>
     </DL>
   );
 };

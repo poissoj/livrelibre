@@ -30,3 +30,5 @@ export type Item = {
   ordered: boolean;
   starred: boolean;
 };
+
+export type ItemWithCount = Item & { count: number };
