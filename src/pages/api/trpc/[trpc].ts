@@ -3,6 +3,7 @@ import { getBookmarks } from "@/server/bookmarks";
 import { getItems } from "@/server/items";
 import { getSales } from "@/server/sales";
 import { getItem } from "@/server/searchItem";
+import { getStats } from "@/server/stats";
 import * as trpc from "@trpc/server";
 import * as trpcNext from "@trpc/server/adapters/next";
 import { z } from "zod";
@@ -33,6 +34,11 @@ export const appRouter = trpc
   .query("bestsales", {
     async resolve() {
       return await getBestSales();
+    },
+  })
+  .query("stats", {
+    async resolve() {
+      return await getStats();
     },
   });
 
