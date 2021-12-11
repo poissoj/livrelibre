@@ -7,6 +7,15 @@ import { QuickSearch } from "@/components/Dashboard/QuickSearch";
 import { trpc } from "@/utils/trpc";
 import { ItemWithCount, ITEM_TYPES } from "@/utils/item";
 import tw from "twin.macro";
+import {
+  Bar,
+  BarChart,
+  LabelList,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+} from "recharts";
+import type { Payload } from "recharts/types/component/DefaultTooltipContent";
 
 const DL = tw.dl`flex flex-wrap min-width[24rem]`;
 const DT = tw.dt`flex-basis[30%] p-sm font-medium`;
@@ -97,15 +106,62 @@ const ItemCard = () => {
   return <ItemLoader id={id} />;
 };
 
+/* Don't display 0 for empty columns, they appear on top of labels */
+const formatter = (n: number) => (n ? n : "");
+
+const labelFormatter = (_label: string, payload: Payload<string, number>[]) =>
+  payload[0]?.payload.fullMonthLabel;
+const tooltipFormatter = (count: number) => [count, "ventes"];
+
+const SalesByMonth = ({ sales }: { sales: unknown[] }) => (
+  <ResponsiveContainer height={350} width="100%">
+    <BarChart data={sales}>
+      <XAxis dataKey="monthLabel" />
+      <Tooltip labelFormatter={labelFormatter} formatter={tooltipFormatter} />
+      <Bar dataKey="count" fill="steelblue" isAnimationActive={false}>
+        <LabelList
+          dataKey="count"
+          position="insideTop"
+          fill="white"
+          formatter={formatter}
+        />
+      </Bar>
+    </BarChart>
+  </ResponsiveContainer>
+);
+
+const Sales = ({ id }: { id: string }) => {
+  const result = trpc.useQuery(["salesByMonth", id]);
+  if (result.status === "error") {
+    const error = new Error("Impossible de récupérer les données");
+    return <ErrorMessage error={error} />;
+  }
+  if (result.status === "loading" || result.status === "idle") {
+    return <p>Chargement…</p>;
+  }
+  return <SalesByMonth sales={result.data} />;
+};
+
+const SalesCard = () => {
+  const router = useRouter();
+  const { id } = router.query;
+  if (typeof id !== "string" || !/^[a-f\d]{24}$/i.test(id)) {
+    return null;
+  }
+  return (
+    <Card title="Ventes des 2 dernières années" tw="mb-lg">
+      <Sales id={id} />
+    </Card>
+  );
+};
+
 const ItemPage = (): JSX.Element => (
   <div tw="flex align-items[flex-start] gap-lg flex-1 flex-wrap">
     <Title>Voir un article</Title>
     <ItemCard />
     <div tw="flex flex-col gap-lg flex-1">
       <QuickSearch />
-      <Card title="Vente des 2 dernières années" tw="mb-lg">
-        TODO
-      </Card>
+      <SalesCard />
     </div>
   </div>
 );

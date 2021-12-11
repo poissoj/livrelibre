@@ -2,6 +2,7 @@ import { getBestSales } from "@/server/bestSales";
 import { getBookmarks } from "@/server/bookmarks";
 import { getItems } from "@/server/items";
 import { getSales } from "@/server/sales";
+import { getSalesByMonth } from "@/server/salesByMonth";
 import { getItem } from "@/server/searchItem";
 import { getStats } from "@/server/stats";
 import * as trpc from "@trpc/server";
@@ -39,6 +40,12 @@ export const appRouter = trpc
   .query("stats", {
     async resolve() {
       return await getStats();
+    },
+  })
+  .query("salesByMonth", {
+    input: z.string().length(24),
+    async resolve({ input }) {
+      return await getSalesByMonth(input);
     },
   });
 
