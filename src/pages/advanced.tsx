@@ -1,4 +1,5 @@
 import { Title } from "@/components/Title";
+import type { GetStaticProps } from "next";
 
 const Advanced = (): JSX.Element => {
   return (
@@ -10,3 +11,9 @@ const Advanced = (): JSX.Element => {
 };
 
 export default Advanced;
+
+export const getStaticProps: GetStaticProps = async () => {
+  return {
+    props: {},
+  };
+};

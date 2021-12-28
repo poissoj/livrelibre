@@ -1,4 +1,5 @@
 import { Title } from "@/components/Title";
+import type { GetStaticProps } from "next";
 import "twin.macro";
 
 const Custom404 = (): JSX.Element => (
@@ -10,3 +11,9 @@ const Custom404 = (): JSX.Element => (
 );
 
 export default Custom404;
+
+export const getStaticProps: GetStaticProps = async () => {
+  return {
+    props: {},
+  };
+};

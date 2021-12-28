@@ -14,13 +14,24 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
 }
 
 export default withTRPC<AppRouter>({
-  config() {
+  config({ ctx }) {
+    if (process.browser) {
+      return {
+        url: "/api/trpc",
+      };
+    }
+    const ONE_DAY_SECONDS = 60 * 60 * 24;
+    ctx?.res?.setHeader(
+      "Cache-Control",
+      `s-maxage=10, stale-while-revalidate=${ONE_DAY_SECONDS}`
+    );
     const url = process.env.APP_URL
       ? `https://${process.env.APP_URL}/api/trpc`
       : "http://localhost:3000/api/trpc";
 
     return {
       url,
+      headers: { "x-ssr": "1" },
       /**
        * @link https://react-query.tanstack.com/reference/QueryClient
        */
@@ -30,7 +41,7 @@ export default withTRPC<AppRouter>({
   /**
    * @link https://trpc.io/docs/ssr
    */
-  ssr: false,
+  ssr: true,
 })(MyApp);
 
 // export default MyApp;
