@@ -1,5 +1,5 @@
 import { withTRPC } from "@trpc/next";
-import { AppProps } from "next/dist/shared/lib/router/router";
+import type { AppProps } from "next/dist/shared/lib/router/router";
 import GlobalStyles from "@/components/GlobalStyles";
 import Layout from "@/components/Layout/Layout";
 import type { AppRouter } from "@/pages/api/trpc/[trpc]";

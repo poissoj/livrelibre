@@ -8,9 +8,30 @@ import { trpc } from "@/utils/trpc";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import type { Sale } from "@/server/sales";
 import Link from "next/link";
+import ContentLoader from "react-content-loader";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
 const Cell = tw.td`text-center`;
+
+const SkeletonRow = ({ n }: { n: number }) => (
+  <>
+    <rect x="5%" y={n * 30 + 15} rx="2" ry="2" width="15%" height="10" />
+    <rect x="23%" y={n * 30 + 15} rx="2" ry="2" width="15%" height="10" />
+    <rect x="41%" y={n * 30 + 15} rx="2" ry="2" width="15%" height="10" />
+    <rect x="59%" y={n * 30 + 15} rx="2" ry="2" width="15%" height="10" />
+    <rect x="77%" y={n * 30 + 16} rx="2" ry="2" width="15%" height="12" />
+  </>
+);
+
+const SalesSkeleton = (): JSX.Element => (
+  <ContentLoader height={380} width="100%">
+    {Array(12)
+      .fill(0)
+      .map((_, i) => (
+        <SkeletonRow key={i} n={i} />
+      ))}
+  </ContentLoader>
+);
 
 const SalesLoader = (): JSX.Element | null => {
   const result = trpc.useQuery(["sales"]);
@@ -19,7 +40,7 @@ const SalesLoader = (): JSX.Element | null => {
     return <ErrorMessage error={error} />;
   }
   if (result.status === "loading") {
-    return <p>Chargement…</p>;
+    return <SalesSkeleton />;
   }
   if (result.status === "idle") {
     return null;

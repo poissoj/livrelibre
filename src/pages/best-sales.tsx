@@ -5,6 +5,7 @@ import { Card } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Item } from "@/utils/item";
 import Link from "next/link";
+import ContentLoader from "react-content-loader";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
 const ItemsTable = ({ items }: { items: (Item & { count: number })[] }) => (
@@ -38,6 +39,26 @@ const ItemsTable = ({ items }: { items: (Item & { count: number })[] }) => (
   </table>
 );
 
+const SkeletonRow = ({ n }: { n: number }) => (
+  <>
+    <rect x="2%" y={n * 30 + 10} width="3%" height={10} rx={5} />
+    <rect x="10%" y={n * 30 + 10} width="40%" height={10} />
+    <rect x="60%" y={n * 30 + 10} width="20%" height={10} />
+    <rect x="83%" y={n * 30 + 10} width="6%" height={10} rx={5} />
+    <rect x="92%" y={n * 30 + 10} width="6%" height={10} rx={5} />
+  </>
+);
+
+const BestSalesSkeleton = () => (
+  <ContentLoader height={500} width="100%">
+    {Array(17)
+      .fill(0)
+      .map((_, i) => (
+        <SkeletonRow key={i} n={i} />
+      ))}
+  </ContentLoader>
+);
+
 const BestSalesLoader = () => {
   const result = trpc.useQuery(["bestsales"]);
   if (result.status === "error") {
@@ -45,7 +66,7 @@ const BestSalesLoader = () => {
     return <ErrorMessage error={error} />;
   }
   if (result.status === "loading") {
-    return <p>Chargement…</p>;
+    return <BestSalesSkeleton />;
   }
   if (result.status === "idle") {
     return null;

@@ -6,6 +6,7 @@ import "twin.macro";
 import { trpc } from "@/utils/trpc";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import type { Bookmark } from "@/server/bookmarks";
+import { BookmarksSkeleton } from "./BookmarksSkeleton";
 
 type BookmarksContentProps = {
   bookmarks: Bookmark[];
@@ -49,7 +50,7 @@ const BookmarksLoader = (): JSX.Element | null => {
     return <ErrorMessage error={error} />;
   }
   if (result.status === "loading") {
-    return <p>Chargement…</p>;
+    return <BookmarksSkeleton />;
   }
   if (result.status === "idle") {
     return null;

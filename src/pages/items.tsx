@@ -7,6 +7,7 @@ import { trpc } from "@/utils/trpc";
 import { Item } from "@/utils/item";
 import React, { PropsWithChildren } from "react";
 import { QuickSearch } from "@/components/Dashboard/QuickSearch";
+import ContentLoader from "react-content-loader";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
 const ItemsTable = ({ items }: { items: Item[] }) => (
@@ -52,6 +53,25 @@ const ItemsCard = ({
   </Card>
 );
 
+const SkeletonRow = ({ n }: { n: number }) => (
+  <>
+    <rect x="2%" y={n * 30 + 15} rx="2" ry="2" width="25%" height="10" />
+    <rect x="32%" y={n * 30 + 15} rx="2" ry="2" width="25%" height="10" />
+    <rect x="62%" y={n * 30 + 15} rx="2" ry="2" width="25%" height="10" />
+    <rect x="92%" y={n * 30 + 15} rx="2" ry="2" width="6%" height="10" />
+  </>
+);
+
+const ItemsSkeleton = (): JSX.Element => (
+  <ContentLoader height={300} width="100%">
+    {Array(10)
+      .fill(0)
+      .map((_, i) => (
+        <SkeletonRow key={i} n={i} />
+      ))}
+  </ContentLoader>
+);
+
 const ItemsLoader = () => {
   const result = trpc.useQuery(["items"]);
   const title = "Liste des articles";
@@ -66,7 +86,7 @@ const ItemsLoader = () => {
   if (result.status === "loading") {
     return (
       <ItemsCard title={title}>
-        <p>Chargement…</p>
+        <ItemsSkeleton />
       </ItemsCard>
     );
   }

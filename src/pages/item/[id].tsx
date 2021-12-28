@@ -16,6 +16,7 @@ import {
   XAxis,
 } from "recharts";
 import type { Payload } from "recharts/types/component/DefaultTooltipContent";
+import ContentLoader from "react-content-loader";
 
 const DL = tw.dl`flex flex-wrap min-width[24rem]`;
 const DT = tw.dt`flex-basis[30%] p-sm font-medium`;
@@ -60,6 +61,23 @@ const ItemDetails = ({ item }: { item: ItemWithCount }) => {
   );
 };
 
+const SkeletonRow = ({ n }: { n: number }) => (
+  <>
+    <rect x="2%" y={n * 35 + 5} rx="5" ry="5" width="20%" height="12" />
+    <rect x="30%" y={n * 35 + 6} rx="5" ry="5" width="60%" height="10" />
+  </>
+);
+
+const ItemSkeleton = () => (
+  <ContentLoader height={500} width="100%" uniqueKey="item-skeleton">
+    {Array(14)
+      .fill(0)
+      .map((_, i) => (
+        <SkeletonRow key={i} n={i} />
+      ))}
+  </ContentLoader>
+);
+
 const ItemLoader = ({ id }: { id: string }) => {
   const result = trpc.useQuery(["searchItem", id]);
 
@@ -85,7 +103,7 @@ const ItemLoader = ({ id }: { id: string }) => {
   }
   return (
     <Card title="Chargement…" tw="flex-1">
-      Chargement…
+      <ItemSkeleton />
     </Card>
   );
 };
@@ -130,6 +148,19 @@ const SalesByMonth = ({ sales }: { sales: unknown[] }) => (
   </ResponsiveContainer>
 );
 
+const SalesSkeleton = () => (
+  <ContentLoader height={350} width="100%" uniqueKey="item-sales-skeleton">
+    <rect x="2%" y={119} width="4%" height={196} />
+    <rect x="8%" y={83} width="4%" height={232} />
+    <rect x="26%" y={160} width="4%" height={155} />
+    <rect x="50%" y={238} width="4%" height={77} />
+    <rect x="74%" y={276} width="4%" height={39} />
+    <rect x="80%" y={119} width="4%" height={196} />
+    <rect x="86%" y={109} width="4%" height={206} />
+    <rect x="92%" y={160} width="4%" height={155} />
+  </ContentLoader>
+);
+
 const Sales = ({ id }: { id: string }) => {
   const result = trpc.useQuery(["salesByMonth", id]);
   if (result.status === "error") {
@@ -137,7 +168,7 @@ const Sales = ({ id }: { id: string }) => {
     return <ErrorMessage error={error} />;
   }
   if (result.status === "loading" || result.status === "idle") {
-    return <p>Chargement…</p>;
+    return <SalesSkeleton />;
   }
   return <SalesByMonth sales={result.data} />;
 };
