@@ -1,5 +1,5 @@
 import { getDb } from "@/server/database";
-import { ObjectId } from "mongodb";
+import type { ObjectId } from "mongodb";
 
 export type Bookmark = { _id: string; title: string };
 
@@ -18,4 +18,9 @@ export const getBookmarks = async (): Promise<Bookmark[]> => {
     _id: bookmark._id.toString(),
     title: bookmark.title,
   }));
+};
+
+export const starItem = async (_id: ObjectId, starred: boolean) => {
+  const db = await getDb();
+  return db.collection("books").updateOne({ _id }, { $set: { starred } });
 };

@@ -1,5 +1,5 @@
 import { getBestSales } from "@/server/bestSales";
-import { getBookmarks } from "@/server/bookmarks";
+import { getBookmarks, starItem } from "@/server/bookmarks";
 import { getItems } from "@/server/items";
 import { getSales } from "@/server/sales";
 import { getSalesByMonth } from "@/server/salesByMonth";
@@ -7,6 +7,7 @@ import { getItem } from "@/server/searchItem";
 import { getStats } from "@/server/stats";
 import * as trpc from "@trpc/server";
 import * as trpcNext from "@trpc/server/adapters/next";
+import { ObjectId } from "mongodb";
 import { z } from "zod";
 
 export const appRouter = trpc
@@ -46,6 +47,15 @@ export const appRouter = trpc
     input: z.string().length(24),
     async resolve({ input }) {
       return await getSalesByMonth(input);
+    },
+  })
+  .mutation("star", {
+    input: z.object({
+      id: z.string().length(24),
+      starred: z.boolean(),
+    }),
+    async resolve({ input }) {
+      return await starItem(new ObjectId(input.id), input.starred);
     },
   });
 

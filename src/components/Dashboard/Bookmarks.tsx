@@ -14,34 +14,46 @@ type BookmarksContentProps = {
 
 const BookmarksContent = ({
   bookmarks,
-}: BookmarksContentProps): JSX.Element => (
-  <ul tw="flex-1">
-    {bookmarks.map((bookmark) => (
-      <li
-        key={bookmark._id}
-        tw="flex text-primary-dark hover:bg-gray-light pl-sm pr-xs"
-      >
-        <span tw="flex flex-1 align-items[center] text-primary-darkest">
-          <Link href={`/item/${bookmark._id}`}>{bookmark.title}</Link>
-        </span>
-        <button
-          tw="p-xs mr-xs"
-          name="Ajouter au panier"
-          title="Ajouter au panier"
+}: BookmarksContentProps): JSX.Element => {
+  const utils = trpc.useContext();
+  const mutation = trpc.useMutation(["star"], {
+    onSuccess(_input, vars) {
+      utils.invalidateQueries(["bookmarks"]);
+      utils.invalidateQueries(["searchItem", vars.id]);
+    },
+  });
+  const unstar = (id: string) => mutation.mutate({ id, starred: false });
+  return (
+    <ul tw="flex-1">
+      {bookmarks.map((bookmark) => (
+        <li
+          key={bookmark._id}
+          tw="flex text-primary-dark hover:bg-gray-light pl-sm pr-xs"
         >
-          <FontAwesomeIcon icon={faCartPlus} />
-        </button>
-        <button
-          tw="p-xs"
-          name="Enlever des favoris"
-          title="Enlever des favoris"
-        >
-          <FontAwesomeIcon icon={faStar} />
-        </button>
-      </li>
-    ))}
-  </ul>
-);
+          <span tw="flex flex-1 align-items[center] text-primary-darkest">
+            <Link href={`/item/${bookmark._id}`}>{bookmark.title}</Link>
+          </span>
+          <button
+            tw="p-xs mr-xs"
+            name="Ajouter au panier"
+            title="Ajouter au panier"
+          >
+            <FontAwesomeIcon icon={faCartPlus} />
+          </button>
+          <button
+            tw="p-xs"
+            name="Enlever des favoris"
+            title="Enlever des favoris"
+            type="button"
+            onClick={() => unstar(bookmark._id)}
+          >
+            <FontAwesomeIcon icon={faStar} />
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
+};
 
 const BookmarksLoader = (): JSX.Element | null => {
   const result = trpc.useQuery(["bookmarks"]);
