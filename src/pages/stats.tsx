@@ -28,6 +28,7 @@ const SalesByHour = ({
     width={900}
     height={320}
     margin={{ left: 10, right: 15 }}
+    id="sales-by-hour-chart"
   >
     <XAxis
       dataKey="hour"
@@ -47,7 +48,7 @@ const SalesByHour = ({
 );
 
 const SalesByDay = ({ days }: { days: { name: string; count: number }[] }) => (
-  <BarChart data={days} width={800} height={300}>
+  <BarChart data={days} width={800} height={300} id="sales-by-day-chart">
     <XAxis dataKey="name" />
     <Bar dataKey="count" fill="steelblue" isAnimationActive={false}>
       <LabelList
