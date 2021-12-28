@@ -14,7 +14,7 @@ type TVA = "0" | "2.1" | "5.5" | "20";
 
 export type Item = {
   _id: ObjectId;
-  type: string;
+  type: keyof typeof ITEM_TYPES;
   isbn: string;
   author: string;
   title: string;
@@ -29,6 +29,10 @@ export type Item = {
   tva: TVA;
   ordered: boolean;
   starred: boolean;
+  nmAuthor: string;
+  nmTitle: string;
+  nmPublisher: string;
+  nmDistributor: string;
 };
 
 export type ItemWithCount = Item & { count: number };
