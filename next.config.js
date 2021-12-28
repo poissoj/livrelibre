@@ -5,6 +5,7 @@ const nextConfig = {
     defaultLocale: "fr",
   },
   reactStrictMode: true,
+  poweredByHeader: false,
 };
 
 module.exports = nextConfig;
