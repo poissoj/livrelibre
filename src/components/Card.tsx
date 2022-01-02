@@ -3,7 +3,7 @@ import tw, { styled } from "twin.macro";
 import { ErrorMessage } from "@/components/ErrorMessage";
 
 type CardProps = {
-  title: string;
+  title?: string;
   className?: string;
   children: React.ReactNode;
   subtitle?: React.ReactNode;
@@ -27,7 +27,7 @@ export const Card = ({
 }: CardProps): JSX.Element => {
   return (
     <Wrapper className={className}>
-      <h3 tw="text-2xl font-bold">{title}</h3>
+      {title ? <h3 tw="text-2xl font-bold">{title}</h3> : null}
       {subtitle}
       <div tw="mt-md overflow-auto flex align-items[flex-start]">
         <ErrorBoundary FallbackComponent={ErrorMessage}>

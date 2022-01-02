@@ -17,6 +17,10 @@ import {
 } from "recharts";
 import type { Payload } from "recharts/types/component/DefaultTooltipContent";
 import ContentLoader from "react-content-loader";
+import { Button } from "@/components/Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSpinner, faStar } from "@fortawesome/free-solid-svg-icons";
+import { faStar as emptyStar } from "@fortawesome/free-regular-svg-icons";
 
 const DL = tw.dl`flex flex-wrap min-width[24rem]`;
 const DT = tw.dt`flex-basis[30%] p-sm font-medium`;
@@ -78,6 +82,44 @@ const ItemSkeleton = () => (
   </ContentLoader>
 );
 
+const TitleWithButtons = ({ item }: { item: ItemWithCount }) => {
+  const utils = trpc.useContext();
+  const mutation = trpc.useMutation(["star"], {
+    onSuccess(_input, vars) {
+      utils.invalidateQueries(["bookmarks"]);
+      utils.invalidateQueries(["searchItem", vars.id]);
+    },
+  });
+
+  const handleClick = () => {
+    if (mutation.isLoading) {
+      return;
+    }
+    const id = item._id.toString();
+    const starred = !item.starred;
+    mutation.mutate({ id, starred });
+  };
+
+  return (
+    <div tw="flex">
+      <h3 tw="text-2xl font-bold mr-auto">{item.title}</h3>
+      <Button
+        type="button"
+        title={item.starred ? "Enlever des favoris" : "Ajouter aux favoris"}
+        onClick={handleClick}
+        tw="width[32px]"
+      >
+        <FontAwesomeIcon
+          icon={
+            mutation.isLoading ? faSpinner : item.starred ? faStar : emptyStar
+          }
+          spin={mutation.isLoading}
+        />
+      </Button>
+    </div>
+  );
+};
+
 const ItemLoader = ({ id }: { id: string }) => {
   const result = trpc.useQuery(["searchItem", id]);
 
@@ -91,7 +133,7 @@ const ItemLoader = ({ id }: { id: string }) => {
   }
   if (result.status === "success") {
     return result.data ? (
-      <Card title={result.data.title} tw="flex-1">
+      <Card tw="flex-1" subtitle={<TitleWithButtons item={result.data} />}>
         <Title>{`${result.data.title} | Voir un article`}</Title>
         <ItemDetails item={result.data} />
       </Card>
