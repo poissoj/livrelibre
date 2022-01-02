@@ -4,7 +4,7 @@ import { NoResults } from "@/components/NoResults";
 import { Title } from "@/components/Title";
 import { Card } from "@/components/Card";
 import { QuickSearch } from "@/components/Dashboard/QuickSearch";
-import { trpc } from "@/utils/trpc";
+import { trpc, useBookmark } from "@/utils/trpc";
 import { ItemWithCount, ITEM_TYPES } from "@/utils/item";
 import tw from "twin.macro";
 import {
@@ -83,22 +83,8 @@ const ItemSkeleton = () => (
 );
 
 const TitleWithButtons = ({ item }: { item: ItemWithCount }) => {
-  const utils = trpc.useContext();
-  const mutation = trpc.useMutation(["star"], {
-    onSuccess(_input, vars) {
-      utils.invalidateQueries(["bookmarks"]);
-      utils.invalidateQueries(["searchItem", vars.id]);
-    },
-  });
-
-  const handleClick = () => {
-    if (mutation.isLoading) {
-      return;
-    }
-    const id = item._id.toString();
-    const starred = !item.starred;
-    mutation.mutate({ id, starred });
-  };
+  const { star, mutation } = useBookmark();
+  const handleClick = () => star(item._id.toString(), !item.starred);
 
   return (
     <div tw="flex">

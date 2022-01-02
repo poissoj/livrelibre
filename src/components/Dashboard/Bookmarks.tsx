@@ -3,7 +3,7 @@ import { Card } from "@/components/Card";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus, faStar } from "@fortawesome/free-solid-svg-icons";
 import "twin.macro";
-import { trpc } from "@/utils/trpc";
+import { trpc, useBookmark } from "@/utils/trpc";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import type { Bookmark } from "@/server/bookmarks";
 import { BookmarksSkeleton } from "./BookmarksSkeleton";
@@ -15,14 +15,7 @@ type BookmarksContentProps = {
 const BookmarksContent = ({
   bookmarks,
 }: BookmarksContentProps): JSX.Element => {
-  const utils = trpc.useContext();
-  const mutation = trpc.useMutation(["star"], {
-    onSuccess(_input, vars) {
-      utils.invalidateQueries(["bookmarks"]);
-      utils.invalidateQueries(["searchItem", vars.id]);
-    },
-  });
-  const unstar = (id: string) => mutation.mutate({ id, starred: false });
+  const { star } = useBookmark();
   return (
     <ul tw="flex-1">
       {bookmarks.map((bookmark) => (
@@ -45,7 +38,7 @@ const BookmarksContent = ({
             name="Enlever des favoris"
             title="Enlever des favoris"
             type="button"
-            onClick={() => unstar(bookmark._id)}
+            onClick={() => star(bookmark._id, false)}
           >
             <FontAwesomeIcon icon={faStar} />
           </button>
