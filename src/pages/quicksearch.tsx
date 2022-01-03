@@ -1,6 +1,5 @@
 import "twin.macro";
 import { Card } from "@/components/Card";
-import { QuickSearch } from "@/components/Dashboard/QuickSearch";
 import { Title } from "@/components/Title";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
@@ -10,7 +9,8 @@ const SearchLoader = ({ search }: { search: string }) => {
   const result = trpc.useQuery(["quicksearch", search]);
   let subtitle = "Recherche en cours…";
   if (result.isSuccess) {
-    subtitle = `${result.data.count} résultats pour ${search}`;
+    const { count } = result.data;
+    subtitle = `${count} résultat${count > 1 ? "s" : ""} pour ${search}`;
   }
   return (
     <Card
@@ -35,7 +35,6 @@ const QuickSearchResults = () => {
 const QuickSearchPage = (): JSX.Element => (
   <div tw="margin-left[10%] margin-right[10%] flex flex-1 flex-col gap-lg">
     <Title>Liste des articles</Title>
-    <QuickSearch />
     <QuickSearchResults />
   </div>
 );

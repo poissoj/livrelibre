@@ -1,4 +1,3 @@
-import { Card } from "@/components/Card";
 import { ButtonWithInput } from "@/components/Button";
 import { InputWithButton } from "@/components/FormControls";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
@@ -17,19 +16,16 @@ export const QuickSearch = (): JSX.Element => {
   };
 
   return (
-    <Card title="Articles - Recherche rapide" tw="min-width[24rem]">
-      <form tw="flex p-sm flex-1" onSubmit={handleSubmit}>
-        <InputWithButton
-          type="text"
-          placeholder="ISBN, titre, auteur"
-          name="search"
-          tw="flex-1"
-        />
-        <ButtonWithInput>
-          <FontAwesomeIcon icon={faSearch} tw="mr-sm" />
-          Rechercher
-        </ButtonWithInput>
-      </form>
-    </Card>
+    <form role="search" tw="flex p-sm width[27rem]" onSubmit={handleSubmit}>
+      <InputWithButton
+        type="text"
+        placeholder="ISBN, titre, auteur"
+        name="search"
+        tw="flex-1"
+      />
+      <ButtonWithInput aria-label="Rechercher">
+        <FontAwesomeIcon icon={faSearch} tw="mx-1" />
+      </ButtonWithInput>
+    </form>
   );
 };

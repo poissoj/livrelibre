@@ -1,6 +1,7 @@
 import Link from "next/link";
 import "twin.macro";
 import tw, { styled } from "twin.macro";
+import { QuickSearch } from "./QuickSearch";
 
 const StyledLink = styled.a({
   ...tw`bg-primary-dark text-white w-56 block text-center`,
@@ -11,10 +12,11 @@ const StyledLink = styled.a({
 
 export const Header = (): JSX.Element => {
   return (
-    <header tw="bg-primary-default text-gray-darker">
+    <header tw="bg-primary-default text-gray-darker flex">
       <Link href="/" passHref>
         <StyledLink>{process.env.NEXT_PUBLIC_APP_NAME}</StyledLink>
       </Link>
+      <QuickSearch />
     </header>
   );
 };

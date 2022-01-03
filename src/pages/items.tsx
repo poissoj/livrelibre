@@ -4,7 +4,6 @@ import { Title } from "@/components/Title";
 import { Card } from "@/components/Card";
 import { trpc } from "@/utils/trpc";
 import React, { PropsWithChildren } from "react";
-import { QuickSearch } from "@/components/Dashboard/QuickSearch";
 import ContentLoader from "react-content-loader";
 import { ItemsTable } from "@/components/ItemsTable";
 
@@ -78,7 +77,6 @@ const ItemsLoader = () => {
 const Items = (): JSX.Element => (
   <div tw="margin-left[10%] margin-right[10%] flex flex-1 flex-col gap-lg">
     <Title>Liste des articles</Title>
-    <QuickSearch />
     <ItemsLoader />
   </div>
 );

@@ -3,7 +3,6 @@ import { ErrorMessage } from "@/components/ErrorMessage";
 import { NoResults } from "@/components/NoResults";
 import { Title } from "@/components/Title";
 import { Card } from "@/components/Card";
-import { QuickSearch } from "@/components/Dashboard/QuickSearch";
 import { trpc, useBookmark } from "@/utils/trpc";
 import { ItemWithCount, ITEM_TYPES } from "@/utils/item";
 import tw from "twin.macro";
@@ -219,7 +218,6 @@ const ItemPage = (): JSX.Element => (
     <Title>Voir un article</Title>
     <ItemCard />
     <div tw="flex flex-col gap-lg flex-1">
-      <QuickSearch />
       <SalesCard />
     </div>
   </div>
