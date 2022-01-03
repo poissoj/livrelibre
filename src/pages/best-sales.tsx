@@ -3,7 +3,7 @@ import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
 import { Card } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
-import { Item } from "@/utils/item";
+import type { Item } from "@/utils/item";
 import Link from "next/link";
 import ContentLoader from "react-content-loader";
 

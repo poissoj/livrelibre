@@ -1,4 +1,4 @@
-import { ObjectId } from "mongodb";
+import type { ObjectId } from "mongodb";
 
 export const ITEM_TYPES: Record<string, string> = {
   postcard: "Carte postale",

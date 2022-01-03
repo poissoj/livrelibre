@@ -1,5 +1,5 @@
-import { Item } from "@/utils/item";
-import { Filter, Sort } from "mongodb";
+import type { Item } from "@/utils/item";
+import type { Filter, Sort } from "mongodb";
 import { getDb } from "./database";
 
 const ITEMS_PER_PAGE = 50;

@@ -1,4 +1,4 @@
-import { Item, ItemWithCount } from "@/utils/item";
+import type { Item, ItemWithCount } from "@/utils/item";
 import { ObjectId } from "mongodb";
 import { getDb } from "./database";
 

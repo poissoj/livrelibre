@@ -1,6 +1,6 @@
 import { getDb } from "@/server/database";
-import { Item } from "@/utils/item";
-import { ObjectId } from "mongodb";
+import type { Item } from "@/utils/item";
+import type { ObjectId } from "mongodb";
 
 export const getBestSales = async () => {
   const db = await getDb();
