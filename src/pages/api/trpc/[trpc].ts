@@ -2,7 +2,7 @@ import { getBestSales } from "@/server/bestSales";
 import { getBookmarks, starItem } from "@/server/bookmarks";
 import { getItems } from "@/server/items";
 import { getSales } from "@/server/sales";
-import { getSalesByMonth } from "@/server/salesByMonth";
+import { lastSales } from "@/server/lastSales";
 import { getItem, searchItems } from "@/server/searchItem";
 import { getStats } from "@/server/stats";
 import * as trpc from "@trpc/server";
@@ -49,10 +49,10 @@ export const appRouter = trpc
       return await getStats();
     },
   })
-  .query("salesByMonth", {
+  .query("lastSales", {
     input: z.string().length(24),
     async resolve({ input }) {
-      return await getSalesByMonth(input);
+      return await lastSales(input);
     },
   })
   .mutation("star", {

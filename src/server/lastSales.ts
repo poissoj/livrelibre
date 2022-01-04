@@ -3,7 +3,7 @@ import { fr } from "date-fns/locale";
 import { ObjectId } from "mongodb";
 import { getDb } from "./database";
 
-export const getSalesByMonth = async (_id: string) => {
+export const lastSales = async (_id: string) => {
   if (!/^[a-f\d]{24}$/i.test(_id)) {
     throw new Error("Invalid id");
   }

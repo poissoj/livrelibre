@@ -189,7 +189,7 @@ const SalesSkeleton = () => (
 );
 
 const Sales = ({ id }: { id: string }) => {
-  const result = trpc.useQuery(["salesByMonth", id]);
+  const result = trpc.useQuery(["lastSales", id]);
   if (result.status === "error") {
     const error = new Error("Impossible de récupérer les données");
     return <ErrorMessage error={error} />;
