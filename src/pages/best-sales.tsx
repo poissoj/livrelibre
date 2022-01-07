@@ -30,8 +30,8 @@ const ItemsTable = ({ items }: { items: (Item & { count: number })[] }) => (
             </span>
           </td>
           <td>{item.author}</td>
-          <td tw="text-right">{item.count}</td>
-          <td tw="pr-3 text-right">{item.amount}</td>
+          <td tw="text-right font-mono">{item.count}</td>
+          <td tw="pr-3 text-right font-mono">{item.amount}</td>
           <td></td>
         </tr>
       ))}

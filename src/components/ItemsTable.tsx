@@ -26,7 +26,7 @@ export const ItemsTable = ({ items }: { items: Item[] }) => (
             </span>
           </td>
           <td>{item.author}</td>
-          <td tw="text-right pr-2">{item.amount}</td>
+          <td tw="text-right font-mono pr-2">{item.amount}</td>
           <td></td>
         </tr>
       ))}

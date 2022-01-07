@@ -62,10 +62,16 @@ const Search = (): JSX.Element => {
                 <Input type="number" name="price" min={0} step={0.01} />
               </FormRow>
               <FormRow label="Quantité">
-                <Input type="number" name="quantity" min={0} defaultValue={1} />
+                <Input
+                  type="number"
+                  name="quantity"
+                  min={0}
+                  defaultValue={1}
+                  tw="font-mono"
+                />
               </FormRow>
               <FormRow label="TVA">
-                <Select name="tva" defaultValue="5.5">
+                <Select name="tva" defaultValue="5.5" tw="font-mono">
                   <option value="20">20%</option>
                   <option value="5.5">5.5%</option>
                   <option value="2.1">2.1%</option>

@@ -68,9 +68,9 @@ const SalesTable = ({ sales }: { sales: Sale[] }): JSX.Element => {
         {sales.map((sale, i) => (
           <tr key={i}>
             <td>{sale.month}</td>
-            <td tw="text-right">{sale.count}</td>
-            <td tw="text-right">{formatPrice(sale.amount)}</td>
-            <td tw="text-right">
+            <td tw="text-right font-mono">{sale.count}</td>
+            <td tw="text-right font-mono">{formatPrice(sale.amount)}</td>
+            <td tw="text-right font-mono">
               {sale.avg ? `${formatPrice(sale.avg)}` : "Inconnu"}
             </td>
             <td tw="text-center pl-2">

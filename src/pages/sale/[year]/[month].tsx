@@ -34,8 +34,8 @@ const SalesTable = ({ sales }: { sales: TSalesByDay }) => {
         {sales.map((sale, i) => (
           <tr key={i}>
             <td>{sale.date}</td>
-            <td tw="text-right">{sale.count}</td>
-            <td tw="text-right">{sale.amount}€</td>
+            <td tw="text-right font-mono">{sale.count}</td>
+            <td tw="text-right font-mono ">{sale.amount}€</td>
             <td tw="text-center pl-2">
               <Link href={makeSaleURL(sale.date)} passHref>
                 <Button as="a" tw="background-color[#666]">
@@ -158,9 +158,9 @@ const StatsByTVA = ({ stats }: { stats: TStats }) => {
         {stats.map((stat, i) => (
           <tr key={i}>
             <td>{stat[1]}</td>
-            <td tw="text-right">{formatTVA(stat[0])}</td>
-            <td tw="text-right">{stat[2]}</td>
-            <td tw="text-right">{stat[3]}€</td>
+            <td tw="text-right font-mono">{formatTVA(stat[0])}</td>
+            <td tw="text-right font-mono">{stat[2]}</td>
+            <td tw="text-right font-mono">{stat[3]}€</td>
           </tr>
         ))}
       </tbody>
@@ -209,8 +209,8 @@ const CategoriesTable = ({ categories }: { categories: TCategories }) => (
       {categories.map((category, i) => (
         <tr key={i}>
           <td>{category.type}</td>
-          <td tw="text-right">{category.nb}</td>
-          <td tw="text-right">{category.totalPrice}€</td>
+          <td tw="text-right font-mono">{category.nb}</td>
+          <td tw="text-right font-mono">{category.totalPrice}€</td>
         </tr>
       ))}
     </tbody>

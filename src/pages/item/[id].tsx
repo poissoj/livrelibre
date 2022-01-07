@@ -51,15 +51,17 @@ const ItemDetails = ({ item }: { item: ItemWithCount }) => {
         <pre>{item.comments}</pre>
       </DD>
       <DT>Prix d&rsquo;achat</DT>
-      <DD>{formatPrice(item.prix_achat)}</DD>
+      <DD tw="font-mono">{formatPrice(item.prix_achat)}</DD>
       <DT>Prix de vente</DT>
-      <DD>{formatPrice(item.price)}</DD>
+      <DD tw="font-mono">{formatPrice(item.price)}</DD>
       <DT>Quantité</DT>
-      <DD>{item.amount}</DD>
+      <DD tw="font-mono">{item.amount}</DD>
       <DT>TVA</DT>
-      <DD>{item.tva}%</DD>
+      <DD tw="font-mono">{item.tva}%</DD>
       <DT>Vendu</DT>
-      <DD>{item.count} fois</DD>
+      <DD>
+        <span tw="font-mono">{item.count}</span> fois
+      </DD>
     </DL>
   );
 };
