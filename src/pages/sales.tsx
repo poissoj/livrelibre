@@ -11,7 +11,6 @@ import Link from "next/link";
 import ContentLoader from "react-content-loader";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
-const Cell = tw.td`text-center`;
 
 const SkeletonRow = ({ n }: { n: number }) => (
   <>
@@ -58,32 +57,30 @@ const SalesTable = ({ sales }: { sales: Sale[] }): JSX.Element => {
     <table tw="flex-1">
       <thead>
         <tr>
-          <StickyTh>Mois</StickyTh>
-          <StickyTh>Nombre de ventes</StickyTh>
-          <StickyTh>Recette totale</StickyTh>
-          <StickyTh>Panier moyen</StickyTh>
+          <StickyTh tw="text-left">Mois</StickyTh>
+          <StickyTh tw="text-right">Nombre de ventes</StickyTh>
+          <StickyTh tw="text-right">Recette totale</StickyTh>
+          <StickyTh tw="text-right">Panier moyen</StickyTh>
           <StickyTh></StickyTh>
         </tr>
       </thead>
       <tbody tw="line-height[2.3rem]">
         {sales.map((sale, i) => (
           <tr key={i}>
-            <Cell>{sale.month}</Cell>
-            <Cell>{sale.count}</Cell>
-            <Cell>
-              <div tw="text-right mx-auto width[10ch]">
-                {formatPrice(sale.amount)}
-              </div>
-            </Cell>
-            <Cell>{sale.avg ? `${formatPrice(sale.avg)}` : "Inconnu"}</Cell>
-            <Cell>
+            <td>{sale.month}</td>
+            <td tw="text-right">{sale.count}</td>
+            <td tw="text-right">{formatPrice(sale.amount)}</td>
+            <td tw="text-right">
+              {sale.avg ? `${formatPrice(sale.avg)}` : "Inconnu"}
+            </td>
+            <td tw="text-center pl-2">
               <Link href={makeSaleURL(sale)} passHref>
                 <Button as="a" tw="background-color[#666]">
                   <FontAwesomeIcon icon={faEye} tw="mr-sm" />
                   Détails
                 </Button>
               </Link>
-            </Cell>
+            </td>
           </tr>
         ))}
       </tbody>

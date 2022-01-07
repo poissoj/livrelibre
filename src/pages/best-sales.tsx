@@ -12,11 +12,11 @@ const ItemsTable = ({ items }: { items: (Item & { count: number })[] }) => (
   <table tw="flex-1 border-collapse[separate] border-spacing[2px 0.5rem]">
     <thead>
       <tr>
-        <StickyTh>#</StickyTh>
-        <StickyTh>Titre</StickyTh>
-        <StickyTh>Auteur</StickyTh>
-        <StickyTh>Vendus</StickyTh>
-        <StickyTh tw="px-2 whitespace-nowrap">En stock</StickyTh>
+        <StickyTh tw="text-left">#</StickyTh>
+        <StickyTh tw="text-left">Titre</StickyTh>
+        <StickyTh tw="text-left">Auteur</StickyTh>
+        <StickyTh tw="text-right">Vendus</StickyTh>
+        <StickyTh tw="text-right whitespace-nowrap">En stock</StickyTh>
         <StickyTh></StickyTh>
       </tr>
     </thead>

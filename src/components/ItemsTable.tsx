@@ -9,10 +9,10 @@ export const ItemsTable = ({ items }: { items: Item[] }) => (
   <table tw="flex-1 border-collapse[separate] border-spacing[2px 0.5rem]">
     <thead>
       <tr>
-        <StickyTh>Distributeur</StickyTh>
-        <StickyTh>Titre</StickyTh>
-        <StickyTh>Auteur</StickyTh>
-        <StickyTh>Quantité</StickyTh>
+        <StickyTh tw="text-left">Distributeur</StickyTh>
+        <StickyTh tw="text-left">Titre</StickyTh>
+        <StickyTh tw="text-left">Auteur</StickyTh>
+        <StickyTh tw="text-right">Quantité</StickyTh>
         <StickyTh></StickyTh>
       </tr>
     </thead>
@@ -26,7 +26,7 @@ export const ItemsTable = ({ items }: { items: Item[] }) => (
             </span>
           </td>
           <td>{item.author}</td>
-          <td>{item.amount}</td>
+          <td tw="text-right pr-2">{item.amount}</td>
           <td></td>
         </tr>
       ))}
