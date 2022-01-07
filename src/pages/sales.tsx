@@ -48,7 +48,8 @@ const SalesLoader = (): JSX.Element | null => {
   return <SalesTable sales={result.data} />;
 };
 
-const makeSaleURL = (sale: Sale) => `/sale/${sale.month.replace("/", "-")}`;
+const makeSaleURL = (sale: Sale) =>
+  `/sale/${sale.month.split("/").reverse().join("/")}`;
 
 const formatPrice = (price: number) => `${price.toFixed(2)}€`;
 

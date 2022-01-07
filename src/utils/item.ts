@@ -10,11 +10,13 @@ export const ITEM_TYPES: Record<string, string> = {
   deposit: "consigne",
 };
 
-type TVA = "0" | "2.1" | "5.5" | "20";
+export type ItemType = keyof typeof ITEM_TYPES;
+
+export type TVA = "0" | "2.1" | "5.5" | "20";
 
 export type Item = {
   _id: ObjectId;
-  type: keyof typeof ITEM_TYPES;
+  type: ItemType;
   isbn: string;
   author: string;
   title: string;
