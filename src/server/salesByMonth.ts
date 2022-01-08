@@ -1,15 +1,7 @@
 import { ItemType, ITEM_TYPES, TVA } from "@/utils/item";
 import { getDb } from "@/server/database";
-
-const PAYMENT_METHODS = {
-  cash: "Espèces",
-  card: "Carte bleue",
-  check: "Chèque",
-  "check-lire": "Chèque lire",
-  transfer: "Virement",
-} as const;
-
-type PaymentType = keyof typeof PAYMENT_METHODS;
+import { PaymentType, PAYMENT_METHODS } from "@/utils/sale";
+import { isIn } from "@/utils/utils";
 
 type DBSaleByMonth = {
   month: string;
@@ -20,13 +12,6 @@ type DBSaleByMonth = {
   type?: PaymentType;
   quantity: number;
 };
-
-function isIn<P extends PropertyKey, K extends P>(
-  target: Record<K, unknown>,
-  property: P
-): property is K {
-  return property in target;
-}
 
 export const getSalesByMonth = async (month: string, year: string) => {
   const db = await getDb();
