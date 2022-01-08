@@ -6,11 +6,12 @@ import { InferQueryOutput, trpc } from "@/utils/trpc";
 import Link from "next/link";
 import ContentLoader from "react-content-loader";
 import { ErrorMessage } from "@/components/ErrorMessage";
+import { StatsByTVA } from "@/components/TVAStats/StatsByTVA";
+import { TVASkeleton } from "@/components/TVAStats/TVASkeleton";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
 
 type TSalesByDay = InferQueryOutput<"salesByMonth">["salesByDay"];
-type TStats = InferQueryOutput<"salesByMonth">["stats"];
 type TCategories = InferQueryOutput<"salesByMonth">["itemTypes"];
 
 const makeSaleURL = (date: string) =>
@@ -55,15 +56,6 @@ const SalesSkeletonRow = ({ n }: { n: number }) => (
   </>
 );
 
-const TVASkeletonRow = ({ n }: { n: number }) => (
-  <>
-    <rect x="5%" y={n * 30 + 15} rx="2" ry="2" width="19%" height="10" />
-    <rect x="27%" y={n * 30 + 15} rx="2" ry="2" width="19%" height="10" />
-    <rect x="49%" y={n * 30 + 15} rx="2" ry="2" width="19%" height="10" />
-    <rect x="71%" y={n * 30 + 15} rx="2" ry="2" width="19%" height="10" />
-  </>
-);
-
 const CategorySkeletonRow = ({ n }: { n: number }) => (
   <>
     <rect x="5%" y={n * 30 + 15} rx="2" ry="2" width="27%" height="10" />
@@ -78,16 +70,6 @@ const SalesSkeleton = (): JSX.Element => (
       .fill(0)
       .map((_, i) => (
         <SalesSkeletonRow key={i} n={i} />
-      ))}
-  </ContentLoader>
-);
-
-const TVASkeleton = (): JSX.Element => (
-  <ContentLoader height={300} width="100%">
-    {Array(9)
-      .fill(0)
-      .map((_, i) => (
-        <TVASkeletonRow key={i} n={i} />
       ))}
   </ContentLoader>
 );
@@ -133,33 +115,6 @@ const SalesCard = () => {
     <Card title={title} tw="flex flex-col flex-1 max-h-full overflow-hidden">
       <SalesLoader month={month} year={year} />
     </Card>
-  );
-};
-
-const formatTVA = (tva: string) => (tva === "Inconnu" ? tva : `${tva}%`);
-
-const StatsByTVA = ({ stats }: { stats: TStats }) => {
-  return (
-    <table tw="flex-1">
-      <thead>
-        <tr>
-          <StickyTh tw="text-left">Type de paiement</StickyTh>
-          <StickyTh tw="text-right">TVA</StickyTh>
-          <StickyTh tw="text-right">Quantité</StickyTh>
-          <StickyTh tw="text-right">Total</StickyTh>
-        </tr>
-      </thead>
-      <tbody tw="line-height[1.9rem]">
-        {stats.map((stat, i) => (
-          <tr key={i}>
-            <td>{stat[1]}</td>
-            <td tw="text-right font-mono">{formatTVA(stat[0])}</td>
-            <td tw="text-right font-mono">{stat[2]}</td>
-            <td tw="text-right font-mono">{stat[3]}€</td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
   );
 };
 
