@@ -1,14 +1,12 @@
 import { Title } from "@/components/Title";
 import { Card } from "@/components/Card";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye } from "@fortawesome/free-solid-svg-icons";
-import { Button } from "@/components/Button";
 import tw from "twin.macro";
 import { trpc } from "@/utils/trpc";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import type { Sale } from "@/server/sales";
 import Link from "next/link";
 import ContentLoader from "react-content-loader";
+import { useRouter } from "next/router";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
 
@@ -53,33 +51,31 @@ const makeSaleURL = (sale: Sale) =>
 const formatPrice = (price: number) => `${price.toFixed(2)}€`;
 
 const SalesTable = ({ sales }: { sales: Sale[] }): JSX.Element => {
+  const router = useRouter();
   return (
     <table tw="flex-1">
       <thead>
         <tr>
-          <StickyTh tw="text-left">Mois</StickyTh>
+          <StickyTh tw="text-left pl-2">Mois</StickyTh>
           <StickyTh tw="text-right">Nombre de ventes</StickyTh>
           <StickyTh tw="text-right">Recette totale</StickyTh>
-          <StickyTh tw="text-right">Panier moyen</StickyTh>
-          <StickyTh></StickyTh>
+          <StickyTh tw="text-right pr-1">Panier moyen</StickyTh>
         </tr>
       </thead>
       <tbody tw="line-height[2.3rem]">
         {sales.map((sale, i) => (
-          <tr key={i}>
-            <td>{sale.month}</td>
+          <tr
+            key={i}
+            tw="cursor-pointer hover:bg-gray-light"
+            onClick={() => router.push({ pathname: makeSaleURL(sale) })}
+          >
+            <td tw="pl-2">
+              <Link href={makeSaleURL(sale)}>{sale.month}</Link>
+            </td>
             <td tw="text-right font-mono">{sale.count}</td>
             <td tw="text-right font-mono">{formatPrice(sale.amount)}</td>
-            <td tw="text-right font-mono">
+            <td tw="text-right font-mono pr-2">
               {sale.avg ? `${formatPrice(sale.avg)}` : "Inconnu"}
-            </td>
-            <td tw="text-center pl-2">
-              <Link href={makeSaleURL(sale)} passHref>
-                <Button as="a" tw="background-color[#666]">
-                  <FontAwesomeIcon icon={faEye} tw="mr-sm" />
-                  Détails
-                </Button>
-              </Link>
             </td>
           </tr>
         ))}

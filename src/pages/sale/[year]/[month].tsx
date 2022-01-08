@@ -4,9 +4,6 @@ import { Card } from "@/components/Card";
 import { useRouter } from "next/router";
 import { InferQueryOutput, trpc } from "@/utils/trpc";
 import Link from "next/link";
-import { Button } from "@/components/Button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEye } from "@fortawesome/free-solid-svg-icons";
 import ContentLoader from "react-content-loader";
 import { ErrorMessage } from "@/components/ErrorMessage";
 
@@ -20,30 +17,28 @@ const makeSaleURL = (date: string) =>
   `/sale/${date.split("/").reverse().join("/")}`;
 
 const SalesTable = ({ sales }: { sales: TSalesByDay }) => {
+  const router = useRouter();
   return (
     <table tw="flex-1">
       <thead>
         <tr>
-          <StickyTh tw="text-left">Jour</StickyTh>
+          <StickyTh tw="text-left pl-2">Jour</StickyTh>
           <StickyTh tw="text-right">Nombre de ventes</StickyTh>
           <StickyTh tw="text-right">Recette totale</StickyTh>
-          <StickyTh></StickyTh>
         </tr>
       </thead>
       <tbody tw="line-height[2.3rem]">
         {sales.map((sale, i) => (
-          <tr key={i}>
-            <td>{sale.date}</td>
-            <td tw="text-right font-mono">{sale.count}</td>
-            <td tw="text-right font-mono ">{sale.amount}€</td>
-            <td tw="text-center pl-2">
-              <Link href={makeSaleURL(sale.date)} passHref>
-                <Button as="a" tw="background-color[#666]">
-                  <FontAwesomeIcon icon={faEye} tw="mr-sm" />
-                  Détails
-                </Button>
-              </Link>
+          <tr
+            key={i}
+            tw="cursor-pointer hover:bg-gray-light"
+            onClick={() => router.push({ pathname: makeSaleURL(sale.date) })}
+          >
+            <td tw="pl-2">
+              <Link href={makeSaleURL(sale.date)}>{sale.date}</Link>
             </td>
+            <td tw="text-right font-mono">{sale.count}</td>
+            <td tw="text-right font-mono pr-2">{sale.amount}€</td>
           </tr>
         ))}
       </tbody>
