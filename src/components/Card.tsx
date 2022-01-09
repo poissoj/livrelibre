@@ -7,6 +7,7 @@ type CardProps = {
   className?: string;
   children: React.ReactNode;
   subtitle?: React.ReactNode;
+  BodyWrapper?: React.FunctionComponent;
 };
 
 const SHADOW = `
@@ -19,21 +20,24 @@ const Wrapper = styled.section({
   boxShadow: SHADOW,
 });
 
+const DefaultBodyWrapper = tw.div`mt-md overflow-auto flex align-items[flex-start]`;
+
 export const Card = ({
   title,
   children,
   subtitle,
   className,
+  BodyWrapper = DefaultBodyWrapper,
 }: CardProps): JSX.Element => {
   return (
     <Wrapper className={className}>
       {title ? <h3 tw="text-2xl font-bold">{title}</h3> : null}
       {subtitle}
-      <div tw="mt-md overflow-auto flex align-items[flex-start]">
+      <BodyWrapper>
         <ErrorBoundary FallbackComponent={ErrorMessage}>
           {children}
         </ErrorBoundary>
-      </div>
+      </BodyWrapper>
     </Wrapper>
   );
 };
