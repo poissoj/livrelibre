@@ -88,7 +88,7 @@ const TitleWithButtons = ({ item }: { item: ItemWithCount }) => {
   const handleClick = () => star(item._id.toString(), !item.starred);
 
   return (
-    <div tw="flex">
+    <div tw="flex align-items[center]">
       <h3 tw="text-2xl font-bold mr-auto">{item.title}</h3>
       <Button
         type="button"
