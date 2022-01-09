@@ -8,11 +8,12 @@ import ContentLoader from "react-content-loader";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { StatsByTVA } from "@/components/TVAStats/StatsByTVA";
 import { TVASkeleton } from "@/components/TVAStats/TVASkeleton";
+import { CategorySkeleton } from "@/components/PaymentStats/CategorySkeleton";
+import { CategoriesTable } from "@/components/PaymentStats/CategoriesTable";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
 
 type TSalesByDay = InferQueryOutput<"salesByMonth">["salesByDay"];
-type TCategories = InferQueryOutput<"salesByMonth">["itemTypes"];
 
 const makeSaleURL = (date: string) =>
   `/sale/${date.split("/").reverse().join("/")}`;
@@ -56,30 +57,12 @@ const SalesSkeletonRow = ({ n }: { n: number }) => (
   </>
 );
 
-const CategorySkeletonRow = ({ n }: { n: number }) => (
-  <>
-    <rect x="5%" y={n * 30 + 15} rx="2" ry="2" width="27%" height="10" />
-    <rect x="35%" y={n * 30 + 15} rx="2" ry="2" width="27%" height="10" />
-    <rect x="65%" y={n * 30 + 15} rx="2" ry="2" width="27%" height="10" />
-  </>
-);
-
 const SalesSkeleton = (): JSX.Element => (
   <ContentLoader height={600} width="100%">
     {Array(20)
       .fill(0)
       .map((_, i) => (
         <SalesSkeletonRow key={i} n={i} />
-      ))}
-  </ContentLoader>
-);
-
-const CategorySkeleton = (): JSX.Element => (
-  <ContentLoader height={150} width="100%">
-    {Array(5)
-      .fill(0)
-      .map((_, i) => (
-        <CategorySkeletonRow key={i} n={i} />
       ))}
   </ContentLoader>
 );
@@ -145,27 +128,6 @@ const TVACard = () => {
     </Card>
   );
 };
-
-const CategoriesTable = ({ categories }: { categories: TCategories }) => (
-  <table tw="flex-1">
-    <thead>
-      <tr>
-        <StickyTh tw="text-left">Catégorie</StickyTh>
-        <StickyTh tw="text-right">Quantité</StickyTh>
-        <StickyTh tw="text-right">Total</StickyTh>
-      </tr>
-    </thead>
-    <tbody tw="line-height[1.9rem]">
-      {categories.map((category, i) => (
-        <tr key={i}>
-          <td>{category.type}</td>
-          <td tw="text-right font-mono">{category.nb}</td>
-          <td tw="text-right font-mono">{category.totalPrice}€</td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-);
 
 const CategoriesLoader = (props: MonthProps) => {
   const result = trpc.useQuery(["salesByMonth", props]);
