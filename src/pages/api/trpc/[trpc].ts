@@ -10,6 +10,7 @@ import * as trpcNext from "@trpc/server/adapters/next";
 import { ObjectId } from "mongodb";
 import { z } from "zod";
 import { getSalesByMonth } from "@/server/salesByMonth";
+import { getSalesByDay } from "@/server/salesByDay";
 
 export const appRouter = trpc
   .router()
@@ -63,6 +64,12 @@ export const appRouter = trpc
     }),
     async resolve({ input }) {
       return await getSalesByMonth(input.month, input.year);
+    },
+  })
+  .query("salesByDay", {
+    input: z.string(),
+    async resolve({ input }) {
+      return await getSalesByDay(input);
     },
   })
   .mutation("star", {
