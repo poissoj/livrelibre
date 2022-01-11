@@ -23,20 +23,16 @@ const SearchLoader = ({ search }: { search: string }) => {
   );
 };
 
-const QuickSearchResults = () => {
+const QuickSearchPage = (): JSX.Element => {
   const router = useRouter();
   const { search } = router.query;
-  if (typeof search !== "string") {
-    return null;
-  }
-  return <SearchLoader search={search} />;
+  const title = `Recherche de "${search || ""}"`;
+  return (
+    <div tw="margin-left[10%] margin-right[10%] flex flex-1 flex-col gap-lg">
+      <Title>{title}</Title>
+      {typeof search === "string" ? <SearchLoader search={search} /> : null}
+    </div>
+  );
 };
-
-const QuickSearchPage = (): JSX.Element => (
-  <div tw="margin-left[10%] margin-right[10%] flex flex-1 flex-col gap-lg">
-    <Title>Liste des articles</Title>
-    <QuickSearchResults />
-  </div>
-);
 
 export default QuickSearchPage;
