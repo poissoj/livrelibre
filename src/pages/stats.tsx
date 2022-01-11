@@ -2,9 +2,12 @@ import { Card } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
+import dynamic from "next/dynamic";
 import ContentLoader from "react-content-loader";
-import { Bar, BarChart, LabelList, XAxis } from "recharts";
 import "twin.macro";
+
+const SalesByHour = dynamic(() => import("@/components/Charts/SalesByHour"));
+const SalesByDay = dynamic(() => import("@/components/Charts/SalesByDay"));
 
 const DAYS = [
   "Dimanche",
@@ -15,51 +18,6 @@ const DAYS = [
   "Vendredi",
   "Samedi",
 ];
-
-const nf = Intl.NumberFormat();
-
-const SalesByHour = ({
-  hours,
-}: {
-  hours: { hour: number; count: number }[];
-}) => (
-  <BarChart
-    data={hours}
-    width={900}
-    height={320}
-    margin={{ left: 10, right: 15 }}
-    id="sales-by-hour-chart"
-  >
-    <XAxis
-      dataKey="hour"
-      scale="linear"
-      tickFormatter={(hour: number) => `${hour}h`}
-      interval={0}
-    />
-    <Bar dataKey="count" fill="steelblue" isAnimationActive={false}>
-      <LabelList
-        dataKey="count"
-        position="insideTop"
-        fill="white"
-        formatter={nf.format}
-      />
-    </Bar>
-  </BarChart>
-);
-
-const SalesByDay = ({ days }: { days: { name: string; count: number }[] }) => (
-  <BarChart data={days} width={800} height={300} id="sales-by-day-chart">
-    <XAxis dataKey="name" />
-    <Bar dataKey="count" fill="steelblue" isAnimationActive={false}>
-      <LabelList
-        dataKey="count"
-        position="insideTop"
-        fill="white"
-        formatter={nf.format}
-      />
-    </Bar>
-  </BarChart>
-);
 
 const SalesByHourSkeleton = () => (
   <ContentLoader

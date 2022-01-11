@@ -6,20 +6,14 @@ import { Card } from "@/components/Card";
 import { trpc, useBookmark } from "@/utils/trpc";
 import { ItemWithCount, ITEM_TYPES } from "@/utils/item";
 import tw from "twin.macro";
-import {
-  Bar,
-  BarChart,
-  LabelList,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-} from "recharts";
-import type { Payload } from "recharts/types/component/DefaultTooltipContent";
 import ContentLoader from "react-content-loader";
 import { Button } from "@/components/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner, faStar } from "@fortawesome/free-solid-svg-icons";
 import { faStar as emptyStar } from "@fortawesome/free-regular-svg-icons";
+import dynamic from "next/dynamic";
+
+const SalesByMonth = dynamic(() => import("@/components/Charts/SalesByMonth"));
 
 const DL = tw.dl`flex flex-wrap min-width[24rem]`;
 const DT = tw.dt`flex-basis[30%] p-sm font-medium`;
@@ -152,30 +146,6 @@ const ItemCard = () => {
   }
   return <ItemLoader id={id} />;
 };
-
-/* Don't display 0 for empty columns, they appear on top of labels */
-const formatter = (n: number) => (n ? n : "");
-
-const labelFormatter = (_label: string, payload: Payload<string, number>[]) =>
-  payload[0]?.payload.fullMonthLabel;
-const tooltipFormatter = (count: number) => [count, "ventes"];
-
-const SalesByMonth = ({ sales }: { sales: unknown[] }) => (
-  <ResponsiveContainer height={350} width="100%">
-    <BarChart data={sales}>
-      <XAxis dataKey="monthLabel" />
-      <Tooltip labelFormatter={labelFormatter} formatter={tooltipFormatter} />
-      <Bar dataKey="count" fill="steelblue" isAnimationActive={false}>
-        <LabelList
-          dataKey="count"
-          position="insideTop"
-          fill="white"
-          formatter={formatter}
-        />
-      </Bar>
-    </BarChart>
-  </ResponsiveContainer>
-);
 
 const SalesSkeleton = () => (
   <ContentLoader height={350} width="100%" uniqueKey="item-sales-skeleton">
