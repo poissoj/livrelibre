@@ -12,7 +12,6 @@ import { Button, ButtonWithInput } from "@/components/Button";
 import tw from "twin.macro";
 import { faPlus, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { ITEM_TYPES } from "@/utils/item";
-import type { GetStaticProps } from "next";
 
 const Column = tw.div`flex-1 min-width[20rem] ml-md`;
 
@@ -100,9 +99,3 @@ const Add = (): JSX.Element => {
 };
 
 export default Add;
-
-export const getStaticProps: GetStaticProps = async () => {
-  return {
-    props: {},
-  };
-};

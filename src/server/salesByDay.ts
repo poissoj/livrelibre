@@ -18,20 +18,23 @@ type DBSale = {
 
 type PaymentMethod = typeof PAYMENT_METHODS[PaymentType] | "Inconnu";
 
-type ItemSale = Omit<Item, "price"> & {
-  itemId: ObjectId;
+type ItemSale = Omit<Item, "price" | "_id"> & {
+  itemId: string;
   saleItemId: string;
   price: number;
   type: PaymentMethod;
   quantity: number;
   deleted: boolean;
+  _id: string;
 };
 
-type UnlistedSale = Omit<DBSale, "type"> & {
-  saleItemId: ObjectId;
+type UnlistedSale = Omit<DBSale, "type" | "_id" | "cartId"> & {
+  saleItemId: string;
   type: PaymentMethod;
   itemId: null;
   deleted: boolean;
+  _id: string;
+  cartId: string | undefined;
 };
 
 type Sale = ItemSale | UnlistedSale;
@@ -107,20 +110,23 @@ export const getSalesByDay = async (date: string) => {
       }
       sales.push({
         ...items[i],
-        itemId: sale.id,
+        itemId: sale.id.toString(),
         saleItemId: [sale._id, sale.id].join(),
         price: sale.price,
         type,
         quantity: sale.quantity,
         deleted,
+        _id: items[i]._id.toString(),
       });
     } else {
       sales.push({
         ...sale,
-        saleItemId: sale._id,
+        saleItemId: sale._id.toString(),
         type,
         itemId: null,
         deleted,
+        _id: sale._id.toString(),
+        cartId: sale.cartId?.toString(),
       });
     }
   }

@@ -12,6 +12,10 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSpinner, faStar } from "@fortawesome/free-solid-svg-icons";
 import { faStar as emptyStar } from "@fortawesome/free-regular-svg-icons";
 import dynamic from "next/dynamic";
+import { createSSGHelpers } from "@trpc/react/ssg";
+import { appRouter } from "@/pages/api/trpc/[trpc]";
+import type { GetStaticPaths, GetStaticProps } from "next";
+import { getBookmarks } from "@/server/bookmarks";
 
 const SalesByMonth = dynamic(() => import("@/components/Charts/SalesByMonth"));
 
@@ -196,3 +200,29 @@ const ItemPage = (): JSX.Element => (
 );
 
 export default ItemPage;
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  const ssg = createSSGHelpers({
+    router: appRouter,
+    ctx: {},
+  });
+  const id = context.params?.id;
+  if (typeof id === "string") {
+    await Promise.all([
+      ssg.fetchQuery("searchItem", id),
+      ssg.fetchQuery("lastSales", id),
+    ]);
+  }
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    },
+    revalidate: 1,
+  };
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const bookmarks = await getBookmarks();
+  const paths = bookmarks.map((bookmark) => ({ params: { id: bookmark._id } }));
+  return { paths, fallback: "blocking" };
+};

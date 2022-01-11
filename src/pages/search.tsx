@@ -7,7 +7,6 @@ import { FormRow } from "@/components/FormRow";
 import { Button } from "@/components/Button";
 import tw from "twin.macro";
 import { ITEM_TYPES } from "@/utils/item";
-import type { GetStaticProps } from "next";
 
 const Column = tw.div`flex-1 min-width[20rem] ml-md`;
 
@@ -93,9 +92,3 @@ const Search = (): JSX.Element => {
 };
 
 export default Search;
-
-export const getStaticProps: GetStaticProps = async () => {
-  return {
-    props: {},
-  };
-};

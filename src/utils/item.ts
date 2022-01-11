@@ -37,4 +37,4 @@ export type Item = {
   nmDistributor: string;
 };
 
-export type ItemWithCount = Item & { count: number };
+export type ItemWithCount = Omit<Item, "_id"> & { count: number; _id: string };

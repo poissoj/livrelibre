@@ -17,7 +17,7 @@ export const getItem = async (id: string): Promise<ItemWithCount | null> => {
     ])
     .toArray();
   const count = salesCount.length > 0 ? salesCount[0].total : 0;
-  return item ? { ...item, count } : null;
+  return item ? { ...item, _id: _id.toString(), count } : null;
 };
 
 const sanitize = (str: string) => str.replace(/[#-.]|[[-^]|[?|{}]/g, "\\$&");

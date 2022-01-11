@@ -10,6 +10,9 @@ import { StatsByTVA } from "@/components/TVAStats/StatsByTVA";
 import { TVASkeleton } from "@/components/TVAStats/TVASkeleton";
 import { CategorySkeleton } from "@/components/PaymentStats/CategorySkeleton";
 import { CategoriesTable } from "@/components/PaymentStats/CategoriesTable";
+import type { GetStaticPaths, GetStaticProps } from "next";
+import { createSSGHelpers } from "@trpc/react/ssg";
+import { appRouter } from "@/pages/api/trpc/[trpc]";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
 
@@ -171,3 +174,25 @@ const SalesByMonth = (): JSX.Element => {
 };
 
 export default SalesByMonth;
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  const ssg = createSSGHelpers({
+    router: appRouter,
+    ctx: {},
+  });
+  const year = context.params?.year;
+  const month = context.params?.month;
+  if (typeof year === "string" && typeof month === "string") {
+    await ssg.fetchQuery("salesByMonth", { month, year });
+  }
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    },
+    revalidate: 1,
+  };
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return { paths: [], fallback: "blocking" };
+};

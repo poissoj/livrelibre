@@ -11,6 +11,9 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import type { GetStaticPaths, GetStaticProps } from "next";
+import { createSSGHelpers } from "@trpc/react/ssg";
+import { appRouter } from "@/pages/api/trpc/[trpc]";
 
 const TVALoader = ({ date }: { date: string }) => {
   const result = trpc.useQuery(["salesByDay", date]);
@@ -85,7 +88,7 @@ const SalesTables = ({ carts }: { carts: Carts }) => {
       {carts.map((cart, i) => (
         <tbody tw="odd:bg-gray-light" key={i}>
           {cart.sales.map((sale) => (
-            <SalesRow key={sale.saleItemId.toString()} deleted={sale.deleted}>
+            <SalesRow key={sale.saleItemId} deleted={sale.deleted}>
               <Cell>
                 {sale.itemId ? (
                   <Link href={`/item/${sale.itemId}`} passHref>
@@ -161,3 +164,31 @@ const SalesByDay = (): JSX.Element | null => {
 };
 
 export default SalesByDay;
+
+export const getStaticProps: GetStaticProps = async (context) => {
+  const ssg = createSSGHelpers({
+    router: appRouter,
+    ctx: {},
+  });
+  const year = context.params?.year;
+  const month = context.params?.month;
+  const day = context.params?.day;
+  if (
+    typeof year === "string" &&
+    typeof month === "string" &&
+    typeof day === "string"
+  ) {
+    const date = `${day}/${month}/${year}`;
+    await ssg.fetchQuery("salesByDay", date);
+  }
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    },
+    revalidate: 1,
+  };
+};
+
+export const getStaticPaths: GetStaticPaths = () => {
+  return { paths: [], fallback: "blocking" };
+};

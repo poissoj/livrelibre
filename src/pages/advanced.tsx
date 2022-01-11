@@ -1,7 +1,6 @@
 import "twin.macro";
 import { Card } from "@/components/Card";
 import { Title } from "@/components/Title";
-import type { GetStaticProps } from "next";
 import { Button } from "@/components/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faDownload, faUpload } from "@fortawesome/free-solid-svg-icons";
@@ -48,9 +47,3 @@ const Advanced = (): JSX.Element => {
 };
 
 export default Advanced;
-
-export const getStaticProps: GetStaticProps = async () => {
-  return {
-    props: {},
-  };
-};

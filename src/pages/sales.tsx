@@ -7,6 +7,10 @@ import type { Sale } from "@/server/sales";
 import Link from "next/link";
 import ContentLoader from "react-content-loader";
 import { useRouter } from "next/router";
+import type { GetStaticPropsResult } from "next";
+import type { DehydratedState } from "react-query";
+import { createSSGHelpers } from "@trpc/react/ssg";
+import { appRouter } from "@/pages/api/trpc/[trpc]";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
 
@@ -97,3 +101,19 @@ const Sales = (): JSX.Element => (
 );
 
 export default Sales;
+
+export const getStaticProps = async (): Promise<
+  GetStaticPropsResult<{ trpcState: DehydratedState }>
+> => {
+  const ssg = createSSGHelpers({
+    router: appRouter,
+    ctx: {},
+  });
+  await ssg.fetchQuery("sales");
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    },
+    revalidate: 10,
+  };
+};
