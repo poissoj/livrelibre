@@ -1,6 +1,7 @@
 import { Bar, BarChart, LabelList, XAxis } from "recharts";
 
 const nf = Intl.NumberFormat();
+const format = nf.format.bind(nf);
 
 const SalesByHour = ({
   hours,
@@ -25,7 +26,7 @@ const SalesByHour = ({
         dataKey="count"
         position="insideTop"
         fill="white"
-        formatter={nf.format}
+        formatter={format}
       />
     </Bar>
   </BarChart>

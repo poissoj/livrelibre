@@ -11,8 +11,11 @@ export const QuickSearch = (): JSX.Element => {
 
   const handleSubmit: DOMAttributes<HTMLFormElement>["onSubmit"] = (event) => {
     event.preventDefault();
-    const search: string = event.currentTarget.search.value;
-    router.push({ pathname: "/quicksearch", query: { search } });
+    const form = new FormData(event.currentTarget);
+    const search = form.get("search");
+    if (typeof search === "string") {
+      void router.push({ pathname: "/quicksearch", query: { search } });
+    }
   };
 
   return (

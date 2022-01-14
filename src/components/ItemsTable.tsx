@@ -22,7 +22,7 @@ export const ItemsTable = ({ items }: { items: Item[] }) => (
           <td>{item.distributor}</td>
           <td>
             <span tw="text-primary-darkest">
-              <Link href={`/item/${item._id}`}>{item.title}</Link>
+              <Link href={`/item/${item._id.toString()}`}>{item.title}</Link>
             </span>
           </td>
           <td>{item.author}</td>

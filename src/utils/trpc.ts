@@ -8,8 +8,8 @@ export const useBookmark = () => {
   const utils = trpc.useContext();
   const mutation = trpc.useMutation(["star"], {
     onSuccess(_input, vars) {
-      utils.invalidateQueries(["bookmarks"]);
-      utils.invalidateQueries(["searchItem", vars.id]);
+      void utils.invalidateQueries(["bookmarks"]);
+      void utils.invalidateQueries(["searchItem", vars.id]);
     },
   });
   const star = (id: string, starred: boolean) => {

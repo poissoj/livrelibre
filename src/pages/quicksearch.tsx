@@ -26,11 +26,12 @@ const SearchLoader = ({ search }: { search: string }) => {
 const QuickSearchPage = (): JSX.Element => {
   const router = useRouter();
   const { search } = router.query;
-  const title = `Recherche de "${search || ""}"`;
+  const searchValue = typeof search === "string" ? search : "";
+  const title = `Recherche de "${searchValue}"`;
   return (
     <div tw="margin-left[10%] margin-right[10%] flex flex-1 flex-col gap-lg">
       <Title>{title}</Title>
-      {typeof search === "string" ? <SearchLoader search={search} /> : null}
+      {searchValue ? <SearchLoader search={searchValue} /> : null}
     </div>
   );
 };

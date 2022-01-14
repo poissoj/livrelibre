@@ -1,6 +1,7 @@
 import { Bar, BarChart, LabelList, XAxis } from "recharts";
 
 const nf = Intl.NumberFormat();
+const format = nf.format.bind(nf);
 
 const SalesByDay = ({ days }: { days: { name: string; count: number }[] }) => (
   <BarChart data={days} width={800} height={300} id="sales-by-day-chart">
@@ -10,7 +11,7 @@ const SalesByDay = ({ days }: { days: { name: string; count: number }[] }) => (
         dataKey="count"
         position="insideTop"
         fill="white"
-        formatter={nf.format}
+        formatter={format}
       />
     </Bar>
   </BarChart>
