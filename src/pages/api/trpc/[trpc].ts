@@ -3,7 +3,7 @@ import { getBookmarks, starItem } from "@/server/bookmarks";
 import { getItems } from "@/server/items";
 import { getSales } from "@/server/sales";
 import { lastSales } from "@/server/lastSales";
-import { getItem, searchItems } from "@/server/searchItem";
+import { advancedSearch, getItem, searchItems } from "@/server/searchItem";
 import { getStats } from "@/server/stats";
 import * as trpc from "@trpc/server";
 import * as trpcNext from "@trpc/server/adapters/next";
@@ -34,6 +34,12 @@ export const appRouter = trpc
     input: z.string(),
     async resolve({ input }) {
       return await searchItems(input);
+    },
+  })
+  .query("advancedSearch", {
+    input: z.record(z.string()),
+    async resolve({ input }) {
+      return await advancedSearch(input);
     },
   })
   .query("items", {

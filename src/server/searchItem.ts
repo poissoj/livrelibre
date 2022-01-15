@@ -1,5 +1,5 @@
 import type { Item, ItemWithCount } from "@/utils/item";
-import { ObjectId } from "mongodb";
+import { Filter, ObjectId } from "mongodb";
 import { getDb } from "./database";
 
 export const getItem = async (id: string): Promise<ItemWithCount | null> => {
@@ -27,7 +27,6 @@ const norm = (str: string) =>
   str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
 const generateQuickSearchCriteria = (search: string) => {
-  // log.info('Search', search);
   let criteria;
   if (/^\d{13,}$/.test(search)) {
     criteria = { isbn: search.slice(0, 13) };
@@ -44,13 +43,48 @@ const generateQuickSearchCriteria = (search: string) => {
   return criteria;
 };
 
+const NORMALIZED_FIELDS = ["author", "title", "publisher", "distributor"];
+const IGNORECASE_FIELDS = [
+  "author",
+  "title",
+  "keywords",
+  "comments",
+  "publisher",
+  "distributor",
+];
+
+const capitalize = (txt: string) =>
+  txt ? `${txt[0].toUpperCase()}${txt.slice(1)}` : "";
+
+const generateSearchCriteria = (query: Record<string, string>) => {
+  const criteria: Record<string, string | RegExp | number>[] = [];
+  for (const field in query) {
+    let key = field;
+    let value: string | RegExp | number = query[field];
+    if (value === "") continue;
+    if (NORMALIZED_FIELDS.includes(field)) {
+      key = `nm${capitalize(field)}`;
+      value = norm(value);
+    }
+    if (IGNORECASE_FIELDS.includes(field)) {
+      value = new RegExp(sanitize(value), "i");
+    }
+    if (field === "amount") {
+      value = Number(value);
+    }
+    criteria.push({ [key]: value });
+  }
+  if (criteria.length === 0) {
+    criteria.push({});
+  }
+  return { $and: criteria };
+};
+
 const ITEMS_PER_PAGE = 50;
 
-export const searchItems = async (input: string, pageNumber = 1) => {
-  const search = input.trim();
-  const criteria = generateQuickSearchCriteria(search);
+const doSearch = async (criteria: Filter<Item>, pageNumber: number) => {
   const db = await getDb();
-  const count = await db.collection("books").countDocuments(criteria);
+  const count = await db.collection<Item>("books").countDocuments(criteria);
   const items = await db
     .collection<Item>("books")
     .find(criteria)
@@ -59,4 +93,18 @@ export const searchItems = async (input: string, pageNumber = 1) => {
     .limit(ITEMS_PER_PAGE)
     .toArray();
   return { items, count };
+};
+
+export const searchItems = async (input: string, pageNumber = 1) => {
+  const search = input.trim();
+  const criteria = generateQuickSearchCriteria(search);
+  return await doSearch(criteria, pageNumber);
+};
+
+export const advancedSearch = async (
+  query: Record<string, string>,
+  pageNumber = 1
+) => {
+  const criteria = generateSearchCriteria(query);
+  return await doSearch(criteria, pageNumber);
 };
