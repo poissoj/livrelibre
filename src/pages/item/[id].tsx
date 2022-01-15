@@ -109,10 +109,9 @@ const ItemLoader = ({ id }: { id: string }) => {
   const result = trpc.useQuery(["searchItem", id]);
 
   if (result.status === "error") {
-    const error = new Error("Impossible de récupérer les données");
     return (
       <Card title="Article en erreur" tw="flex-1">
-        <ErrorMessage error={error} />
+        <ErrorMessage />
       </Card>
     );
   }
@@ -167,8 +166,7 @@ const SalesSkeleton = () => (
 const Sales = ({ id }: { id: string }) => {
   const result = trpc.useQuery(["lastSales", id]);
   if (result.status === "error") {
-    const error = new Error("Impossible de récupérer les données");
-    return <ErrorMessage error={error} />;
+    return <ErrorMessage />;
   }
   if (result.status === "loading" || result.status === "idle") {
     return <SalesSkeleton />;

@@ -44,10 +44,9 @@ const ItemsLoader = () => {
   const result = trpc.useQuery(["items"]);
   const title = "Liste des articles";
   if (result.status === "error") {
-    const error = new Error("Impossible de récupérer les données");
     return (
       <ItemsCard title={title}>
-        <ErrorMessage error={error} />
+        <ErrorMessage />
       </ItemsCard>
     );
   }

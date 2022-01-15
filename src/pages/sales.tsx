@@ -37,8 +37,7 @@ const SalesSkeleton = (): JSX.Element => (
 const SalesLoader = (): JSX.Element | null => {
   const result = trpc.useQuery(["sales"]);
   if (result.status === "error") {
-    const error = new Error("Impossible de récupérer les données");
-    return <ErrorMessage error={error} />;
+    return <ErrorMessage />;
   }
   if (result.status === "loading") {
     return <SalesSkeleton />;

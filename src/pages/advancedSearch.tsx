@@ -23,11 +23,7 @@ const SearchLoader = ({ query }: { query: Record<string, string> }) => {
       subtitle={subtitle}
       tw="mb-lg max-h-full overflow-hidden flex flex-col"
     >
-      {result.isError ? (
-        <ErrorMessage
-          error={new Error("Impossible de récupérer les données")}
-        />
-      ) : null}
+      {result.isError ? <ErrorMessage /> : null}
       {result.isSuccess ? <ItemsTable items={result.data.items} /> : null}
     </Card>
   );

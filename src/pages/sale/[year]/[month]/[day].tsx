@@ -18,8 +18,7 @@ import { appRouter } from "@/pages/api/trpc/[trpc]";
 const TVALoader = ({ date }: { date: string }) => {
   const result = trpc.useQuery(["salesByDay", date]);
   if (result.isError) {
-    const error = new Error("Impossible de récupérer les données");
-    return <ErrorMessage error={error} />;
+    return <ErrorMessage />;
   }
   if (result.isLoading) {
     return <TVASkeleton />;
@@ -33,8 +32,7 @@ const TVALoader = ({ date }: { date: string }) => {
 const CategoriesLoader = ({ date }: { date: string }) => {
   const result = trpc.useQuery(["salesByDay", date]);
   if (result.isError) {
-    const error = new Error("Impossible de récupérer les données");
-    return <ErrorMessage error={error} />;
+    return <ErrorMessage />;
   }
   if (result.isLoading) {
     return <CategorySkeleton />;
@@ -117,8 +115,7 @@ const CardBody = tw.div`mt-md overflow-auto h-full pb-5 flex`;
 const SalesLoader = ({ date }: { date: string }) => {
   const result = trpc.useQuery(["salesByDay", date]);
   if (result.isError) {
-    const error = new Error("Impossible de récupérer les données");
-    return <ErrorMessage error={error} />;
+    return <ErrorMessage />;
   }
   if (result.isLoading) {
     return <p>Chargement…</p>;

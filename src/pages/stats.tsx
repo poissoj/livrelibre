@@ -62,8 +62,7 @@ const StatsLoader = () => {
   let hourSales: JSX.Element | null = null;
   let daySales: JSX.Element | null = null;
   if (result.status === "error") {
-    const error = new Error("Impossible de récupérer les données");
-    hourSales = <ErrorMessage error={error} />;
+    hourSales = <ErrorMessage />;
     daySales = hourSales;
   }
   if (result.status === "loading") {

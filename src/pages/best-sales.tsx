@@ -62,8 +62,7 @@ const BestSalesSkeleton = () => (
 const BestSalesLoader = () => {
   const result = trpc.useQuery(["bestsales"]);
   if (result.status === "error") {
-    const error = new Error("Impossible de récupérer les données");
-    return <ErrorMessage error={error} />;
+    return <ErrorMessage />;
   }
   if (result.status === "loading") {
     return <BestSalesSkeleton />;

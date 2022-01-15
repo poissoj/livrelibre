@@ -78,8 +78,7 @@ type MonthProps = {
 const SalesLoader = (props: MonthProps) => {
   const result = trpc.useQuery(["salesByMonth", props]);
   if (result.isError) {
-    const error = new Error("Impossible de récupérer les données");
-    return <ErrorMessage error={error} />;
+    return <ErrorMessage />;
   }
   if (result.isLoading) {
     return <SalesSkeleton />;
@@ -107,8 +106,7 @@ const SalesCard = () => {
 const TVALoader = (props: MonthProps) => {
   const result = trpc.useQuery(["salesByMonth", props]);
   if (result.isError) {
-    const error = new Error("Impossible de récupérer les données");
-    return <ErrorMessage error={error} />;
+    return <ErrorMessage />;
   }
   if (result.isLoading) {
     return <TVASkeleton />;
@@ -135,8 +133,7 @@ const TVACard = () => {
 const CategoriesLoader = (props: MonthProps) => {
   const result = trpc.useQuery(["salesByMonth", props]);
   if (result.isError) {
-    const error = new Error("Impossible de récupérer les données");
-    return <ErrorMessage error={error} />;
+    return <ErrorMessage />;
   }
   if (result.isLoading) {
     return <CategorySkeleton />;
