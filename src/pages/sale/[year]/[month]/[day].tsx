@@ -14,6 +14,7 @@ import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import type { GetStaticPaths, GetStaticProps } from "next";
 import { createSSGHelpers } from "@trpc/react/ssg";
 import { appRouter } from "@/pages/api/trpc/[trpc]";
+import { formatTVA } from "@/utils/tva";
 
 const TVALoader = ({ date }: { date: string }) => {
   const result = trpc.useQuery(["salesByDay", date]);
@@ -99,7 +100,7 @@ const SalesTables = ({ carts }: { carts: Carts }) => {
               <Cell>{"author" in sale ? sale.author : ""}</Cell>
               <Cell tw="text-right font-mono">{sale.quantity}</Cell>
               <Cell tw="text-right font-mono">{sale.price.toFixed(2)}€</Cell>
-              <Cell tw="text-right font-mono">{sale.tva}%</Cell>
+              <Cell tw="text-right font-mono">{formatTVA(sale.tva)}</Cell>
               <Cell tw="whitespace-nowrap">{sale.type}</Cell>
               <Cell tw="pr-3">{sale.deleted ? null : <DeleteSale />}</Cell>
             </SalesRow>

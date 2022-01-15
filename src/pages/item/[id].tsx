@@ -16,6 +16,7 @@ import { createSSGHelpers } from "@trpc/react/ssg";
 import { appRouter } from "@/pages/api/trpc/[trpc]";
 import type { GetStaticPaths, GetStaticProps } from "next";
 import { getBookmarks } from "@/server/bookmarks";
+import { formatTVA } from "@/utils/tva";
 
 const SalesByMonth = dynamic(() => import("@/components/Charts/SalesByMonth"));
 
@@ -55,7 +56,7 @@ const ItemDetails = ({ item }: { item: ItemWithCount }) => {
       <DT>Quantité</DT>
       <DD tw="font-mono">{item.amount}</DD>
       <DT>TVA</DT>
-      <DD tw="font-mono">{item.tva}%</DD>
+      <DD tw="font-mono">{formatTVA(item.tva)}</DD>
       <DT>Vendu</DT>
       <DD>
         <span tw="font-mono">{item.count}</span> fois

@@ -1,10 +1,10 @@
 import type { InferQueryOutput } from "@/utils/trpc";
+import { formatTVA } from "@/utils/tva";
 import tw from "twin.macro";
 
 export const StickyTh = tw.th`sticky top-0 bg-white`;
 
 type TStats = InferQueryOutput<"salesByMonth">["stats"];
-const formatTVA = (tva: string) => (tva === "Inconnu" ? tva : `${tva}%`);
 
 export const StatsByTVA = ({ stats }: { stats: TStats }) => {
   return (

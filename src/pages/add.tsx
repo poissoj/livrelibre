@@ -78,10 +78,10 @@ const Add = (): JSX.Element => {
               </FormRow>
               <FormRow label="TVA">
                 <Select name="tva" defaultValue="5.5" tw="font-mono">
-                  <option value="20">20%</option>
+                  <option value="20">20.0%</option>
                   <option value="5.5">5.5%</option>
                   <option value="2.1">2.1%</option>
-                  <option value="0">0%</option>
+                  <option value="0">0.0%</option>
                 </Select>
               </FormRow>
             </Column>

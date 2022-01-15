@@ -88,10 +88,10 @@ const Search = (): JSX.Element => {
               <FormRow label="TVA">
                 <Select {...register("tva")} defaultValue="" tw="font-mono">
                   <option value="">--ignorer--</option>
-                  <option value="20">20%</option>
+                  <option value="20">20.0%</option>
                   <option value="5.5">5.5%</option>
                   <option value="2.1">2.1%</option>
-                  <option value="0">0%</option>
+                  <option value="0">0.0%</option>
                 </Select>
               </FormRow>
             </Column>
