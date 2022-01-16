@@ -24,9 +24,9 @@ export const QuickSearch = (): JSX.Element => {
         type="text"
         placeholder="ISBN, titre, auteur"
         name="search"
-        tw="flex-1"
+        tw="flex-1 padding[4px 6px] focus:(border-white)"
       />
-      <ButtonWithInput aria-label="Rechercher">
+      <ButtonWithInput type="submit" aria-label="Rechercher">
         <FontAwesomeIcon icon={faSearch} tw="mx-1" />
       </ButtonWithInput>
     </form>
