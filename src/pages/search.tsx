@@ -67,6 +67,7 @@ const Search = (): JSX.Element => {
                   {...register("purchasePrice")}
                   min={0}
                   step={0.01}
+                  tw="font-mono"
                 />
               </FormRow>
               <FormRow label="Prix de vente">
@@ -75,6 +76,7 @@ const Search = (): JSX.Element => {
                   {...register("price")}
                   min={0}
                   step={0.01}
+                  tw="font-mono"
                 />
               </FormRow>
               <FormRow label="Quantité">
