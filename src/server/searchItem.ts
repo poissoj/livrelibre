@@ -1,4 +1,5 @@
 import type { Item, ItemWithCount } from "@/utils/item";
+import { norm } from "@/utils/utils";
 import { Filter, ObjectId } from "mongodb";
 import { getDb } from "./database";
 
@@ -21,10 +22,6 @@ export const getItem = async (id: string): Promise<ItemWithCount | null> => {
 };
 
 const sanitize = (str: string) => str.replace(/[#-.]|[[-^]|[?|{}]/g, "\\$&");
-
-// Remove diacritics
-const norm = (str: string) =>
-  str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
 const generateQuickSearchCriteria = (search: string) => {
   let criteria;

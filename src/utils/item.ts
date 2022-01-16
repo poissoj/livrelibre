@@ -12,10 +12,10 @@ export const ITEM_TYPES: Record<string, string> = {
 
 export type ItemType = keyof typeof ITEM_TYPES;
 
-export type TVA = "0" | "2.1" | "5.5" | "20";
+export const TVAValues = ["0", "2.1", "5.5", "20"] as const;
+export type TVA = typeof TVAValues[number];
 
-export type Item = {
-  _id: ObjectId;
+export type BaseItem = {
   type: ItemType;
   isbn: string;
   author: string;
@@ -29,7 +29,10 @@ export type Item = {
   price: string;
   amount: number;
   tva: TVA;
-  ordered: boolean;
+};
+
+export type Item = BaseItem & {
+  _id: ObjectId;
   starred: boolean;
   nmAuthor: string;
   nmTitle: string;

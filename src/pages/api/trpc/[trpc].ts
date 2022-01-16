@@ -11,6 +11,24 @@ import { ObjectId } from "mongodb";
 import { z } from "zod";
 import { getSalesByMonth } from "@/server/salesByMonth";
 import { getSalesByDay } from "@/server/salesByDay";
+import { addItem } from "@/server/addItem";
+import { TVAValues } from "@/utils/item";
+
+const itemSchema = z.object({
+  type: z.string(),
+  isbn: z.string(),
+  author: z.string(),
+  title: z.string(),
+  publisher: z.string(),
+  distributor: z.string(),
+  keywords: z.string(),
+  datebought: z.string(),
+  comments: z.string(),
+  prix_achat: z.string(),
+  price: z.string(),
+  amount: z.number(),
+  tva: z.enum(TVAValues),
+});
 
 export const appRouter = trpc
   .router()
@@ -85,6 +103,12 @@ export const appRouter = trpc
     }),
     async resolve({ input }) {
       return await starItem(new ObjectId(input.id), input.starred);
+    },
+  })
+  .mutation("addItem", {
+    input: itemSchema,
+    async resolve({ input }) {
+      return await addItem(input);
     },
   });
 
