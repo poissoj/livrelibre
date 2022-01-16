@@ -30,6 +30,7 @@ const BookmarksContent = ({
             tw="p-xs mr-xs"
             name="Ajouter au panier"
             title="Ajouter au panier"
+            type="button"
           >
             <FontAwesomeIcon icon={faCartPlus} />
           </button>

@@ -97,7 +97,7 @@ const Search = (): JSX.Element => {
             </Column>
           </div>
           <div tw="border-top[1px solid #ddd] mt-sm flex justify-content[flex-end] padding[16px 8px 8px 0]">
-            <Button tw="px-md">
+            <Button type="submit" tw="px-md">
               <FontAwesomeIcon icon={faSearch} tw="mr-sm" />
               Rechercher
             </Button>

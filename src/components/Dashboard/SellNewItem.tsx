@@ -11,7 +11,7 @@ export const SellNewItem = (): JSX.Element => (
   <Card title="Vendre un article non répertorié" tw="mb-lg">
     <form tw="flex flex-col flex-1">
       <FormRow label="Prix">
-        <Input type="text" name="price" />
+        <Input type="number" name="price" />
       </FormRow>
       <FormRow label="Titre">
         <Input type="text" name="title" placeholder="Article indépendant" />
@@ -33,7 +33,7 @@ export const SellNewItem = (): JSX.Element => (
           <option value="0">0.0%</option>
         </Select>
       </FormRow>
-      <Button disabled tw="align-self[center]">
+      <Button type="submit" disabled tw="align-self[center]">
         <FontAwesomeIcon icon={faCartPlus} tw="mr-sm" />
         Ajouter au panier
       </Button>

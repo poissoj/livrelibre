@@ -13,7 +13,7 @@ const DilicomImport = () => (
         <input type="file" tw="ml-2" />
       </label>
       <div tw="border-t border-color[#ddd] pt-3 my-2">
-        <Button tw="px-4">
+        <Button tw="px-4" type="submit">
           <FontAwesomeIcon icon={faUpload} tw="mr-2" />
           Envoyer
         </Button>
