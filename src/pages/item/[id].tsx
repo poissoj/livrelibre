@@ -17,6 +17,7 @@ import { appRouter } from "@/pages/api/trpc/[trpc]";
 import type { GetStaticPaths, GetStaticProps } from "next";
 import { getBookmarks } from "@/server/bookmarks";
 import { formatTVA } from "@/utils/tva";
+import { createContext } from "@/server/context";
 
 const SalesByMonth = dynamic(() => import("@/components/Charts/SalesByMonth"));
 
@@ -203,7 +204,7 @@ export default ItemPage;
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = createSSGHelpers({
     router: appRouter,
-    ctx: {},
+    ctx: await createContext(),
   });
   const id = context.params?.id;
   if (typeof id === "string") {

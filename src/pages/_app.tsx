@@ -3,13 +3,20 @@ import type { AppProps } from "next/dist/shared/lib/router/router";
 import GlobalStyles from "@/components/GlobalStyles";
 import Layout from "@/components/Layout/Layout";
 import type { AppRouter } from "@/pages/api/trpc/[trpc]";
+import React from "react";
+import useUser from "@/lib/useUser";
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
+  const { isLoggedIn } = useUser({ redirectTo: "/login" });
+  const PageLayout =
+    "isPublic" in Component || !isLoggedIn ? React.Fragment : Layout;
+  const showComponent = "isPublic" in Component ? true : isLoggedIn;
+
   return (
-    <Layout>
+    <PageLayout>
       <GlobalStyles />
-      <Component {...pageProps} />
-    </Layout>
+      {showComponent && <Component {...pageProps} />}
+    </PageLayout>
   );
 }
 

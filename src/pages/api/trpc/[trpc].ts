@@ -13,6 +13,7 @@ import { getSalesByMonth } from "@/server/salesByMonth";
 import { getSalesByDay } from "@/server/salesByDay";
 import { addItem } from "@/server/addItem";
 import { TVAValues } from "@/utils/item";
+import { Context, createContext } from "@/server/context";
 
 const itemSchema = z.object({
   type: z.string(),
@@ -31,7 +32,7 @@ const itemSchema = z.object({
 });
 
 export const appRouter = trpc
-  .router()
+  .router<Context>()
   .query("bookmarks", {
     async resolve() {
       return await getBookmarks();
@@ -96,6 +97,11 @@ export const appRouter = trpc
       return await getSalesByDay(input);
     },
   })
+  .query("user", {
+    resolve({ ctx }) {
+      return ctx.user;
+    },
+  })
   .mutation("star", {
     input: z.object({
       id: z.string().length(24),
@@ -118,5 +124,5 @@ export type AppRouter = typeof appRouter;
 // export API handler
 export default trpcNext.createNextApiHandler({
   router: appRouter,
-  createContext: () => null,
+  createContext,
 });

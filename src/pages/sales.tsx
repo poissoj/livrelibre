@@ -11,6 +11,7 @@ import type { GetStaticPropsResult } from "next";
 import type { DehydratedState } from "react-query";
 import { createSSGHelpers } from "@trpc/react/ssg";
 import { appRouter } from "@/pages/api/trpc/[trpc]";
+import { createContext } from "@/server/context";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
 
@@ -106,7 +107,7 @@ export const getStaticProps = async (): Promise<
 > => {
   const ssg = createSSGHelpers({
     router: appRouter,
-    ctx: {},
+    ctx: await createContext(),
   });
   await ssg.fetchQuery("sales");
   return {

@@ -15,6 +15,7 @@ import type { GetStaticPaths, GetStaticProps } from "next";
 import { createSSGHelpers } from "@trpc/react/ssg";
 import { appRouter } from "@/pages/api/trpc/[trpc]";
 import { formatTVA } from "@/utils/tva";
+import { createContext } from "@/server/context";
 
 const TVALoader = ({ date }: { date: string }) => {
   const result = trpc.useQuery(["salesByDay", date]);
@@ -166,7 +167,7 @@ export default SalesByDay;
 export const getStaticProps: GetStaticProps = async (context) => {
   const ssg = createSSGHelpers({
     router: appRouter,
-    ctx: {},
+    ctx: await createContext(),
   });
   const year = context.params?.year;
   const month = context.params?.month;
