@@ -1,5 +1,5 @@
 import "twin.macro";
-import { Card } from "@/components/Card";
+import { Card, CardBody, CardTitle } from "@/components/Card";
 import { Title } from "@/components/Title";
 import { useRouter } from "next/router";
 import { trpc } from "@/utils/trpc";
@@ -13,12 +13,12 @@ const SearchLoader = ({ search }: { search: string }) => {
     subtitle = `${count} résultat${count > 1 ? "s" : ""} pour ${search}`;
   }
   return (
-    <Card
-      title="Recherche rapide"
-      subtitle={subtitle}
-      tw="mb-lg max-h-full overflow-hidden flex flex-col"
-    >
-      {result.isSuccess ? <ItemsTable items={result.data.items} /> : null}
+    <Card tw="mb-lg max-h-full overflow-hidden flex flex-col">
+      <CardTitle>Recherche rapide</CardTitle>
+      {subtitle}
+      <CardBody>
+        {result.isSuccess ? <ItemsTable items={result.data.items} /> : null}
+      </CardBody>
     </Card>
   );
 };

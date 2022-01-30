@@ -1,5 +1,5 @@
 import tw from "twin.macro";
-import { Card } from "@/components/Card";
+import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { CategoriesTable } from "@/components/PaymentStats/CategoriesTable";
 import { CategorySkeleton } from "@/components/PaymentStats/CategorySkeleton";
@@ -112,8 +112,6 @@ const SalesTables = ({ carts }: { carts: Carts }) => {
   );
 };
 
-const CardBody = tw.div`mt-md overflow-auto h-full pb-5 flex`;
-
 const SalesLoader = ({ date }: { date: string }) => {
   const result = trpc.useQuery(["salesByDay", date]);
   if (result.isError) {
@@ -126,12 +124,11 @@ const SalesLoader = ({ date }: { date: string }) => {
     return null;
   }
   return (
-    <Card
-      title={`Ventes du ${date} (${result.data.salesCount})`}
-      tw="flex-1 flex-basis[100%] h-full overflow-hidden"
-      BodyWrapper={CardBody}
-    >
-      <SalesTables carts={result.data.carts} />
+    <Card tw="flex-1 flex-basis[100%] h-full overflow-hidden">
+      <CardTitle>{`Ventes du ${date} (${result.data.salesCount})`}</CardTitle>
+      <CardBody tw="h-full pb-5">
+        <SalesTables carts={result.data.carts} />
+      </CardBody>
     </Card>
   );
 };
@@ -151,11 +148,17 @@ const SalesByDay = (): JSX.Element | null => {
   return (
     <div tw="flex align-items[flex-start] gap-lg flex-1 flex-wrap overflow-auto h-full">
       <Title>{title}</Title>
-      <Card title="Répartition par TVA" tw="flex-1">
-        <TVALoader date={date} />
+      <Card tw="flex-1">
+        <CardTitle>Répartition par TVA</CardTitle>
+        <CardBody>
+          <TVALoader date={date} />
+        </CardBody>
       </Card>
-      <Card title="Répartition par type de paiement" tw="flex-1">
-        <CategoriesLoader date={date} />
+      <Card tw="flex-1">
+        <CardTitle>Répartition par type de paiement</CardTitle>
+        <CardBody>
+          <CategoriesLoader date={date} />
+        </CardBody>
       </Card>
       <SalesLoader date={date} />
     </div>

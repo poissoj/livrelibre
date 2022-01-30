@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
-import { Card } from "@/components/Card";
+import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { Input, Select, Textarea } from "@/components/FormControls";
 import { Title } from "@/components/Title";
 import { FormRow } from "@/components/FormRow";
@@ -21,89 +21,92 @@ const Search = (): JSX.Element => {
   return (
     <div tw="margin-left[10%] margin-right[10%] flex-1">
       <Title>Chercher un article</Title>
-      <Card title="Chercher un article" tw="mb-lg">
+      <Card tw="mb-lg">
+        <CardTitle>Chercher un article</CardTitle>
         <form tw="flex-1" onSubmit={handleSubmit(onSubmit)}>
-          <div tw="flex flex-wrap">
-            <Column>
-              <FormRow label="Type">
-                <Select defaultValue="" {...register("type")}>
-                  <option value="">--ignorer--</option>
-                  {Object.entries(ITEM_TYPES).map(([key, label]) => (
-                    <option value={key} key={key}>
-                      {label}
-                    </option>
-                  ))}
-                </Select>
-              </FormRow>
-              <FormRow label="ISBN">
-                <Input type="text" maxLength={13} {...register("isbn")} />
-              </FormRow>
-              <FormRow label="Auteur">
-                <Input type="text" {...register("author")} />
-              </FormRow>
-              <FormRow label="Titre">
-                <Input type="text" {...register("title")} />
-              </FormRow>
-              <FormRow label="Éditeur">
-                <Input type="text" {...register("publisher")} />
-              </FormRow>
-              <FormRow label="Distributeur">
-                <Input type="text" {...register("distributor")} />
-              </FormRow>
-              <FormRow label="Mots-clés">
-                <Input type="text" {...register("keywords")} />
-              </FormRow>
-            </Column>
-            <Column>
-              <FormRow label="Date d&rsquo;achat">
-                <Input type="text" {...register("datebought")} />
-              </FormRow>
-              <FormRow label="Commentaires">
-                <Textarea {...register("comments")} />
-              </FormRow>
-              <FormRow label="Prix d&rsquo;achat">
-                <Input
-                  type="number"
-                  {...register("purchasePrice")}
-                  min={0}
-                  step={0.01}
-                  tw="font-mono"
-                />
-              </FormRow>
-              <FormRow label="Prix de vente">
-                <Input
-                  type="number"
-                  {...register("price")}
-                  min={0}
-                  step={0.01}
-                  tw="font-mono"
-                />
-              </FormRow>
-              <FormRow label="Quantité">
-                <Input
-                  type="number"
-                  {...register("amount")}
-                  min={0}
-                  tw="font-mono"
-                />
-              </FormRow>
-              <FormRow label="TVA">
-                <Select {...register("tva")} defaultValue="" tw="font-mono">
-                  <option value="">--ignorer--</option>
-                  <option value="20">20.0%</option>
-                  <option value="5.5">5.5%</option>
-                  <option value="2.1">2.1%</option>
-                  <option value="0">0.0%</option>
-                </Select>
-              </FormRow>
-            </Column>
-          </div>
-          <div tw="border-top[1px solid #ddd] mt-sm flex justify-content[flex-end] padding[16px 8px 8px 0]">
-            <Button type="submit" tw="px-md">
-              <FontAwesomeIcon icon={faSearch} tw="mr-sm" />
-              Rechercher
-            </Button>
-          </div>
+          <CardBody tw="flex-col">
+            <div tw="flex flex-wrap">
+              <Column>
+                <FormRow label="Type">
+                  <Select defaultValue="" {...register("type")}>
+                    <option value="">--ignorer--</option>
+                    {Object.entries(ITEM_TYPES).map(([key, label]) => (
+                      <option value={key} key={key}>
+                        {label}
+                      </option>
+                    ))}
+                  </Select>
+                </FormRow>
+                <FormRow label="ISBN">
+                  <Input type="text" maxLength={13} {...register("isbn")} />
+                </FormRow>
+                <FormRow label="Auteur">
+                  <Input type="text" {...register("author")} />
+                </FormRow>
+                <FormRow label="Titre">
+                  <Input type="text" {...register("title")} />
+                </FormRow>
+                <FormRow label="Éditeur">
+                  <Input type="text" {...register("publisher")} />
+                </FormRow>
+                <FormRow label="Distributeur">
+                  <Input type="text" {...register("distributor")} />
+                </FormRow>
+                <FormRow label="Mots-clés">
+                  <Input type="text" {...register("keywords")} />
+                </FormRow>
+              </Column>
+              <Column>
+                <FormRow label="Date d&rsquo;achat">
+                  <Input type="text" {...register("datebought")} />
+                </FormRow>
+                <FormRow label="Commentaires">
+                  <Textarea {...register("comments")} />
+                </FormRow>
+                <FormRow label="Prix d&rsquo;achat">
+                  <Input
+                    type="number"
+                    {...register("purchasePrice")}
+                    min={0}
+                    step={0.01}
+                    tw="font-mono"
+                  />
+                </FormRow>
+                <FormRow label="Prix de vente">
+                  <Input
+                    type="number"
+                    {...register("price")}
+                    min={0}
+                    step={0.01}
+                    tw="font-mono"
+                  />
+                </FormRow>
+                <FormRow label="Quantité">
+                  <Input
+                    type="number"
+                    {...register("amount")}
+                    min={0}
+                    tw="font-mono"
+                  />
+                </FormRow>
+                <FormRow label="TVA">
+                  <Select {...register("tva")} defaultValue="" tw="font-mono">
+                    <option value="">--ignorer--</option>
+                    <option value="20">20.0%</option>
+                    <option value="5.5">5.5%</option>
+                    <option value="2.1">2.1%</option>
+                    <option value="0">0.0%</option>
+                  </Select>
+                </FormRow>
+              </Column>
+            </div>
+            <CardFooter tw="flex justify-end">
+              <Button type="submit" tw="px-md">
+                <FontAwesomeIcon icon={faSearch} tw="mr-sm" />
+                Rechercher
+              </Button>
+            </CardFooter>
+          </CardBody>
         </form>
       </Card>
     </div>

@@ -1,5 +1,5 @@
 import { Title } from "@/components/Title";
-import { Card } from "@/components/Card";
+import { Card, CardBody, CardTitle } from "@/components/Card";
 import tw from "twin.macro";
 import { trpc } from "@/utils/trpc";
 import { ErrorMessage } from "@/components/ErrorMessage";
@@ -91,11 +91,11 @@ const SalesTable = ({ sales }: { sales: Sale[] }): JSX.Element => {
 const Sales = (): JSX.Element => (
   <div tw="margin-left[10%] margin-right[10%] flex-1">
     <Title>Liste des ventes par mois</Title>
-    <Card
-      title="Liste des ventes par mois"
-      tw="mb-lg max-h-full overflow-hidden flex flex-col"
-    >
-      <SalesLoader />
+    <Card tw="mb-lg max-h-full overflow-hidden flex flex-col">
+      <CardTitle>Liste des ventes par mois</CardTitle>
+      <CardBody>
+        <SalesLoader />
+      </CardBody>
     </Card>
   </div>
 );

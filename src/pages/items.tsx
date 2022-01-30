@@ -1,7 +1,7 @@
 import "twin.macro";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Title } from "@/components/Title";
-import { Card } from "@/components/Card";
+import { Card, CardBody, CardTitle } from "@/components/Card";
 import { trpc } from "@/utils/trpc";
 import React, { PropsWithChildren } from "react";
 import ContentLoader from "react-content-loader";
@@ -12,12 +12,10 @@ const ItemsCard = ({
   subtitle,
   children,
 }: PropsWithChildren<{ title: string; subtitle?: React.ReactNode }>) => (
-  <Card
-    title={title}
-    subtitle={subtitle}
-    tw="mb-lg max-h-full overflow-hidden flex flex-col"
-  >
-    {children}
+  <Card tw="mb-lg max-h-full overflow-hidden flex flex-col">
+    <CardTitle>{title}</CardTitle>
+    {subtitle}
+    <CardBody>{children}</CardBody>
   </Card>
 );
 

@@ -1,7 +1,7 @@
 import tw from "twin.macro";
 import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
-import { Card } from "@/components/Card";
+import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import type { Item } from "@/utils/item";
 import Link from "next/link";
@@ -76,11 +76,11 @@ const BestSalesLoader = () => {
 const BestSales = (): JSX.Element => (
   <div tw="margin-left[10%] margin-right[10%] flex flex-1 flex-col gap-lg">
     <Title>Meilleurs ventes</Title>
-    <Card
-      title="Meilleures ventes"
-      tw="mb-lg max-h-full overflow-hidden flex flex-col"
-    >
-      <BestSalesLoader />
+    <Card tw="mb-lg max-h-full overflow-hidden flex flex-col">
+      <CardTitle>Meilleures ventes</CardTitle>
+      <CardBody>
+        <BestSalesLoader />
+      </CardBody>
     </Card>
   </div>
 );

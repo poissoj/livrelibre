@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Card } from "@/components/Card";
+import { Card, CardBody, CardTitle } from "@/components/Card";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCartPlus, faStar } from "@fortawesome/free-solid-svg-icons";
 import "twin.macro";
@@ -64,10 +64,10 @@ const BookmarksLoader = (): JSX.Element | null => {
 };
 
 export const Bookmarks = (): JSX.Element => (
-  <Card
-    title="Favoris"
-    tw="flex-1 max-h-full overflow-hidden flex flex-col min-width[24rem]"
-  >
-    <BookmarksLoader />
+  <Card tw="flex-1 max-h-full overflow-hidden flex flex-col min-width[24rem]">
+    <CardTitle>Favoris</CardTitle>
+    <CardBody>
+      <BookmarksLoader />
+    </CardBody>
   </Card>
 );

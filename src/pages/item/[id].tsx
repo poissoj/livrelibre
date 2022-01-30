@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { NoResults } from "@/components/NoResults";
 import { Title } from "@/components/Title";
-import { Card } from "@/components/Card";
+import { Card, CardBody, CardTitle } from "@/components/Card";
 import { trpc, useBookmark } from "@/utils/trpc";
 import { ItemWithCount, ITEM_TYPES } from "@/utils/item";
 import tw from "twin.macro";
@@ -89,7 +89,7 @@ const TitleWithButtons = ({ item }: { item: ItemWithCount }) => {
 
   return (
     <div tw="flex align-items[center]">
-      <h3 tw="text-2xl font-bold mr-auto">{item.title}</h3>
+      <CardTitle tw="mr-auto">{item.title}</CardTitle>
       <Button
         type="button"
         title={item.starred ? "Enlever des favoris" : "Ajouter aux favoris"}
@@ -112,26 +112,38 @@ const ItemLoader = ({ id }: { id: string }) => {
 
   if (result.status === "error") {
     return (
-      <Card title="Article en erreur" tw="flex-1">
-        <ErrorMessage />
+      <Card tw="flex-1">
+        <CardTitle>Article en erreur</CardTitle>
+        <CardBody>
+          <ErrorMessage />
+        </CardBody>
       </Card>
     );
   }
   if (result.status === "success") {
     return result.data ? (
-      <Card tw="flex-1" subtitle={<TitleWithButtons item={result.data} />}>
+      <Card tw="flex-1">
         <Title>{`${result.data.title} | Voir un article`}</Title>
-        <ItemDetails item={result.data} />
+        <TitleWithButtons item={result.data} />
+        <CardBody>
+          <ItemDetails item={result.data} />
+        </CardBody>
       </Card>
     ) : (
-      <Card title="Article introuvable" tw="flex-1">
-        <NoResults />
+      <Card tw="flex-1">
+        <CardTitle>Article introuvable</CardTitle>
+        <CardBody>
+          <NoResults />
+        </CardBody>
       </Card>
     );
   }
   return (
-    <Card title="Chargement…" tw="flex-1">
-      <ItemSkeleton />
+    <Card tw="flex-1">
+      <CardTitle>Chargement…</CardTitle>
+      <CardBody>
+        <ItemSkeleton />
+      </CardBody>
     </Card>
   );
 };
@@ -144,8 +156,11 @@ const ItemCard = () => {
   }
   if (!/^[a-f\d]{24}$/i.test(id)) {
     return (
-      <Card title="Article introuvable" tw="flex-1">
-        <NoResults />
+      <Card tw="flex-1">
+        <CardTitle>Article introuvable</CardTitle>
+        <CardBody>
+          <NoResults />
+        </CardBody>
       </Card>
     );
   }
@@ -183,8 +198,11 @@ const SalesCard = () => {
     return null;
   }
   return (
-    <Card title="Ventes des 2 dernières années" tw="mb-lg">
-      <Sales id={id} />
+    <Card tw="mb-lg">
+      <CardTitle>Ventes des 2 dernières années</CardTitle>
+      <CardBody>
+        <Sales id={id} />
+      </CardBody>
     </Card>
   );
 };

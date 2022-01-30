@@ -1,6 +1,6 @@
 import tw from "twin.macro";
 import { Title } from "@/components/Title";
-import { Card } from "@/components/Card";
+import { Card, CardBody, CardTitle } from "@/components/Card";
 import { useRouter } from "next/router";
 import { InferQueryOutput, trpc } from "@/utils/trpc";
 import Link from "next/link";
@@ -98,8 +98,11 @@ const SalesCard = () => {
   }
   const title = `Liste des ventes du ${month}/${year}`;
   return (
-    <Card title={title} tw="flex flex-col flex-1 max-h-full overflow-hidden">
-      <SalesLoader month={month} year={year} />
+    <Card tw="flex flex-col flex-1 max-h-full overflow-hidden">
+      <CardTitle>{title}</CardTitle>
+      <CardBody>
+        <SalesLoader month={month} year={year} />
+      </CardBody>
     </Card>
   );
 };
@@ -125,8 +128,11 @@ const TVACard = () => {
     return null;
   }
   return (
-    <Card title="Répartition par TVA" tw="min-height[12rem] flex flex-col">
-      <TVALoader month={month} year={year} />
+    <Card tw="min-height[12rem] flex flex-col">
+      <CardTitle>Répartition par TVA</CardTitle>
+      <CardBody>
+        <TVALoader month={month} year={year} />
+      </CardBody>
     </Card>
   );
 };
@@ -152,8 +158,11 @@ const CategoriesCard = () => {
     return null;
   }
   return (
-    <Card title="Répartition par catégorie">
-      <CategoriesLoader month={month} year={year} />
+    <Card>
+      <CardTitle>Répartition par catégorie</CardTitle>
+      <CardBody>
+        <CategoriesLoader month={month} year={year} />
+      </CardBody>
     </Card>
   );
 };

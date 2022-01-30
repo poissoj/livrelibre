@@ -1,4 +1,4 @@
-import { Card } from "@/components/Card";
+import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
@@ -85,8 +85,14 @@ const StatsLoader = () => {
   }
   return (
     <>
-      <Card title="Nombre de ventes par heure">{hourSales}</Card>
-      <Card title="Nombre de ventes par jour">{daySales}</Card>
+      <Card>
+        <CardTitle>Nombre de ventes par heure</CardTitle>
+        <CardBody>{hourSales}</CardBody>
+      </Card>
+      <Card>
+        <CardTitle>Nombre de ventes par jour</CardTitle>
+        <CardBody>{daySales}</CardBody>
+      </Card>
     </>
   );
 };

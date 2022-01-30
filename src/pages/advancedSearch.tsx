@@ -1,5 +1,5 @@
 import "twin.macro";
-import { Card } from "@/components/Card";
+import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { ItemsTable } from "@/components/ItemsTable";
 import { Title } from "@/components/Title";
@@ -18,13 +18,13 @@ const SearchLoader = ({ query }: { query: Record<string, string> }) => {
     subtitle = `${count} résultat${count > 1 ? "s" : ""} pour ${search}`;
   }
   return (
-    <Card
-      title="Recherche avancée"
-      subtitle={subtitle}
-      tw="mb-lg max-h-full overflow-hidden flex flex-col"
-    >
-      {result.isError ? <ErrorMessage /> : null}
-      {result.isSuccess ? <ItemsTable items={result.data.items} /> : null}
+    <Card tw="mb-lg max-h-full overflow-hidden flex flex-col">
+      <CardTitle>Recherche avancée</CardTitle>
+      {subtitle}
+      <CardBody>
+        {result.isError ? <ErrorMessage /> : null}
+        {result.isSuccess ? <ItemsTable items={result.data.items} /> : null}
+      </CardBody>
     </Card>
   );
 };
