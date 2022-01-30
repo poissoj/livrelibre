@@ -6,7 +6,7 @@ import React from "react";
 const StickyTh = tw.th`sticky top-0 bg-white`;
 
 export const ItemsTable = ({ items }: { items: Item[] }) => (
-  <table tw="flex-1 border-collapse[separate] border-spacing[2px 0.5rem]">
+  <table tw="flex-1 border-separate border-spacing[2px 0.5rem]">
     <thead>
       <tr>
         <StickyTh tw="text-left">Distributeur</StickyTh>

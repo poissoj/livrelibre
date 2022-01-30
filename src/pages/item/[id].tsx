@@ -88,7 +88,7 @@ const TitleWithButtons = ({ item }: { item: ItemWithCount }) => {
   const handleClick = () => star(item._id.toString(), !item.starred);
 
   return (
-    <div tw="flex align-items[center]">
+    <div tw="flex items-center">
       <CardTitle tw="mr-auto">{item.title}</CardTitle>
       <Button
         type="button"
@@ -208,7 +208,7 @@ const SalesCard = () => {
 };
 
 const ItemPage = (): JSX.Element => (
-  <div tw="flex align-items[flex-start] gap-lg flex-1 flex-wrap">
+  <div tw="flex items-start gap-lg flex-1 flex-wrap">
     <Title>Voir un article</Title>
     <ItemCard />
     <div tw="flex flex-col gap-lg flex-1">

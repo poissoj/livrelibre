@@ -8,7 +8,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import * as React from "react";
 import tw from "twin.macro";
 
-const BasicAlert = tw.div`p-sm border border-radius[4px] flex align-items[center]`;
+const BasicAlert = tw.div`p-sm border border-radius[4px] flex items-center`;
 
 const AlertSuccess = tw(
   BasicAlert

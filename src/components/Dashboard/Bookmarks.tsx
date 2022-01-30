@@ -23,7 +23,7 @@ const BookmarksContent = ({
           key={bookmark._id}
           tw="flex text-primary-dark hover:bg-gray-light pl-sm pr-xs"
         >
-          <span tw="flex flex-1 align-items[center] text-primary-darkest">
+          <span tw="flex flex-1 items-center text-primary-darkest">
             <Link href={`/item/${bookmark._id}`}>{bookmark.title}</Link>
           </span>
           <button

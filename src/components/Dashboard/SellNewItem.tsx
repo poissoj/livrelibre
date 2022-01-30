@@ -35,7 +35,7 @@ export const SellNewItem = (): JSX.Element => (
             <option value="0">0.0%</option>
           </Select>
         </FormRow>
-        <Button type="submit" disabled tw="align-self[center]">
+        <Button type="submit" disabled tw="self-center">
           <FontAwesomeIcon icon={faCartPlus} tw="mr-sm" />
           Ajouter au panier
         </Button>

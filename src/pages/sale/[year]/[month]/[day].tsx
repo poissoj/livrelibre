@@ -146,7 +146,7 @@ const SalesByDay = (): JSX.Element | null => {
   const date = `${day}/${month}/${year}`;
   const title = `Liste des ventes du ${date}`;
   return (
-    <div tw="flex align-items[flex-start] gap-lg flex-1 flex-wrap overflow-auto h-full">
+    <div tw="flex items-start gap-lg flex-1 flex-wrap overflow-auto h-full">
       <Title>{title}</Title>
       <Card tw="flex-1">
         <CardTitle>Répartition par TVA</CardTitle>

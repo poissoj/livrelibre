@@ -169,7 +169,7 @@ const CategoriesCard = () => {
 
 const SalesByMonth = (): JSX.Element => {
   return (
-    <div tw="flex align-items[flex-start] gap-lg flex-1 flex-wrap">
+    <div tw="flex items-start gap-lg flex-1 flex-wrap">
       <Title>Voir un article</Title>
       <SalesCard />
       <div tw="flex flex-col gap-lg flex-1 max-h-full">
