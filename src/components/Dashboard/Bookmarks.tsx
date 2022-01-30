@@ -1,12 +1,39 @@
 import Link from "next/link";
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartPlus, faStar } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCartPlus,
+  faSpinner,
+  faStar,
+} from "@fortawesome/free-solid-svg-icons";
 import "twin.macro";
 import { trpc, useBookmark } from "@/utils/trpc";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import type { Bookmark } from "@/server/bookmarks";
 import { BookmarksSkeleton } from "./BookmarksSkeleton";
+
+const AddToCartButton = ({ itemId }: { itemId: string }) => {
+  const utils = trpc.useContext();
+  const { mutate, isLoading } = trpc.useMutation("addToCart", {
+    async onSuccess() {
+      await utils.invalidateQueries("cart");
+    },
+  });
+  return (
+    <button
+      tw="p-xs mr-xs"
+      name="Ajouter au panier"
+      title="Ajouter au panier"
+      type="button"
+      onClick={() => mutate(itemId)}
+    >
+      <FontAwesomeIcon
+        icon={isLoading ? faSpinner : faCartPlus}
+        spin={isLoading}
+      />
+    </button>
+  );
+};
 
 type BookmarksContentProps = {
   bookmarks: Bookmark[];
@@ -26,14 +53,7 @@ const BookmarksContent = ({
           <span tw="flex flex-1 items-center text-primary-darkest">
             <Link href={`/item/${bookmark._id}`}>{bookmark.title}</Link>
           </span>
-          <button
-            tw="p-xs mr-xs"
-            name="Ajouter au panier"
-            title="Ajouter au panier"
-            type="button"
-          >
-            <FontAwesomeIcon icon={faCartPlus} />
-          </button>
+          <AddToCartButton itemId={bookmark._id} />
           <button
             tw="p-xs"
             name="Enlever des favoris"

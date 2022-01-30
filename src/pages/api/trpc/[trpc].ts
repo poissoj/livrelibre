@@ -14,7 +14,7 @@ import { getSalesByDay } from "@/server/salesByDay";
 import { addItem } from "@/server/addItem";
 import { TVAValues } from "@/utils/item";
 import { Context, createContext } from "@/server/context";
-import { getCart, payCart } from "@/server/cart";
+import { addToCart, getCart, payCart } from "@/server/cart";
 
 const itemSchema = z.object({
   type: z.string(),
@@ -131,6 +131,12 @@ export const appRouter = trpc
     }),
     async resolve({ input, ctx }) {
       return await payCart(ctx.user.name, input);
+    },
+  })
+  .mutation("addToCart", {
+    input: z.string().length(24),
+    async resolve({ input, ctx }) {
+      return await addToCart(ctx.user.name, input);
     },
   });
 

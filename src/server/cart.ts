@@ -1,6 +1,6 @@
-import type { ItemType, TVA } from "@/utils/item";
+import type { Item, ItemType, TVA } from "@/utils/item";
 import type { PaymentType } from "@/utils/sale";
-import type { ObjectId } from "mongodb";
+import { ObjectId } from "mongodb";
 import { getDb } from "./database";
 
 type CartItem = {
@@ -71,4 +71,28 @@ export const payCart = async (username: string, data: PaymentFormData) => {
         ? Math.round(Number(data.amount) * 100 - total) / 100
         : null,
   };
+};
+
+export const addToCart = async (username: string, itemId: string) => {
+  const db = await getDb();
+  const result = await db
+    .collection<Item>("books")
+    .findOneAndUpdate(
+      { _id: new ObjectId(itemId), amount: { $gt: 0 } },
+      { $inc: { amount: -1 } }
+    );
+  if (!result.ok || !result.value) {
+    throw new Error("Unable to find item");
+  }
+  const item = result.value;
+  const cartItem = {
+    itemId: item._id,
+    type: item.type,
+    title: item.title,
+    price: item.price,
+    tva: item.tva,
+    quantity: 1,
+    username,
+  };
+  await db.collection("cart").insertOne(cartItem);
 };
