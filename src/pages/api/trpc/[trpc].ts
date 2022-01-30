@@ -14,6 +14,7 @@ import { getSalesByDay } from "@/server/salesByDay";
 import { addItem } from "@/server/addItem";
 import { TVAValues } from "@/utils/item";
 import { Context, createContext } from "@/server/context";
+import { getCart, payCart } from "@/server/cart";
 
 const itemSchema = z.object({
   type: z.string(),
@@ -102,6 +103,11 @@ export const appRouter = trpc
       return ctx.user;
     },
   })
+  .query("cart", {
+    async resolve({ ctx }) {
+      return await getCart(ctx.user.name);
+    },
+  })
   .mutation("star", {
     input: z.object({
       id: z.string().length(24),
@@ -115,6 +121,16 @@ export const appRouter = trpc
     input: itemSchema,
     async resolve({ input }) {
       return await addItem(input);
+    },
+  })
+  .mutation("payCart", {
+    input: z.object({
+      paymentDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+      paymentType: z.enum(["cash", "card", "check", "check-lire", "transfer"]),
+      amount: z.string().regex(/^-?\d+(\.\d+)?$/),
+    }),
+    async resolve({ input, ctx }) {
+      return await payCart(ctx.user.name, input);
     },
   });
 

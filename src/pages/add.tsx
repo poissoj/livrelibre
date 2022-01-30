@@ -16,15 +16,9 @@ import { BaseItem, ITEM_TYPES } from "@/utils/item";
 import { useForm } from "react-hook-form";
 import { Alert } from "@/components/Alert";
 import { trpc } from "@/utils/trpc";
+import { formatDate } from "@/utils/date";
 
 const Column = tw.div`flex-1 min-width[20rem] ml-md`;
-
-const formatDate = (date: Date) =>
-  [
-    date.getFullYear(),
-    String(date.getMonth() + 1).padStart(2, "0"),
-    String(date.getDate()).padStart(2, "0"),
-  ].join("-");
 
 type TAlert = {
   type: React.ComponentProps<typeof Alert>["type"];

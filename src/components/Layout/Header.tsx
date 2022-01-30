@@ -1,10 +1,9 @@
 import useUser from "@/lib/useUser";
 import { trpc } from "@/utils/trpc";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { faShoppingCart, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import "twin.macro";
 import tw, { styled } from "twin.macro";
 import { QuickSearch } from "./QuickSearch";
 
@@ -24,6 +23,8 @@ const UserName = ({ className }: { className?: string }) => {
   );
 };
 
+const StyledButton = tw.button`text-white padding[14px 16px] hover:background-color[rgba(0,0,0,0.1)]`;
+
 const Logout = () => {
   const utils = trpc.useContext();
   const router = useRouter();
@@ -33,15 +34,30 @@ const Logout = () => {
     void router.push("/login");
   };
   return (
-    <button
-      type="button"
-      onClick={logout}
-      tw="text-white padding[14px] ml-sm hover:background-color[rgba(0, 0, 0, 0.1)]"
-    >
+    <StyledButton type="button" onClick={logout}>
       <FontAwesomeIcon icon={faUser} />
-    </button>
+    </StyledButton>
   );
 };
+
+const Badge = tw.span`border-radius[10rem] bg-gray-dark  px-2 py-0.5 font-size[12px] font-medium`;
+
+const CartBadge = () => {
+  const result = trpc.useQuery(["cart"]);
+  if (result.status === "success" && result.data.count > 0) {
+    return <Badge>{result.data.count}</Badge>;
+  }
+  return null;
+};
+
+const CartButton = () => (
+  <Link href="/cart" passHref>
+    <StyledButton as="a">
+      <FontAwesomeIcon icon={faShoppingCart} />
+      <CartBadge />
+    </StyledButton>
+  </Link>
+);
 
 export const Header = (): JSX.Element => {
   return (
@@ -50,7 +66,8 @@ export const Header = (): JSX.Element => {
         <StyledLink>{process.env.NEXT_PUBLIC_APP_NAME}</StyledLink>
       </Link>
       <QuickSearch />
-      <UserName tw="ml-auto" />
+      <UserName tw="ml-auto mr-sm" />
+      <CartButton />
       <Logout />
     </header>
   );
