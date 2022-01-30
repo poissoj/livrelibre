@@ -96,3 +96,16 @@ export const addToCart = async (username: string, itemId: string) => {
   };
   await db.collection("cart").insertOne(cartItem);
 };
+
+export const removeFromCart = async (cartItemId: string) => {
+  const db = await getDb();
+  const result = await db
+    .collection<CartItem>("cart")
+    .findOneAndDelete({ _id: new ObjectId(cartItemId) });
+  if (!result.value) {
+    return;
+  }
+  const amount = result.value.quantity || 1;
+  const _id = result.value.itemId;
+  await db.collection<Item>("books").updateOne({ _id }, { $inc: { amount } });
+};

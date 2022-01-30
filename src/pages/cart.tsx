@@ -7,7 +7,11 @@ import { ErrorMessage } from "@/components/ErrorMessage";
 import ContentLoader from "react-content-loader";
 import { Button } from "@/components/Button";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCheckCircle, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCheckCircle,
+  faSpinner,
+  faTrashAlt,
+} from "@fortawesome/free-solid-svg-icons";
 import type { InferQueryOutput } from "@/utils/trpc";
 import { Input, Select } from "@/components/FormControls";
 import { formatDate } from "@/utils/date";
@@ -18,6 +22,27 @@ import { useState } from "react";
 import { Alert } from "@/components/Alert";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
+
+const RemoveFromCartButton = ({ id }: { id: string }) => {
+  const utils = trpc.useContext();
+  const { mutate, isLoading } = trpc.useMutation("removeFromCart", {
+    async onSuccess() {
+      await utils.invalidateQueries("cart");
+    },
+  });
+  return (
+    <Button
+      type="button"
+      tw="background-color[#FF9800]"
+      onClick={() => mutate(id)}
+    >
+      <FontAwesomeIcon
+        icon={isLoading ? faSpinner : faTrashAlt}
+        spin={isLoading}
+      />
+    </Button>
+  );
+};
 
 type CartItems = InferQueryOutput<"cart">["items"];
 
@@ -46,9 +71,7 @@ const CartTable = ({ items }: { items: CartItems }) => (
             {(Number(item.price) * item.quantity).toFixed(2)}€
           </td>
           <td tw="text-center">
-            <Button tw="background-color[#FF9800]">
-              <FontAwesomeIcon icon={faTrashAlt} />
-            </Button>
+            <RemoveFromCartButton id={item._id} />
           </td>
         </tr>
       ))}
