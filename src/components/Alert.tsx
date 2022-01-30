@@ -2,6 +2,7 @@ import {
   faCheckCircle,
   faExclamationCircle,
   faExclamationTriangle,
+  faInfoCircle,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,13 +23,17 @@ const AlertDanger = tw(
   BasicAlert
 )`color[#842029] border-color[#f5c2c7] background-color[#f8d7da]`;
 
+const AlertInfo = tw(
+  BasicAlert
+)`color[#055160] border-color[#b6effb] background-color[#cff4fc]`;
+
 export const Alert = ({
   children,
   className,
   onDismiss,
   type,
 }: {
-  type: "success" | "warning" | "error";
+  type: "success" | "warning" | "error" | "info";
   children: React.ReactNode;
   className?: string;
   onDismiss?(): void;
@@ -40,11 +45,13 @@ export const Alert = ({
     success: AlertSuccess,
     warning: AlertWarning,
     error: AlertDanger,
+    info: AlertInfo,
   }[type];
   const icon = {
     success: faCheckCircle,
     warning: faExclamationTriangle,
     error: faExclamationCircle,
+    info: faInfoCircle,
   }[type];
   return (
     <AlertWrapper className={className}>
