@@ -34,7 +34,7 @@ const Logout = () => {
     void router.push("/login");
   };
   return (
-    <StyledButton type="button" onClick={logout}>
+    <StyledButton type="button" onClick={logout} title="Se déconnecter">
       <FontAwesomeIcon icon={faUser} />
     </StyledButton>
   );
