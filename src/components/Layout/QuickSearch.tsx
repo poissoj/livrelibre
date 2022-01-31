@@ -1,12 +1,17 @@
-import { ButtonWithInput } from "@/components/Button";
-import { InputWithButton } from "@/components/FormControls";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "twin.macro";
+import tw from "twin.macro";
 import type { DOMAttributes } from "react";
 import { useRouter } from "next/router";
 
-export const QuickSearch = (): JSX.Element => {
+const Input = tw.input`flex-1 padding[5px 10px] border-radius[3px] bg-white/80 focus-visible:(ring-2 ring-inset outline-none) --tw-ring-color[#AAA]`;
+const SearchButton = tw.button`text-black`;
+
+export const QuickSearch = ({
+  className,
+}: {
+  className?: string;
+}): JSX.Element => {
   const router = useRouter();
 
   const handleSubmit: DOMAttributes<HTMLFormElement>["onSubmit"] = (event) => {
@@ -19,16 +24,25 @@ export const QuickSearch = (): JSX.Element => {
   };
 
   return (
-    <form role="search" tw="flex p-sm width[27rem]" onSubmit={handleSubmit}>
-      <InputWithButton
+    <form
+      role="search"
+      className={className}
+      tw="flex p-sm width[27rem] relative"
+      onSubmit={handleSubmit}
+    >
+      <Input
         type="text"
         placeholder="ISBN, titre, auteur"
         name="search"
-        tw="flex-1 padding[4px 6px] focus:(border-white)"
+        tw="pr-6"
       />
-      <ButtonWithInput type="submit" aria-label="Rechercher">
+      <SearchButton
+        type="submit"
+        aria-label="Rechercher"
+        tw="absolute top-2 bottom-2 right-1 px-2"
+      >
         <FontAwesomeIcon icon={faSearch} tw="mx-1" />
-      </ButtonWithInput>
+      </SearchButton>
     </form>
   );
 };

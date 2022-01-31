@@ -52,7 +52,7 @@ const CartBadge = () => {
 
 const CartButton = () => (
   <Link href="/cart" passHref>
-    <StyledButton as="a">
+    <StyledButton as="a" tw="flex-shrink-0" title="Voir le panier">
       <FontAwesomeIcon icon={faShoppingCart} />
       <CartBadge />
     </StyledButton>
@@ -61,12 +61,12 @@ const CartButton = () => (
 
 export const Header = (): JSX.Element => {
   return (
-    <header tw="bg-primary-default text-gray-darker flex items-center pr-lg">
+    <header tw="bg-primary-dark text-gray-darker flex items-center pr-lg">
       <Link href="/" passHref>
-        <StyledLink>{process.env.NEXT_PUBLIC_APP_NAME}</StyledLink>
+        <StyledLink tw="mr-auto">{process.env.NEXT_PUBLIC_APP_NAME}</StyledLink>
       </Link>
       <QuickSearch />
-      <UserName tw="ml-auto mr-sm" />
+      <UserName tw="ml-md mr-sm" />
       <CartButton />
       <Logout />
     </header>
