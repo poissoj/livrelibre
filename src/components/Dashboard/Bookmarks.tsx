@@ -29,7 +29,7 @@ const AddToCartButton = ({ item }: { item: Bookmark }) => {
   }
   return (
     <button
-      tw="p-xs mr-xs disabled:(cursor-not-allowed opacity-80)"
+      tw="p-xs mr-xs disabled:(cursor-not-allowed opacity-80) hover:text-primary-darkest"
       name="Ajouter au panier"
       title="Ajouter au panier"
       type="button"
@@ -61,7 +61,7 @@ const BookmarksContent = ({
           </span>
           <AddToCartButton item={bookmark} />
           <button
-            tw="p-xs"
+            tw="p-xs hover:text-primary-darkest"
             name="Enlever des favoris"
             title="Enlever des favoris"
             type="button"
