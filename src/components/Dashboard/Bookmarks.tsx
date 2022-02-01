@@ -3,6 +3,7 @@ import { Card, CardBody, CardTitle } from "@/components/Card";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCartPlus,
+  faShoppingCart,
   faSpinner,
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
@@ -12,25 +13,30 @@ import { ErrorMessage } from "@/components/ErrorMessage";
 import type { Bookmark } from "@/server/bookmarks";
 import { BookmarksSkeleton } from "./BookmarksSkeleton";
 
-const AddToCartButton = ({ itemId }: { itemId: string }) => {
+const AddToCartButton = ({ item }: { item: Bookmark }) => {
   const utils = trpc.useContext();
   const { mutate, isLoading } = trpc.useMutation("addToCart", {
     async onSuccess() {
-      await utils.invalidateQueries("cart");
+      await Promise.all([
+        utils.invalidateQueries("cart"),
+        utils.invalidateQueries("bookmarks"),
+      ]);
     },
   });
+  let icon = item.amount > 0 ? faCartPlus : faShoppingCart;
+  if (isLoading) {
+    icon = faSpinner;
+  }
   return (
     <button
-      tw="p-xs mr-xs"
+      tw="p-xs mr-xs disabled:(cursor-not-allowed opacity-80)"
       name="Ajouter au panier"
       title="Ajouter au panier"
       type="button"
-      onClick={() => mutate(itemId)}
+      onClick={() => mutate(item._id)}
+      disabled={item.amount === 0}
     >
-      <FontAwesomeIcon
-        icon={isLoading ? faSpinner : faCartPlus}
-        spin={isLoading}
-      />
+      <FontAwesomeIcon icon={icon} spin={isLoading} />
     </button>
   );
 };
@@ -53,7 +59,7 @@ const BookmarksContent = ({
           <span tw="flex flex-1 items-center text-primary-darkest">
             <Link href={`/item/${bookmark._id}`}>{bookmark.title}</Link>
           </span>
-          <AddToCartButton itemId={bookmark._id} />
+          <AddToCartButton item={bookmark} />
           <button
             tw="p-xs"
             name="Enlever des favoris"
