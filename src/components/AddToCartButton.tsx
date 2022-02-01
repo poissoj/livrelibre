@@ -8,13 +8,22 @@ import {
 import { trpc } from "@/utils/trpc";
 import type { Bookmark } from "@/server/bookmarks";
 
-export const AddToCartButton = ({ item }: { item: Bookmark }) => {
+export const AddToCartButton = ({
+  item,
+  className,
+}: {
+  item: Bookmark;
+  className?: string;
+}) => {
   const utils = trpc.useContext();
   const { mutate, isLoading } = trpc.useMutation("addToCart", {
     async onSuccess() {
       await Promise.all([
         utils.invalidateQueries("cart"),
         utils.invalidateQueries("bookmarks"),
+        utils.invalidateQueries("quicksearch"),
+        utils.invalidateQueries("items"),
+        utils.invalidateQueries("advancedSearch"),
       ]);
     },
   });
@@ -30,6 +39,7 @@ export const AddToCartButton = ({ item }: { item: Bookmark }) => {
       type="button"
       onClick={() => mutate(item._id)}
       disabled={item.amount === 0}
+      className={className}
     >
       <FontAwesomeIcon icon={icon} spin={isLoading} />
     </button>
