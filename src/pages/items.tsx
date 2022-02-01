@@ -72,7 +72,7 @@ const ItemsLoader = () => {
 };
 
 const Items = (): JSX.Element => (
-  <div tw="margin-left[10%] margin-right[10%] flex flex-1 flex-col gap-lg">
+  <div tw="flex flex-1 flex-col gap-lg">
     <Title>Liste des articles</Title>
     <ItemsLoader />
   </div>

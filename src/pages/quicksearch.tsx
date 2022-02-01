@@ -29,7 +29,7 @@ const QuickSearchPage = (): JSX.Element => {
   const searchValue = typeof search === "string" ? search : "";
   const title = `Recherche de "${searchValue}"`;
   return (
-    <div tw="margin-left[10%] margin-right[10%] flex flex-1 flex-col gap-lg">
+    <div tw="flex flex-1 flex-col gap-lg">
       <Title>{title}</Title>
       {searchValue ? <SearchLoader search={searchValue} /> : null}
     </div>

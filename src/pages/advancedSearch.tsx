@@ -46,7 +46,7 @@ const SearchResults = () => {
   const query = router.query;
 
   return (
-    <div tw="margin-left[10%] margin-right[10%] flex flex-1 flex-col gap-lg">
+    <div tw="flex flex-1 flex-col gap-lg">
       <Title>Recherche avancée</Title>
       <SearchLoader query={filterNonString(query)} />
     </div>
