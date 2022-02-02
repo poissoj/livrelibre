@@ -16,7 +16,9 @@ const Search = (): JSX.Element => {
   const { register, handleSubmit } = useForm();
   const router = useRouter();
   const onSubmit = (data: Record<string, string>) => {
-    void router.push({ pathname: "/advancedSearch", query: data });
+    const datebought = data.datebought.split("-").reverse().join("/");
+    const query = { ...data, datebought };
+    void router.push({ pathname: "/advancedSearch", query });
   };
   return (
     <div tw="margin-left[10%] margin-right[10%] flex-1">
@@ -58,7 +60,7 @@ const Search = (): JSX.Element => {
               </Column>
               <Column>
                 <FormRow label="Date d&rsquo;achat">
-                  <Input type="text" {...register("datebought")} />
+                  <Input type="date" {...register("datebought")} />
                 </FormRow>
                 <FormRow label="Commentaires">
                   <Textarea {...register("comments")} />
