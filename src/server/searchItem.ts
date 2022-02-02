@@ -1,4 +1,4 @@
-import type { Item, ItemWithCount } from "@/utils/item";
+import type { DBItem, ItemWithCount } from "@/utils/item";
 import { norm } from "@/utils/utils";
 import { Filter, ObjectId } from "mongodb";
 import { getDb } from "./database";
@@ -9,7 +9,7 @@ export const getItem = async (id: string): Promise<ItemWithCount | null> => {
   }
   const _id = new ObjectId(id);
   const db = await getDb();
-  const item = await db.collection<Item>("books").findOne({ _id });
+  const item = await db.collection<DBItem>("books").findOne({ _id });
   const salesCount = await db
     .collection("sales")
     .aggregate<{ total: number }>([
@@ -79,16 +79,17 @@ const generateSearchCriteria = (query: Record<string, string>) => {
 
 const ITEMS_PER_PAGE = 50;
 
-const doSearch = async (criteria: Filter<Item>, pageNumber: number) => {
+const doSearch = async (criteria: Filter<DBItem>, pageNumber: number) => {
   const db = await getDb();
-  const count = await db.collection<Item>("books").countDocuments(criteria);
-  const items = await db
-    .collection<Item>("books")
+  const count = await db.collection<DBItem>("books").countDocuments(criteria);
+  const dbItems = await db
+    .collection<DBItem>("books")
     .find(criteria)
     .sort({ title: 1 })
     .skip((pageNumber - 1) * ITEMS_PER_PAGE)
     .limit(ITEMS_PER_PAGE)
     .toArray();
+  const items = dbItems.map((item) => ({ ...item, _id: item._id.toString() }));
   return { items, count };
 };
 

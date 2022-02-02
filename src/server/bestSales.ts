@@ -1,5 +1,5 @@
 import { getDb } from "@/server/database";
-import type { Item } from "@/utils/item";
+import type { DBItem } from "@/utils/item";
 import type { ObjectId } from "mongodb";
 
 export const getBestSales = async () => {
@@ -14,7 +14,7 @@ export const getBestSales = async () => {
     ])
     .toArray();
   const items = await db
-    .collection<Item>("books")
+    .collection<DBItem>("books")
     .find({ _id: { $in: sales.map((sale) => sale._id) } })
     .toArray();
   const bestSales = items.map((item) => {
@@ -22,7 +22,7 @@ export const getBestSales = async () => {
     while (!sales[i]._id.equals(item._id)) {
       i++;
     }
-    return { ...item, count: sales[i].count };
+    return { ...item, count: sales[i].count, _id: item._id.toString() };
   });
   bestSales.sort((i1, i2) => i2.count - i1.count);
   return bestSales;

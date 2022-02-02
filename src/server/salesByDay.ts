@@ -1,4 +1,4 @@
-import type { Item, TVA } from "@/utils/item";
+import type { DBItem, Item, TVA } from "@/utils/item";
 import { PaymentType, PAYMENT_METHODS } from "@/utils/sale";
 import { isDefined, isIn } from "@/utils/utils";
 import type { ObjectId } from "mongodb";
@@ -18,14 +18,13 @@ type DBSale = {
 
 type PaymentMethod = typeof PAYMENT_METHODS[PaymentType] | "Inconnu";
 
-type ItemSale = Omit<Item, "price" | "_id"> & {
+type ItemSale = Omit<Item, "price"> & {
   itemId: string;
   saleItemId: string;
   price: number;
   type: PaymentMethod;
   quantity: number;
   deleted: boolean;
-  _id: string;
 };
 
 type UnlistedSale = Omit<DBSale, "type" | "_id" | "cartId"> & {
@@ -62,7 +61,7 @@ export const getSalesByDay = async (date: string) => {
 
   const itemIds = dbSales.map((s) => s.id).filter(isDefined);
   const items = await db
-    .collection<Item>("books")
+    .collection<DBItem>("books")
     .find({ _id: { $in: itemIds } })
     .toArray();
 

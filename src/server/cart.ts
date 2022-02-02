@@ -1,4 +1,4 @@
-import type { Item, ItemType, TVA } from "@/utils/item";
+import type { DBItem, ItemType, TVA } from "@/utils/item";
 import type { PaymentType } from "@/utils/sale";
 import { ObjectId } from "mongodb";
 import { getDb } from "./database";
@@ -76,7 +76,7 @@ export const payCart = async (username: string, data: PaymentFormData) => {
 export const addToCart = async (username: string, itemId: string) => {
   const db = await getDb();
   const result = await db
-    .collection<Item>("books")
+    .collection<DBItem>("books")
     .findOneAndUpdate(
       { _id: new ObjectId(itemId), amount: { $gt: 0 } },
       { $inc: { amount: -1 } }
@@ -107,5 +107,5 @@ export const removeFromCart = async (cartItemId: string) => {
   }
   const amount = result.value.quantity || 1;
   const _id = result.value.itemId;
-  await db.collection<Item>("books").updateOne({ _id }, { $inc: { amount } });
+  await db.collection<DBItem>("books").updateOne({ _id }, { $inc: { amount } });
 };

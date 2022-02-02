@@ -3,12 +3,12 @@ import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
-import type { Item } from "@/utils/item";
+import type { ItemWithCount } from "@/utils/item";
 import Link from "next/link";
 import ContentLoader from "react-content-loader";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
-const ItemsTable = ({ items }: { items: (Item & { count: number })[] }) => (
+const ItemsTable = ({ items }: { items: ItemWithCount[] }) => (
   <table tw="flex-1 border-collapse[separate] border-spacing[2px 0.5rem]">
     <thead>
       <tr>
@@ -26,7 +26,7 @@ const ItemsTable = ({ items }: { items: (Item & { count: number })[] }) => (
           <td>{i + 1}</td>
           <td>
             <span tw="text-primary-darkest">
-              <Link href={`/item/${item._id.toString()}`}>{item.title}</Link>
+              <Link href={`/item/${item._id}`}>{item.title}</Link>
             </span>
           </td>
           <td>{item.author}</td>

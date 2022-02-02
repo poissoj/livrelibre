@@ -1,5 +1,3 @@
-import type { ObjectId } from "mongodb";
-
 export const ITEM_TYPES: Record<string, string> = {
   postcard: "Carte postale",
   stationery: "Papeterie",
@@ -31,8 +29,7 @@ export type BaseItem = {
   tva: TVA;
 };
 
-export type Item = BaseItem & {
-  _id: ObjectId;
+export type DBItem = BaseItem & {
   starred: boolean;
   nmAuthor: string;
   nmTitle: string;
@@ -40,4 +37,6 @@ export type Item = BaseItem & {
   nmDistributor: string;
 };
 
-export type ItemWithCount = Omit<Item, "_id"> & { count: number; _id: string };
+export type Item = DBItem & { _id: string };
+
+export type ItemWithCount = Item & { count: number };
