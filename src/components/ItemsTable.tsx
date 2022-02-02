@@ -1,20 +1,18 @@
-import tw from "twin.macro";
+import "twin.macro";
 import Link from "next/link";
 import type { Item } from "@/utils/item";
 import React from "react";
 import { AddToCartButton } from "./AddToCartButton";
 
-const StickyTh = tw.th`sticky top-0 bg-white`;
-
 export const ItemsTable = ({ items }: { items: Item[] }) => (
   <table tw="flex-1 border-separate border-spacing[2px 0.5rem]">
     <thead>
-      <tr>
-        <StickyTh tw="text-left">Distributeur</StickyTh>
-        <StickyTh tw="text-left">Titre</StickyTh>
-        <StickyTh tw="text-left">Auteur</StickyTh>
-        <StickyTh tw="text-right">Quantité</StickyTh>
-        <StickyTh> </StickyTh>
+      <tr tw="sticky top-0 bg-white z-10">
+        <th tw="text-left">Distributeur</th>
+        <th tw="text-left">Titre</th>
+        <th tw="text-left">Auteur</th>
+        <th tw="text-right">Quantité</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
