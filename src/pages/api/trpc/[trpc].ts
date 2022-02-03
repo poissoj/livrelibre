@@ -133,7 +133,7 @@ export const appRouter = trpc
     input: z.object({
       paymentDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
       paymentType: z.enum(["cash", "card", "check", "check-lire", "transfer"]),
-      amount: z.string().regex(/^-?\d+(\.\d+)?$/),
+      amount: z.string().regex(/^(-?\d+(\.\d+)?)?$/),
     }),
     async resolve({ input, ctx }) {
       return await payCart(ctx.user.name, input);
