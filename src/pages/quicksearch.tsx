@@ -13,7 +13,7 @@ const SearchLoader = ({ search }: { search: string }) => {
     subtitle = `${count} résultat${count > 1 ? "s" : ""} pour ${search}`;
   }
   return (
-    <Card tw="mb-lg max-h-full overflow-hidden flex flex-col">
+    <Card tw="max-h-full overflow-hidden flex flex-col">
       <CardTitle>Recherche rapide</CardTitle>
       {subtitle}
       <CardBody>

@@ -12,7 +12,7 @@ const ItemsCard = ({
   subtitle,
   children,
 }: PropsWithChildren<{ title: string; subtitle?: React.ReactNode }>) => (
-  <Card tw="mb-lg max-h-full overflow-hidden flex flex-col">
+  <Card tw="max-h-full overflow-hidden flex flex-col">
     <CardTitle>{title}</CardTitle>
     {subtitle}
     <CardBody>{children}</CardBody>

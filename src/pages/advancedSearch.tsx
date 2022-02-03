@@ -18,7 +18,7 @@ const SearchLoader = ({ query }: { query: Record<string, string> }) => {
     subtitle = `${count} résultat${count > 1 ? "s" : ""} pour ${search}`;
   }
   return (
-    <Card tw="mb-lg max-h-full overflow-hidden flex flex-col">
+    <Card tw="max-h-full overflow-hidden flex flex-col">
       <CardTitle>Recherche avancée</CardTitle>
       {subtitle}
       <CardBody>

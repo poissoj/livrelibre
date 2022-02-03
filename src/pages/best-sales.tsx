@@ -76,7 +76,7 @@ const BestSalesLoader = () => {
 const BestSales = (): JSX.Element => (
   <div tw="margin-left[10%] margin-right[10%] flex flex-1 flex-col gap-lg">
     <Title>Meilleurs ventes</Title>
-    <Card tw="mb-lg max-h-full overflow-hidden flex flex-col">
+    <Card tw="max-h-full overflow-hidden flex flex-col">
       <CardTitle>Meilleures ventes</CardTitle>
       <CardBody>
         <BestSalesLoader />
