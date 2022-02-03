@@ -13,6 +13,13 @@ type CartItem = {
   username: string;
 };
 
+export type NewCartItem = {
+  price: string;
+  title: string;
+  tva: TVA;
+  type: ItemType;
+};
+
 const sumPrice = (sum: number, item: CartItem) =>
   sum + Number(item.price) * item.quantity * 100;
 
@@ -85,7 +92,7 @@ export const addToCart = async (username: string, itemId: string) => {
     throw new Error("Unable to find item");
   }
   const item = result.value;
-  const cartItem = {
+  const cartItem: CartItem = {
     itemId: item._id,
     type: item.type,
     title: item.title,
@@ -94,6 +101,17 @@ export const addToCart = async (username: string, itemId: string) => {
     quantity: 1,
     username,
   };
+  await db.collection("cart").insertOne(cartItem);
+};
+
+export const addNewItemToCart = async (username: string, item: NewCartItem) => {
+  const cartItem: CartItem = {
+    ...item,
+    title: item.title || "Article indépendant",
+    quantity: 1,
+    username,
+  };
+  const db = await getDb();
   await db.collection("cart").insertOne(cartItem);
 };
 

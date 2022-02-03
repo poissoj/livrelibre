@@ -14,7 +14,13 @@ import { getSalesByDay } from "@/server/salesByDay";
 import { addItem } from "@/server/addItem";
 import { TVAValues } from "@/utils/item";
 import { Context, createContext } from "@/server/context";
-import { addToCart, getCart, payCart, removeFromCart } from "@/server/cart";
+import {
+  addNewItemToCart,
+  addToCart,
+  getCart,
+  payCart,
+  removeFromCart,
+} from "@/server/cart";
 
 const itemSchema = z.object({
   type: z.string(),
@@ -137,6 +143,17 @@ export const appRouter = trpc
     input: z.string().length(24),
     async resolve({ input, ctx }) {
       return await addToCart(ctx.user.name, input);
+    },
+  })
+  .mutation("addNewItemToCart", {
+    input: z.object({
+      price: z.string(),
+      title: z.string(),
+      tva: z.enum(TVAValues),
+      type: z.string(),
+    }),
+    async resolve({ input, ctx }) {
+      return await addNewItemToCart(ctx.user.name, input);
     },
   })
   .mutation("removeFromCart", {
