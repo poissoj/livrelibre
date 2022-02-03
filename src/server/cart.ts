@@ -4,7 +4,7 @@ import { ObjectId } from "mongodb";
 import { getDb } from "./database";
 
 type CartItem = {
-  itemId: ObjectId;
+  itemId?: ObjectId;
   type: ItemType;
   title: string;
   price: string;
@@ -27,7 +27,7 @@ export const getCart = async (username: string) => {
   const count = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   const items = cartItems.map((item) => ({
     ...item,
-    itemId: item.itemId.toString(),
+    itemId: item.itemId?.toString(),
     _id: item._id.toString(),
   }));
   return { items, count, total };

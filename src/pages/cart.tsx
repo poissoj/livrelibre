@@ -46,6 +46,17 @@ const RemoveFromCartButton = ({ id }: { id: string }) => {
 
 type CartItems = InferQueryOutput<"cart">["items"];
 
+const ItemTitle = ({ item }: { item: CartItems[number] }) => {
+  if (item.itemId) {
+    return (
+      <span tw="text-primary-darkest">
+        <Link href={`/item/${item.itemId}`}>{item.title}</Link>
+      </span>
+    );
+  }
+  return <span>{item.title}</span>;
+};
+
 const CartTable = ({ items }: { items: CartItems }) => (
   <table tw="flex-1 border-separate border-spacing[2px 0.5rem]">
     <thead>
@@ -61,9 +72,7 @@ const CartTable = ({ items }: { items: CartItems }) => (
       {items.map((item, i) => (
         <tr key={i}>
           <td>
-            <span tw="text-primary-darkest">
-              <Link href={`/item/${item.itemId}`}>{item.title}</Link>
-            </span>
+            <ItemTitle item={item} />
           </td>
           <td tw="text-right font-mono">{Number(item.price).toFixed(2)}€</td>
           <td tw="text-right font-mono">{item.quantity}</td>
