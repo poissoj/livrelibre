@@ -7,9 +7,6 @@ import { ErrorMessage } from "@/components/ErrorMessage";
 import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
 
-const SalesByHour = dynamic(() => import("@/components/Charts/SalesByHour"));
-const SalesByDay = dynamic(() => import("@/components/Charts/SalesByDay"));
-
 const DAYS = [
   "Dimanche",
   "Lundi",
@@ -57,6 +54,13 @@ const SalesByDaySkeleton = () => (
     <rect x={693} y={81} width={90} height={184} />
   </ContentLoader>
 );
+
+const SalesByHour = dynamic(() => import("@/components/Charts/SalesByHour"), {
+  loading: SalesByHourSkeleton,
+});
+const SalesByDay = dynamic(() => import("@/components/Charts/SalesByDay"), {
+  loading: SalesByHourSkeleton,
+});
 
 const StatsLoader = () => {
   const result = trpc.useQuery(["stats"]);
