@@ -1,16 +1,22 @@
 import { faStar as emptyStar } from "@fortawesome/free-regular-svg-icons";
-import { faSpinner, faStar } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCartPlus,
+  faSpinner,
+  faStar,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { createSSGHelpers } from "@trpc/react/ssg";
 import type { GetStaticPaths, GetStaticProps } from "next";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
+import { useForm } from "react-hook-form";
 import tw from "twin.macro";
 
 import { Button } from "@/components/Button";
-import { Card, CardBody, CardTitle } from "@/components/Card";
+import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
+import { Input } from "@/components/FormControls";
 import { NoResults } from "@/components/NoResults";
 import { Title } from "@/components/Title";
 import { appRouter } from "@/pages/api/trpc/[trpc]";
@@ -19,6 +25,7 @@ import { createContext } from "@/server/context";
 import { ITEM_TYPES, ItemWithCount } from "@/utils/item";
 import { trpc, useBookmark } from "@/utils/trpc";
 import { formatTVA } from "@/utils/tva";
+import { useAddToCart } from "@/utils/useAddToCart";
 
 const SalesByMonth = dynamic(() => import("@/components/Charts/SalesByMonth"));
 
@@ -108,6 +115,47 @@ const TitleWithButtons = ({ item }: { item: ItemWithCount }) => {
   );
 };
 
+const AddToCartFooter = ({ id, stock }: { id: string; stock: number }) => {
+  type FormFields = { quantity: string };
+  const { register, handleSubmit } = useForm<FormFields>();
+  const { mutate, isLoading } = useAddToCart();
+  const utils = trpc.useContext();
+  const submit = ({ quantity }: FormFields) => {
+    mutate(
+      { id, quantity: Number(quantity) },
+      {
+        async onSuccess() {
+          await utils.invalidateQueries("searchItem");
+        },
+      }
+    );
+  };
+  return (
+    <form tw="flex justify-end" onSubmit={handleSubmit(submit)}>
+      <label>
+        <span tw="font-medium mr-2">Quantité</span>
+        <Input
+          type="number"
+          {...register("quantity")}
+          min={1}
+          max={stock}
+          step={1}
+          tw="font-mono w-20"
+          defaultValue={1}
+        />
+      </label>
+      <Button type="submit" tw="ml-2 px-md" disabled={stock === 0}>
+        <FontAwesomeIcon
+          icon={isLoading ? faSpinner : faCartPlus}
+          spin={isLoading}
+          tw="mr-2"
+        />
+        Ajouter au panier
+      </Button>
+    </form>
+  );
+};
+
 const ItemLoader = ({ id }: { id: string }) => {
   const result = trpc.useQuery(["searchItem", id]);
 
@@ -129,6 +177,9 @@ const ItemLoader = ({ id }: { id: string }) => {
         <CardBody>
           <ItemDetails item={result.data} />
         </CardBody>
+        <CardFooter>
+          <AddToCartFooter id={id} stock={result.data.amount} />
+        </CardFooter>
       </Card>
     ) : (
       <Card tw="flex-1">

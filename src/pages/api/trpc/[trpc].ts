@@ -141,9 +141,12 @@ export const appRouter = trpc
     },
   })
   .mutation("addToCart", {
-    input: z.string().length(24),
+    input: z.object({
+      id: z.string().length(24),
+      quantity: z.number().optional(),
+    }),
     async resolve({ input, ctx }) {
-      return await addToCart(ctx.user.name, input);
+      return await addToCart(ctx.user.name, input.id, input.quantity);
     },
   })
   .mutation("addNewItemToCart", {

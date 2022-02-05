@@ -82,7 +82,11 @@ export const payCart = async (username: string, data: PaymentFormData) => {
   };
 };
 
-export const addToCart = async (username: string, itemId: string) => {
+export const addToCart = async (
+  username: string,
+  itemId: string,
+  quantity = 1
+) => {
   const db = await getDb();
   const result = await db
     .collection<DBItem>("books")
@@ -100,7 +104,7 @@ export const addToCart = async (username: string, itemId: string) => {
     title: item.title,
     price: item.price,
     tva: item.tva,
-    quantity: 1,
+    quantity,
     username,
   };
   await db.collection("cart").insertOne(cartItem);
