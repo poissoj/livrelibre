@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "twin.macro";
 
 import type { Bookmark } from "@/server/bookmarks";
-import { trpc } from "@/utils/trpc";
+import { useAddToCart } from "@/utils/useAddToCart";
 
 export const AddToCartButton = ({
   item,
@@ -16,19 +16,8 @@ export const AddToCartButton = ({
   item: Bookmark;
   className?: string;
 }) => {
-  const utils = trpc.useContext();
-  const { mutate, isLoading } = trpc.useMutation("addToCart", {
-    async onSuccess() {
-      await Promise.all([
-        utils.invalidateQueries("cart"),
-        utils.invalidateQueries("bookmarks"),
-        utils.invalidateQueries("quicksearch"),
-        utils.invalidateQueries("items"),
-        utils.invalidateQueries("advancedSearch"),
-      ]);
-    },
-  });
   let icon = item.amount > 0 ? faCartPlus : faShoppingCart;
+  const { mutate, isLoading } = useAddToCart();
   if (isLoading) {
     icon = faSpinner;
   }
