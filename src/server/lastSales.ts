@@ -1,6 +1,7 @@
 import { format, sub } from "date-fns";
 import { fr } from "date-fns/locale";
 import { ObjectId } from "mongodb";
+
 import { getDb } from "./database";
 
 export const lastSales = async (_id: string) => {

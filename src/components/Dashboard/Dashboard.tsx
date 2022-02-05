@@ -1,7 +1,9 @@
-import { Title } from "@/components/Title";
-import { SellNewItem } from "./SellNewItem";
-import { Bookmarks } from "./Bookmarks";
 import "twin.macro";
+
+import { Title } from "@/components/Title";
+
+import { Bookmarks } from "./Bookmarks";
+import { SellNewItem } from "./SellNewItem";
 
 export const Dashboard = (): JSX.Element => {
   return (

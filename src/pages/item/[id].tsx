@@ -1,23 +1,24 @@
+import { faStar as emptyStar } from "@fortawesome/free-regular-svg-icons";
+import { faSpinner, faStar } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { createSSGHelpers } from "@trpc/react/ssg";
+import type { GetStaticPaths, GetStaticProps } from "next";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import ContentLoader from "react-content-loader";
+import tw from "twin.macro";
+
+import { Button } from "@/components/Button";
+import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { NoResults } from "@/components/NoResults";
 import { Title } from "@/components/Title";
-import { Card, CardBody, CardTitle } from "@/components/Card";
-import { trpc, useBookmark } from "@/utils/trpc";
-import { ItemWithCount, ITEM_TYPES } from "@/utils/item";
-import tw from "twin.macro";
-import ContentLoader from "react-content-loader";
-import { Button } from "@/components/Button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSpinner, faStar } from "@fortawesome/free-solid-svg-icons";
-import { faStar as emptyStar } from "@fortawesome/free-regular-svg-icons";
-import dynamic from "next/dynamic";
-import { createSSGHelpers } from "@trpc/react/ssg";
 import { appRouter } from "@/pages/api/trpc/[trpc]";
-import type { GetStaticPaths, GetStaticProps } from "next";
 import { getBookmarks } from "@/server/bookmarks";
-import { formatTVA } from "@/utils/tva";
 import { createContext } from "@/server/context";
+import { ITEM_TYPES, ItemWithCount } from "@/utils/item";
+import { trpc, useBookmark } from "@/utils/trpc";
+import { formatTVA } from "@/utils/tva";
 
 const SalesByMonth = dynamic(() => import("@/components/Charts/SalesByMonth"));
 

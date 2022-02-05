@@ -1,5 +1,7 @@
-import type { DBItem, Item } from "@/utils/item";
 import type { Filter, Sort } from "mongodb";
+
+import type { DBItem, Item } from "@/utils/item";
+
 import { getDb } from "./database";
 
 const ITEMS_PER_PAGE = 50;

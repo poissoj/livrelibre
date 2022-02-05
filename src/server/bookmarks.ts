@@ -1,5 +1,6 @@
-import { getDb } from "@/server/database";
 import type { ObjectId } from "mongodb";
+
+import { getDb } from "@/server/database";
 
 type BddBook = { _id: ObjectId; amount: number; title: string };
 

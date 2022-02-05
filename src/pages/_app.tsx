@@ -1,10 +1,11 @@
 import { withTRPC } from "@trpc/next";
 import type { AppProps } from "next/dist/shared/lib/router/router";
+import React from "react";
+
 import GlobalStyles from "@/components/GlobalStyles";
 import Layout from "@/components/Layout/Layout";
-import type { AppRouter } from "@/pages/api/trpc/[trpc]";
-import React from "react";
 import useUser from "@/lib/useUser";
+import type { AppRouter } from "@/pages/api/trpc/[trpc]";
 
 function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   const { isLoggedIn } = useUser({ redirectTo: "/login" });

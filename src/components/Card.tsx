@@ -1,5 +1,6 @@
 import { ErrorBoundary } from "react-error-boundary";
 import tw, { styled } from "twin.macro";
+
 import { ErrorMessage } from "@/components/ErrorMessage";
 
 const SHADOW = `

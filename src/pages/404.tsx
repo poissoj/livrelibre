@@ -1,5 +1,6 @@
-import { Title } from "@/components/Title";
 import "twin.macro";
+
+import { Title } from "@/components/Title";
 
 const Custom404 = (): JSX.Element => (
   <div tw="flex-1 self-center text-center text-2xl">

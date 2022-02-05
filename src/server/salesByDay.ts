@@ -1,7 +1,9 @@
-import type { DBItem, Item, TVA } from "@/utils/item";
-import { PaymentType, PAYMENT_METHODS } from "@/utils/sale";
-import { isDefined, isIn } from "@/utils/utils";
 import type { ObjectId } from "mongodb";
+
+import type { DBItem, Item, TVA } from "@/utils/item";
+import { PAYMENT_METHODS, PaymentType } from "@/utils/sale";
+import { isDefined, isIn } from "@/utils/utils";
+
 import { getDb } from "./database";
 
 type DBSale = {

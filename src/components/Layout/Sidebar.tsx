@@ -12,8 +12,8 @@ import {
   FontAwesomeIcon,
   FontAwesomeIconProps,
 } from "@fortawesome/react-fontawesome";
-import { useRouter } from "next/router";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import tw, { styled } from "twin.macro";
 
 const StyledLink = styled.a({

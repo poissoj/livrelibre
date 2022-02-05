@@ -1,7 +1,9 @@
-import "twin.macro";
 import Link from "next/link";
-import type { Item } from "@/utils/item";
 import React from "react";
+import "twin.macro";
+
+import type { Item } from "@/utils/item";
+
 import { AddToCartButton } from "./AddToCartButton";
 
 export const ItemsTable = ({ items }: { items: Item[] }) => (

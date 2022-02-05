@@ -1,6 +1,7 @@
+import tw from "twin.macro";
+
 import type { InferQueryOutput } from "@/utils/trpc";
 import { formatTVA } from "@/utils/tva";
-import tw from "twin.macro";
 
 export const StickyTh = tw.th`sticky top-0 bg-white`;
 

@@ -1,9 +1,10 @@
+import { faDownload, faUpload } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "twin.macro";
+
+import { Button } from "@/components/Button";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { Title } from "@/components/Title";
-import { Button } from "@/components/Button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDownload, faUpload } from "@fortawesome/free-solid-svg-icons";
 
 const DilicomImport = () => (
   <Card>

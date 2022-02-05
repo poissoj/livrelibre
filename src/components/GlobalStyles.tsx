@@ -1,7 +1,8 @@
-import { createGlobalStyle } from "styled-components";
-import tw, { GlobalStyles as BaseStyles } from "twin.macro";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import { createGlobalStyle } from "styled-components";
+import tw, { GlobalStyles as BaseStyles } from "twin.macro";
+
 config.autoAddCss = false;
 
 const CustomStyles = createGlobalStyle`

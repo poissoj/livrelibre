@@ -1,5 +1,6 @@
-import { useEffect } from "react";
 import router from "next/router";
+import { useEffect } from "react";
+
 import { trpc } from "@/utils/trpc";
 
 export default function useUser({

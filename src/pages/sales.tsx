@@ -1,17 +1,18 @@
-import { Title } from "@/components/Title";
-import { Card, CardBody, CardTitle } from "@/components/Card";
-import tw from "twin.macro";
-import { trpc } from "@/utils/trpc";
-import { ErrorMessage } from "@/components/ErrorMessage";
-import type { Sale } from "@/server/sales";
-import Link from "next/link";
-import ContentLoader from "react-content-loader";
-import { useRouter } from "next/router";
-import type { GetStaticPropsResult } from "next";
-import type { DehydratedState } from "react-query";
 import { createSSGHelpers } from "@trpc/react/ssg";
+import type { GetStaticPropsResult } from "next";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import ContentLoader from "react-content-loader";
+import type { DehydratedState } from "react-query";
+import tw from "twin.macro";
+
+import { Card, CardBody, CardTitle } from "@/components/Card";
+import { ErrorMessage } from "@/components/ErrorMessage";
+import { Title } from "@/components/Title";
 import { appRouter } from "@/pages/api/trpc/[trpc]";
 import { createContext } from "@/server/context";
+import type { Sale } from "@/server/sales";
+import { trpc } from "@/utils/trpc";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
 

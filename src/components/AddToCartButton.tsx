@@ -1,12 +1,13 @@
-import "twin.macro";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCartPlus,
   faShoppingCart,
   faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
-import { trpc } from "@/utils/trpc";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "twin.macro";
+
 import type { Bookmark } from "@/server/bookmarks";
+import { trpc } from "@/utils/trpc";
 
 export const AddToCartButton = ({
   item,

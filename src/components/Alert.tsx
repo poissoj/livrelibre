@@ -1,3 +1,4 @@
+import * as React from "react";
 import {
   faCheckCircle,
   faExclamationCircle,
@@ -6,7 +7,6 @@ import {
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import * as React from "react";
 import tw from "twin.macro";
 
 const BasicAlert = tw.div`p-sm border border-radius[4px] flex items-center`;

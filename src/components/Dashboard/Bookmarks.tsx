@@ -1,13 +1,15 @@
-import Link from "next/link";
-import { Card, CardBody, CardTitle } from "@/components/Card";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 import "twin.macro";
-import { trpc, useBookmark } from "@/utils/trpc";
+
+import { AddToCartButton } from "@/components/AddToCartButton";
+import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import type { Bookmark } from "@/server/bookmarks";
+import { trpc, useBookmark } from "@/utils/trpc";
+
 import { BookmarksSkeleton } from "./BookmarksSkeleton";
-import { AddToCartButton } from "@/components/AddToCartButton";
 
 type BookmarksContentProps = {
   bookmarks: Bookmark[];

@@ -1,19 +1,20 @@
-import tw from "twin.macro";
-import { Title } from "@/components/Title";
-import { Card, CardBody, CardTitle } from "@/components/Card";
-import { useRouter } from "next/router";
-import { InferQueryOutput, trpc } from "@/utils/trpc";
+import { createSSGHelpers } from "@trpc/react/ssg";
+import type { GetStaticPaths, GetStaticProps } from "next";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
+import tw from "twin.macro";
+
+import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
+import { CategoriesTable } from "@/components/PaymentStats/CategoriesTable";
+import { CategorySkeleton } from "@/components/PaymentStats/CategorySkeleton";
 import { StatsByTVA } from "@/components/TVAStats/StatsByTVA";
 import { TVASkeleton } from "@/components/TVAStats/TVASkeleton";
-import { CategorySkeleton } from "@/components/PaymentStats/CategorySkeleton";
-import { CategoriesTable } from "@/components/PaymentStats/CategoriesTable";
-import type { GetStaticPaths, GetStaticProps } from "next";
-import { createSSGHelpers } from "@trpc/react/ssg";
+import { Title } from "@/components/Title";
 import { appRouter } from "@/pages/api/trpc/[trpc]";
 import { createContext } from "@/server/context";
+import { InferQueryOutput, trpc } from "@/utils/trpc";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
 

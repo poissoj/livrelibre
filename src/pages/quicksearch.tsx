@@ -1,9 +1,10 @@
-import "twin.macro";
-import { Card, CardBody, CardTitle } from "@/components/Card";
-import { Title } from "@/components/Title";
 import { useRouter } from "next/router";
-import { trpc } from "@/utils/trpc";
+import "twin.macro";
+
+import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ItemsTable } from "@/components/ItemsTable";
+import { Title } from "@/components/Title";
+import { trpc } from "@/utils/trpc";
 
 const SearchLoader = ({ search }: { search: string }) => {
   const result = trpc.useQuery(["quicksearch", search]);

@@ -1,5 +1,6 @@
-import type { InferQueryOutput } from "@/utils/trpc";
 import tw from "twin.macro";
+
+import type { InferQueryOutput } from "@/utils/trpc";
 
 type TCategories = InferQueryOutput<"salesByMonth">["itemTypes"];
 

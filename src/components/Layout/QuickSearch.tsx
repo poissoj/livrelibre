@@ -1,8 +1,8 @@
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import tw from "twin.macro";
-import type { DOMAttributes } from "react";
 import { useRouter } from "next/router";
+import type { DOMAttributes } from "react";
+import tw from "twin.macro";
 
 const Input = tw.input`flex-1 padding[5px 10px] border-radius[3px] bg-white/80 focus-visible:(ring-2 ring-inset outline-none) --tw-ring-color[#AAA]`;
 const SearchButton = tw.button`text-black`;

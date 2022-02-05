@@ -1,7 +1,8 @@
-import { Dashboard } from "@/components/Dashboard/Dashboard";
 import { createSSGHelpers } from "@trpc/react/ssg";
 import type { GetStaticPropsResult } from "next";
 import type { DehydratedState } from "react-query";
+
+import { Dashboard } from "@/components/Dashboard/Dashboard";
 import { appRouter } from "@/pages/api/trpc/[trpc]";
 import { createContext } from "@/server/context";
 

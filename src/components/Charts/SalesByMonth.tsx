@@ -1,4 +1,3 @@
-import type { InferQueryOutput } from "@/utils/trpc";
 import {
   Bar,
   BarChart,
@@ -8,6 +7,8 @@ import {
   XAxis,
 } from "recharts";
 import type { Payload } from "recharts/types/component/DefaultTooltipContent";
+
+import type { InferQueryOutput } from "@/utils/trpc";
 
 type Sales = InferQueryOutput<"lastSales">;
 

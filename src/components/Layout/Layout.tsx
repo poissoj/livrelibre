@@ -1,8 +1,9 @@
 import Head from "next/head";
 import "twin.macro";
+
 import { Header } from "./Header";
-import { Sidebar } from "./Sidebar";
 import { Main } from "./Main";
+import { Sidebar } from "./Sidebar";
 
 type LayoutProps = {
   children: React.ReactNode;

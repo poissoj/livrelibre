@@ -1,10 +1,11 @@
+import { useRouter } from "next/router";
 import "twin.macro";
+
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { ItemsTable } from "@/components/ItemsTable";
 import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
-import { useRouter } from "next/router";
 
 const SearchLoader = ({ query }: { query: Record<string, string> }) => {
   const result = trpc.useQuery(["advancedSearch", query]);

@@ -1,6 +1,7 @@
+import type { NextApiRequest, NextApiResponse } from "next";
+
 import { getDb } from "@/server/database";
 import { ITEM_TYPES } from "@/utils/item";
-import type { NextApiRequest, NextApiResponse } from "next";
 
 type Item = {
   title?: string;

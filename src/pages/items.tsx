@@ -1,11 +1,12 @@
-import "twin.macro";
-import { ErrorMessage } from "@/components/ErrorMessage";
-import { Title } from "@/components/Title";
-import { Card, CardBody, CardTitle } from "@/components/Card";
-import { trpc } from "@/utils/trpc";
 import React, { PropsWithChildren } from "react";
 import ContentLoader from "react-content-loader";
+import "twin.macro";
+
+import { Card, CardBody, CardTitle } from "@/components/Card";
+import { ErrorMessage } from "@/components/ErrorMessage";
 import { ItemsTable } from "@/components/ItemsTable";
+import { Title } from "@/components/Title";
+import { trpc } from "@/utils/trpc";
 
 const ItemsCard = ({
   title,

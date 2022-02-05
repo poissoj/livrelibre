@@ -1,8 +1,9 @@
-import { sessionOptions } from "@/lib/session";
-import { getDb } from "@/server/database";
 import { withIronSessionApiRoute } from "iron-session/next";
 import type { NextApiHandler } from "next";
 import { z } from "zod";
+
+import { sessionOptions } from "@/lib/session";
+import { getDb } from "@/server/database";
 
 const credentialsSchema = z.object({
   username: z.string(),

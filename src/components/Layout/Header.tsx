@@ -1,10 +1,12 @@
-import useUser from "@/lib/useUser";
-import { trpc } from "@/utils/trpc";
 import { faShoppingCart, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import tw, { styled } from "twin.macro";
+
+import useUser from "@/lib/useUser";
+import { trpc } from "@/utils/trpc";
+
 import { QuickSearch } from "./QuickSearch";
 
 const StyledLink = styled.a({

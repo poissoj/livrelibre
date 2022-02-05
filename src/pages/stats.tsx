@@ -1,10 +1,11 @@
+import dynamic from "next/dynamic";
+import ContentLoader from "react-content-loader";
+import "twin.macro";
+
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
-import dynamic from "next/dynamic";
-import ContentLoader from "react-content-loader";
-import "twin.macro";
 
 const SalesByHour = dynamic(() => import("@/components/Charts/SalesByHour"));
 const SalesByDay = dynamic(() => import("@/components/Charts/SalesByDay"));

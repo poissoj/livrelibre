@@ -1,25 +1,26 @@
-import tw from "twin.macro";
-import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
-import { Title } from "@/components/Title";
-import Link from "next/link";
-import { trpc } from "@/utils/trpc";
-import { ErrorMessage } from "@/components/ErrorMessage";
-import ContentLoader from "react-content-loader";
-import { Button } from "@/components/Button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckCircle,
   faSpinner,
   faTrashAlt,
 } from "@fortawesome/free-solid-svg-icons";
-import type { InferQueryOutput } from "@/utils/trpc";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
+import { useState } from "react";
+import ContentLoader from "react-content-loader";
+import { useForm } from "react-hook-form";
+import tw from "twin.macro";
+
+import { Alert } from "@/components/Alert";
+import { Button } from "@/components/Button";
+import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
+import { ErrorMessage } from "@/components/ErrorMessage";
 import { Input, Select } from "@/components/FormControls";
+import { Title } from "@/components/Title";
+import type { PaymentFormData } from "@/server/cart";
 import { formatDate } from "@/utils/date";
 import { PAYMENT_METHODS } from "@/utils/sale";
-import { useForm } from "react-hook-form";
-import type { PaymentFormData } from "@/server/cart";
-import { useState } from "react";
-import { Alert } from "@/components/Alert";
+import { trpc } from "@/utils/trpc";
+import type { InferQueryOutput } from "@/utils/trpc";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
 
