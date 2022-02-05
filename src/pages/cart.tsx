@@ -36,6 +36,7 @@ const RemoveFromCartButton = ({ id }: { id: string }) => {
       type="button"
       tw="background-color[#FF9800]"
       onClick={() => mutate(id)}
+      title="Enlever du panier"
     >
       <FontAwesomeIcon
         icon={isLoading ? faSpinner : faTrashAlt}
