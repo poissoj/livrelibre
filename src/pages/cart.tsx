@@ -127,11 +127,10 @@ const PaymentForm = ({ cb }: { cb: (amount: number | null) => void }) => {
   };
   const paymentType = watch("paymentType");
   return (
-    <form
-      tw="flex justify-end items-center gap-sm"
-      onSubmit={handleSubmit(onSubmit)}
-    >
-      <label htmlFor="paymentDate">Date</label>
+    <form tw="flex justify-end gap-sm" onSubmit={handleSubmit(onSubmit)}>
+      <label htmlFor="paymentDate" tw="self-center cursor-pointer">
+        Date
+      </label>
       <Input
         id="paymentDate"
         type="date"
