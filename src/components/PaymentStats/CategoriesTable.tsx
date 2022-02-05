@@ -1,8 +1,6 @@
 import tw from "twin.macro";
 
-import type { InferQueryOutput } from "@/utils/trpc";
-
-type TCategories = InferQueryOutput<"salesByMonth">["itemTypes"];
+type TCategories = { type: string; nb: number; totalPrice: string }[];
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
 

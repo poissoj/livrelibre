@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { getDb } from "@/server/database";
-import { ITEM_TYPES } from "@/utils/item";
+import { ITEM_TYPES, ItemType } from "@/utils/item";
 
 type Item = {
   title?: string;
@@ -10,7 +10,7 @@ type Item = {
   amount: number;
   prix_achat: string;
   price: string;
-  type: keyof typeof ITEM_TYPES;
+  type: ItemType;
 };
 
 const trim = (str: string | undefined) => str?.trim() || "";

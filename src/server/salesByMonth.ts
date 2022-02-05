@@ -37,7 +37,7 @@ export const getSalesByMonth = async (month: string, year: string) => {
   type Stat = { nb: number; totalPrice: number };
   const salesByDayStats: Record<string, Stat> = {};
   const tvaStats: Record<string, Stat> = {};
-  const itemTypesStats: Record<ItemType, Stat> = {};
+  const itemTypesStats: Partial<Record<ItemType, Stat>> = {};
 
   for (const sale of sales) {
     salesByDayStats[sale.date] = salesByDayStats[sale.date] || {
@@ -52,12 +52,13 @@ export const getSalesByMonth = async (month: string, year: string) => {
     tvaStats[tvaAndType].nb += sale.quantity;
     tvaStats[tvaAndType].totalPrice += sale.price;
 
-    itemTypesStats[sale.itemType] = itemTypesStats[sale.itemType] || {
+    const stat = itemTypesStats[sale.itemType] || {
       nb: 0,
       totalPrice: 0,
     };
-    itemTypesStats[sale.itemType].nb += sale.quantity;
-    itemTypesStats[sale.itemType].totalPrice += sale.price;
+    stat.nb += sale.quantity;
+    stat.totalPrice += sale.price;
+    itemTypesStats[sale.itemType] = stat;
   }
 
   const salesByDay = Object.keys(salesByDayStats)
@@ -87,11 +88,11 @@ export const getSalesByMonth = async (month: string, year: string) => {
     })
     .sort((a, b) => Number(b[0]) - Number(a[0]) || a[1].localeCompare(b[1]));
 
-  const itemTypes = Object.keys(itemTypesStats)
-    .map((type) => ({
-      type: ITEM_TYPES[type],
-      nb: itemTypesStats[type].nb,
-      totalPrice: itemTypesStats[type].totalPrice.toFixed(2),
+  const itemTypes = Object.entries(itemTypesStats)
+    .map(([type, stat]) => ({
+      type: ITEM_TYPES[type as ItemType],
+      nb: stat.nb,
+      totalPrice: stat.totalPrice.toFixed(2),
     }))
     .sort((a, b) => b.nb - a.nb);
 

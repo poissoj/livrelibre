@@ -1,4 +1,4 @@
-export const ITEM_TYPES: Record<string, string> = {
+export const ITEM_TYPES = {
   postcard: "Carte postale",
   stationery: "Papeterie",
   game: "Jeu",
@@ -6,9 +6,18 @@ export const ITEM_TYPES: Record<string, string> = {
   unknown: "Inconnu",
   dvd: "DVD",
   deposit: "consigne",
-};
+} as const;
 
 export type ItemType = keyof typeof ITEM_TYPES;
+export const ItemTypes = [
+  "postcard",
+  "stationery",
+  "game",
+  "book",
+  "unknown",
+  "dvd",
+  "deposit",
+] as const;
 
 export const TVAValues = ["0", "2.1", "5.5", "20"] as const;
 export type TVA = typeof TVAValues[number];

@@ -21,10 +21,10 @@ import { getSalesByDay } from "@/server/salesByDay";
 import { getSalesByMonth } from "@/server/salesByMonth";
 import { advancedSearch, getItem, searchItems } from "@/server/searchItem";
 import { getStats } from "@/server/stats";
-import { TVAValues } from "@/utils/item";
+import { ItemTypes, TVAValues } from "@/utils/item";
 
 const itemSchema = z.object({
-  type: z.string(),
+  type: z.enum(ItemTypes),
   isbn: z.string(),
   author: z.string(),
   title: z.string(),
@@ -151,7 +151,7 @@ export const appRouter = trpc
       price: z.string(),
       title: z.string(),
       tva: z.enum(TVAValues),
-      type: z.string(),
+      type: z.enum(ItemTypes),
     }),
     async resolve({ input, ctx }) {
       return await addNewItemToCart(ctx.user.name, input);
