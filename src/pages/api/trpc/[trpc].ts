@@ -17,7 +17,7 @@ import { Context, createContext } from "@/server/context";
 import { getItems } from "@/server/items";
 import { lastSales } from "@/server/lastSales";
 import { getSales } from "@/server/sales";
-import { getSalesByDay } from "@/server/salesByDay";
+import { deleteSale, getSalesByDay } from "@/server/salesByDay";
 import { getSalesByMonth } from "@/server/salesByMonth";
 import { advancedSearch, getItem, searchItems } from "@/server/searchItem";
 import { getStats } from "@/server/stats";
@@ -164,6 +164,15 @@ export const appRouter = trpc
     input: z.string().length(24),
     async resolve({ input }) {
       return await removeFromCart(input);
+    },
+  })
+  .mutation("deleteSale", {
+    input: z.object({
+      saleId: z.string().length(24),
+      itemId: z.string().length(24).nullish(),
+    }),
+    async resolve({ input }) {
+      return await deleteSale(input.saleId, input.itemId);
     },
   });
 

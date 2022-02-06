@@ -1,4 +1,4 @@
-import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import { faSpinner, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { createSSGHelpers } from "@trpc/react/ssg";
 import type { GetStaticPaths, GetStaticProps } from "next";
@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import tw from "twin.macro";
 
+import { Button } from "@/components/Button";
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { CategoriesTable } from "@/components/PaymentStats/CategoriesTable";
@@ -48,17 +49,38 @@ const CategoriesLoader = ({ date }: { date: string }) => {
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
 
-const DeleteSale = () => (
-  <button
-    type="button"
-    name="saleId"
-    aria-label="Supprimer la vente"
-    tw="px-sm py-xs bg-primary-dark text-white border-radius[3px]"
-    title="Supprimer"
-  >
-    <FontAwesomeIcon icon={faTrashAlt} />
-  </button>
-);
+const DeleteSale = ({
+  saleId,
+  itemId,
+}: {
+  saleId: string;
+  itemId: string | null;
+}) => {
+  const utils = trpc.useContext();
+  const { mutate, isLoading } = trpc.useMutation("deleteSale", {
+    async onSuccess() {
+      await utils.invalidateQueries("salesByDay");
+    },
+  });
+  return (
+    <Button
+      type="button"
+      name="saleId"
+      aria-label="Supprimer la vente"
+      tw="background-color[#FF9800]"
+      title="Supprimer"
+      onClick={() => {
+        console.log({ saleId, itemId });
+        mutate({ saleId, itemId });
+      }}
+    >
+      <FontAwesomeIcon
+        icon={isLoading ? faSpinner : faTrashAlt}
+        spin={isLoading}
+      />
+    </Button>
+  );
+};
 
 type Carts = InferQueryOutput<"salesByDay">["carts"];
 
@@ -89,7 +111,7 @@ const SalesTables = ({ carts }: { carts: Carts }) => {
       {carts.map((cart, i) => (
         <tbody tw="odd:bg-gray-light" key={i}>
           {cart.sales.map((sale) => (
-            <SalesRow key={sale.saleItemId} deleted={sale.deleted}>
+            <SalesRow key={sale._id} deleted={sale.deleted}>
               <Cell>
                 {sale.itemId ? (
                   <Link href={`/item/${sale.itemId}`} passHref>
@@ -104,7 +126,11 @@ const SalesTables = ({ carts }: { carts: Carts }) => {
               <Cell tw="text-right font-mono">{sale.price.toFixed(2)}€</Cell>
               <Cell tw="text-right font-mono">{formatTVA(sale.tva)}</Cell>
               <Cell tw="whitespace-nowrap">{sale.type}</Cell>
-              <Cell tw="pr-3">{sale.deleted ? null : <DeleteSale />}</Cell>
+              <Cell tw="pr-3">
+                {sale.deleted ? null : (
+                  <DeleteSale saleId={sale._id} itemId={sale.itemId} />
+                )}
+              </Cell>
             </SalesRow>
           ))}
         </tbody>

@@ -1,28 +1,42 @@
-import type { ObjectId } from "mongodb";
+import { ObjectId, WithId } from "mongodb";
 
-import type { DBItem, TVA } from "@/utils/item";
+import type { DBItem, ItemType, TVA } from "@/utils/item";
 import { PAYMENT_METHODS, PaymentType } from "@/utils/sale";
 import { isDefined, isIn } from "@/utils/utils";
 
 import { getDb } from "./database";
 
 type DBSale = {
-  _id: ObjectId;
+  cartId?: ObjectId;
+  date: string;
   id: ObjectId | null;
+  itemType: ItemType;
   price: number;
   quantity: number;
-  cartId?: ObjectId;
   title?: string;
   tva?: TVA;
   type?: PaymentType;
   deleted?: boolean;
 };
 
+type AggregatedSale = WithId<
+  Pick<
+    DBSale,
+    | "cartId"
+    | "id"
+    | "price"
+    | "title"
+    | "tva"
+    | "type"
+    | "quantity"
+    | "deleted"
+  >
+>;
+
 type PaymentMethod = typeof PAYMENT_METHODS[PaymentType] | "Inconnu";
 
 type ItemSale = Omit<DBItem, "price" | "type"> & {
   itemId: string;
-  saleItemId: string;
   price: number;
   type: PaymentMethod;
   quantity: number;
@@ -30,8 +44,7 @@ type ItemSale = Omit<DBItem, "price" | "type"> & {
   _id: string;
 };
 
-type UnlistedSale = Omit<DBSale, "type" | "_id" | "cartId"> & {
-  saleItemId: string;
+type UnlistedSale = Omit<AggregatedSale, "type" | "_id" | "cartId"> & {
   type: PaymentMethod;
   itemId: null;
   deleted: boolean;
@@ -45,7 +58,7 @@ export const getSalesByDay = async (date: string) => {
   const db = await getDb();
   const dbSales = await db
     .collection("sales")
-    .aggregate<DBSale>([
+    .aggregate<AggregatedSale>([
       { $match: { date } },
       {
         $project: {
@@ -113,17 +126,15 @@ export const getSalesByDay = async (date: string) => {
       sales.push({
         ...items[i],
         itemId: sale.id.toString(),
-        saleItemId: [sale._id, sale.id].join(),
         price: sale.price,
         type,
         quantity: sale.quantity,
         deleted,
-        _id: items[i]._id.toString(),
+        _id: sale._id.toString(),
       });
     } else {
       sales.push({
         ...sale,
-        saleItemId: sale._id.toString(),
         type,
         itemId: null,
         deleted,
@@ -162,4 +173,21 @@ export const getSalesByDay = async (date: string) => {
     salesCount,
     paymentMethods,
   };
+};
+
+export const deleteSale = async (saleId: string, itemId?: string | null) => {
+  const db = await getDb();
+  const result = await db
+    .collection<DBSale>("sales")
+    .findOneAndUpdate(
+      { _id: new ObjectId(saleId) },
+      { $set: { deleted: true } }
+    );
+  const item = result.value;
+  if (itemId && item) {
+    const amount = item.quantity || 1;
+    await db
+      .collection<DBItem>("books")
+      .findOneAndUpdate({ _id: new ObjectId(itemId) }, { $inc: { amount } });
+  }
 };
