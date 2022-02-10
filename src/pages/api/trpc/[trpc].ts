@@ -21,6 +21,7 @@ import { deleteSale, getSalesByDay } from "@/server/salesByDay";
 import { getSalesByMonth } from "@/server/salesByMonth";
 import { advancedSearch, getItem, searchItems } from "@/server/searchItem";
 import { getStats } from "@/server/stats";
+import { updateItem } from "@/server/updateItem";
 import { ItemTypes, TVAValues } from "@/utils/item";
 
 const itemSchema = z.object({
@@ -37,6 +38,10 @@ const itemSchema = z.object({
   price: z.string(),
   amount: z.number(),
   tva: z.enum(TVAValues),
+});
+
+const updateItemSchema = itemSchema.extend({
+  id: z.string(),
 });
 
 export const appRouter = trpc
@@ -128,6 +133,12 @@ export const appRouter = trpc
     input: itemSchema,
     async resolve({ input }) {
       return await addItem(input);
+    },
+  })
+  .mutation("updateItem", {
+    input: updateItemSchema,
+    async resolve({ input }) {
+      return await updateItem(input);
     },
   })
   .mutation("payCart", {

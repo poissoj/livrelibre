@@ -1,6 +1,7 @@
 import { faStar as emptyStar } from "@fortawesome/free-regular-svg-icons";
 import {
   faCartPlus,
+  faEdit,
   faSpinner,
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
@@ -8,11 +9,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { createSSGHelpers } from "@trpc/react/ssg";
 import type { GetStaticPaths, GetStaticProps } from "next";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
 import { useForm } from "react-hook-form";
 import tw from "twin.macro";
 
+import { Alert } from "@/components/Alert";
 import { Button } from "@/components/Button";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
@@ -102,7 +105,7 @@ const TitleWithButtons = ({ item }: { item: ItemWithCount }) => {
         type="button"
         title={item.starred ? "Enlever des favoris" : "Ajouter aux favoris"}
         onClick={handleClick}
-        tw="width[32px]"
+        tw="border-top-right-radius[0] border-bottom-right-radius[0] px-md border-r border-primary-darkest"
       >
         <FontAwesomeIcon
           icon={
@@ -111,6 +114,15 @@ const TitleWithButtons = ({ item }: { item: ItemWithCount }) => {
           spin={mutation.isLoading}
         />
       </Button>
+      <Link href={`/update/${item._id}`} passHref>
+        <Button
+          as="a"
+          title="Modifier"
+          tw="border-top-left-radius[0] border-bottom-left-radius[0] px-md"
+        >
+          <FontAwesomeIcon icon={faEdit} />
+        </Button>
+      </Link>
     </div>
   );
 };
@@ -156,6 +168,19 @@ const AddToCartFooter = ({ id, stock }: { id: string; stock: number }) => {
   );
 };
 
+const StatusMessage = ({ itemTitle }: { itemTitle: string }) => {
+  const router = useRouter();
+  const { status, id } = router.query;
+  if (status === "updated" && typeof id === "string") {
+    return (
+      <Alert type="success" onDismiss={() => router.push(`/item/${id}`)}>
+        {itemTitle} modifié.
+      </Alert>
+    );
+  }
+  return null;
+};
+
 const ItemLoader = ({ id }: { id: string }) => {
   const result = trpc.useQuery(["searchItem", id]);
 
@@ -174,7 +199,8 @@ const ItemLoader = ({ id }: { id: string }) => {
       <Card tw="flex-1">
         <Title>{`${result.data.title} | Voir un article`}</Title>
         <TitleWithButtons item={result.data} />
-        <CardBody>
+        <CardBody tw="flex-col">
+          <StatusMessage itemTitle={result.data.title} />
           <ItemDetails item={result.data} />
         </CardBody>
         <CardFooter>
