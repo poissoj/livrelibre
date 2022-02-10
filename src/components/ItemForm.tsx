@@ -31,21 +31,26 @@ export const ItemForm = ({
   onSubmit,
   data,
   children,
+  onSuccess,
 }: {
   title: string;
   onSubmit(
     data?: FormFields
   ): Promise<{ type: "error" | "success" | "warning"; msg: string }>;
   data?: FormFields;
+  onSuccess?(): void;
   children: React.ReactNode;
 }): JSX.Element => {
-  const { register, handleSubmit } = useForm<FormFields>({
+  const { register, handleSubmit, reset } = useForm<FormFields>({
     defaultValues: data,
   });
   const [alert, setAlert] = React.useState<TAlert | null>(null);
   const submit = async (data: FormFields) => {
     const { type, msg: message } = await onSubmit(data);
     setAlert({ type, message });
+    if (type === "success") {
+      onSuccess ? onSuccess() : reset();
+    }
   };
   return (
     <Card>
