@@ -4,6 +4,7 @@ import { z } from "zod";
 
 import { sessionOptions } from "@/lib/session";
 import { getDb } from "@/server/database";
+import { logger } from "@/utils/logger";
 
 const credentialsSchema = z.object({
   username: z.string(),
@@ -33,7 +34,7 @@ const loginRoute: NextApiHandler = async (req, res) => {
     }
     res.status(401).json({ error: "Invalid credentials" });
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     res.status(500).json({ error: "Error processing credentials" });
   }
 };

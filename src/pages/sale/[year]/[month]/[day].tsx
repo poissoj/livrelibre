@@ -70,7 +70,6 @@ const DeleteSale = ({
       tw="background-color[#FF9800]"
       title="Supprimer"
       onClick={() => {
-        console.log({ saleId, itemId });
         mutate({ saleId, itemId });
       }}
     >

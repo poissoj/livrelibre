@@ -1,4 +1,5 @@
 import type { BaseItem, DBItem } from "@/utils/item";
+import { logger } from "@/utils/logger";
 import { norm } from "@/utils/utils";
 
 import { getDb } from "./database";
@@ -25,10 +26,9 @@ export const addItem = async (
   };
 
   try {
-    const res = await db.collection<typeof newItem>("books").insertOne(newItem);
-    console.log(res);
+    await db.collection<typeof newItem>("books").insertOne(newItem);
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     return { type: "error", msg: "Impossible d'ajouter cet article." };
   }
   return { type: "success", msg: `"${item.title}" a été ajouté.` };

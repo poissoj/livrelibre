@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 
 import type { BaseItem, DBItem } from "@/utils/item";
+import { logger } from "@/utils/logger";
 import { norm } from "@/utils/utils";
 
 import { getDb } from "./database";
@@ -26,7 +27,7 @@ export const updateItem = async (
       .updateOne({ _id: new ObjectId(item.id) }, { $set: newItem });
     return { type: "success", msg: "L'article a été modifié" };
   } catch (error) {
-    console.error(error);
+    logger.error(error);
     return { type: "error", msg: "Impossible de modifier l'article" };
   }
 };
