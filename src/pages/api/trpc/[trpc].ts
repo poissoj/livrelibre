@@ -23,6 +23,7 @@ import { advancedSearch, getItem, searchItems } from "@/server/searchItem";
 import { getStats } from "@/server/stats";
 import { updateItem } from "@/server/updateItem";
 import { ItemTypes, TVAValues } from "@/utils/item";
+import { logger } from "@/utils/logger";
 
 const itemSchema = z.object({
   type: z.enum(ItemTypes),
@@ -125,19 +126,24 @@ export const appRouter = trpc
       id: z.string().length(24),
       starred: z.boolean(),
     }),
-    async resolve({ input }) {
+    async resolve({ ctx, input }) {
+      logger.info(`${input.starred ? "Star" : "Unstar"} item ${input.id}`, {
+        user: ctx.user,
+      });
       return await starItem(new ObjectId(input.id), input.starred);
     },
   })
   .mutation("addItem", {
     input: itemSchema,
-    async resolve({ input }) {
+    async resolve({ ctx, input }) {
+      logger.info("Add new item", { user: ctx.user, item: input });
       return await addItem(input);
     },
   })
   .mutation("updateItem", {
     input: updateItemSchema,
-    async resolve({ input }) {
+    async resolve({ ctx, input }) {
+      logger.info("Update item", { user: ctx.user, item: input });
       return await updateItem(input);
     },
   })
@@ -148,6 +154,7 @@ export const appRouter = trpc
       amount: z.string().regex(/^(-?\d+(\.\d+)?)?$/),
     }),
     async resolve({ input, ctx }) {
+      logger.info("Pay cart", { user: ctx.user, cart: input });
       return await payCart(ctx.user.name, input);
     },
   })
@@ -157,6 +164,7 @@ export const appRouter = trpc
       quantity: z.number().optional(),
     }),
     async resolve({ input, ctx }) {
+      logger.info("Add to cart", { user: ctx.user, item: input });
       return await addToCart(ctx.user.name, input.id, input.quantity);
     },
   })
@@ -168,12 +176,14 @@ export const appRouter = trpc
       type: z.enum(ItemTypes),
     }),
     async resolve({ input, ctx }) {
+      logger.info("Add new item to cart", { user: ctx.user, item: input });
       return await addNewItemToCart(ctx.user.name, input);
     },
   })
   .mutation("removeFromCart", {
     input: z.string().length(24),
-    async resolve({ input }) {
+    async resolve({ ctx, input }) {
+      logger.info("Remove from cart", { user: ctx.user, itemId: input });
       return await removeFromCart(input);
     },
   })
@@ -182,7 +192,8 @@ export const appRouter = trpc
       saleId: z.string().length(24),
       itemId: z.string().length(24).nullish(),
     }),
-    async resolve({ input }) {
+    async resolve({ ctx, input }) {
+      logger.info("Delete sale", { user: ctx.user, input });
       return await deleteSale(input.saleId, input.itemId);
     },
   });

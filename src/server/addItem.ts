@@ -28,7 +28,7 @@ export const addItem = async (
   try {
     await db.collection<typeof newItem>("books").insertOne(newItem);
   } catch (error) {
-    logger.error(error);
+    logger.error("Add new item", error);
     return { type: "error", msg: "Impossible d'ajouter cet article." };
   }
   return { type: "success", msg: `"${item.title}" a été ajouté.` };

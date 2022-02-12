@@ -1,6 +1,7 @@
 import { ObjectId } from "mongodb";
 
 import type { DBItem, ItemType, TVA } from "@/utils/item";
+import { logger } from "@/utils/logger";
 import type { PaymentType } from "@/utils/sale";
 
 import { getDb } from "./database";
@@ -131,5 +132,6 @@ export const removeFromCart = async (cartItemId: string) => {
   }
   const amount = result.value.quantity || 1;
   const _id = result.value.itemId;
+  logger.info("Remove from cart", { cartItemId, itemId: _id });
   await db.collection<DBItem>("books").updateOne({ _id }, { $inc: { amount } });
 };
