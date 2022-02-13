@@ -5,11 +5,15 @@ import { ITEMS_PER_PAGE } from "@/utils/pagination";
 
 import { getDb } from "./database";
 
-export const getItems = async (
-  query: Filter<DBItem> = {},
-  sortParams: Sort = { title: 1 },
-  pageNumber = 1
-) => {
+export const getItems = async ({
+  query = {},
+  sortParams = { title: 1 },
+  pageNumber = 1,
+}: {
+  query?: Filter<DBItem>;
+  sortParams?: Sort;
+  pageNumber?: number;
+}) => {
   const db = await getDb();
   const itemCollection = db.collection<DBItem>("books");
   const countPromise = itemCollection.countDocuments(query);

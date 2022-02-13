@@ -1,10 +1,12 @@
+import { useRouter } from "next/router";
 import React, { PropsWithChildren } from "react";
 import ContentLoader from "react-content-loader";
 import "twin.macro";
 
-import { Card, CardBody, CardTitle } from "@/components/Card";
+import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { ItemsTable } from "@/components/ItemsTable";
+import { Pagination } from "@/components/Pagination";
 import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
 
@@ -39,19 +41,19 @@ const ItemsSkeleton = (): JSX.Element => (
   </ContentLoader>
 );
 
-const ItemsLoader = () => {
-  const result = trpc.useQuery(["items"]);
-  const title = "Liste des articles";
+const ItemsLoader = ({ page }: { page: number }) => {
+  const result = trpc.useQuery(["items", page], { keepPreviousData: true });
+  let pageTitle = "Liste des articles";
   if (result.status === "error") {
     return (
-      <ItemsCard title={title}>
+      <ItemsCard title={pageTitle}>
         <ErrorMessage />
       </ItemsCard>
     );
   }
   if (result.status === "loading") {
     return (
-      <ItemsCard title={title}>
+      <ItemsCard title={pageTitle}>
         <ItemsSkeleton />
       </ItemsCard>
     );
@@ -60,23 +62,39 @@ const ItemsLoader = () => {
     return null;
   }
   const { count, pageCount, items } = result.data;
-  const pageTitle = `Liste des articles | Page 1 sur ${pageCount}`;
+  let title = "Tous les articles";
+  if (pageCount > 1) {
+    const pageLabel = `Page ${page} sur ${pageCount}`;
+    title += " - " + pageLabel;
+    pageTitle += " | " + pageLabel;
+  }
   return (
-    <ItemsCard
-      title={`Tous les articles - Page 1 sur ${pageCount}`}
-      subtitle={<p tw="mt-sm">{count} articles</p>}
-    >
+    <Card tw="max-h-full overflow-hidden flex flex-col">
       <Title>{pageTitle}</Title>
-      <ItemsTable items={items} />
-    </ItemsCard>
+      <CardTitle>{title}</CardTitle>
+      <p tw="mt-sm">{count} articles</p>
+      <CardBody>
+        <ItemsTable items={items} />
+      </CardBody>
+      {pageCount > 1 ? (
+        <CardFooter tw="flex justify-center pt-6 2xl:pt-8">
+          <Pagination count={pageCount} />
+        </CardFooter>
+      ) : null}
+    </Card>
   );
 };
 
-const Items = (): JSX.Element => (
-  <div tw="flex flex-1 flex-col gap-lg">
-    <Title>Liste des articles</Title>
-    <ItemsLoader />
-  </div>
-);
+const Items = (): JSX.Element => {
+  const router = useRouter();
+  const { page: queryPage } = router.query;
+  const page = typeof queryPage === "string" ? Number(queryPage) : 1;
+  return (
+    <div tw="flex flex-1 flex-col gap-lg">
+      <Title>Liste des articles</Title>
+      <ItemsLoader page={page} />
+    </div>
+  );
+};
 
 export default Items;

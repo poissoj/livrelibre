@@ -82,8 +82,9 @@ export const appRouter = trpc
     },
   })
   .query("items", {
-    async resolve() {
-      return await getItems();
+    input: z.number(),
+    async resolve({ input }) {
+      return await getItems({ pageNumber: input });
     },
   })
   .query("bestsales", {
