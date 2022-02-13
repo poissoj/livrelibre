@@ -9,7 +9,7 @@ const SHADOW = `
 0 3px 1px -2px rgba(0, 0, 0, 0.2)`;
 
 export const Card = styled.section({
-  ...tw`bg-white border-radius[4px] p-lg`,
+  ...tw`bg-white border-radius[4px] p-md 2xl:p-lg`,
   boxShadow: SHADOW,
 });
 
