@@ -1,10 +1,9 @@
 import type { Filter, Sort } from "mongodb";
 
 import type { DBItem, Item } from "@/utils/item";
+import { ITEMS_PER_PAGE } from "@/utils/pagination";
 
 import { getDb } from "./database";
-
-const ITEMS_PER_PAGE = 50;
 
 export const getItems = async (
   query: Filter<DBItem> = {},

@@ -5,9 +5,8 @@ import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { ItemsTable } from "@/components/ItemsTable";
 import { Pagination } from "@/components/Pagination";
 import { Title } from "@/components/Title";
+import { ITEMS_PER_PAGE } from "@/utils/pagination";
 import { trpc } from "@/utils/trpc";
-
-const ITEMS_PER_PAGE = 50;
 
 const SearchLoader = ({ page, search }: { page: number; search: string }) => {
   const result = trpc.useQuery(["quicksearch", { search, page }], {

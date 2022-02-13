@@ -1,6 +1,7 @@
 import { Filter, ObjectId } from "mongodb";
 
 import type { DBItem, ItemWithCount } from "@/utils/item";
+import { ITEMS_PER_PAGE } from "@/utils/pagination";
 import { norm } from "@/utils/utils";
 
 import { getDb } from "./database";
@@ -78,8 +79,6 @@ const generateSearchCriteria = (query: Record<string, string>) => {
   }
   return { $and: criteria };
 };
-
-const ITEMS_PER_PAGE = 50;
 
 const doSearch = async (criteria: Filter<DBItem>, pageNumber: number) => {
   const db = await getDb();
