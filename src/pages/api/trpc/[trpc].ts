@@ -73,9 +73,12 @@ export const appRouter = trpc
     },
   })
   .query("advancedSearch", {
-    input: z.record(z.string()),
+    input: z.object({
+      search: z.record(z.string()),
+      page: z.number(),
+    }),
     async resolve({ input }) {
-      return await advancedSearch(input);
+      return await advancedSearch(input.search, input.page);
     },
   })
   .query("items", {
