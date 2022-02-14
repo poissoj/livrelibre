@@ -18,6 +18,7 @@ import { Input, Select } from "@/components/FormControls";
 import { Title } from "@/components/Title";
 import type { PaymentFormData } from "@/server/cart";
 import { formatDate } from "@/utils/date";
+import { formatPrice } from "@/utils/format";
 import { PAYMENT_METHODS } from "@/utils/sale";
 import { trpc } from "@/utils/trpc";
 import type { InferQueryOutput } from "@/utils/trpc";
@@ -76,10 +77,10 @@ const CartTable = ({ items }: { items: CartItems }) => (
           <td>
             <ItemTitle item={item} />
           </td>
-          <td tw="text-right font-mono">{Number(item.price).toFixed(2)}€</td>
+          <td tw="text-right font-mono">{formatPrice(Number(item.price))}</td>
           <td tw="text-right font-mono">{item.quantity}</td>
           <td tw="text-right font-mono">
-            {(Number(item.price) * item.quantity).toFixed(2)}€
+            {formatPrice(Number(item.price) * item.quantity)}
           </td>
           <td tw="text-center">
             <RemoveFromCartButton id={item._id} />
@@ -227,7 +228,7 @@ const CartLoader = () => {
       <CardFooter>
         <p>
           <span tw="font-medium font-size[1.1rem]">
-            Total : <span tw="font-mono">{total.toFixed(2)}€</span>
+            Total : <span tw="font-mono">{formatPrice(total)}</span>
           </span>
         </p>
         <PaymentForm cb={setChange} />

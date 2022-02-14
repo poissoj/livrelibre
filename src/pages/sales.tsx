@@ -12,6 +12,7 @@ import { Title } from "@/components/Title";
 import { appRouter } from "@/pages/api/trpc/[trpc]";
 import { createContext } from "@/server/context";
 import type { Sale } from "@/server/sales";
+import { formatPrice } from "@/utils/format";
 import { trpc } from "@/utils/trpc";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
@@ -52,8 +53,6 @@ const SalesLoader = (): JSX.Element | null => {
 
 const makeSaleURL = (sale: Sale) =>
   `/sale/${sale.month.split("/").reverse().join("/")}`;
-
-const formatPrice = (price: number) => `${price.toFixed(2)}€`;
 
 const SalesTable = ({ sales }: { sales: Sale[] }): JSX.Element => {
   const router = useRouter();

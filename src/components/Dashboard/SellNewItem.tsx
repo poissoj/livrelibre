@@ -10,7 +10,8 @@ import { Card, CardBody, CardTitle } from "@/components/Card";
 import { Input, Select } from "@/components/FormControls";
 import { FormRow } from "@/components/FormRow";
 import type { NewCartItem } from "@/server/cart";
-import { ITEM_TYPES } from "@/utils/item";
+import { formatTVA } from "@/utils/format";
+import { ITEM_TYPES, TVAValues } from "@/utils/item";
 import { trpc } from "@/utils/trpc";
 
 type TAlert = {
@@ -67,11 +68,12 @@ export const SellNewItem = (): JSX.Element => {
             </Select>
           </FormRow>
           <FormRow label="TVA">
-            <Select {...register("tva")} defaultValue="5.5">
-              <option value="20">20.0%</option>
-              <option value="5.5">5.5%</option>
-              <option value="2.1">2.1%</option>
-              <option value="0">0.0%</option>
+            <Select {...register("tva")} defaultValue="5.5" tw="font-mono">
+              {TVAValues.map((value) => (
+                <option value={value} key={value}>
+                  {formatTVA(value)}
+                </option>
+              ))}
             </Select>
           </FormRow>
           <Button type="submit" tw="self-center" disabled={isLoading}>

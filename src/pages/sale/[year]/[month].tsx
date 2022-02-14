@@ -14,6 +14,7 @@ import { TVASkeleton } from "@/components/TVAStats/TVASkeleton";
 import { Title } from "@/components/Title";
 import { appRouter } from "@/pages/api/trpc/[trpc]";
 import { createContext } from "@/server/context";
+import { formatPrice } from "@/utils/format";
 import { InferQueryOutput, trpc } from "@/utils/trpc";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
@@ -45,7 +46,9 @@ const SalesTable = ({ sales }: { sales: TSalesByDay }) => {
               <Link href={makeSaleURL(sale.date)}>{sale.date}</Link>
             </td>
             <td tw="text-right font-mono">{sale.count}</td>
-            <td tw="text-right font-mono pr-2">{sale.amount}€</td>
+            <td tw="text-right font-mono pr-2">
+              {formatPrice(Number(sale.amount))}
+            </td>
           </tr>
         ))}
       </tbody>

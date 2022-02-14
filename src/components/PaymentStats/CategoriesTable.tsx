@@ -1,5 +1,7 @@
 import tw from "twin.macro";
 
+import { formatPrice } from "@/utils/format";
+
 type TCategories = { type: string; nb: number; totalPrice: string }[];
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
@@ -22,7 +24,9 @@ export const CategoriesTable = ({
         <tr key={i}>
           <td>{category.type}</td>
           <td tw="text-right font-mono">{category.nb}</td>
-          <td tw="text-right font-mono">{category.totalPrice}€</td>
+          <td tw="text-right font-mono">
+            {formatPrice(Number(category.totalPrice))}
+          </td>
         </tr>
       ))}
     </tbody>

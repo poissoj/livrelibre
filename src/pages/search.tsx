@@ -9,7 +9,8 @@ import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { Input, Select, Textarea } from "@/components/FormControls";
 import { FormRow } from "@/components/FormRow";
 import { Title } from "@/components/Title";
-import { ITEM_TYPES } from "@/utils/item";
+import { formatTVA } from "@/utils/format";
+import { ITEM_TYPES, TVAValues } from "@/utils/item";
 
 const Column = tw.div`flex-1 min-width[20rem] ml-md`;
 
@@ -95,10 +96,11 @@ const Search = (): JSX.Element => {
                 <FormRow label="TVA">
                   <Select {...register("tva")} defaultValue="" tw="font-mono">
                     <option value="">--ignorer--</option>
-                    <option value="20">20.0%</option>
-                    <option value="5.5">5.5%</option>
-                    <option value="2.1">2.1%</option>
-                    <option value="0">0.0%</option>
+                    {TVAValues.map((value) => (
+                      <option value={value} key={value}>
+                        {formatTVA(value)}
+                      </option>
+                    ))}
                   </Select>
                 </FormRow>
               </Column>

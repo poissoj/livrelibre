@@ -15,7 +15,8 @@ import {
 } from "@/components/FormControls";
 import { FormRow } from "@/components/FormRow";
 import { formatDate } from "@/utils/date";
-import { BaseItem, ITEM_TYPES } from "@/utils/item";
+import { formatTVA } from "@/utils/format";
+import { BaseItem, ITEM_TYPES, TVAValues } from "@/utils/item";
 
 export type FormFields = Omit<BaseItem, "amount"> & { amount: string };
 
@@ -137,10 +138,11 @@ export const ItemForm = ({
               </FormRow>
               <FormRow label="TVA">
                 <Select {...register("tva")} defaultValue="5.5" tw="font-mono">
-                  <option value="20">20.0%</option>
-                  <option value="5.5">5.5%</option>
-                  <option value="2.1">2.1%</option>
-                  <option value="0">0.0%</option>
+                  {TVAValues.map((value) => (
+                    <option value={value} key={value}>
+                      {formatTVA(value)}
+                    </option>
+                  ))}
                 </Select>
               </FormRow>
             </Column>

@@ -19,7 +19,7 @@ export const ItemTypes = [
   "deposit",
 ] as const;
 
-export const TVAValues = ["0", "2.1", "5.5", "20"] as const;
+export const TVAValues = ["20", "5.5", "2.1", "0"] as const;
 export type TVA = typeof TVAValues[number];
 
 export type BaseItem = {

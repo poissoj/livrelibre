@@ -25,9 +25,9 @@ import { Title } from "@/components/Title";
 import { appRouter } from "@/pages/api/trpc/[trpc]";
 import { getBookmarks } from "@/server/bookmarks";
 import { createContext } from "@/server/context";
+import { formatPrice, formatTVA } from "@/utils/format";
 import { ITEM_TYPES, ItemWithCount } from "@/utils/item";
 import { trpc, useBookmark } from "@/utils/trpc";
-import { formatTVA } from "@/utils/tva";
 import { useAddToCart } from "@/utils/useAddToCart";
 
 const SalesByMonth = dynamic(() => import("@/components/Charts/SalesByMonth"));
@@ -36,7 +36,8 @@ const DL = tw.dl`flex flex-wrap min-width[24rem]`;
 const DT = tw.dt`flex-basis[30%] p-sm font-medium`;
 const DD = tw.dd`flex[1 0 70%] p-sm`;
 
-const formatPrice = (price: string) => (price ? `${price}€` : "");
+const formatStringPrice = (price: string) =>
+  price ? formatPrice(Number(price)) : "";
 
 const ItemDetails = ({ item }: { item: ItemWithCount }) => {
   return (
@@ -62,9 +63,9 @@ const ItemDetails = ({ item }: { item: ItemWithCount }) => {
         <pre>{item.comments}</pre>
       </DD>
       <DT>Prix d&rsquo;achat</DT>
-      <DD tw="font-mono">{formatPrice(item.prix_achat)}</DD>
+      <DD tw="font-mono">{formatStringPrice(item.prix_achat)}</DD>
       <DT>Prix de vente</DT>
-      <DD tw="font-mono">{formatPrice(item.price)}</DD>
+      <DD tw="font-mono">{formatStringPrice(item.price)}</DD>
       <DT>Quantité</DT>
       <DD tw="font-mono">{item.amount}</DD>
       <DT>TVA</DT>
