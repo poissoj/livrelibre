@@ -99,6 +99,18 @@ export const addToCart = async (
     throw new Error("Unable to find item");
   }
   const item = result.value;
+  const cartResult = await db.collection<CartItem>("cart").findOne({
+    itemId: item._id,
+  });
+  if (cartResult !== null) {
+    await db.collection<CartItem>("cart").findOneAndUpdate(
+      {
+        _id: cartResult._id,
+      },
+      { $inc: { quantity } }
+    );
+    return;
+  }
   const cartItem: CartItem = {
     itemId: item._id,
     type: item.type,
