@@ -150,14 +150,17 @@ const SalesLoader = ({ date }: { date: string }) => {
     return null;
   }
   return (
-    <Card tw="flex-1 flex-basis[100%] h-full overflow-hidden">
+    <Card tw="max-h-full flex flex-col">
       <CardTitle>{`Ventes du ${date} (${result.data.salesCount})`}</CardTitle>
-      <CardBody tw="h-full pb-5">
+      <CardBody>
         <SalesTables carts={result.data.carts} />
       </CardBody>
     </Card>
   );
 };
+
+// padding is needed for shadow to be visible despite the overflow-auto
+const Wrapper = tw.div`flex flex-1 flex-col gap-lg max-h-full overflow-auto pr-1 pb-1 -mr-1 -mb-1`;
 
 const SalesByDay = (): JSX.Element | null => {
   const router = useRouter();
@@ -172,22 +175,24 @@ const SalesByDay = (): JSX.Element | null => {
   const date = `${day}/${month}/${year}`;
   const title = `Liste des ventes du ${date}`;
   return (
-    <div tw="flex items-start gap-lg flex-1 flex-wrap overflow-auto h-full">
+    <Wrapper>
       <Title>{title}</Title>
-      <Card tw="flex-1">
-        <CardTitle>Répartition par TVA</CardTitle>
-        <CardBody>
-          <TVALoader date={date} />
-        </CardBody>
-      </Card>
-      <Card tw="flex-1">
-        <CardTitle>Répartition par type de paiement</CardTitle>
-        <CardBody>
-          <CategoriesLoader date={date} />
-        </CardBody>
-      </Card>
+      <div tw="flex gap-lg items-start flex-wrap">
+        <Card tw="flex-1">
+          <CardTitle>Répartition par TVA</CardTitle>
+          <CardBody>
+            <TVALoader date={date} />
+          </CardBody>
+        </Card>
+        <Card tw="flex-1">
+          <CardTitle>Répartition par type de paiement</CardTitle>
+          <CardBody>
+            <CategoriesLoader date={date} />
+          </CardBody>
+        </Card>
+      </div>
       <SalesLoader date={date} />
-    </div>
+    </Wrapper>
   );
 };
 
