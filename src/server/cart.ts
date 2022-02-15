@@ -92,8 +92,8 @@ export const addToCart = async (
   const result = await db
     .collection<DBItem>("books")
     .findOneAndUpdate(
-      { _id: new ObjectId(itemId), amount: { $gt: 0 } },
-      { $inc: { amount: -1 } }
+      { _id: new ObjectId(itemId), amount: { $gte: quantity } },
+      { $inc: { amount: -quantity } }
     );
   if (!result.ok || !result.value) {
     throw new Error("Unable to find item");
