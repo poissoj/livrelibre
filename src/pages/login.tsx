@@ -1,5 +1,7 @@
 import {
   faExclamationCircle,
+  faEye,
+  faEyeSlash,
   faSignInAlt,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
@@ -19,7 +21,7 @@ const Form = tw.form`box-shadow[
     0px 29px 95px 0px hsla(0, 0%, 0%, 0.16)
 ] p-10 flex flex-col bg-white`;
 
-const Label = tw.label`font-medium color[#666] mb-4 font-size[14px]`;
+const FormGroup = tw.div`mb-5 color[#666] font-size[14px]`;
 
 const translateErrorMessage = (msg: string) =>
   msg === "Invalid credentials" ? "Identifiants invalides" : msg;
@@ -41,6 +43,7 @@ const Login = () => {
   const utils = trpc.useContext();
   const router = useRouter();
   const [errorMsg, setErrorMsg] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const onSubmit = async (data: LoginFormData) => {
     const res = await fetch("/api/login", {
@@ -70,14 +73,43 @@ const Login = () => {
             Connexion
           </h2>
           {errorMsg && <ErrorMsg text={errorMsg} />}
-          <Label>
-            <span tw="uppercase">Identifiant</span>
-            <Input type="text" {...register("username")} autoFocus required />
-          </Label>
-          <Label>
-            <span tw="uppercase">Mot de passe</span>
-            <Input type="password" {...register("password")} required />
-          </Label>
+          <FormGroup>
+            <label htmlFor="username" tw="uppercase font-medium">
+              Identifiant
+            </label>
+            <Input
+              id="username"
+              type="text"
+              {...register("username")}
+              autoFocus
+              required
+            />
+          </FormGroup>
+          <FormGroup>
+            <div tw="flex">
+              <label htmlFor="password" tw="uppercase font-medium">
+                Mot de passe
+              </label>
+              <button
+                type="button"
+                tw="ml-auto"
+                onClick={() => setShowPassword((show) => !show)}
+              >
+                <FontAwesomeIcon
+                  icon={showPassword ? faEyeSlash : faEye}
+                  tw="mr-1"
+                />
+                {showPassword ? "Masquer" : "Afficher"}
+              </button>
+            </div>
+            <Input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              autoComplete="off"
+              {...register("password")}
+              required
+            />
+          </FormGroup>
           <Button type="submit">
             <FontAwesomeIcon icon={faSignInAlt} tw="mr-2" />
             Connexion
