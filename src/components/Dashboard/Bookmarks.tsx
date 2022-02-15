@@ -1,5 +1,3 @@
-import { faStar } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import "twin.macro";
 
@@ -7,7 +5,7 @@ import { AddToCartButton } from "@/components/AddToCartButton";
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import type { Bookmark } from "@/server/bookmarks";
-import { trpc, useBookmark } from "@/utils/trpc";
+import { trpc } from "@/utils/trpc";
 
 import { BookmarksSkeleton } from "./BookmarksSkeleton";
 
@@ -18,7 +16,6 @@ type BookmarksContentProps = {
 const BookmarksContent = ({
   bookmarks,
 }: BookmarksContentProps): JSX.Element => {
-  const { star } = useBookmark();
   return (
     <ul tw="flex-1">
       {bookmarks.map((bookmark) => (
@@ -30,15 +27,6 @@ const BookmarksContent = ({
             <Link href={`/item/${bookmark._id}`}>{bookmark.title}</Link>
           </span>
           <AddToCartButton item={bookmark} />
-          <button
-            tw="p-xs hover:text-primary-darkest"
-            name="Enlever des favoris"
-            title="Enlever des favoris"
-            type="button"
-            onClick={() => star(bookmark._id, false)}
-          >
-            <FontAwesomeIcon icon={faStar} />
-          </button>
         </li>
       ))}
     </ul>
