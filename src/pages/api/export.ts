@@ -1,6 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { getDb } from "@/server/database";
+import { formatDate } from "@/utils/date";
 import { ITEM_TYPES, ItemType } from "@/utils/item";
 
 type Item = {
@@ -55,7 +56,11 @@ const exportCSV = async (req: NextApiRequest, res: NextApiResponse) => {
       )
       .join("\n");
   res.setHeader("Content-Type", "text/csv");
-  res.setHeader("Content-Disposition", 'attachment; filename="stocks.csv"');
+  const date = formatDate(new Date());
+  res.setHeader(
+    "Content-Disposition",
+    `attachment; filename="stocks-${date}.csv"`
+  );
   res.send(csv);
 };
 
