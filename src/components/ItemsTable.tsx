@@ -2,6 +2,7 @@ import Link from "next/link";
 import React from "react";
 import "twin.macro";
 
+import { formatNumber } from "@/utils/format";
 import type { Item } from "@/utils/item";
 
 import { AddToCartButton } from "./AddToCartButton";
@@ -27,7 +28,7 @@ export const ItemsTable = ({ items }: { items: Item[] }) => (
             </span>
           </td>
           <td>{item.author}</td>
-          <td tw="text-right font-mono pr-2">{item.amount}</td>
+          <td tw="text-right font-number pr-2">{formatNumber(item.amount)}</td>
           <td tw="text-primary-darker">
             <AddToCartButton item={item} tw="px-3" />
           </td>

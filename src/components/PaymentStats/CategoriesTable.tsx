@@ -1,6 +1,6 @@
 import tw from "twin.macro";
 
-import { formatPrice } from "@/utils/format";
+import { formatNumber, formatPrice } from "@/utils/format";
 
 type TCategories = { type: string; nb: number; totalPrice: string }[];
 
@@ -23,8 +23,8 @@ export const CategoriesTable = ({
       {categories.map((category, i) => (
         <tr key={i}>
           <td>{category.type}</td>
-          <td tw="text-right font-mono">{category.nb}</td>
-          <td tw="text-right font-mono">
+          <td tw="text-right font-number">{formatNumber(category.nb)}</td>
+          <td tw="text-right font-number">
             {formatPrice(Number(category.totalPrice))}
           </td>
         </tr>

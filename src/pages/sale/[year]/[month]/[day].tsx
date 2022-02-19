@@ -121,9 +121,9 @@ const SalesTables = ({ carts }: { carts: Carts }) => {
                 )}
               </Cell>
               <Cell>{"author" in sale ? sale.author : ""}</Cell>
-              <Cell tw="text-right font-mono">{sale.quantity}</Cell>
-              <Cell tw="text-right font-mono">{formatPrice(sale.price)}</Cell>
-              <Cell tw="text-right font-mono">{formatTVA(sale.tva)}</Cell>
+              <Cell tw="text-right font-number">{sale.quantity}</Cell>
+              <Cell tw="text-right font-number">{formatPrice(sale.price)}</Cell>
+              <Cell tw="text-right font-number">{formatTVA(sale.tva)}</Cell>
               <Cell tw="whitespace-nowrap">{sale.type}</Cell>
               <Cell tw="pr-3">
                 {sale.deleted ? null : (

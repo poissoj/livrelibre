@@ -12,7 +12,7 @@ import { Title } from "@/components/Title";
 import { appRouter } from "@/pages/api/trpc/[trpc]";
 import { createContext } from "@/server/context";
 import type { Sale } from "@/server/sales";
-import { formatPrice } from "@/utils/format";
+import { formatNumber, formatPrice } from "@/utils/format";
 import { trpc } from "@/utils/trpc";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
@@ -76,9 +76,9 @@ const SalesTable = ({ sales }: { sales: Sale[] }): JSX.Element => {
             <td tw="pl-2">
               <Link href={makeSaleURL(sale)}>{sale.month}</Link>
             </td>
-            <td tw="text-right font-mono">{sale.count}</td>
-            <td tw="text-right font-mono">{formatPrice(sale.amount)}</td>
-            <td tw="text-right font-mono pr-2">
+            <td tw="text-right font-number">{formatNumber(sale.count)}</td>
+            <td tw="text-right font-number">{formatPrice(sale.amount)}</td>
+            <td tw="text-right font-number pr-2">
               {sale.avg ? `${formatPrice(sale.avg)}` : "Inconnu"}
             </td>
           </tr>

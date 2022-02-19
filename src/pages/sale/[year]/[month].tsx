@@ -45,8 +45,8 @@ const SalesTable = ({ sales }: { sales: TSalesByDay }) => {
             <td tw="pl-2">
               <Link href={makeSaleURL(sale.date)}>{sale.date}</Link>
             </td>
-            <td tw="text-right font-mono">{sale.count}</td>
-            <td tw="text-right font-mono pr-2">
+            <td tw="text-right font-number">{sale.count}</td>
+            <td tw="text-right font-number pr-2">
               {formatPrice(Number(sale.amount))}
             </td>
           </tr>

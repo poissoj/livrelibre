@@ -26,6 +26,9 @@ module.exports = {
         md: "16px",
         lg: "24px",
       },
+      fontFamily: {
+        number: ["Roboto Mono"],
+      },
     },
   },
   plugins: [],

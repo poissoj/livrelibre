@@ -5,6 +5,7 @@ import tw from "twin.macro";
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Title } from "@/components/Title";
+import { formatNumber } from "@/utils/format";
 import type { ItemWithCount } from "@/utils/item";
 import { trpc } from "@/utils/trpc";
 
@@ -31,8 +32,8 @@ const ItemsTable = ({ items }: { items: ItemWithCount[] }) => (
             </span>
           </td>
           <td>{item.author}</td>
-          <td tw="text-right font-mono">{item.count}</td>
-          <td tw="pr-3 text-right font-mono">{item.amount}</td>
+          <td tw="text-right font-number">{formatNumber(item.count)}</td>
+          <td tw="pr-3 text-right font-number">{formatNumber(item.amount)}</td>
           <td></td>
         </tr>
       ))}

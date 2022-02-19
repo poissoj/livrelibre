@@ -25,7 +25,7 @@ import { Title } from "@/components/Title";
 import { appRouter } from "@/pages/api/trpc/[trpc]";
 import { getBookmarks } from "@/server/bookmarks";
 import { createContext } from "@/server/context";
-import { formatPrice, formatTVA } from "@/utils/format";
+import { formatNumber, formatPrice, formatTVA } from "@/utils/format";
 import { ITEM_TYPES, ItemWithCount } from "@/utils/item";
 import { trpc, useBookmark } from "@/utils/trpc";
 import { useAddToCart } from "@/utils/useAddToCart";
@@ -63,16 +63,16 @@ const ItemDetails = ({ item }: { item: ItemWithCount }) => {
         <pre>{item.comments}</pre>
       </DD>
       <DT>Prix d&rsquo;achat</DT>
-      <DD tw="font-mono">{formatStringPrice(item.prix_achat)}</DD>
+      <DD tw="font-number">{formatStringPrice(item.prix_achat)}</DD>
       <DT>Prix de vente</DT>
-      <DD tw="font-mono">{formatStringPrice(item.price)}</DD>
+      <DD tw="font-number">{formatStringPrice(item.price)}</DD>
       <DT>Quantité</DT>
-      <DD tw="font-mono">{item.amount}</DD>
+      <DD tw="font-number">{formatNumber(item.amount)}</DD>
       <DT>TVA</DT>
-      <DD tw="font-mono">{formatTVA(item.tva)}</DD>
+      <DD tw="font-number">{formatTVA(item.tva)}</DD>
       <DT>Vendu</DT>
       <DD>
-        <span tw="font-mono">{item.count}</span> fois
+        <span tw="font-number">{formatNumber(item.count)}</span> fois
       </DD>
     </DL>
   );
@@ -153,7 +153,7 @@ const AddToCartFooter = ({ id, stock }: { id: string; stock: number }) => {
           min={1}
           max={stock}
           step={1}
-          tw="font-mono w-20"
+          tw="font-number w-20"
           defaultValue={1}
         />
       </label>

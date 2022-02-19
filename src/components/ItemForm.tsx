@@ -115,7 +115,7 @@ export const ItemForm = ({
                   {...register("prix_achat")}
                   min={0}
                   step={0.01}
-                  tw="font-mono"
+                  tw="font-number"
                 />
               </FormRow>
               <FormRow label="Prix de vente">
@@ -124,7 +124,7 @@ export const ItemForm = ({
                   {...register("price")}
                   step={0.01}
                   required
-                  tw="font-mono"
+                  tw="font-number"
                 />
               </FormRow>
               <FormRow label="Quantité">
@@ -133,11 +133,15 @@ export const ItemForm = ({
                   {...register("amount")}
                   min={0}
                   defaultValue={1}
-                  tw="font-mono"
+                  tw="font-number"
                 />
               </FormRow>
               <FormRow label="TVA">
-                <Select {...register("tva")} defaultValue="5.5" tw="font-mono">
+                <Select
+                  {...register("tva")}
+                  defaultValue="5.5"
+                  tw="font-number"
+                >
                   {TVAValues.map((value) => (
                     <option value={value} key={value}>
                       {formatTVA(value)}

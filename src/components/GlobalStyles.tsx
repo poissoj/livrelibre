@@ -19,6 +19,13 @@ const CustomStyles = createGlobalStyle`
     src: url(/fonts/Niconne.woff2) format('woff2');
     font-display: fallback;
   }
+  @font-face {
+    font-family: 'Roboto Mono';
+    font-style: normal;
+    font-weight: regular;
+    src: url(/fonts/Roboto-Mono.woff2) format('woff2');
+    font-display: fallback;
+  }
 `;
 
 const GlobalStyles = (): JSX.Element => (

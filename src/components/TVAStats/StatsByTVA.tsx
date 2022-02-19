@@ -1,6 +1,6 @@
 import tw from "twin.macro";
 
-import { formatPrice, formatTVA } from "@/utils/format";
+import { formatNumber, formatPrice, formatTVA } from "@/utils/format";
 import type { InferQueryOutput } from "@/utils/trpc";
 
 export const StickyTh = tw.th`sticky top-0 bg-white`;
@@ -22,9 +22,9 @@ export const StatsByTVA = ({ stats }: { stats: TStats }) => {
         {stats.map((stat, i) => (
           <tr key={i}>
             <td>{stat[1]}</td>
-            <td tw="text-right font-mono">{formatTVA(stat[0])}</td>
-            <td tw="text-right font-mono">{stat[2]}</td>
-            <td tw="text-right font-mono">{formatPrice(Number(stat[3]))}</td>
+            <td tw="text-right font-number">{formatTVA(stat[0])}</td>
+            <td tw="text-right font-number">{formatNumber(stat[2])}</td>
+            <td tw="text-right font-number">{formatPrice(Number(stat[3]))}</td>
           </tr>
         ))}
       </tbody>

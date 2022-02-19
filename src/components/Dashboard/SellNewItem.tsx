@@ -46,7 +46,7 @@ export const SellNewItem = (): JSX.Element => {
             <Input
               type="number"
               {...register("price")}
-              tw="font-mono"
+              tw="font-number"
               step={0.01}
               required
             />
@@ -68,7 +68,7 @@ export const SellNewItem = (): JSX.Element => {
             </Select>
           </FormRow>
           <FormRow label="TVA">
-            <Select {...register("tva")} defaultValue="5.5" tw="font-mono">
+            <Select {...register("tva")} defaultValue="5.5" tw="font-number">
               {TVAValues.map((value) => (
                 <option value={value} key={value}>
                   {formatTVA(value)}

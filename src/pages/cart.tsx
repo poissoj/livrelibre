@@ -18,7 +18,7 @@ import { Input, Select } from "@/components/FormControls";
 import { Title } from "@/components/Title";
 import type { PaymentFormData } from "@/server/cart";
 import { formatDate } from "@/utils/date";
-import { formatPrice } from "@/utils/format";
+import { formatNumber, formatPrice } from "@/utils/format";
 import { PAYMENT_METHODS } from "@/utils/sale";
 import { trpc } from "@/utils/trpc";
 import type { InferQueryOutput } from "@/utils/trpc";
@@ -77,9 +77,9 @@ const CartTable = ({ items }: { items: CartItems }) => (
           <td>
             <ItemTitle item={item} />
           </td>
-          <td tw="text-right font-mono">{formatPrice(Number(item.price))}</td>
-          <td tw="text-right font-mono">{item.quantity}</td>
-          <td tw="text-right font-mono">
+          <td tw="text-right font-number">{formatPrice(Number(item.price))}</td>
+          <td tw="text-right font-number">{formatNumber(item.quantity)}</td>
+          <td tw="text-right font-number">
             {formatPrice(Number(item.price) * item.quantity)}
           </td>
           <td tw="text-center">
@@ -159,7 +159,7 @@ const PaymentForm = ({ cb }: { cb: (amount: number | null) => void }) => {
         {...register("amount")}
         step={0.01}
         min={0}
-        css={[tw`width[7em] font-mono`, paymentType !== "cash" && tw`hidden`]}
+        css={[tw`width[7em] font-number`, paymentType !== "cash" && tw`hidden`]}
       />
       <Button type="submit" tw="padding[10px 15px]">
         <FontAwesomeIcon icon={faCheckCircle} />
@@ -208,7 +208,7 @@ const CartLoader = () => {
           {change && (
             <Alert type="info" tw="mb-5" onDismiss={() => setChange(null)}>
               <span>
-                À rendre: <span tw="font-mono">{change.toFixed(2)}</span>€
+                À rendre: <span tw="font-number">{change.toFixed(2)}</span>€
               </span>
             </Alert>
           )}
@@ -228,7 +228,7 @@ const CartLoader = () => {
       <CardFooter>
         <p>
           <span tw="font-medium font-size[1.1rem]">
-            Total : <span tw="font-mono">{formatPrice(total)}</span>
+            Total : <span tw="font-number">{formatPrice(total)}</span>
           </span>
         </p>
         <PaymentForm cb={setChange} />
