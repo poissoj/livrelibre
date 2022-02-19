@@ -1,5 +1,6 @@
+import Link from "next/link";
 import { useRouter } from "next/router";
-import "twin.macro";
+import tw from "twin.macro";
 
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
@@ -8,6 +9,8 @@ import { Pagination } from "@/components/Pagination";
 import { Title } from "@/components/Title";
 import { ITEMS_PER_PAGE } from "@/utils/pagination";
 import { trpc } from "@/utils/trpc";
+
+const StyledCard = tw(Card)`max-h-full overflow-hidden flex flex-col`;
 
 const SearchLoader = ({
   query,
@@ -33,9 +36,24 @@ const SearchLoader = ({
       title += ` - Page ${page} sur ${pageCount}`;
     }
     subtitle = `${count} résultat${count > 1 ? "s" : ""} pour ${search}`;
+    if (count === 0) {
+      return (
+        <StyledCard>
+          <CardTitle>{title}</CardTitle>
+          <p>
+            <CardBody>Aucun résultat pour &quot;{search}&quot;</CardBody>
+          </p>
+          <p tw="mt-2">
+            <Link href="/search" passHref>
+              <a tw="text-primary-darkest">Nouvelle recherche</a>
+            </Link>
+          </p>
+        </StyledCard>
+      );
+    }
   }
   return (
-    <Card tw="max-h-full overflow-hidden flex flex-col">
+    <StyledCard>
       <CardTitle>{title}</CardTitle>
       {subtitle}
       <CardBody>
@@ -47,7 +65,7 @@ const SearchLoader = ({
           <Pagination count={pageCount} />
         </CardFooter>
       ) : null}
-    </Card>
+    </StyledCard>
   );
 };
 

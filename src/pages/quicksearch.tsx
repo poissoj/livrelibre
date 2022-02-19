@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import "twin.macro";
+import tw from "twin.macro";
 
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { ItemsTable } from "@/components/ItemsTable";
@@ -7,6 +7,8 @@ import { Pagination } from "@/components/Pagination";
 import { Title } from "@/components/Title";
 import { ITEMS_PER_PAGE } from "@/utils/pagination";
 import { trpc } from "@/utils/trpc";
+
+const StyledCard = tw(Card)`max-h-full overflow-hidden flex flex-col`;
 
 const SearchLoader = ({ page, search }: { page: number; search: string }) => {
   const result = trpc.useQuery(["quicksearch", { search, page }], {
@@ -22,9 +24,17 @@ const SearchLoader = ({ page, search }: { page: number; search: string }) => {
       title += ` - Page ${page} sur ${pageCount}`;
     }
     subtitle = `${count} résultat${count > 1 ? "s" : ""} pour ${search}`;
+    if (count === 0) {
+      return (
+        <StyledCard>
+          <CardTitle>{title}</CardTitle>
+          <CardBody>Aucun résultat pour &quot;{search}&quot;</CardBody>
+        </StyledCard>
+      );
+    }
   }
   return (
-    <Card tw="max-h-full overflow-hidden flex flex-col">
+    <StyledCard>
       <CardTitle>{title}</CardTitle>
       {subtitle}
       <CardBody>
@@ -35,7 +45,7 @@ const SearchLoader = ({ page, search }: { page: number; search: string }) => {
           <Pagination count={pageCount} />
         </CardFooter>
       ) : null}
-    </Card>
+    </StyledCard>
   );
 };
 
