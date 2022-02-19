@@ -2,6 +2,7 @@ import { createSSGHelpers } from "@trpc/react/ssg";
 import type { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 
+import { Restricted } from "@/components/Restricted";
 import { SalesByDay } from "@/components/SalesByDay";
 import { appRouter } from "@/pages/api/trpc/[trpc]";
 import { createContext } from "@/server/context";
@@ -17,7 +18,11 @@ const SalesByDayPage = (): JSX.Element | null => {
     return null;
   }
   const date = `${day}/${month}/${year}`;
-  return <SalesByDay date={date} />;
+  return (
+    <Restricted role="admin">
+      <SalesByDay date={date} />
+    </Restricted>
+  );
 };
 
 export default SalesByDayPage;

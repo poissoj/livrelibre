@@ -8,6 +8,7 @@ import tw from "twin.macro";
 
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
+import { Restricted } from "@/components/Restricted";
 import { Title } from "@/components/Title";
 import { appRouter } from "@/pages/api/trpc/[trpc]";
 import { createContext } from "@/server/context";
@@ -89,15 +90,17 @@ const SalesTable = ({ sales }: { sales: Sale[] }): JSX.Element => {
 };
 
 const Sales = (): JSX.Element => (
-  <div tw="margin-left[10%] margin-right[10%] flex-1">
-    <Title>Liste des ventes par mois</Title>
-    <Card tw="mb-lg max-h-full overflow-hidden flex flex-col">
-      <CardTitle>Liste des ventes par mois</CardTitle>
-      <CardBody>
-        <SalesLoader />
-      </CardBody>
-    </Card>
-  </div>
+  <Restricted role="admin">
+    <div tw="margin-left[10%] margin-right[10%] flex-1">
+      <Title>Liste des ventes par mois</Title>
+      <Card tw="mb-lg max-h-full overflow-hidden flex flex-col">
+        <CardTitle>Liste des ventes par mois</CardTitle>
+        <CardBody>
+          <SalesLoader />
+        </CardBody>
+      </Card>
+    </div>
+  </Restricted>
 );
 
 export default Sales;

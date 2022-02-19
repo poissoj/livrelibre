@@ -16,6 +16,8 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import tw, { styled } from "twin.macro";
 
+import useUser from "@/lib/useUser";
+
 const StyledLink = styled.a({
   ...tw`block p-md transition-colors duration-300 ease-out border-l-4 border-transparent`,
   "&:hover, &:focus, &[aria-current]": tw`border-primary-default bg-gray-darkest`,
@@ -40,6 +42,8 @@ const NavLink = ({ href, icon, children }: NavLinkProps) => {
 };
 
 export const Sidebar = (): JSX.Element => {
+  const { user } = useUser();
+  const salesPage = user?.role === "admin" ? "/sales" : "/todaySales";
   return (
     <nav tw="w-56 bg-gray-default text-white">
       <ul>
@@ -59,7 +63,7 @@ export const Sidebar = (): JSX.Element => {
           </NavLink>
         </li>
         <li>
-          <NavLink href="/sales" icon={faThList}>
+          <NavLink href={salesPage} icon={faThList}>
             Ventes
           </NavLink>
         </li>

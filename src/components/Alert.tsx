@@ -57,14 +57,16 @@ export const Alert = ({
     <AlertWrapper className={className}>
       <FontAwesomeIcon icon={icon} tw="mr-sm" />
       {children}
-      <button
-        type="button"
-        onClick={onClick}
-        tw="ml-auto p-2"
-        aria-label="Fermer"
-      >
-        <FontAwesomeIcon icon={faTimes} size="lg" />
-      </button>
+      {onDismiss ? (
+        <button
+          type="button"
+          onClick={onClick}
+          tw="ml-auto p-2"
+          aria-label="Fermer"
+        >
+          <FontAwesomeIcon icon={faTimes} size="lg" />
+        </button>
+      ) : null}
     </AlertWrapper>
   );
 };

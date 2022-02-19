@@ -9,6 +9,7 @@ import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { CategoriesTable } from "@/components/PaymentStats/CategoriesTable";
 import { CategorySkeleton } from "@/components/PaymentStats/CategorySkeleton";
+import { Restricted } from "@/components/Restricted";
 import { StatsByTVA } from "@/components/TVAStats/StatsByTVA";
 import { TVASkeleton } from "@/components/TVAStats/TVASkeleton";
 import { Title } from "@/components/Title";
@@ -173,14 +174,16 @@ const CategoriesCard = () => {
 
 const SalesByMonth = (): JSX.Element => {
   return (
-    <div tw="flex items-start gap-lg flex-1 flex-wrap">
-      <Title>Voir un article</Title>
-      <SalesCard />
-      <div tw="flex flex-col gap-lg flex-1 max-h-full">
-        <TVACard />
-        <CategoriesCard />
+    <Restricted role="admin">
+      <div tw="flex items-start gap-lg flex-1 flex-wrap">
+        <Title>Voir un article</Title>
+        <SalesCard />
+        <div tw="flex flex-col gap-lg flex-1 max-h-full">
+          <TVACard />
+          <CategoriesCard />
+        </div>
       </div>
-    </div>
+    </Restricted>
   );
 };
 
