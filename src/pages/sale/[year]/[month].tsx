@@ -101,7 +101,11 @@ const SalesCard = () => {
   if (typeof month !== "string" || typeof year !== "string") {
     return null;
   }
-  const title = `Liste des ventes du ${month}/${year}`;
+  const monthLabel = new Date(
+    Number(year),
+    Number(month) - 1
+  ).toLocaleDateString("fr", { month: "long", year: "numeric" });
+  const title = `Liste des ventes - ${monthLabel}`;
   return (
     <Card tw="flex flex-col flex-1 max-h-full overflow-hidden">
       <CardTitle>{title}</CardTitle>
