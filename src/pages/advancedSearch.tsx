@@ -7,10 +7,48 @@ import { ErrorMessage } from "@/components/ErrorMessage";
 import { ItemsTable } from "@/components/ItemsTable";
 import { Pagination } from "@/components/Pagination";
 import { Title } from "@/components/Title";
+import { formatTVA } from "@/utils/format";
+import { ITEM_TYPES } from "@/utils/item";
 import { ITEMS_PER_PAGE } from "@/utils/pagination";
 import { trpc } from "@/utils/trpc";
+import { isIn } from "@/utils/utils";
 
 const StyledCard = tw(Card)`max-h-full overflow-hidden flex flex-col`;
+
+const FIELD_LABELS = {
+  type: "Type",
+  isbn: "ISBN",
+  author: "Auteur",
+  title: "Titre",
+  publisher: "Éditeur",
+  distributor: "Distributeur",
+  keywords: "Mots-clés",
+  datebought: "Date d'achat",
+  comments: "Commentaires",
+  purchasePrice: "Prix d'achat",
+  price: "Prix de vente",
+  amount: "Quantité",
+  tva: "TVA",
+};
+
+const formatRow = ([key, value]: [key: string, value: string]) => {
+  const fieldName = isIn(FIELD_LABELS, key) ? FIELD_LABELS[key] : key;
+  let fieldValue = value;
+  if (key === "type" && isIn(ITEM_TYPES, value)) {
+    fieldValue = ITEM_TYPES[value];
+  } else if (key === "tva") {
+    fieldValue = formatTVA(value) || "";
+  }
+  return `${fieldName}: ${fieldValue}`;
+};
+
+const getQueryLabel = (query: Record<string, string>) => {
+  const label = Object.entries(query)
+    .filter(([, value]) => value !== "")
+    .map(formatRow)
+    .join(", ");
+  return label;
+};
 
 const SearchLoader = ({
   query,
@@ -27,21 +65,18 @@ const SearchLoader = ({
   let pageCount = 0;
   if (result.isSuccess) {
     const { count } = result.data;
-    const search = Object.entries(query)
-      .filter(([, value]) => value !== "")
-      .map((row) => row.join(" = "))
-      .join(", ");
+    const queryLabel = getQueryLabel(query);
     pageCount = Math.ceil(count / ITEMS_PER_PAGE);
     if (pageCount > 1) {
       title += ` - Page ${page} sur ${pageCount}`;
     }
-    subtitle = `${count} résultat${count > 1 ? "s" : ""} pour ${search}`;
+    subtitle = `${count} résultat${count > 1 ? "s" : ""} pour ${queryLabel}`;
     if (count === 0) {
       return (
         <StyledCard>
           <CardTitle>{title}</CardTitle>
           <p>
-            <CardBody>Aucun résultat pour &quot;{search}&quot;</CardBody>
+            <CardBody>Aucun résultat pour &quot;{queryLabel}&quot;</CardBody>
           </p>
           <p tw="mt-2">
             <Link href="/search" passHref>
