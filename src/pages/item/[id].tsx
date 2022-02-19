@@ -197,7 +197,7 @@ const ItemLoader = ({ id }: { id: string }) => {
   }
   if (result.status === "success") {
     return result.data ? (
-      <Card tw="flex-1">
+      <Card tw="flex-1 max-h-full flex flex-col">
         <Title>{`${result.data.title} | Voir un article`}</Title>
         <TitleWithButtons item={result.data} />
         <CardBody tw="flex-col">

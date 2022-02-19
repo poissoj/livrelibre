@@ -54,9 +54,9 @@ export const ItemForm = ({
     }
   };
   return (
-    <Card>
+    <Card tw="max-h-full flex flex-col">
       <CardTitle>{title}</CardTitle>
-      <form tw="flex-1" onSubmit={handleSubmit(submit)}>
+      <form tw="flex-1 flex flex-col h-0" onSubmit={handleSubmit(submit)}>
         <CardBody tw="flex-col gap-5">
           <div tw="flex flex-wrap">
             <Column>
