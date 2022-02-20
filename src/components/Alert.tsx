@@ -38,9 +38,6 @@ export const Alert = ({
   className?: string;
   onDismiss?(): void;
 }): JSX.Element | null => {
-  const onClick = () => {
-    onDismiss?.();
-  };
   const AlertWrapper = {
     success: AlertSuccess,
     warning: AlertWarning,
@@ -60,7 +57,7 @@ export const Alert = ({
       {onDismiss ? (
         <button
           type="button"
-          onClick={onClick}
+          onClick={onDismiss}
           tw="ml-auto p-2"
           aria-label="Fermer"
         >

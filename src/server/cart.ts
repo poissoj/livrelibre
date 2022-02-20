@@ -1,5 +1,7 @@
-import { ObjectId } from "mongodb";
+import { TRPCError } from "@trpc/server";
+import { ObjectId, WithId } from "mongodb";
 
+import { CART_ERRORS } from "@/utils/errors";
 import type { DBItem, ItemType, TVA } from "@/utils/item";
 import { logger } from "@/utils/logger";
 import type { PaymentType } from "@/utils/sale";
@@ -83,22 +85,12 @@ export const payCart = async (username: string, data: PaymentFormData) => {
   };
 };
 
-export const addToCart = async (
+const addItemToCart = async (
+  item: WithId<DBItem>,
   username: string,
-  itemId: string,
   quantity = 1
 ) => {
   const db = await getDb();
-  const result = await db
-    .collection<DBItem>("books")
-    .findOneAndUpdate(
-      { _id: new ObjectId(itemId), amount: { $gte: quantity } },
-      { $inc: { amount: -quantity } }
-    );
-  if (!result.ok || !result.value) {
-    throw new Error("Unable to find item");
-  }
-  const item = result.value;
   const cartResult = await db.collection<CartItem>("cart").findOne({
     itemId: item._id,
   });
@@ -121,6 +113,48 @@ export const addToCart = async (
     username,
   };
   await db.collection("cart").insertOne(cartItem);
+};
+
+export const addToCart = async (
+  username: string,
+  itemId: string,
+  quantity = 1
+) => {
+  const db = await getDb();
+  const result = await db
+    .collection<DBItem>("books")
+    .findOneAndUpdate(
+      { _id: new ObjectId(itemId), amount: { $gte: quantity } },
+      { $inc: { amount: -quantity } }
+    );
+  if (!result.ok || !result.value) {
+    throw new Error("Unable to find item");
+  }
+  await addItemToCart(result.value, username, quantity);
+};
+
+export const addISBNToCart = async (username: string, isbn: string) => {
+  const db = await getDb();
+  const result = await db
+    .collection<DBItem>("books")
+    .findOneAndUpdate({ isbn, amount: { $gte: 1 } }, { $inc: { amount: -1 } });
+  if (!result.ok) {
+    throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
+  }
+  if (!result.value) {
+    const item = await db.collection<DBItem>("books").findOne({ isbn });
+    if (!item) {
+      logger.info("ISBN non trouvé", { username, isbn });
+      return { errorCode: CART_ERRORS.ITEM_NOT_FOUND };
+    }
+    logger.info("Plus de stock", { username, isbn });
+    return {
+      errorCode: CART_ERRORS.NO_STOCK,
+      title: item.title,
+      id: item._id.toString(),
+    };
+  }
+  await addItemToCart(result.value, username);
 };
 
 export const addNewItemToCart = async (username: string, item: NewCartItem) => {

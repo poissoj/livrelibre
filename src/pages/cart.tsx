@@ -18,6 +18,7 @@ import { Input, Select } from "@/components/FormControls";
 import { Title } from "@/components/Title";
 import type { PaymentFormData } from "@/server/cart";
 import { formatDate } from "@/utils/date";
+import { CART_ERRORS } from "@/utils/errors";
 import { formatNumber, formatPrice } from "@/utils/format";
 import { PAYMENT_METHODS } from "@/utils/sale";
 import { trpc } from "@/utils/trpc";
@@ -169,9 +170,112 @@ const PaymentForm = ({ cb }: { cb: (amount: number | null) => void }) => {
   );
 };
 
+const QuickAdd = ({ addError }: { addError(error: ISBNError): void }) => {
+  type FormFields = { isbn: string };
+  const { register, handleSubmit, resetField } = useForm<FormFields>();
+  const utils = trpc.useContext();
+  const mutation = trpc.useMutation("addISBNToCart", {
+    onError(error, isbn) {
+      addError({ message: CART_ERRORS.INTERNAL_ERROR, isbn });
+    },
+    async onSuccess(data, isbn) {
+      if (data) {
+        addError({
+          message: data.errorCode,
+          isbn,
+          title: data.title,
+          id: data.id,
+        });
+        return;
+      }
+      await Promise.all([
+        utils.invalidateQueries("cart"),
+        utils.invalidateQueries("bookmarks"),
+        utils.invalidateQueries("quicksearch"),
+        utils.invalidateQueries("items"),
+        utils.invalidateQueries("advancedSearch"),
+      ]);
+    },
+  });
+  const submit = ({ isbn }: FormFields) => {
+    mutation.mutate(isbn);
+    resetField("isbn");
+  };
+  return (
+    <form tw="flex items-center" onSubmit={handleSubmit(submit)}>
+      <label htmlFor="isbn-field" tw="flex-shrink-0 mr-2">
+        Ajout rapide :
+      </label>
+      <Input
+        type="text"
+        placeholder="ISBN"
+        maxLength={13}
+        tw="w-40"
+        id="isbn-field"
+        autoFocus
+        {...register("isbn", { minLength: 10, maxLength: 13 })}
+      />
+    </form>
+  );
+};
+
+type ISBNError = {
+  message: CART_ERRORS;
+  isbn: string;
+  title?: string;
+  id?: string;
+};
+
+const ErrorList = ({
+  errors,
+  removeError,
+}: {
+  errors: ISBNError[];
+  removeError(isbn: string): void;
+}) => {
+  return (
+    <>
+      {errors.map((error) => (
+        <Alert
+          type={
+            error.message === CART_ERRORS.INTERNAL_ERROR ? "error" : "warning"
+          }
+          key={error.isbn}
+          onDismiss={() => removeError(error.isbn)}
+          tw="mb-1"
+        >
+          {error.message === CART_ERRORS.INTERNAL_ERROR
+            ? `Une erreur est survenue lors de l'ajout de ${error.isbn}`
+            : null}
+          {error.message === CART_ERRORS.ITEM_NOT_FOUND
+            ? `Aucun article trouvé pour ${error.isbn}`
+            : null}
+          {error.message === CART_ERRORS.NO_STOCK && error.id ? (
+            <span>
+              Pas de stock pour{" "}
+              <Link href={`/item/${error.id}`} passHref>
+                <a tw="underline">{error.title}</a>
+              </Link>
+            </span>
+          ) : null}
+        </Alert>
+      ))}
+    </>
+  );
+};
+
 const CartLoader = () => {
   const result = trpc.useQuery(["cart"]);
   const [change, setChange] = useState<number | null>(null);
+  const [errors, setErrors] = useState<ISBNError[]>([]);
+
+  const addError = (error: ISBNError) =>
+    setErrors((oldErrors) =>
+      oldErrors.filter((old) => old.isbn !== error.isbn).concat(error)
+    );
+  const removeError = (isbn: string) =>
+    setErrors((oldErrors) => oldErrors.filter((old) => old.isbn !== isbn));
+
   if (result.status === "error") {
     return (
       <Card>
@@ -203,8 +307,12 @@ const CartLoader = () => {
   if (count === 0) {
     return (
       <Card>
-        <CardTitle>Panier</CardTitle>
+        <div tw="flex items-center">
+          <CardTitle tw="mr-auto">Panier</CardTitle>
+          <QuickAdd addError={addError} />
+        </div>
         <CardBody tw="flex-col">
+          <ErrorList errors={errors} removeError={removeError} />
           {change && (
             <Alert type="info" tw="mb-5" onDismiss={() => setChange(null)}>
               <span>
@@ -219,10 +327,14 @@ const CartLoader = () => {
   }
   return (
     <Card tw="max-h-full flex flex-col">
-      <CardTitle>
-        Panier - {count} article{count > 1 ? "s" : ""}
-      </CardTitle>
-      <CardBody>
+      <div tw="flex items-center">
+        <CardTitle tw="mr-auto">
+          Panier - {count} article{count > 1 ? "s" : ""}
+        </CardTitle>
+        <QuickAdd addError={addError} />
+      </div>
+      <CardBody tw="flex-col">
+        <ErrorList errors={errors} removeError={removeError} />
         <CartTable items={items} />
       </CardBody>
       <CardFooter>

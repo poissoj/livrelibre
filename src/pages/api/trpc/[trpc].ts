@@ -7,6 +7,7 @@ import { addItem } from "@/server/addItem";
 import { getBestSales } from "@/server/bestSales";
 import { getBookmarks, starItem } from "@/server/bookmarks";
 import {
+  addISBNToCart,
   addNewItemToCart,
   addToCart,
   getCart,
@@ -173,6 +174,13 @@ export const appRouter = trpc
     async resolve({ input, ctx }) {
       logger.info("Add to cart", { user: ctx.user, item: input });
       return await addToCart(ctx.user.name, input.id, input.quantity);
+    },
+  })
+  .mutation("addISBNToCart", {
+    input: z.string().regex(/^\d{10,13}$/),
+    async resolve({ input, ctx }) {
+      logger.info("Quick add to cart", { user: ctx.user, isbn: input });
+      return await addISBNToCart(ctx.user.name, input);
     },
   })
   .mutation("addNewItemToCart", {
