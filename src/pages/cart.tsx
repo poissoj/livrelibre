@@ -218,7 +218,7 @@ const CartLoader = () => {
     );
   }
   return (
-    <Card>
+    <Card tw="max-h-full flex flex-col">
       <CardTitle>
         Panier - {count} article{count > 1 ? "s" : ""}
       </CardTitle>
