@@ -17,6 +17,7 @@ const loginRoute: NextApiHandler = async (req, res) => {
   try {
     const { username, password } = credentialsSchema.parse(req.body);
     if (!username) {
+      logger.info("Invalid login attempt - no username");
       res.status(400).json({ error: "Empty username" });
       return;
     }
@@ -29,9 +30,11 @@ const loginRoute: NextApiHandler = async (req, res) => {
       const user = { name: dbUser.name, role: dbUser.role };
       req.session.user = user;
       await req.session.save();
+      logger.info("Login successful", { user });
       res.json(user);
       return;
     }
+    logger.info("Invalid credentials", { username });
     res.status(401).json({ error: "Invalid credentials" });
   } catch (error) {
     logger.error(error);

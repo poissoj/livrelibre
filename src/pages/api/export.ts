@@ -3,6 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { getDb } from "@/server/database";
 import { formatDate } from "@/utils/date";
 import { ITEM_TYPES, ItemType } from "@/utils/item";
+import { logger } from "@/utils/logger";
 
 type Item = {
   title?: string;
@@ -61,6 +62,7 @@ const exportCSV = async (req: NextApiRequest, res: NextApiResponse) => {
     "Content-Disposition",
     `attachment; filename="stocks-${date}.csv"`
   );
+  logger.info("Export stock", { nbItems: items.length });
   res.send(csv);
 };
 
