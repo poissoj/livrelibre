@@ -14,6 +14,7 @@ import {
   Textarea,
 } from "@/components/FormControls";
 import { FormRow } from "@/components/FormRow";
+import type { BookData } from "@/pages/api/book/[isbn]";
 import { formatDate } from "@/utils/date";
 import { formatTVA } from "@/utils/format";
 import { BaseItem, ITEM_TYPES, TVAValues } from "@/utils/item";
@@ -43,10 +44,12 @@ export const ItemForm = ({
   onSuccess?(): void;
   children: StrictReactNode;
 }): JSX.Element => {
-  const { register, handleSubmit, reset } = useForm<FormFields>({
-    defaultValues: data,
-  });
+  const { register, handleSubmit, reset, getValues, setValue } =
+    useForm<FormFields>({
+      defaultValues: data,
+    });
   const [alert, setAlert] = React.useState<TAlert | null>(null);
+
   const submit = async (data: FormFields) => {
     const { type, msg: message } = await onSubmit(data);
     setAlert({ type, message });
@@ -54,6 +57,18 @@ export const ItemForm = ({
       onSuccess ? onSuccess() : reset();
     }
   };
+
+  const isbnSearch = async () => {
+    const isbn = getValues("isbn");
+    if (!isbn || !/^\d{10,13}$/.test(isbn)) return;
+    const response = await fetch(`/api/book/${isbn}`);
+    if (!response.ok) return;
+    const data = (await response.json()) as BookData;
+    setValue("title", data.title);
+    setValue("author", data.author);
+    setValue("publisher", data.publisher);
+  };
+
   return (
     <Card tw="max-h-full flex flex-col">
       <CardTitle>{title}</CardTitle>
@@ -79,6 +94,7 @@ export const ItemForm = ({
                 <ButtonWithInput
                   type="button"
                   aria-label="Chercher les infos pour cet ISBN"
+                  onClick={isbnSearch}
                 >
                   <FontAwesomeIcon icon={faSearch} tw="mx-sm" />
                 </ButtonWithInput>
