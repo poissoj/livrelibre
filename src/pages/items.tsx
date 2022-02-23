@@ -8,13 +8,14 @@ import { ErrorMessage } from "@/components/ErrorMessage";
 import { ItemsTable } from "@/components/ItemsTable";
 import { Pagination } from "@/components/Pagination";
 import { Title } from "@/components/Title";
+import type { StrictReactNode } from "@/utils/strictReactNode";
 import { trpc } from "@/utils/trpc";
 
 const ItemsCard = ({
   title,
   subtitle,
   children,
-}: PropsWithChildren<{ title: string; subtitle?: React.ReactNode }>) => (
+}: PropsWithChildren<{ title: string; subtitle?: StrictReactNode }>) => (
   <Card tw="max-h-full overflow-hidden flex flex-col">
     <CardTitle>{title}</CardTitle>
     {subtitle}

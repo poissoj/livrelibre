@@ -7,6 +7,8 @@ import Link, { LinkProps } from "next/link";
 import { useRouter } from "next/router";
 import tw from "twin.macro";
 
+import type { StrictReactNode } from "@/utils/strictReactNode";
+
 const Anchor = tw.a`border px-md py-sm text-primary-darker border-color[#AAA]`;
 const CurrentPageAnchor = tw(
   Anchor
@@ -17,7 +19,7 @@ const ConditionalLink = ({
   children,
 }: {
   href: LinkProps["href"] | null;
-  children: React.ReactNode;
+  children: StrictReactNode;
 }) => {
   if (href) {
     return (

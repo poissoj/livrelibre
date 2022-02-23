@@ -1,8 +1,10 @@
 import "twin.macro";
 
+import type { StrictReactNode } from "@/utils/strictReactNode";
+
 type MainProps = {
   className?: string;
-  children: React.ReactNode;
+  children: StrictReactNode;
 };
 export const Main = ({ className, children }: MainProps): JSX.Element => {
   return (

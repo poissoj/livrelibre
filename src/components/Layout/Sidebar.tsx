@@ -17,6 +17,7 @@ import { useRouter } from "next/router";
 import tw, { styled } from "twin.macro";
 
 import useUser from "@/lib/useUser";
+import type { StrictReactNode } from "@/utils/strictReactNode";
 
 const StyledLink = styled.a({
   ...tw`block p-md transition-colors duration-300 ease-out border-l-4 border-transparent`,
@@ -26,7 +27,7 @@ const StyledLink = styled.a({
 type NavLinkProps = {
   href: string;
   icon: FontAwesomeIconProps["icon"];
-  children: React.ReactNode;
+  children: StrictReactNode;
 };
 const NavLink = ({ href, icon, children }: NavLinkProps) => {
   const router = useRouter();

@@ -17,6 +17,7 @@ import { FormRow } from "@/components/FormRow";
 import { formatDate } from "@/utils/date";
 import { formatTVA } from "@/utils/format";
 import { BaseItem, ITEM_TYPES, TVAValues } from "@/utils/item";
+import type { StrictReactNode } from "@/utils/strictReactNode";
 
 export type FormFields = Omit<BaseItem, "amount"> & { amount: string };
 
@@ -40,7 +41,7 @@ export const ItemForm = ({
   ): Promise<{ type: "error" | "success" | "warning"; msg: string }>;
   data?: FormFields;
   onSuccess?(): void;
-  children: React.ReactNode;
+  children: StrictReactNode;
 }): JSX.Element => {
   const { register, handleSubmit, reset } = useForm<FormFields>({
     defaultValues: data,

@@ -2,6 +2,7 @@ import { ErrorBoundary } from "react-error-boundary";
 import tw, { styled } from "twin.macro";
 
 import { ErrorMessage } from "@/components/ErrorMessage";
+import type { StrictReactNode } from "@/utils/strictReactNode";
 
 const SHADOW = `
 0 2px 2px 0 rgba(0, 0, 0, 0.14),
@@ -17,7 +18,7 @@ export const CardBody = ({
   children,
   className,
 }: {
-  children: React.ReactNode;
+  children: StrictReactNode;
   className?: string;
 }) => (
   <div tw="mt-md overflow-auto flex" className={className}>

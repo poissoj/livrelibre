@@ -1,12 +1,14 @@
 import Head from "next/head";
 import "twin.macro";
 
+import type { StrictReactNode } from "@/utils/strictReactNode";
+
 import { Header } from "./Header";
 import { Main } from "./Main";
 import { Sidebar } from "./Sidebar";
 
 type LayoutProps = {
-  children: React.ReactNode;
+  children: StrictReactNode;
 };
 
 const Layout = ({ children }: LayoutProps): JSX.Element => {
