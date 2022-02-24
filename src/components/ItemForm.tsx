@@ -1,5 +1,5 @@
 import * as React from "react";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
+import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useForm } from "react-hook-form";
 import tw from "twin.macro";
@@ -28,6 +28,35 @@ type TAlert = {
 };
 
 const Column = tw.div`flex-1 min-width[20rem] ml-md`;
+
+const ISBNSearchButton = ({ onClick }: { onClick(): Promise<void> }) => {
+  const [isLoading, setLoading] = React.useState(false);
+  const clickHandler = async () => {
+    if (isLoading) {
+      return;
+    }
+    setLoading(true);
+    try {
+      await onClick();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <ButtonWithInput
+      type="button"
+      aria-label="Chercher les infos pour cet ISBN"
+      onClick={clickHandler}
+    >
+      <FontAwesomeIcon
+        icon={isLoading ? faSpinner : faSearch}
+        spin={isLoading}
+        tw="mx-sm"
+      />
+    </ButtonWithInput>
+  );
+};
 
 export const ItemForm = ({
   title,
@@ -91,13 +120,7 @@ export const ItemForm = ({
                   maxLength={13}
                   {...register("isbn")}
                 />
-                <ButtonWithInput
-                  type="button"
-                  aria-label="Chercher les infos pour cet ISBN"
-                  onClick={isbnSearch}
-                >
-                  <FontAwesomeIcon icon={faSearch} tw="mx-sm" />
-                </ButtonWithInput>
+                <ISBNSearchButton onClick={isbnSearch} />
               </FormRow>
               <FormRow label="Auteur">
                 <Input type="text" {...register("author")} />
