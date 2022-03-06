@@ -23,7 +23,7 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
 
 export default withTRPC<AppRouter>({
   config({ ctx }) {
-    if (process.browser) {
+    if (typeof window !== "undefined") {
       return {
         url: "/api/trpc",
       };
