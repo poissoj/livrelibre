@@ -4,6 +4,7 @@ type DBSale = {
   month: string;
   count: number;
   amount: number;
+  ht: number;
   carts: number;
 };
 
@@ -36,6 +37,14 @@ export const getSales = async (): Promise<Sale[]> => {
         $group: {
           _id: { month: { $substr: ["$date", 3, 7] } },
           amount: { $sum: "$price" },
+          ht: {
+            $sum: {
+              $divide: [
+                { $multiply: ["$price", 100] },
+                { $add: [100, { $toDouble: "$tva" }] },
+              ],
+            },
+          },
           count: { $sum: "$quantity" },
           carts: { $addToSet: "$cartId" },
         },
@@ -45,6 +54,7 @@ export const getSales = async (): Promise<Sale[]> => {
           _id: 0,
           month: "$_id.month",
           amount: 1,
+          ht: 1,
           count: 1,
           carts: { $size: "$carts" },
         },

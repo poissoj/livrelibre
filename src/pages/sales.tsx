@@ -63,7 +63,8 @@ const SalesTable = ({ sales }: { sales: Sale[] }): JSX.Element => {
         <tr>
           <StickyTh tw="text-left pl-2">Mois</StickyTh>
           <StickyTh tw="text-right">Nombre de ventes</StickyTh>
-          <StickyTh tw="text-right">Recette totale</StickyTh>
+          <StickyTh tw="text-right">Recette totale HT</StickyTh>
+          <StickyTh tw="text-right">Recette totale TTC</StickyTh>
           <StickyTh tw="text-right pr-1">Panier moyen</StickyTh>
         </tr>
       </thead>
@@ -78,6 +79,9 @@ const SalesTable = ({ sales }: { sales: Sale[] }): JSX.Element => {
               <Link href={makeSaleURL(sale)}>{sale.month}</Link>
             </td>
             <td tw="text-right font-number">{formatNumber(sale.count)}</td>
+            <td tw="text-right font-number">
+              {sale.ht ? formatPrice(sale.ht) : "Inconnu"}
+            </td>
             <td tw="text-right font-number">{formatPrice(sale.amount)}</td>
             <td tw="text-right font-number pr-2">
               {sale.avg ? `${formatPrice(sale.avg)}` : "Inconnu"}
