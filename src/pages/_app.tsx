@@ -1,6 +1,7 @@
 import { withTRPC } from "@trpc/next";
 import type { AppProps } from "next/dist/shared/lib/router/router";
 import React from "react";
+import { Slide, ToastContainer } from "react-toastify";
 
 import GlobalStyles from "@/components/GlobalStyles";
 import Layout from "@/components/Layout/Layout";
@@ -17,6 +18,11 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
     <PageLayout>
       <GlobalStyles />
       {showComponent && <Component {...pageProps} />}
+      <ToastContainer
+        position="bottom-right"
+        theme="colored"
+        transition={Slide}
+      />
     </PageLayout>
   );
 }

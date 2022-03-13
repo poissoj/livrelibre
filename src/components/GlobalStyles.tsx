@@ -1,5 +1,6 @@
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
+import "react-toastify/dist/ReactToastify.css";
 import { createGlobalStyle } from "styled-components";
 import tw, { GlobalStyles as BaseStyles } from "twin.macro";
 
@@ -25,6 +26,9 @@ const CustomStyles = createGlobalStyle`
     font-weight: regular;
     src: url(/fonts/Roboto-Mono.woff2) format('woff2');
     font-display: fallback;
+  }
+  .Toastify {
+    --toastify-color-success: #008073;
   }
 `;
 
