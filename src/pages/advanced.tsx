@@ -8,15 +8,13 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { createContext, useState } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
+import { toast } from "react-toastify";
 import "twin.macro";
-import { z } from "zod";
 
-import { Alert } from "@/components/Alert";
 import { Button } from "@/components/Button";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
-import { ErrorMessage } from "@/components/ErrorMessage";
 import { Title } from "@/components/Title";
-import type { DilicomRow } from "@/utils/dilicomItem";
+import type { DilicomRowWithId } from "@/utils/dilicomItem";
 import { formatNumber, formatPrice } from "@/utils/format";
 import type { StrictReactNode } from "@/utils/strictReactNode";
 
@@ -24,7 +22,7 @@ type FormFields = {
   dilicom: FileList;
 };
 
-type TFile = { filename: string; data: DilicomRow[] } | null;
+type TFile = { filename: string; data: DilicomRowWithId[] } | null;
 type FileContextValue = [TFile, React.Dispatch<React.SetStateAction<TFile>>];
 
 const FileContext = createContext<FileContextValue | undefined>(undefined);
@@ -56,12 +54,11 @@ const DilicomForm = ({ children }: { children: StrictReactNode }) => {
       body: formData,
     });
     if (!response.ok) {
-      methods.setError("dilicom", {
-        message: "Erreur lors du traitement du fichier",
-      });
+      const json = (await response.json()) as { error: string };
+      toast.error(json.error);
       return;
     }
-    const data = (await response.json()) as DilicomRow[];
+    const data = (await response.json()) as DilicomRowWithId[];
     setFile({ filename: dilicom[0].name, data });
   };
   return (
@@ -108,21 +105,6 @@ const SubmitButton = () => {
   );
 };
 
-const zError = z.object({ message: z.string() });
-const FormErrors = () => {
-  const {
-    clearErrors,
-    formState: { errors },
-  } = useFormContext();
-  const error = zError.safeParse(errors.dilicom);
-  if (!error.success) return null;
-  return (
-    <Alert type="error" onDismiss={() => clearErrors()}>
-      {error.data.message}
-    </Alert>
-  );
-};
-
 const DilicomImport = () => (
   <Card>
     <CardTitle>Importer un fichier DILICOM</CardTitle>
@@ -132,7 +114,6 @@ const DilicomImport = () => (
           Fichier :
           <FileInput />
         </label>
-        <FormErrors />
       </CardBody>
       <CardFooter>
         <SubmitButton />
@@ -156,7 +137,7 @@ const StockExport = () => (
   </Card>
 );
 
-const DilicomTable = ({ items }: { items: DilicomRow[] }) => {
+const DilicomTable = ({ items }: { items: DilicomRowWithId[] }) => {
   return (
     <table tw="flex-1 border-separate border-spacing[0.5rem]">
       <thead>
@@ -187,37 +168,65 @@ const DilicomTable = ({ items }: { items: DilicomRow[] }) => {
   );
 };
 
+const ImportBooks = ({
+  books,
+  children,
+}: {
+  books: DilicomRowWithId[];
+  children: StrictReactNode;
+}) => {
+  const [, setFile] = useFileContext();
+  const submit: React.FormEventHandler<HTMLFormElement> = async (event) => {
+    event.preventDefault();
+    const response = await fetch("/api/finalizeImport", {
+      method: "POST",
+      body: JSON.stringify(books),
+    });
+    if (!response.ok) {
+      toast.error("Erreur lors de l'import");
+      return;
+    }
+    toast.success(
+      `Le fichier a été importé correctement (${books.length} article${
+        books.length > 1 ? "s" : ""
+      }).`
+    );
+    setFile(null);
+  };
+  return <form onSubmit={submit}>{children}</form>;
+};
+
 const DilicomPage = () => {
   const [file, setFile] = useFileContext();
   if (!file) {
-    return (
-      <Card>
-        <CardTitle>Import de fichier</CardTitle>
-        <CardBody>
-          <ErrorMessage error={new Error("Fichier introuvable")} />
-        </CardBody>
-      </Card>
-    );
+    throw new Error("Unable to find file - should never happen");
   }
+  const nbItems = file.data.reduce((nb, row) => nb + row.QTE, 0);
+
   return (
     <Card tw="self-start max-h-full flex flex-col flex-1">
       <CardTitle>Import du fichier {file.filename}</CardTitle>
       <CardBody tw="flex flex-col">
         <DilicomTable items={file.data} />
       </CardBody>
-      <CardFooter tw="flex justify-end">
-        <Button
-          type="button"
-          tw="mr-2 px-md background-color[#6E6E6E]"
-          onClick={() => setFile(null)}
-        >
-          <FontAwesomeIcon icon={faTimesCircle} tw="mr-sm" />
-          Annuler
-        </Button>
-        <Button type="submit" tw="px-md">
-          <FontAwesomeIcon icon={faCheckCircle} tw="mr-sm" />
-          Valider
-        </Button>
+      <CardFooter tw="flex">
+        <span tw="font-bold mr-auto">
+          Total: <span tw="font-number">{formatNumber(nbItems)}</span> articles
+        </span>
+        <ImportBooks books={file.data}>
+          <Button
+            type="button"
+            tw="mr-2 px-md background-color[#6E6E6E]"
+            onClick={() => setFile(null)}
+          >
+            <FontAwesomeIcon icon={faTimesCircle} tw="mr-sm" />
+            Annuler
+          </Button>
+          <Button type="submit" tw="px-md">
+            <FontAwesomeIcon icon={faCheckCircle} tw="mr-sm" />
+            Valider
+          </Button>
+        </ImportBooks>
       </CardFooter>
     </Card>
   );

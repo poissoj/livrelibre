@@ -6,7 +6,7 @@ import nc from "next-connect";
 
 import { sessionOptions } from "@/lib/session";
 import { getDb } from "@/server/database";
-import type { DilicomRow } from "@/utils/dilicomItem";
+import type { DilicomRow, DilicomRowWithId } from "@/utils/dilicomItem";
 import { getBookData } from "@/utils/getBookData";
 import type { DBItem } from "@/utils/item";
 import { logger } from "@/utils/logger";
@@ -65,7 +65,7 @@ const updateFields = async (rows: DilicomRow[]) => {
     .find({ isbn: { $in: fileEANs } })
     .toArray();
 
-  const items: DilicomRow[] = await Promise.all(
+  const items: DilicomRowWithId[] = await Promise.all(
     rows.map(async (row) => {
       const item = dbItems.find((it) => it.isbn === row.EAN);
       if (!item) {
@@ -73,7 +73,7 @@ const updateFields = async (rows: DilicomRow[]) => {
         const TITRE = bookData.title || row.TITRE;
         const AUTEUR = bookData.author || row.AUTEUR;
         const EDITEUR = bookData.publisher || row.EDITEUR;
-        return { ...row, TITRE, AUTEUR, EDITEUR };
+        return { ...row, TITRE, AUTEUR, EDITEUR, id: null };
       }
       return {
         ...row,
@@ -81,6 +81,7 @@ const updateFields = async (rows: DilicomRow[]) => {
         TITRE: item.title,
         EDITEUR: item.publisher,
         DISTRIBUTEUR: item.distributor,
+        id: item._id.toString(),
       };
     })
   );
@@ -109,9 +110,24 @@ importFile.post(
   async (req: NextApiRequest & { file: Express.Multer.File }, res) => {
     const { user } = req.session;
     logger.info("import file", { filename: req.file.originalname, user });
-    const rows = filterRows(fileToJson(req.file.buffer));
-    const items = await updateFields(rows);
-    res.json(items);
+    let rows: DilicomRow[] = [];
+    try {
+      rows = filterRows(fileToJson(req.file.buffer));
+    } catch (error) {
+      logger.error(error);
+      res.status(400).json({
+        error:
+          "Erreur lors de l'import du fichier. Vérifier que le format est correct.",
+      });
+      return;
+    }
+    try {
+      const items = await updateFields(rows);
+      res.json(items);
+    } catch (error) {
+      logger.error(error);
+      res.status(500).json({ error: "Erreur lors du traitement du fichier" });
+    }
   }
 );
 

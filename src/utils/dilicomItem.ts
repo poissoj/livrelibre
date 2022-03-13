@@ -10,3 +10,5 @@ export type DilicomRow = {
   QTE: number;
   TOTAL: number;
 };
+
+export type DilicomRowWithId = DilicomRow & { id: string | null };
