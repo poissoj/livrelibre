@@ -198,7 +198,7 @@ export const appRouter = trpc
   .mutation("removeFromCart", {
     input: z.string().length(24),
     async resolve({ ctx, input }) {
-      logger.info("Remove from cart", { user: ctx.user, itemId: input });
+      logger.info("Remove from cart", { user: ctx.user, cartItemId: input });
       return await removeFromCart(input);
     },
   })
