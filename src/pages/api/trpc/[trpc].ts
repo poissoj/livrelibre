@@ -211,6 +211,12 @@ export const appRouter = trpc
       logger.info("Delete sale", { user: ctx.user, input });
       return await deleteSale(input.saleId, input.itemId);
     },
+  })
+  .mutation("isbnSearch", {
+    input: z.string().regex(/^\d{10,}$/),
+    async resolve({ input }) {
+      return await searchItems(input);
+    },
   });
 
 // export type definition of API
