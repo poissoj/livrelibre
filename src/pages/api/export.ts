@@ -18,7 +18,7 @@ type Item = {
 const trim = (str: string | undefined) => str?.trim() || "";
 const formatNumber = (n: string | undefined) => n?.replace(".", ",") || "";
 
-const exportCSV = async (req: NextApiRequest, res: NextApiResponse) => {
+const makeCSV = async () => {
   const db = await getDb();
   const items = await db
     .collection("books")
@@ -39,6 +39,7 @@ const exportCSV = async (req: NextApiRequest, res: NextApiResponse) => {
       { $sort: { distributor: 1, author: 1, title: 1 } },
     ])
     .toArray();
+  logger.info("Export stock", { nbItems: items.length });
   const HEADER =
     "Catégorie,Titre,Auteur,Distributeur,Qté,Prix achat,Valeur TTC\n";
   const csv =
@@ -56,14 +57,24 @@ const exportCSV = async (req: NextApiRequest, res: NextApiResponse) => {
         ].join()
       )
       .join("\n");
-  res.setHeader("Content-Type", "text/csv");
-  const date = formatDate(new Date());
-  res.setHeader(
-    "Content-Disposition",
-    `attachment; filename="stocks-${date}.csv"`
-  );
-  logger.info("Export stock", { nbItems: items.length });
-  res.send(csv);
+
+  return csv;
+};
+
+const exportCSV = async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    const csv = await makeCSV();
+    const date = formatDate(new Date());
+    res.setHeader("Content-Type", "text/csv");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="stocks-${date}.csv"`
+    );
+    res.send(csv);
+  } catch (error) {
+    logger.error(error);
+    res.status(500).json({ error: "Unable to export stock" });
+  }
 };
 
 export default exportCSV;
