@@ -66,7 +66,6 @@ finalizeImport.post(async (req, res) => {
       starred: false,
       keywords: "",
       comments: "",
-      prix_achat: "",
     };
     booksToAdd.push(book);
   }

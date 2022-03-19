@@ -15,7 +15,6 @@ export const updateItem = async (
   const newItem: Omit<DBItem, "starred"> = {
     ...item,
     price: item.price.replace(",", "."),
-    prix_achat: item.prix_achat.replace(",", "."),
     nmAuthor: norm(item.author),
     nmTitle: norm(item.title),
     nmPublisher: norm(item.publisher),

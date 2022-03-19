@@ -18,7 +18,6 @@ export const addItem = async (
     ...item,
     amount: Number(item.amount),
     price: item.price.replace(",", "."),
-    prix_achat: item.prix_achat.replace(",", "."),
     nmAuthor: norm(item.author),
     nmTitle: norm(item.title),
     nmPublisher: norm(item.publisher),

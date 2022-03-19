@@ -32,7 +32,6 @@ export type BaseItem = {
   keywords: string;
   datebought: string;
   comments: string;
-  prix_achat: string;
   price: string;
   amount: number;
   tva: TVA;

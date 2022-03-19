@@ -36,7 +36,6 @@ const itemSchema = z.object({
   keywords: z.string(),
   datebought: z.string(),
   comments: z.string(),
-  prix_achat: z.string(),
   price: z.string(),
   amount: z.number(),
   tva: z.enum(TVAValues),

@@ -62,8 +62,6 @@ const ItemDetails = ({ item }: { item: ItemWithCount }) => {
       <DD>
         <pre>{item.comments}</pre>
       </DD>
-      <DT>Prix d&rsquo;achat</DT>
-      <DD tw="font-number">{formatStringPrice(item.prix_achat)}</DD>
       <DT>Prix de vente</DT>
       <DD tw="font-number">{formatStringPrice(item.price)}</DD>
       <DT>Quantité</DT>
