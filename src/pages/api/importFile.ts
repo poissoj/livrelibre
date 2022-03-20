@@ -65,17 +65,12 @@ const updateFields = async (rows: DilicomRow[]) => {
     .find({ isbn: { $in: fileEANs } })
     .toArray();
 
-  const items: DilicomRowWithId[] = await Promise.all(
-    rows.map(async (row) => {
-      const item = dbItems.find((it) => it.isbn === row.EAN);
-      if (!item) {
-        const bookData = await getBookData(row.EAN);
-        const TITRE = bookData.title || row.TITRE;
-        const AUTEUR = bookData.author || row.AUTEUR;
-        const EDITEUR = bookData.publisher || row.EDITEUR;
-        return { ...row, TITRE, AUTEUR, EDITEUR, id: null };
-      }
-      return {
+  const items: DilicomRowWithId[] = [];
+  for (const row of rows) {
+    const item = dbItems.find((it) => it.isbn === row.EAN);
+    let newRow: DilicomRowWithId;
+    if (item) {
+      newRow = {
         ...row,
         AUTEUR: item.author,
         TITRE: item.title,
@@ -83,8 +78,22 @@ const updateFields = async (rows: DilicomRow[]) => {
         DISTRIBUTEUR: item.distributor,
         id: item._id.toString(),
       };
-    })
-  );
+    } else {
+      logger.info("Import - Fetch book data", { isbn: row.EAN });
+      try {
+        const bookData = await getBookData(row.EAN);
+        logger.info("Import - Got book data", { isbn: row.EAN, bookData });
+        const TITRE = bookData.title || row.TITRE;
+        const AUTEUR = bookData.author || row.AUTEUR;
+        const EDITEUR = bookData.publisher || row.EDITEUR;
+        newRow = { ...row, TITRE, AUTEUR, EDITEUR, id: null };
+      } catch (error) {
+        logger.error(error);
+        newRow = { ...row, id: null };
+      }
+    }
+    items.push(newRow);
+  }
 
   return items;
 };
