@@ -39,12 +39,13 @@ finalizeImport.post(async (req, res) => {
   const booksToAdd: DBItem[] = [];
   const db = await getDb();
   for (const row of data) {
+    const price = String(row.PRIX);
     if (row.id) {
       void db
         .collection("books")
         .updateOne(
           { _id: new ObjectId(row.id) },
-          { $inc: { amount: row.QTE }, $set: { price: row.PRIX } }
+          { $inc: { amount: row.QTE }, $set: { price } }
         );
       continue;
     }
@@ -52,7 +53,7 @@ finalizeImport.post(async (req, res) => {
       amount: row.QTE,
       datebought: today,
       isbn: row.EAN,
-      price: String(row.PRIX),
+      price,
       tva: "5.5",
       type: "book",
       author: row.AUTEUR,
