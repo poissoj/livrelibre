@@ -11,4 +11,7 @@ export type DilicomRow = {
   TOTAL: number;
 };
 
-export type DilicomRowWithId = DilicomRow & { id: string | null };
+export type DilicomRowWithId = DilicomRow & {
+  id: string | null;
+  amount: number | null;
+};

@@ -77,6 +77,7 @@ const updateFields = async (rows: DilicomRow[]) => {
         EDITEUR: item.publisher,
         DISTRIBUTEUR: item.distributor,
         id: item._id.toString(),
+        amount: item.amount,
       };
     } else {
       logger.info("Import - Fetch book data", { isbn: row.EAN });
@@ -86,10 +87,10 @@ const updateFields = async (rows: DilicomRow[]) => {
         const TITRE = bookData.title || row.TITRE;
         const AUTEUR = bookData.author || row.AUTEUR;
         const EDITEUR = bookData.publisher || row.EDITEUR;
-        newRow = { ...row, TITRE, AUTEUR, EDITEUR, id: null };
+        newRow = { ...row, TITRE, AUTEUR, EDITEUR, id: null, amount: null };
       } catch (error) {
         logger.error(error);
-        newRow = { ...row, id: null };
+        newRow = { ...row, id: null, amount: null };
       }
     }
     items.push(newRow);

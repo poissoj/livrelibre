@@ -147,6 +147,7 @@ const DilicomTable = ({ items }: { items: DilicomRowWithId[] }) => {
           <th tw="text-left">Auteur</th>
           <th tw="text-left">Éditeur</th>
           <th tw="text-left">Distributeur</th>
+          <th tw="text-right">Stock</th>
           <th tw="text-right">Prix</th>
           <th tw="text-right">Quantité</th>
         </tr>
@@ -159,6 +160,13 @@ const DilicomTable = ({ items }: { items: DilicomRowWithId[] }) => {
             <td>{item.AUTEUR}</td>
             <td>{item.EDITEUR}</td>
             <td>{item.DISTRIBUTEUR}</td>
+            <td tw="text-right">
+              {item.amount == null ? (
+                "Nouveau"
+              ) : (
+                <span tw="font-number">{formatNumber(item.amount)}</span>
+              )}
+            </td>
             <td tw="text-right font-number">{formatPrice(item.PRIX)}</td>
             <td tw="text-right font-number">{formatNumber(item.QTE)}</td>
           </tr>
