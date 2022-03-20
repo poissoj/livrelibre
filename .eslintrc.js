@@ -13,4 +13,10 @@ module.exports = {
     "prettier",
   ],
   ignorePatterns: [".eslintrc.js", "*.config.js"],
+  rules: {
+    "@typescript-eslint/no-misused-promises": [
+      "error",
+      { checksVoidReturn: false },
+    ],
+  },
 };
