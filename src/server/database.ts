@@ -1,7 +1,7 @@
 import { Db, MongoClient } from "mongodb";
 
 if (!process.env.MONGODB_URI) {
-  throw new Error("MONGOBD_URI is not defined");
+  throw new Error("Please provide MONGODB_URI env var");
 }
 
 let client: MongoClient;
