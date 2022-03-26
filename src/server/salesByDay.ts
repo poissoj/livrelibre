@@ -121,7 +121,7 @@ export const getSalesByDay = async (date: string) => {
         i++;
       }
       if (i === items.length) {
-        throw new Error("Unknown id");
+        throw new Error(`Item ${sale.id.toString()} not found`);
       }
       sales.push({
         ...items[i],
