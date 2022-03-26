@@ -1,5 +1,7 @@
+import { withIronSessionApiRoute } from "iron-session/next";
 import type { NextApiRequest, NextApiResponse } from "next";
 
+import { sessionOptions } from "@/lib/session";
 import { getDb } from "@/server/database";
 import { formatDate } from "@/utils/date";
 import { ITEM_TYPES, ItemType } from "@/utils/item";
@@ -58,6 +60,10 @@ const makeCSV = async () => {
 };
 
 const exportCSV = async (req: NextApiRequest, res: NextApiResponse) => {
+  if (!req.session?.user) {
+    res.status(401).json({ error: "Unauthenticated" });
+    return;
+  }
   try {
     const csv = await makeCSV();
     const date = formatDate(new Date());
@@ -73,4 +79,4 @@ const exportCSV = async (req: NextApiRequest, res: NextApiResponse) => {
   }
 };
 
-export default exportCSV;
+export default withIronSessionApiRoute(exportCSV, sessionOptions);

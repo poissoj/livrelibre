@@ -119,6 +119,10 @@ importFile.use(upload.single("dilicom"));
 importFile.post(
   async (req: NextApiRequest & { file: Express.Multer.File }, res) => {
     const { user } = req.session;
+    if (!user) {
+      res.status(401).json({ error: "Unauthenticated" });
+      return;
+    }
     logger.info("import file", { filename: req.file.originalname, user });
     let rows: DilicomRow[] = [];
     try {

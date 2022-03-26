@@ -1,5 +1,6 @@
 import * as trpc from "@trpc/server";
 import * as trpcNext from "@trpc/server/adapters/next";
+import { TRPCError } from "@trpc/server";
 import { ObjectId } from "mongodb";
 import { z } from "zod";
 
@@ -47,6 +48,12 @@ const updateItemSchema = itemSchema.extend({
 
 export const appRouter = trpc
   .router<Context>()
+  .middleware(({ ctx, next }) => {
+    if (ctx.user.role === "anonymous") {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+    return next();
+  })
   .query("bookmarks", {
     async resolve() {
       return await getBookmarks();

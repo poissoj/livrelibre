@@ -26,6 +26,10 @@ const finalizeImport = nc<NextApiRequest, NextApiResponse>({
 finalizeImport.post(async (req, res) => {
   const data = JSON.parse(req.body as string) as DilicomRowWithId[];
   const { user } = req.session;
+  if (!user) {
+    res.status(401).json({ error: "Unauthenticated" });
+    return;
+  }
   const books = data.map((row) => ({
     isbn: row.EAN,
     qty: row.QTE,

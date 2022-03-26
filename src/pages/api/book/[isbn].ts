@@ -8,6 +8,10 @@ import { logger } from "@/utils/logger";
 const getBookDataRoute: NextApiHandler = async (req, res) => {
   const { isbn } = req.query;
   const { user } = req.session;
+  if (!user) {
+    res.status(401).json({ error: "Unauthenticated" });
+    return;
+  }
   if (typeof isbn !== "string" || !/^\d{10,13}$/.test(isbn)) {
     logger.info("Get book data: invalid parameter", { isbn, user });
     res.status(400).json({ error: "Invalid parameter" });
