@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 import ContentLoader from "react-content-loader";
-import "twin.macro";
+import tw from "twin.macro";
 
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
@@ -62,6 +62,8 @@ const SalesByDay = dynamic(() => import("@/components/Charts/SalesByDay"), {
   loading: SalesByHourSkeleton,
 });
 
+const Spacer = tw.div`w-1 h-1 flex-shrink-0`;
+
 const StatsLoader = () => {
   const result = trpc.useQuery(["stats"]);
   let hourSales: JSX.Element | null = null;
@@ -96,14 +98,15 @@ const StatsLoader = () => {
       </Card>
       <Card>
         <CardTitle>Nombre de ventes par jour</CardTitle>
-        <CardBody>{daySales}</CardBody>
+        <CardBody tw="width[900px] justify-center">{daySales}</CardBody>
       </Card>
+      <Spacer />
     </>
   );
 };
 
 const Stats = (): JSX.Element => (
-  <div tw="margin-left[10%] margin-right[10%] flex flex-1 flex-col gap-lg">
+  <div tw="flex flex-1 flex-col gap-lg items-center">
     <Title>Statistiques</Title>
     <StatsLoader />
   </div>
