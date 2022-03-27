@@ -74,9 +74,10 @@ export const appRouter = trpc
     input: z.object({
       search: z.string(),
       page: z.number(),
+      inStock: z.boolean().optional(),
     }),
     async resolve({ input }) {
-      return await searchItems(input.search, input.page);
+      return await searchItems(input);
     },
   })
   .query("advancedSearch", {
@@ -221,7 +222,7 @@ export const appRouter = trpc
   .mutation("isbnSearch", {
     input: z.string().regex(/^\d{10,}$/),
     async resolve({ input }) {
-      return await searchItems(input);
+      return await searchItems({ search: input });
     },
   });
 

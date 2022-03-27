@@ -10,8 +10,49 @@ import { trpc } from "@/utils/trpc";
 
 const StyledCard = tw(Card)`max-h-full overflow-hidden flex flex-col`;
 
-const SearchLoader = ({ page, search }: { page: number; search: string }) => {
-  const result = trpc.useQuery(["quicksearch", { search, page }], {
+const useSearchParams = () => {
+  const router = useRouter();
+  const {
+    search: querySearch,
+    page: queryPage,
+    inStock: queryStock,
+  } = router.query;
+  const search = typeof querySearch === "string" ? querySearch : "";
+  const page = typeof queryPage === "string" ? Number(queryPage) : 1;
+  const inStock = typeof queryStock === "string";
+  return { search, page, inStock };
+};
+
+const ToggleStock = () => {
+  const router = useRouter();
+  const { search, inStock } = useSearchParams();
+  const toggleStock = async () => {
+    const query = inStock ? { search } : { search, inStock: 1 };
+    await router.push({ query });
+  };
+  return (
+    <label tw="self-end cursor-pointer mr-6 ml-auto">
+      <span>En stock</span>
+      <input
+        type="checkbox"
+        tw="ml-2"
+        onChange={toggleStock}
+        defaultChecked={inStock}
+      />
+    </label>
+  );
+};
+
+const SearchLoader = ({
+  page,
+  search,
+  inStock,
+}: {
+  page: number;
+  search: string;
+  inStock: boolean;
+}) => {
+  const result = trpc.useQuery(["quicksearch", { search, page, inStock }], {
     keepPreviousData: true,
   });
   let title = "Recherche rapide";
@@ -28,15 +69,20 @@ const SearchLoader = ({ page, search }: { page: number; search: string }) => {
       return (
         <StyledCard>
           <CardTitle>{title}</CardTitle>
+          <ToggleStock />
           <CardBody>Aucun résultat pour &quot;{search}&quot;</CardBody>
         </StyledCard>
       );
     }
   }
+
   return (
     <StyledCard>
       <CardTitle>{title}</CardTitle>
-      {subtitle}
+      <div tw="flex flex-1">
+        {subtitle}
+        <ToggleStock />
+      </div>
       <CardBody>
         {result.isSuccess ? <ItemsTable items={result.data.items} /> : null}
       </CardBody>
@@ -50,15 +96,14 @@ const SearchLoader = ({ page, search }: { page: number; search: string }) => {
 };
 
 const QuickSearchPage = (): JSX.Element => {
-  const router = useRouter();
-  const { search, page: queryPage } = router.query;
-  const searchValue = typeof search === "string" ? search : "";
-  const title = `Recherche de "${searchValue}"`;
-  const page = typeof queryPage === "string" ? Number(queryPage) : 1;
+  const { search, page, inStock } = useSearchParams();
+  const title = `Recherche de "${search}"`;
   return (
     <div tw="flex flex-1 flex-col gap-lg">
       <Title>{title}</Title>
-      {searchValue ? <SearchLoader search={searchValue} page={page} /> : null}
+      {search ? (
+        <SearchLoader search={search} page={page} inStock={inStock} />
+      ) : null}
     </div>
   );
 };

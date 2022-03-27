@@ -26,8 +26,8 @@ export const getItem = async (id: string): Promise<ItemWithCount | null> => {
 
 const sanitize = (str: string) => str.replace(/[#-.]|[[-^]|[?|{}]/g, "\\$&");
 
-const generateQuickSearchCriteria = (search: string) => {
-  let criteria;
+const generateQuickSearchCriteria = (search: string, inStock: boolean) => {
+  let criteria: Filter<DBItem>;
   if (/^\d{13,}$/.test(search)) {
     criteria = { isbn: search.slice(0, 13) };
   } else if (/\s/.test(search)) {
@@ -39,6 +39,9 @@ const generateQuickSearchCriteria = (search: string) => {
   } else {
     const crit = new RegExp(sanitize(norm(search)), "i");
     criteria = { $or: [{ nmTitle: crit }, { nmAuthor: crit }] };
+  }
+  if (inStock) {
+    criteria = { $and: [criteria, { amount: { $gt: 0 } }] };
   }
   return criteria;
 };
@@ -57,11 +60,11 @@ const capitalize = (txt: string) =>
   txt ? `${txt[0].toUpperCase()}${txt.slice(1)}` : "";
 
 const generateSearchCriteria = (query: Record<string, string>) => {
-  const criteria: Record<string, string | RegExp | number>[] = [];
+  const criteria: Record<string, unknown>[] = [];
   for (const field in query) {
     let key = field;
     let value: string | RegExp | number = query[field];
-    if (value === "") continue;
+    if (value === "" || key === "inStock") continue;
     if (NORMALIZED_FIELDS.includes(field)) {
       key = `nm${capitalize(field)}`;
       value = norm(value);
@@ -76,6 +79,9 @@ const generateSearchCriteria = (query: Record<string, string>) => {
   }
   if (criteria.length === 0) {
     criteria.push({});
+  }
+  if (query.inStock) {
+    criteria.push({ amount: { $gt: 0 } });
   }
   return { $and: criteria };
 };
@@ -94,10 +100,18 @@ const doSearch = async (criteria: Filter<DBItem>, pageNumber: number) => {
   return { items, count };
 };
 
-export const searchItems = async (input: string, pageNumber = 1) => {
+export const searchItems = async ({
+  search: input,
+  page = 1,
+  inStock = false,
+}: {
+  search: string;
+  inStock?: boolean;
+  page?: number;
+}) => {
   const search = input.trim();
-  const criteria = generateQuickSearchCriteria(search);
-  return await doSearch(criteria, pageNumber);
+  const criteria = generateQuickSearchCriteria(search, inStock);
+  return await doSearch(criteria, page);
 };
 
 export const advancedSearch = async (

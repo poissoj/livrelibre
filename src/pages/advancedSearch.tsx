@@ -50,6 +50,28 @@ const getQueryLabel = (query: Record<string, string>) => {
   return label;
 };
 
+const ToggleStock = () => {
+  const router = useRouter();
+  const toggleStock = async () => {
+    const { inStock, ...query } = router.query;
+    if (!inStock) {
+      query.inStock = "1";
+    }
+    await router.push({ query });
+  };
+  return (
+    <label tw="self-end cursor-pointer mr-6 ml-auto">
+      <span>En stock</span>
+      <input
+        type="checkbox"
+        tw="ml-2"
+        onChange={toggleStock}
+        defaultChecked={router.query.inStock == "1"}
+      />
+    </label>
+  );
+};
+
 const SearchLoader = ({
   query,
   page,
@@ -75,6 +97,7 @@ const SearchLoader = ({
       return (
         <StyledCard>
           <CardTitle>{title}</CardTitle>
+          <ToggleStock />
           <p>
             <CardBody>Aucun résultat pour &quot;{queryLabel}&quot;</CardBody>
           </p>
@@ -90,7 +113,10 @@ const SearchLoader = ({
   return (
     <StyledCard>
       <CardTitle>{title}</CardTitle>
-      {subtitle}
+      <div tw="flex flex-1">
+        {subtitle}
+        <ToggleStock />
+      </div>
       <CardBody>
         {result.isError ? <ErrorMessage /> : null}
         {result.isSuccess ? <ItemsTable items={result.data.items} /> : null}
