@@ -6,6 +6,7 @@ import "twin.macro";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { ItemsTable } from "@/components/ItemsTable";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { Pagination } from "@/components/Pagination";
 import { Title } from "@/components/Title";
 import type { StrictReactNode } from "@/utils/strictReactNode";
@@ -69,13 +70,17 @@ const ItemsLoader = ({ page }: { page: number }) => {
     title += " - " + pageLabel;
     pageTitle += " | " + pageLabel;
   }
+  const Wrapper = result.isFetching ? LoadingOverlay : React.Fragment;
+
   return (
-    <Card tw="max-h-full overflow-hidden flex flex-col">
+    <Card tw="max-h-full overflow-hidden flex flex-col relative">
       <Title>{pageTitle}</Title>
       <CardTitle>{title}</CardTitle>
       <p tw="mt-sm">{count} articles</p>
       <CardBody>
-        <ItemsTable items={items} />
+        <Wrapper>
+          <ItemsTable items={items} />
+        </Wrapper>
       </CardBody>
       {pageCount > 1 ? (
         <CardFooter tw="flex justify-center pt-6 2xl:pt-8">

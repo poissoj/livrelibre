@@ -1,3 +1,4 @@
+import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import tw from "twin.macro";
@@ -5,6 +6,7 @@ import tw from "twin.macro";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { ItemsTable } from "@/components/ItemsTable";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { Pagination } from "@/components/Pagination";
 import { Title } from "@/components/Title";
 import { formatTVA } from "@/utils/format";
@@ -13,7 +15,7 @@ import { ITEMS_PER_PAGE } from "@/utils/pagination";
 import { trpc } from "@/utils/trpc";
 import { isIn } from "@/utils/utils";
 
-const StyledCard = tw(Card)`max-h-full overflow-hidden flex flex-col`;
+const StyledCard = tw(Card)`max-h-full overflow-hidden flex flex-col relative`;
 
 const FIELD_LABELS = {
   type: "Type",
@@ -110,6 +112,8 @@ const SearchLoader = ({
       );
     }
   }
+  const Wrapper = result.isFetching ? LoadingOverlay : React.Fragment;
+
   return (
     <StyledCard>
       <CardTitle>{title}</CardTitle>
@@ -119,7 +123,11 @@ const SearchLoader = ({
       </div>
       <CardBody>
         {result.isError ? <ErrorMessage /> : null}
-        {result.isSuccess ? <ItemsTable items={result.data.items} /> : null}
+        {result.isSuccess ? (
+          <Wrapper>
+            <ItemsTable items={result.data.items} />
+          </Wrapper>
+        ) : null}
       </CardBody>
       {pageCount > 1 ? (
         <CardFooter tw="flex justify-center pt-6 2xl:pt-8">

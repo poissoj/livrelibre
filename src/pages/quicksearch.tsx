@@ -1,14 +1,16 @@
+import * as React from "react";
 import { useRouter } from "next/router";
 import tw from "twin.macro";
 
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { ItemsTable } from "@/components/ItemsTable";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { Pagination } from "@/components/Pagination";
 import { Title } from "@/components/Title";
 import { ITEMS_PER_PAGE } from "@/utils/pagination";
 import { trpc } from "@/utils/trpc";
 
-const StyledCard = tw(Card)`max-h-full overflow-hidden flex flex-col`;
+const StyledCard = tw(Card)`max-h-full overflow-hidden flex flex-col relative`;
 
 const useSearchParams = () => {
   const router = useRouter();
@@ -75,6 +77,7 @@ const SearchLoader = ({
       );
     }
   }
+  const Wrapper = result.isFetching ? LoadingOverlay : React.Fragment;
 
   return (
     <StyledCard>
@@ -84,7 +87,11 @@ const SearchLoader = ({
         <ToggleStock />
       </div>
       <CardBody>
-        {result.isSuccess ? <ItemsTable items={result.data.items} /> : null}
+        {result.isSuccess ? (
+          <Wrapper>
+            <ItemsTable items={result.data.items} />
+          </Wrapper>
+        ) : null}
       </CardBody>
       {pageCount > 1 ? (
         <CardFooter tw="flex justify-center pt-6 2xl:pt-8">
