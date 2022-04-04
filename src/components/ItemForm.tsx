@@ -75,7 +75,7 @@ export const ItemForm = ({
 }): JSX.Element => {
   const { register, handleSubmit, reset, getValues, setValue } =
     useForm<FormFields>({
-      defaultValues: data,
+      defaultValues: data || {},
     });
   const [alert, setAlert] = React.useState<TAlert | null>(null);
 

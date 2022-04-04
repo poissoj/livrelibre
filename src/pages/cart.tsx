@@ -222,8 +222,8 @@ const QuickAdd = ({ addError }: { addError(error: ISBNError): void }) => {
 type ISBNError = {
   message: CART_ERRORS;
   isbn: string;
-  title?: string;
-  id?: string;
+  title?: string | undefined;
+  id?: string | undefined;
 };
 
 const ErrorList = ({

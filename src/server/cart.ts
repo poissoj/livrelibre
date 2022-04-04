@@ -179,5 +179,9 @@ export const removeFromCart = async (cartItemId: string) => {
   const amount = result.value.quantity || 1;
   const _id = result.value.itemId;
   logger.info("Remove from cart", { cartItemId, itemId: _id });
-  await db.collection<DBItem>("books").updateOne({ _id }, { $inc: { amount } });
+  if (_id) {
+    await db
+      .collection<DBItem>("books")
+      .updateOne({ _id }, { $inc: { amount } });
+  }
 };

@@ -74,7 +74,7 @@ export const appRouter = trpc
     input: z.object({
       search: z.string(),
       page: z.number(),
-      inStock: z.boolean().optional(),
+      inStock: z.boolean().default(false),
     }),
     async resolve({ input }) {
       return await searchItems(input);
