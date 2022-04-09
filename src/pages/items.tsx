@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React, { PropsWithChildren } from "react";
+import React from "react";
 import ContentLoader from "react-content-loader";
 import "twin.macro";
 
@@ -16,7 +16,11 @@ const ItemsCard = ({
   title,
   subtitle,
   children,
-}: PropsWithChildren<{ title: string; subtitle?: StrictReactNode }>) => (
+}: {
+  title: string;
+  children: StrictReactNode;
+  subtitle?: StrictReactNode;
+}) => (
   <Card tw="max-h-full overflow-hidden flex flex-col">
     <CardTitle>{title}</CardTitle>
     {subtitle}
