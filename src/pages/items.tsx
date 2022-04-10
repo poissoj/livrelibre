@@ -9,7 +9,6 @@ import { ItemsTable } from "@/components/ItemsTable";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { Pagination } from "@/components/Pagination";
 import { Title } from "@/components/Title";
-import type { StrictReactNode } from "@/utils/strictReactNode";
 import { trpc } from "@/utils/trpc";
 
 const ItemsCard = ({
@@ -18,8 +17,8 @@ const ItemsCard = ({
   children,
 }: {
   title: string;
-  children: StrictReactNode;
-  subtitle?: StrictReactNode;
+  children: React.ReactNode;
+  subtitle?: React.ReactNode;
 }) => (
   <Card tw="max-h-full overflow-hidden flex flex-col">
     <CardTitle>{title}</CardTitle>

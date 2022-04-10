@@ -16,7 +16,6 @@ import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { Title } from "@/components/Title";
 import type { DilicomRowWithId } from "@/utils/dilicomItem";
 import { formatNumber, formatPrice } from "@/utils/format";
-import type { StrictReactNode } from "@/utils/strictReactNode";
 
 type FormFields = {
   dilicom: FileList;
@@ -27,7 +26,7 @@ type FileContextValue = [TFile, React.Dispatch<React.SetStateAction<TFile>>];
 
 const FileContext = createContext<FileContextValue | undefined>(undefined);
 
-const FileProvider = ({ children }: { children: StrictReactNode }) => {
+const FileProvider = ({ children }: { children: React.ReactNode }) => {
   const fileState = useState<TFile>(null);
   return (
     <FileContext.Provider value={fileState}>{children}</FileContext.Provider>
@@ -42,7 +41,7 @@ const useFileContext = () => {
   return context;
 };
 
-const DilicomForm = ({ children }: { children: StrictReactNode }) => {
+const DilicomForm = ({ children }: { children: React.ReactNode }) => {
   const methods = useForm<FormFields>();
   const [, setFile] = useFileContext();
   const submit = async ({ dilicom }: FormFields) => {
@@ -181,7 +180,7 @@ const ImportBooks = ({
   children,
 }: {
   books: DilicomRowWithId[];
-  children: StrictReactNode;
+  children: React.ReactNode;
 }) => {
   const [, setFile] = useFileContext();
   const submit: React.FormEventHandler<HTMLFormElement> = async (event) => {

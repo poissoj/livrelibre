@@ -9,8 +9,6 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import tw from "twin.macro";
 
-import type { StrictReactNode } from "@/utils/strictReactNode";
-
 const BasicAlert = tw.div`p-sm border border-radius[4px] flex items-center`;
 
 const AlertSuccess = tw(
@@ -36,7 +34,7 @@ export const Alert = ({
   type,
 }: {
   type: "success" | "warning" | "error" | "info";
-  children: StrictReactNode;
+  children: React.ReactNode;
   className?: string;
   onDismiss?(): void;
 }): JSX.Element | null => {

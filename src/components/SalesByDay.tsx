@@ -12,7 +12,6 @@ import { StatsByTVA } from "@/components/TVAStats/StatsByTVA";
 import { TVASkeleton } from "@/components/TVAStats/TVASkeleton";
 import { Title } from "@/components/Title";
 import { formatPrice, formatTVA } from "@/utils/format";
-import type { StrictReactNode } from "@/utils/strictReactNode";
 import { InferQueryOutput, trpc } from "@/utils/trpc";
 
 const TVALoader = ({ date }: { date: string }) => {
@@ -84,7 +83,7 @@ const SalesRow = ({
   children,
 }: {
   deleted: boolean;
-  children: StrictReactNode;
+  children: React.ReactNode;
 }) => <tr css={[deleted && tw`line-through italic`]}>{children}</tr>;
 
 const Cell = tw.td`p-sm`;
