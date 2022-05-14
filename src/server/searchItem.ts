@@ -1,6 +1,7 @@
 import { Filter, ObjectId } from "mongodb";
 
 import type { DBItem, ItemWithCount } from "@/utils/item";
+import { logger } from "@/utils/logger";
 import { ITEMS_PER_PAGE } from "@/utils/pagination";
 import { norm } from "@/utils/utils";
 
@@ -110,6 +111,7 @@ export const searchItems = async ({
   page?: number;
 }) => {
   const search = input.trim();
+  logger.info("Search", { search, page });
   const criteria = generateQuickSearchCriteria(search, inStock);
   return await doSearch(criteria, page);
 };
@@ -118,6 +120,7 @@ export const advancedSearch = async (
   query: Record<string, string>,
   pageNumber = 1
 ) => {
+  logger.info("Advanced search", { query, pageNumber });
   const criteria = generateSearchCriteria(query);
   return await doSearch(criteria, pageNumber);
 };
