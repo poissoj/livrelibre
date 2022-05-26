@@ -145,7 +145,7 @@ const SalesLoader = ({ date }: { date: string }) => {
     return null;
   }
   return (
-    <Card tw="max-h-full flex flex-col">
+    <Card tw="flex flex-col">
       <CardTitle>{`Ventes du ${date} (${result.data.salesCount})`}</CardTitle>
       <CardBody>
         <SalesTables carts={result.data.carts} />
