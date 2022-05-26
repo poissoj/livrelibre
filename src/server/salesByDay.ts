@@ -111,7 +111,7 @@ export const getSalesByDay = async (date: string) => {
       tvaStats[key].total += sale.price;
       salesCount += sale.quantity;
       paymentStats[type].count += sale.quantity;
-      paymentStats[type].total += sale.quantity * sale.price;
+      paymentStats[type].total += sale.price;
     }
 
     const deleted = Boolean(sale.deleted);
