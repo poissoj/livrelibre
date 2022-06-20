@@ -1,9 +1,10 @@
 import { createSSGHelpers } from "@trpc/react/ssg";
-import type { GetStaticProps } from "next";
+import type { GetServerSideProps } from "next";
 
 import { SalesByDay } from "@/components/SalesByDay";
 import { appRouter } from "@/pages/api/trpc/[trpc]";
 import { createContext } from "@/server/context";
+import type { DehydratedState } from "react-query";
 
 const getToday = () => {
   // We always want day/month/year regardless of the current locale
@@ -17,7 +18,9 @@ const SalesByDayPage = (): JSX.Element | null => {
 
 export default SalesByDayPage;
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps<{
+  trpcState: DehydratedState;
+}> = async () => {
   const ssg = createSSGHelpers({
     router: appRouter,
     ctx: await createContext(),
@@ -28,6 +31,5 @@ export const getStaticProps: GetStaticProps = async () => {
     props: {
       trpcState: ssg.dehydrate(),
     },
-    revalidate: 1,
   };
 };

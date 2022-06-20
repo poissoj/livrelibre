@@ -1,5 +1,5 @@
 import { createSSGHelpers } from "@trpc/react/ssg";
-import type { GetStaticPropsResult } from "next";
+import type { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
@@ -109,9 +109,9 @@ const Sales = (): JSX.Element => (
 
 export default Sales;
 
-export const getStaticProps = async (): Promise<
-  GetStaticPropsResult<{ trpcState: DehydratedState }>
-> => {
+export const getServerSideProps: GetServerSideProps<{
+  trpcState: DehydratedState;
+}> = async () => {
   const ssg = createSSGHelpers({
     router: appRouter,
     ctx: await createContext(),
@@ -121,6 +121,5 @@ export const getStaticProps = async (): Promise<
     props: {
       trpcState: ssg.dehydrate(),
     },
-    revalidate: 10,
   };
 };

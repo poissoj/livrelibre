@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { createSSGHelpers } from "@trpc/react/ssg";
-import type { GetStaticPaths, GetStaticProps } from "next";
+import type { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -23,12 +23,12 @@ import { Input } from "@/components/FormControls";
 import { NoResults } from "@/components/NoResults";
 import { Title } from "@/components/Title";
 import { appRouter } from "@/pages/api/trpc/[trpc]";
-import { getBookmarks } from "@/server/bookmarks";
 import { createContext } from "@/server/context";
 import { formatNumber, formatPrice, formatTVA } from "@/utils/format";
 import { ITEM_TYPES, ItemWithCount } from "@/utils/item";
 import { trpc, useBookmark } from "@/utils/trpc";
 import { useAddToCart } from "@/utils/useAddToCart";
+import type { DehydratedState } from "react-query";
 
 const SalesByMonth = dynamic(() => import("@/components/Charts/SalesByMonth"));
 
@@ -296,7 +296,9 @@ const ItemPage = (): JSX.Element => (
 
 export default ItemPage;
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getServerSideProps: GetServerSideProps<{
+  trpcState: DehydratedState;
+}> = async (context) => {
   const ssg = createSSGHelpers({
     router: appRouter,
     ctx: await createContext(),
@@ -312,12 +314,5 @@ export const getStaticProps: GetStaticProps = async (context) => {
     props: {
       trpcState: ssg.dehydrate(),
     },
-    revalidate: 1,
   };
-};
-
-export const getStaticPaths: GetStaticPaths = async () => {
-  const bookmarks = await getBookmarks();
-  const paths = bookmarks.map((bookmark) => ({ params: { id: bookmark._id } }));
-  return { paths, fallback: "blocking" };
 };

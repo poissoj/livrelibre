@@ -1,5 +1,5 @@
 import { createSSGHelpers } from "@trpc/react/ssg";
-import type { GetStaticPaths, GetStaticProps } from "next";
+import type { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
@@ -17,6 +17,7 @@ import { appRouter } from "@/pages/api/trpc/[trpc]";
 import { createContext } from "@/server/context";
 import { formatPrice } from "@/utils/format";
 import { InferQueryOutput, trpc } from "@/utils/trpc";
+import type { DehydratedState } from "react-query";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
 
@@ -193,7 +194,9 @@ const SalesByMonth = (): JSX.Element => {
 
 export default SalesByMonth;
 
-export const getStaticProps: GetStaticProps = async (context) => {
+export const getServerSideProps: GetServerSideProps<{
+  trpcState: DehydratedState;
+}> = async (context) => {
   const ssg = createSSGHelpers({
     router: appRouter,
     ctx: await createContext(),
@@ -207,10 +210,5 @@ export const getStaticProps: GetStaticProps = async (context) => {
     props: {
       trpcState: ssg.dehydrate(),
     },
-    revalidate: 1,
   };
-};
-
-export const getStaticPaths: GetStaticPaths = () => {
-  return { paths: [], fallback: "blocking" };
 };

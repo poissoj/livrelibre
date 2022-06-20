@@ -1,5 +1,5 @@
 import { createSSGHelpers } from "@trpc/react/ssg";
-import type { GetStaticPropsResult } from "next";
+import type { GetServerSideProps } from "next";
 import type { DehydratedState } from "react-query";
 
 import { Dashboard } from "@/components/Dashboard/Dashboard";
@@ -8,9 +8,9 @@ import { createContext } from "@/server/context";
 
 export default Dashboard;
 
-export const getStaticProps = async (): Promise<
-  GetStaticPropsResult<{ trpcState: DehydratedState }>
-> => {
+export const getServerSideProps: GetServerSideProps<{
+  trpcState: DehydratedState;
+}> = async () => {
   const ssg = createSSGHelpers({
     router: appRouter,
     ctx: await createContext(),
@@ -20,6 +20,5 @@ export const getStaticProps = async (): Promise<
     props: {
       trpcState: ssg.dehydrate(),
     },
-    revalidate: 10,
   };
 };
