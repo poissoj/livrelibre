@@ -11,6 +11,7 @@ specifiers:
   '@trpc/react': 9.24.0
   '@trpc/server': 9.24.0
   '@types/multer': 1.4.7
+  '@types/node': 18.0.0
   '@types/react': 18.0.12
   '@types/styled-components': 5.1.25
   '@typescript-eslint/eslint-plugin': 5.27.1
@@ -83,6 +84,7 @@ dependencies:
 
 devDependencies:
   '@trivago/prettier-plugin-sort-imports': 3.2.0_prettier@2.6.2
+  '@types/node': 18.0.0
   '@types/react': 18.0.12
   '@types/styled-components': 5.1.25
   '@typescript-eslint/eslint-plugin': 5.27.1_aq7uryhocdbvbqum33pitcm3y4
@@ -806,7 +808,6 @@ packages:
 
   /@types/node/18.0.0:
     resolution: {integrity: sha512-cHlGmko4gWLVI27cGJntjs/Sj8th9aYwplmZFwmmgYQQvL5NUsgVJG7OddLvNfLqYS31KFN0s3qlaD9qCaxACA==}
-    dev: false
 
   /@types/parse-json/4.0.0:
     resolution: {integrity: sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==}
