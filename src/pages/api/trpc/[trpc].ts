@@ -11,8 +11,11 @@ import {
   addISBNToCart,
   addNewItemToCart,
   addToCart,
+  getAsideCart,
   getCart,
   payCart,
+  putCartAside,
+  reactivateCart,
   removeFromCart,
 } from "@/server/cart";
 import { Context, createContext } from "@/server/context";
@@ -136,6 +139,11 @@ export const appRouter = trpc
       return await getCart(ctx.user.name);
     },
   })
+  .query("asideCart", {
+    async resolve({ ctx }) {
+      return await getAsideCart(ctx.user.name);
+    },
+  })
   .mutation("star", {
     input: z.object({
       id: z.string().length(24),
@@ -223,6 +231,16 @@ export const appRouter = trpc
     input: z.string().regex(/^\d{10,}$/),
     async resolve({ input }) {
       return await searchItems({ search: input });
+    },
+  })
+  .mutation("putCartAside", {
+    async resolve({ ctx }) {
+      return await putCartAside(ctx.user.name);
+    },
+  })
+  .mutation("reactivateCart", {
+    async resolve({ ctx }) {
+      return await reactivateCart(ctx.user.name);
     },
   });
 

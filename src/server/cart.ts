@@ -185,3 +185,33 @@ export const removeFromCart = async (cartItemId: string) => {
       .updateOne({ _id }, { $inc: { amount } });
   }
 };
+
+type CartName = "cart" | "asideCart";
+
+const switchCarts = async (username: string, from: CartName, to: CartName) => {
+  logger.info("Switch cart", { from, username });
+  const db = await getDb();
+  const items = await db
+    .collection<CartItem>(from)
+    .find({ username })
+    .toArray();
+  await db.collection<CartItem>(to).insertMany(items);
+  await db.collection<CartItem>(from).deleteMany({ username });
+};
+
+export const putCartAside = (username: string) =>
+  switchCarts(username, "cart", "asideCart");
+export const reactivateCart = async (username: string) =>
+  switchCarts(username, "asideCart", "cart");
+
+export const getAsideCart = async (username: string) => {
+  const db = await getDb();
+  const cartItems = await db
+    .collection<CartItem>("asideCart")
+    .find({ username })
+    .toArray();
+
+  const total = cartItems.reduce(sumPrice, 0) / 100;
+  const count = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  return { count, total };
+};

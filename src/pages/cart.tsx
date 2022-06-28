@@ -1,5 +1,7 @@
 import {
   faCheckCircle,
+  faHourglassStart,
+  faShareSquare,
   faSpinner,
   faTrashAlt,
 } from "@fortawesome/free-solid-svg-icons";
@@ -264,6 +266,120 @@ const ErrorList = ({
   );
 };
 
+const AsideButton = () => {
+  const { handleSubmit } = useForm();
+  const utils = trpc.useContext();
+  const asideCart = trpc.useQuery(["asideCart"]);
+  const { mutateAsync, isLoading } = trpc.useMutation("putCartAside", {
+    async onSuccess() {
+      await Promise.all([
+        utils.invalidateQueries("cart"),
+        utils.invalidateQueries("asideCart"),
+      ]);
+    },
+  });
+  const submit = async () => {
+    await mutateAsync();
+  };
+
+  if (asideCart.status !== "success") {
+    return null;
+  }
+  return (
+    <form onSubmit={handleSubmit(submit)}>
+      <Button
+        type="submit"
+        tw="padding[10px 15px]"
+        value="put-aside"
+        disabled={isLoading || asideCart.data.count > 0}
+      >
+        <FontAwesomeIcon
+          icon={isLoading ? faSpinner : faHourglassStart}
+          spin={isLoading}
+        />
+        <span tw="ml-sm">Mettre de côté</span>
+      </Button>
+    </form>
+  );
+};
+
+const AsideCartWrapper = ({ children }: { children?: React.ReactNode }) => {
+  return (
+    <Card>
+      <CardTitle>Panier en attente</CardTitle>
+      <CardBody>{children}</CardBody>
+    </Card>
+  );
+};
+
+const ReactivateButton = () => {
+  const { handleSubmit } = useForm();
+  const cart = trpc.useQuery(["cart"]);
+
+  const utils = trpc.useContext();
+  const { mutateAsync, isLoading } = trpc.useMutation("reactivateCart", {
+    async onSuccess() {
+      await Promise.all([
+        utils.invalidateQueries("cart"),
+        utils.invalidateQueries("asideCart"),
+      ]);
+    },
+  });
+
+  if (cart.status !== "success") {
+    return null;
+  }
+  const submit = async () => {
+    await mutateAsync();
+  };
+
+  return (
+    <form onSubmit={handleSubmit(submit)}>
+      <Button
+        type="submit"
+        tw="padding[10px 15px] mb-2"
+        disabled={cart.data.count > 0 || isLoading}
+      >
+        <FontAwesomeIcon
+          icon={isLoading ? faSpinner : faShareSquare}
+          spin={isLoading}
+        />
+        <span tw="ml-sm">Réactiver</span>
+      </Button>
+    </form>
+  );
+};
+
+const AsideCartLoader = () => {
+  const result = trpc.useQuery(["asideCart"]);
+  if (result.status === "error") {
+    return (
+      <AsideCartWrapper>
+        <ErrorMessage />
+      </AsideCartWrapper>
+    );
+  }
+  if (result.status === "loading" || result.status === "idle") {
+    return null;
+  }
+  const { count, total } = result.data;
+  if (count === 0) {
+    return null;
+  }
+  const plural = count > 1 ? "s" : "";
+  return (
+    <AsideCartWrapper>
+      <div tw="flex flex-1 justify-between">
+        <p>
+          <span tw="font-number">{count}</span> article{plural} en attente pour
+          <span tw="font-number ml-2">{formatPrice(total)}</span>
+        </p>
+        <ReactivateButton />
+      </div>
+    </AsideCartWrapper>
+  );
+};
+
 const CartLoader = () => {
   const result = trpc.useQuery(["cart"]);
   const [change, setChange] = useState<number | null>(null);
@@ -306,52 +422,61 @@ const CartLoader = () => {
   const { count, total, items } = result.data;
   if (count === 0) {
     return (
-      <Card>
+      <>
+        <Card>
+          <div tw="flex items-center">
+            <CardTitle tw="mr-auto">Panier</CardTitle>
+            <QuickAdd addError={addError} />
+          </div>
+          <CardBody tw="flex-col">
+            <ErrorList errors={errors} removeError={removeError} />
+            {change && (
+              <Alert type="info" tw="mb-5" onDismiss={() => setChange(null)}>
+                <span>
+                  À rendre: <span tw="font-number">{change.toFixed(2)}</span>€
+                </span>
+              </Alert>
+            )}
+            <p>Aucun article dans le panier</p>
+          </CardBody>
+        </Card>
+        <AsideCartLoader />
+      </>
+    );
+  }
+  return (
+    <>
+      <Card tw="max-h-full flex flex-col">
         <div tw="flex items-center">
-          <CardTitle tw="mr-auto">Panier</CardTitle>
+          <CardTitle tw="mr-auto">
+            Panier - {count} article{count > 1 ? "s" : ""}
+          </CardTitle>
           <QuickAdd addError={addError} />
         </div>
         <CardBody tw="flex-col">
           <ErrorList errors={errors} removeError={removeError} />
-          {change && (
-            <Alert type="info" tw="mb-5" onDismiss={() => setChange(null)}>
-              <span>
-                À rendre: <span tw="font-number">{change.toFixed(2)}</span>€
-              </span>
-            </Alert>
-          )}
-          <p>Aucun article dans le panier</p>
+          <CartTable items={items} />
         </CardBody>
+        <CardFooter>
+          <p tw="mb-2">
+            <span tw="font-medium font-size[1.1rem]">
+              Total : <span tw="font-number">{formatPrice(total)}</span>
+            </span>
+          </p>
+          <div tw="flex justify-between">
+            <AsideButton />
+            <PaymentForm cb={setChange} />
+          </div>
+        </CardFooter>
       </Card>
-    );
-  }
-  return (
-    <Card tw="max-h-full flex flex-col">
-      <div tw="flex items-center">
-        <CardTitle tw="mr-auto">
-          Panier - {count} article{count > 1 ? "s" : ""}
-        </CardTitle>
-        <QuickAdd addError={addError} />
-      </div>
-      <CardBody tw="flex-col">
-        <ErrorList errors={errors} removeError={removeError} />
-        <CartTable items={items} />
-      </CardBody>
-      <CardFooter>
-        <p>
-          <span tw="font-medium font-size[1.1rem]">
-            Total : <span tw="font-number">{formatPrice(total)}</span>
-          </span>
-        </p>
-        <PaymentForm cb={setChange} />
-      </CardFooter>
-    </Card>
+      <AsideCartLoader />
+    </>
   );
 };
 
 const CartPage = () => {
   return (
-    <div tw="margin-left[10%] margin-right[10%] flex-1">
+    <div tw="margin-left[10%] margin-right[10%] flex-1 flex flex-col gap-6">
       <Title>Panier</Title>
       <CartLoader />
     </div>
