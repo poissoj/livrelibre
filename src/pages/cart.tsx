@@ -124,7 +124,12 @@ const usePayCart = () => {
 };
 
 const PaymentForm = ({ cb }: { cb: (amount: number | null) => void }) => {
-  const { register, handleSubmit, watch } = useForm<PaymentFormData>();
+  const { register, handleSubmit, watch } = useForm<PaymentFormData>({
+    defaultValues: {
+      paymentDate: formatDate(new Date()),
+      paymentType: "cash",
+    },
+  });
   const mutation = usePayCart();
   const onSubmit = async (data: PaymentFormData) => {
     const res = await mutation.mutateAsync(data);
@@ -141,9 +146,8 @@ const PaymentForm = ({ cb }: { cb: (amount: number | null) => void }) => {
         type="date"
         {...register("paymentDate")}
         tw="w-min"
-        defaultValue={formatDate(new Date())}
       />
-      <Select {...register("paymentType")} tw="w-min" defaultValue="cash">
+      <Select {...register("paymentType")} tw="w-min">
         {Object.entries(PAYMENT_METHODS).map(([value, label]) => (
           <option key={value} value={value}>
             {label}
