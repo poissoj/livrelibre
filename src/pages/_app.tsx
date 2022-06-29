@@ -1,5 +1,6 @@
 import { withTRPC } from "@trpc/next";
 import type { AppProps } from "next/dist/shared/lib/router/router";
+import Head from "next/head";
 import React from "react";
 import { Slide, ToastContainer } from "react-toastify";
 
@@ -16,6 +17,10 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
 
   return (
     <PageLayout>
+      <Head>
+        <title>{process.env.NEXT_PUBLIC_APP_NAME}</title>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <GlobalStyles />
       {showComponent && <Component {...pageProps} />}
       <ToastContainer

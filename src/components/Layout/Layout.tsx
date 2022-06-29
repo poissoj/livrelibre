@@ -1,4 +1,3 @@
-import Head from "next/head";
 import "twin.macro";
 
 import { Header } from "./Header";
@@ -12,10 +11,6 @@ type LayoutProps = {
 const Layout = ({ children }: LayoutProps): JSX.Element => {
   return (
     <div tw="h-full flex flex-col">
-      <Head>
-        <title>{process.env.NEXT_PUBLIC_APP_NAME}</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
       <Header />
       <div tw="flex flex-1 overflow-hidden">
         <Sidebar />
