@@ -9,6 +9,7 @@ import { TVASkeleton } from "@/components/TVAStats/TVASkeleton";
 import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
 
+import { SalesSkeleton } from "./SalesSkeleton";
 import { SalesTable } from "./SalesTable";
 
 const TVALoader = ({ date }: { date: string }) => {
@@ -45,7 +46,14 @@ const SalesLoader = ({ date }: { date: string }) => {
     return <ErrorMessage />;
   }
   if (result.isLoading) {
-    return <p>Chargement…</p>;
+    return (
+      <Card tw="flex flex-col">
+        <CardTitle>{`Ventes du ${date}`}</CardTitle>
+        <CardBody>
+          <SalesSkeleton />
+        </CardBody>
+      </Card>
+    );
   }
   if (result.isIdle) {
     return null;
