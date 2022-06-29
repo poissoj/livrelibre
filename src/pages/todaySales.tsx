@@ -2,7 +2,7 @@ import { createSSGHelpers } from "@trpc/react/ssg";
 import type { GetServerSideProps } from "next";
 import type { DehydratedState } from "react-query";
 
-import { SalesByDay } from "@/components/SalesByDay";
+import { SalesByDay } from "@/components/Sales/SalesByDay";
 import { appRouter } from "@/pages/api/trpc/[trpc]";
 import { createContext } from "@/server/context";
 

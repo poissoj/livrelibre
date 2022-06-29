@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 
 import { Restricted } from "@/components/Restricted";
-import { SalesByDay } from "@/components/SalesByDay";
+import { SalesByDay } from "@/components/Sales/SalesByDay";
 
 const SalesByDayPage = (): JSX.Element | null => {
   const router = useRouter();
