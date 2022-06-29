@@ -13,6 +13,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
 import { useForm } from "react-hook-form";
+import type { DehydratedState } from "react-query";
 import tw from "twin.macro";
 
 import { Alert } from "@/components/Alert";
@@ -28,7 +29,6 @@ import { formatNumber, formatPrice, formatTVA } from "@/utils/format";
 import { ITEM_TYPES, ItemWithCount } from "@/utils/item";
 import { trpc, useBookmark } from "@/utils/trpc";
 import { useAddToCart } from "@/utils/useAddToCart";
-import type { DehydratedState } from "react-query";
 
 const SalesByMonth = dynamic(() => import("@/components/Charts/SalesByMonth"));
 

@@ -3,6 +3,7 @@ import type { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
+import type { DehydratedState } from "react-query";
 import tw from "twin.macro";
 
 import { Card, CardBody, CardTitle } from "@/components/Card";
@@ -17,7 +18,6 @@ import { appRouter } from "@/pages/api/trpc/[trpc]";
 import { createContext } from "@/server/context";
 import { formatPrice } from "@/utils/format";
 import { InferQueryOutput, trpc } from "@/utils/trpc";
-import type { DehydratedState } from "react-query";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
 

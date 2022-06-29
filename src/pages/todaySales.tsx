@@ -1,10 +1,10 @@
 import { createSSGHelpers } from "@trpc/react/ssg";
 import type { GetServerSideProps } from "next";
+import type { DehydratedState } from "react-query";
 
 import { SalesByDay } from "@/components/SalesByDay";
 import { appRouter } from "@/pages/api/trpc/[trpc]";
 import { createContext } from "@/server/context";
-import type { DehydratedState } from "react-query";
 
 const getToday = () => {
   // We always want day/month/year regardless of the current locale

@@ -1,10 +1,11 @@
-import Link from "next/link";
-import { formatPrice, formatTVA } from "@/utils/format";
 import { faSpinner, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Button } from "@/components/Button";
-import { InferQueryOutput, trpc } from "@/utils/trpc";
+import Link from "next/link";
 import tw from "twin.macro";
+
+import { Button } from "@/components/Button";
+import { formatPrice, formatTVA } from "@/utils/format";
+import { InferQueryOutput, trpc } from "@/utils/trpc";
 
 const DeleteSale = ({
   saleId,
