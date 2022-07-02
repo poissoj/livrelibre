@@ -28,20 +28,13 @@ type TAlert = {
 
 const Column = tw.div`flex-1 min-width[20rem] ml-md`;
 
-const ISBNSearchButton = ({ onClick }: { onClick(): Promise<void> }) => {
-  const [isLoading, setLoading] = React.useState(false);
-  const clickHandler = async () => {
-    if (isLoading) {
-      return;
-    }
-    setLoading(true);
-    try {
-      await onClick();
-    } finally {
-      setLoading(false);
-    }
-  };
-
+const ISBNSearchButton = ({
+  clickHandler,
+  isLoading,
+}: {
+  clickHandler(): Promise<void>;
+  isLoading: boolean;
+}) => {
   return (
     <ButtonWithInput
       type="button"
@@ -77,6 +70,7 @@ export const ItemForm = ({
       defaultValues: data || {},
     });
   const [alert, setAlert] = React.useState<TAlert | null>(null);
+  const [isbnLoading, setIsbnLoading] = React.useState(false);
 
   const submit = async (data: FormFields) => {
     const { type, msg: message } = await onSubmit(data);
@@ -95,6 +89,19 @@ export const ItemForm = ({
     setValue("title", data.title);
     setValue("author", data.author);
     setValue("publisher", data.publisher);
+  };
+
+  const isbnHandler = async (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key !== "Enter" || isbnLoading) {
+      return;
+    }
+    event.preventDefault();
+    setIsbnLoading(true);
+    try {
+      await isbnSearch();
+    } finally {
+      setIsbnLoading(false);
+    }
   };
 
   return (
@@ -117,9 +124,13 @@ export const ItemForm = ({
                 <InputWithButton
                   type="text"
                   maxLength={13}
+                  onKeyDown={isbnHandler}
                   {...register("isbn")}
                 />
-                <ISBNSearchButton onClick={isbnSearch} />
+                <ISBNSearchButton
+                  clickHandler={isbnSearch}
+                  isLoading={isbnLoading}
+                />
               </FormRow>
               <FormRow label="Auteur">
                 <Input type="text" {...register("author")} />
