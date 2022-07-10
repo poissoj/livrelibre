@@ -32,11 +32,13 @@ specifiers:
   next: 12.2.2
   next-connect: 1.0.0-next.1
   prettier: 2.7.1
+  prop-types: 15.8.1
   react: 18.2.0
   react-content-loader: 6.2.0
   react-dom: 18.2.0
   react-error-boundary: 3.1.4
   react-hook-form: 7.33.1
+  react-is: 18.2.0
   react-query: 3.39.1
   react-toastify: 9.0.5
   recharts: 2.1.12
@@ -69,15 +71,17 @@ dependencies:
   multer: 1.4.5-lts.1
   next: 12.2.2_pbqkqtl3ytrxhl67w6o5ecjene
   next-connect: 1.0.0-next.1
+  prop-types: 15.8.1
   react: 18.2.0
   react-content-loader: 6.2.0_react@18.2.0
   react-dom: 18.2.0_react@18.2.0
   react-error-boundary: 3.1.4_react@18.2.0
   react-hook-form: 7.33.1_react@18.2.0
+  react-is: 18.2.0
   react-query: 3.39.1_biqbaboplfbrettd7655fr4n2y
   react-toastify: 9.0.5_biqbaboplfbrettd7655fr4n2y
-  recharts: 2.1.12_biqbaboplfbrettd7655fr4n2y
-  styled-components: 5.3.5_biqbaboplfbrettd7655fr4n2y
+  recharts: 2.1.12_v2m5e27vhdewzwhryxwfaorcca
+  styled-components: 5.3.5_7i5myeigehqah43i5u7wbekgba
   winston: 3.8.1
   xlsx: 0.18.5
   zod: 3.17.3
@@ -1204,7 +1208,7 @@ packages:
       babel-plugin-syntax-jsx: 6.18.0
       lodash: 4.17.21
       picomatch: 2.3.1
-      styled-components: 5.3.5_biqbaboplfbrettd7655fr4n2y
+      styled-components: 5.3.5_7i5myeigehqah43i5u7wbekgba
 
   /babel-plugin-syntax-jsx/6.18.0:
     resolution: {integrity: sha512-qrPaCSo9c8RHNRHIotaufGbuOBN8rtdC4QrrFFc43vyWCCz7Kl7GL1PGaXtMGQZUXrkCjNEgxDfmAuAabr/rlw==}
@@ -3440,6 +3444,9 @@ packages:
   /react-is/16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
+  /react-is/18.2.0:
+    resolution: {integrity: sha512-xWGDIW6x921xtzPkhiULtthJHoJvBbF3q26fzloPCK0hsvxtPVelvftw3zjbHWSkR2km9Z+4uxbDDK/6Zw9B8w==}
+
   /react-lifecycles-compat/3.0.4:
     resolution: {integrity: sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==}
     dev: false
@@ -3474,7 +3481,7 @@ packages:
       react-dom: 18.2.0_react@18.2.0
     dev: false
 
-  /react-smooth/2.0.1_biqbaboplfbrettd7655fr4n2y:
+  /react-smooth/2.0.1_v2m5e27vhdewzwhryxwfaorcca:
     resolution: {integrity: sha512-Own9TA0GPPf3as4vSwFhDouVfXP15ie/wIHklhyKBH5AN6NFtdk0UpHBnonV11BtqDkAWlt40MOUc+5srmW7NA==}
     peerDependencies:
       prop-types: ^15.6.0
@@ -3482,6 +3489,7 @@ packages:
       react-dom: ^15.0.0 || ^16.0.0 || ^17.0.0 || ^18.0.0
     dependencies:
       fast-equals: 2.0.4
+      prop-types: 15.8.1
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
       react-transition-group: 2.9.0_biqbaboplfbrettd7655fr4n2y
@@ -3566,7 +3574,7 @@ packages:
       decimal.js-light: 2.5.1
     dev: false
 
-  /recharts/2.1.12_biqbaboplfbrettd7655fr4n2y:
+  /recharts/2.1.12_v2m5e27vhdewzwhryxwfaorcca:
     resolution: {integrity: sha512-dAzEuc9AjM+IF0A33QzEdBEUnyGKJcGUPa0MYm0vd38P3WouQjrj2egBrCNInE7ZcQwN+z3MoT7Rw03u8nP9HA==}
     engines: {node: '>=12'}
     peerDependencies:
@@ -3583,7 +3591,7 @@ packages:
       react-dom: 18.2.0_react@18.2.0
       react-is: 16.13.1
       react-resize-detector: 7.1.2_biqbaboplfbrettd7655fr4n2y
-      react-smooth: 2.0.1_biqbaboplfbrettd7655fr4n2y
+      react-smooth: 2.0.1_v2m5e27vhdewzwhryxwfaorcca
       recharts-scale: 0.4.5
       reduce-css-calc: 2.1.8
     transitivePeerDependencies:
@@ -3848,7 +3856,7 @@ packages:
     resolution: {integrity: sha512-6fPc+R4ihwqP6N/aIv2f1gMH8lOVtWQHoqC4yK6oSDVVocumAsfCqjkXnqiYMhmMwS/mEHLp7Vehlt3ql6lEig==}
     engines: {node: '>=8'}
 
-  /styled-components/5.3.5_biqbaboplfbrettd7655fr4n2y:
+  /styled-components/5.3.5_7i5myeigehqah43i5u7wbekgba:
     resolution: {integrity: sha512-ndETJ9RKaaL6q41B69WudeqLzOpY1A/ET/glXkNZ2T7dPjPqpPCXXQjDFYZWwNnE5co0wX+gTCqx9mfxTmSIPg==}
     engines: {node: '>=10'}
     requiresBuild: true
@@ -3867,6 +3875,7 @@ packages:
       hoist-non-react-statics: 3.3.2
       react: 18.2.0
       react-dom: 18.2.0_react@18.2.0
+      react-is: 18.2.0
       shallowequal: 1.1.0
       supports-color: 5.5.0
 
