@@ -1,8 +1,13 @@
 import * as xlsx from "xlsx";
 import { withIronSessionApiRoute } from "iron-session/next";
 import multer from "multer";
-import type { NextApiRequest, NextApiResponse, PageConfig } from "next";
-import nc from "next-connect";
+import type {
+  NextApiHandler,
+  NextApiRequest,
+  NextApiResponse,
+  PageConfig,
+} from "next";
+import { createRouter } from "next-connect";
 
 import { sessionOptions } from "@/lib/session";
 import { getDb } from "@/server/database";
@@ -99,7 +104,12 @@ const updateFields = async (rows: DilicomRow[]) => {
   return items;
 };
 
-const importFile = nc<NextApiRequest, NextApiResponse>({
+const router = createRouter<
+  NextApiRequest & { file: Express.Multer.File },
+  NextApiResponse
+>();
+
+const importFile = router.handler({
   onError(error, _req, res) {
     logger.error(error);
     res.status(500).json({ error: "Server error" });
@@ -114,38 +124,41 @@ const importFile = nc<NextApiRequest, NextApiResponse>({
 const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
-importFile.use(upload.single("dilicom"));
-
-importFile.post(
-  async (req: NextApiRequest & { file: Express.Multer.File }, res) => {
-    const { user } = req.session;
-    if (!user) {
-      res.status(401).json({ error: "Unauthenticated" });
-      return;
-    }
-    logger.info("import file", { filename: req.file.originalname, user });
-    let rows: DilicomRow[] = [];
-    try {
-      rows = filterRows(fileToJson(req.file.buffer));
-    } catch (error) {
-      logger.error(error);
-      res.status(400).json({
-        error:
-          "Erreur lors de l'import du fichier. Vérifier que le format est correct.",
-      });
-      return;
-    }
-    try {
-      const items = await updateFields(rows);
-      res.json(items);
-    } catch (error) {
-      logger.error(error);
-      res.status(500).json({ error: "Erreur lors du traitement du fichier" });
-    }
-  }
+router.use(
+  upload.single("dilicom") as unknown as Parameters<typeof router["use"]>[0]
 );
 
-export default withIronSessionApiRoute(importFile, sessionOptions);
+router.post(async (req, res) => {
+  const { user } = req.session;
+  if (!user) {
+    res.status(401).json({ error: "Unauthenticated" });
+    return;
+  }
+  logger.info("import file", { filename: req.file.originalname, user });
+  let rows: DilicomRow[] = [];
+  try {
+    rows = filterRows(fileToJson(req.file.buffer));
+  } catch (error) {
+    logger.error(error);
+    res.status(400).json({
+      error:
+        "Erreur lors de l'import du fichier. Vérifier que le format est correct.",
+    });
+    return;
+  }
+  try {
+    const items = await updateFields(rows);
+    res.json(items);
+  } catch (error) {
+    logger.error(error);
+    res.status(500).json({ error: "Erreur lors du traitement du fichier" });
+  }
+});
+
+export default withIronSessionApiRoute(
+  importFile as NextApiHandler,
+  sessionOptions
+);
 
 export const config: PageConfig = {
   api: {

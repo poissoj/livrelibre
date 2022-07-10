@@ -1,7 +1,7 @@
 import { withIronSessionApiRoute } from "iron-session/next";
 import { ObjectId } from "mongodb";
 import type { NextApiRequest, NextApiResponse } from "next";
-import nc from "next-connect";
+import { createRouter } from "next-connect";
 
 import { sessionOptions } from "@/lib/session";
 import { getDb } from "@/server/database";
@@ -11,7 +11,9 @@ import type { DBItem } from "@/utils/item";
 import { logger } from "@/utils/logger";
 import { norm } from "@/utils/utils";
 
-const finalizeImport = nc<NextApiRequest, NextApiResponse>({
+const router = createRouter<NextApiRequest, NextApiResponse>();
+
+const finalizeImport = router.handler({
   onError(error, _req, res) {
     logger.error(error);
     res.status(500).json({ error: "Server error" });
@@ -23,7 +25,7 @@ const finalizeImport = nc<NextApiRequest, NextApiResponse>({
   },
 });
 
-finalizeImport.post(async (req, res) => {
+router.post(async (req, res) => {
   const data = JSON.parse(req.body as string) as DilicomRowWithId[];
   const { user } = req.session;
   if (!user) {
