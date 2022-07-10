@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import tw from "twin.macro";
 
 import { Card, CardBody, CardTitle } from "@/components/Card";
@@ -7,6 +8,7 @@ import { CategorySkeleton } from "@/components/PaymentStats/CategorySkeleton";
 import { StatsByTVA } from "@/components/TVAStats/StatsByTVA";
 import { TVASkeleton } from "@/components/TVAStats/TVASkeleton";
 import { Title } from "@/components/Title";
+import { useScrollRestoration } from "@/utils/scroll";
 import { trpc } from "@/utils/trpc";
 
 import { SalesSkeleton } from "./SalesSkeleton";
@@ -72,9 +74,12 @@ const SalesLoader = ({ date }: { date: string }) => {
 const Wrapper = tw.div`flex flex-1 flex-col gap-lg max-h-full overflow-auto pr-1 pb-1 -mr-1 -mb-1`;
 
 export const SalesByDay = ({ date }: { date: string }): JSX.Element | null => {
+  const ref = useRef<HTMLDivElement>(null);
+  useScrollRestoration(ref);
+
   const title = `Liste des ventes du ${date}`;
   return (
-    <Wrapper>
+    <Wrapper ref={ref}>
       <Title>{title}</Title>
       <div tw="flex gap-lg items-start flex-wrap">
         <Card tw="flex-1">

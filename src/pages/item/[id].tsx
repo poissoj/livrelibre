@@ -284,15 +284,17 @@ const SalesCard = () => {
   );
 };
 
-const ItemPage = (): JSX.Element => (
-  <div tw="flex items-start gap-lg flex-1 flex-wrap">
-    <Title>Voir un article</Title>
-    <ItemCard />
-    <div tw="flex flex-col gap-lg flex-1">
-      <SalesCard />
+const ItemPage = (): JSX.Element => {
+  return (
+    <div tw="flex items-start gap-lg flex-1 flex-wrap">
+      <Title>Voir un article</Title>
+      <ItemCard />
+      <div tw="flex flex-col gap-lg flex-1">
+        <SalesCard />
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default ItemPage;
 
