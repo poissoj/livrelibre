@@ -204,6 +204,7 @@ const QuickAdd = ({ addError }: { addError(error: ISBNError): void }) => {
     },
   });
   const submit = ({ isbn }: FormFields) => {
+    if (!isbn) return;
     mutation.mutate(isbn);
     resetField("isbn");
   };
