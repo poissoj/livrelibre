@@ -93,6 +93,7 @@ const addItemToCart = async (
   const db = await getDb();
   const cartResult = await db.collection<CartItem>("cart").findOne({
     itemId: item._id,
+    username,
   });
   if (cartResult !== null) {
     await db.collection<CartItem>("cart").findOneAndUpdate(
