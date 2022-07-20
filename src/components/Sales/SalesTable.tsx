@@ -4,7 +4,7 @@ import Link from "next/link";
 import tw from "twin.macro";
 
 import { Button } from "@/components/Button";
-import { formatPrice, formatTVA } from "@/utils/format";
+import { formatNumber, formatPrice, formatTVA } from "@/utils/format";
 import { InferQueryOutput, trpc } from "@/utils/trpc";
 
 const DeleteSale = ({
@@ -73,7 +73,7 @@ export const SalesTable = ({ carts }: { carts: Carts }) => {
           {cart.sales.map((sale) => (
             <SalesRow key={sale._id} deleted={sale.deleted}>
               <Cell tw="text-right font-number">
-                {"amount" in sale ? sale.amount : ""}
+                {"amount" in sale ? formatNumber(sale.amount) : ""}
               </Cell>
               <Cell>
                 {sale.itemId ? (
