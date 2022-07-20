@@ -58,6 +58,7 @@ export const SalesTable = ({ carts }: { carts: Carts }) => {
     <table tw="flex-1" cellPadding={8}>
       <thead>
         <tr>
+          <StickyTh tw="text-right">Stock</StickyTh>
           <StickyTh tw="text-left">Titre</StickyTh>
           <StickyTh tw="text-left">Auteur</StickyTh>
           <StickyTh tw="text-right">Quantité</StickyTh>
@@ -71,6 +72,9 @@ export const SalesTable = ({ carts }: { carts: Carts }) => {
         <tbody tw="odd:bg-gray-light" key={i}>
           {cart.sales.map((sale) => (
             <SalesRow key={sale._id} deleted={sale.deleted}>
+              <Cell tw="text-right font-number">
+                {"amount" in sale ? sale.amount : ""}
+              </Cell>
               <Cell>
                 {sale.itemId ? (
                   <Link href={`/item/${sale.itemId}`} passHref>
