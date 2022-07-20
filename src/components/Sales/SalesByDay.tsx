@@ -8,6 +8,7 @@ import { CategorySkeleton } from "@/components/PaymentStats/CategorySkeleton";
 import { StatsByTVA } from "@/components/TVAStats/StatsByTVA";
 import { TVASkeleton } from "@/components/TVAStats/TVASkeleton";
 import { Title } from "@/components/Title";
+import { formatPrice } from "@/utils/format";
 import { useScrollRestoration } from "@/utils/scroll";
 import { trpc } from "@/utils/trpc";
 
@@ -39,7 +40,15 @@ const CategoriesLoader = ({ date }: { date: string }) => {
   if (result.isIdle) {
     return null;
   }
-  return <CategoriesTable categories={result.data.paymentMethods} />;
+  return (
+    <div tw="flex flex-1 flex-col gap-3">
+      <CategoriesTable categories={result.data.paymentMethods} />
+      <p tw="self-end">
+        <strong>Total&nbsp;: </strong>
+        <span tw="font-number">{formatPrice(result.data.total)}</span>
+      </p>
+    </div>
+  );
 };
 
 const SalesLoader = ({ date }: { date: string }) => {

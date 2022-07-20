@@ -88,6 +88,7 @@ export const getSalesByDay = async (date: string) => {
   const paymentStats: Record<string, { count: number; total: number }> = {};
   let salesCount = 0;
   let lastCartId = dbSales[0]?.cartId;
+  let total = 0;
 
   const carts: { sales: Sale[] }[] = [];
   let sales: Sale[] = [];
@@ -112,6 +113,7 @@ export const getSalesByDay = async (date: string) => {
       salesCount += sale.quantity;
       paymentStats[type].count += sale.quantity;
       paymentStats[type].total += sale.price;
+      total += sale.price;
     }
 
     const deleted = Boolean(sale.deleted);
@@ -172,6 +174,7 @@ export const getSalesByDay = async (date: string) => {
     tva: stats,
     salesCount,
     paymentMethods,
+    total,
   };
 };
 
