@@ -4,13 +4,26 @@ Il permet de gérer les stocks, les ventes, les commandes, et fournit des statis
 
 ## Prérequis
 Livre Libre nécessite [Node.js](https://nodejs.org) et [MongoDB](https://www.mongodb.com/) pour fonctionner. 
-Il est possible d'utiliser une base de données distante, telle que fournie par [mLab](https://mlab.com/) par exemple, pour éviter d'avoir à installer mongodb.
 
 ## Installation
 ```
 git clone https://github.com/poissoj/livrelibre.git
-cd livrelibre && npm install
+cd livrelibre
+pnpm install
+```
+
+## Configuration
+Générez un mot de passe pour COOKIE_PASSWORD.
+Créez le fichier `.env.local` avec les infos suivantes:
+```
+MONGODB_URI=mongodb://localhost:27017/tsavant
+COOKIE_PASSWORD=pN2MLv2tEvY4wDeH3fKWh9Hwm1piff2T3m
+```
+
+## Build
+```
+npm run build
 ```
 
 ## Lancement
-Lancez la commande `npm start` pour lancer l'application. Par défaut, elle est accessible par navigateur sur http://localhost:8888.
+Lancez la commande `npm start` pour lancer l'application. Par défaut, elle est accessible par navigateur sur http://localhost:3000.
