@@ -6,7 +6,10 @@ import {
   Tooltip,
   XAxis,
 } from "recharts";
-import type { Payload } from "recharts/types/component/DefaultTooltipContent";
+import type {
+  Formatter,
+  Payload,
+} from "recharts/types/component/DefaultTooltipContent";
 
 import type { InferQueryOutput } from "@/utils/trpc";
 
@@ -15,11 +18,14 @@ type Sales = InferQueryOutput<"lastSales">;
 /* Don't display 0 for empty columns, they appear on top of labels */
 const formatter = (n: number) => (n ? n : "");
 
-const labelFormatter = (_label: string, payload: Payload<string, number>[]) => {
+const labelFormatter = (_label: string, payload: Payload<number, string>[]) => {
   const sale = payload[0]?.payload as Sales[number] | undefined;
   return sale?.fullMonthLabel;
 };
-const tooltipFormatter = (count: number) => [count, "ventes"];
+const tooltipFormatter: Formatter<number, string> = (count: number) => [
+  count,
+  "ventes",
+];
 
 const SalesByMonth = ({ sales }: { sales: Sales }) => (
   <ResponsiveContainer height={350} width="100%">
