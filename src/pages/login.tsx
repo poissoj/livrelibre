@@ -14,6 +14,7 @@ import tw from "twin.macro";
 import { Button } from "@/components/Button";
 import { Input } from "@/components/FormControls";
 import { Title } from "@/components/Title";
+import { APP_NAME } from "@/lib/config";
 import { trpc } from "@/utils/trpc";
 
 const Form = tw.form`box-shadow[
@@ -65,7 +66,7 @@ const Login = () => {
       <div tw="bg-primary-default w-full h-1/2 absolute top-0" />
       <section tw="flex flex-col justify-center items-center h-full relative">
         <h1 tw="font-family['Niconne'] font-size[52px] text-white mb-4">
-          {process.env.NEXT_PUBLIC_APP_NAME}
+          {APP_NAME}
         </h1>
         <Form onSubmit={handleSubmit(onSubmit)}>
           <h2 tw="border-bottom[1px solid #ddd] pb-5 mb-5 uppercase text-center font-medium font-size[26px]">

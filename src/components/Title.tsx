@@ -1,5 +1,7 @@
 import Head from "next/head";
 
+import { APP_NAME } from "@/lib/config";
+
 type TitleProps = {
   children: string;
 };
@@ -7,7 +9,7 @@ type TitleProps = {
 export const Title = ({ children }: TitleProps): JSX.Element => (
   <Head>
     <title>
-      {children} | {process.env.NEXT_PUBLIC_APP_NAME}
+      {children} | {APP_NAME}
     </title>
   </Head>
 );

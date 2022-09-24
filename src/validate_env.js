@@ -7,7 +7,7 @@ const envSchema = z.object({
   ISBN_SEARCH_URL: z.string().url().optional(),
   LOG_LEVEL: z.string().optional(),
   MONGODB_URI: z.string().startsWith("mongodb://"),
-  NEXT_PUBLIC_APP_NAME: z.string(),
+  NEXT_PUBLIC_APP_NAME: z.string().optional(),
   NODE_ENV: z.enum(["development", "test", "production"]),
 });
 

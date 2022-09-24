@@ -6,6 +6,7 @@ import { Slide, ToastContainer } from "react-toastify";
 
 import GlobalStyles from "@/components/GlobalStyles";
 import Layout from "@/components/Layout/Layout";
+import { APP_NAME } from "@/lib/config";
 import useUser from "@/lib/useUser";
 import type { AppRouter } from "@/pages/api/trpc/[trpc]";
 
@@ -18,7 +19,7 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   return (
     <PageLayout>
       <Head>
-        <title>{process.env.NEXT_PUBLIC_APP_NAME}</title>
+        <title>{APP_NAME}</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <GlobalStyles />

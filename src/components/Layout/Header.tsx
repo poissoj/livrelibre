@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import tw, { styled } from "twin.macro";
 
+import { APP_NAME } from "@/lib/config";
 import useUser from "@/lib/useUser";
 import { trpc } from "@/utils/trpc";
 
@@ -65,7 +66,7 @@ export const Header = (): JSX.Element => {
   return (
     <header tw="bg-primary-dark text-gray-darker flex items-center pr-lg">
       <Link href="/" passHref>
-        <StyledLink tw="mr-auto">{process.env.NEXT_PUBLIC_APP_NAME}</StyledLink>
+        <StyledLink tw="mr-auto">{APP_NAME}</StyledLink>
       </Link>
       <QuickSearch />
       <UserName tw="ml-md mr-sm" />
