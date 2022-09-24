@@ -32,6 +32,25 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   );
 }
 
+const getBaseUrl = () => {
+  if (typeof window !== "undefined") {
+    return "";
+  }
+
+  // reference for vercel.com
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+
+  // self-hosted
+  if (process.env.APP_URL) {
+    return process.env.APP_URL;
+  }
+
+  // assume localhost
+  return `http://localhost:${process.env.PORT ?? 3000}`;
+};
+
 export default withTRPC<AppRouter>({
   config({ ctx }) {
     if (typeof window !== "undefined") {
@@ -44,12 +63,9 @@ export default withTRPC<AppRouter>({
       "Cache-Control",
       `s-maxage=10, stale-while-revalidate=${ONE_DAY_SECONDS}`
     );
-    const url = process.env.APP_URL
-      ? `https://${process.env.APP_URL}/api/trpc`
-      : "http://localhost:3000/api/trpc";
 
     return {
-      url,
+      url: `${getBaseUrl()}/api/trpc`,
       headers: { "x-ssr": "1" },
       /**
        * @link https://react-query.tanstack.com/reference/QueryClient
