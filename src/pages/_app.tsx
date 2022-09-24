@@ -53,11 +53,14 @@ const getBaseUrl = () => {
 
 export default withTRPC<AppRouter>({
   config({ ctx }) {
+    // During client requests
     if (typeof window !== "undefined") {
       return {
         url: "/api/trpc",
       };
     }
+
+    // During SSR below
     const ONE_DAY_SECONDS = 60 * 60 * 24;
     ctx?.res?.setHeader(
       "Cache-Control",
@@ -66,11 +69,19 @@ export default withTRPC<AppRouter>({
 
     return {
       url: `${getBaseUrl()}/api/trpc`,
-      headers: { "x-ssr": "1" },
-      /**
-       * @link https://react-query.tanstack.com/reference/QueryClient
-       */
-      // queryClientConfig: { defaultOptions: { queries: { staleTime: 60 } } },
+      headers() {
+        if (ctx?.req) {
+          // To use SSR properly, you need to forward the client's headers to the server
+          // This is so you can pass through things like cookies when we're server-side rendering
+          const {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            connection,
+            ...headers
+          } = ctx.req.headers;
+          return { ...headers, "x-ssr": "1" };
+        }
+        return {};
+      },
     };
   },
   /**
