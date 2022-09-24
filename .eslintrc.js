@@ -12,7 +12,7 @@ module.exports = {
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
     "prettier",
   ],
-  ignorePatterns: [".eslintrc.js", "*.config.js"],
+  ignorePatterns: [".eslintrc.js", "*.config.js", "validate_env.js"],
   rules: {
     "@typescript-eslint/no-misused-promises": [
       "error",
