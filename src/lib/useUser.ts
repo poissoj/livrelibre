@@ -7,14 +7,10 @@ export default function useUser({
   redirectTo = "",
   redirectIfFound = false,
 } = {}) {
-  const { data: user, error } = trpc.useQuery(["user"], { retry: 1 });
+  const { data: user } = trpc.useQuery(["user"], { retry: 1 });
 
   const isLoggedIn = user && user.role !== "anonymous";
   useEffect(() => {
-    if (error?.data?.code === "UNAUTHORIZED") {
-      void router.push(redirectTo);
-    }
-
     // if no redirect needed, just return (example: already on /dashboard)
     // if user data not yet there (fetch in progress, logged in or not) then don't do anything yet
     if (!redirectTo || !user) return;
@@ -27,7 +23,7 @@ export default function useUser({
     ) {
       void router.push(redirectTo);
     }
-  }, [user, redirectIfFound, redirectTo, isLoggedIn, error?.data?.code]);
+  }, [user, redirectIfFound, redirectTo, isLoggedIn]);
 
   return { user, isLoggedIn };
 }

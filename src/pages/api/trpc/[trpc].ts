@@ -51,8 +51,8 @@ const updateItemSchema = itemSchema.extend({
 
 export const appRouter = trpc
   .router<Context>()
-  .middleware(({ ctx, next }) => {
-    if (ctx.user.role === "anonymous") {
+  .middleware(({ ctx, next, path }) => {
+    if (ctx.user.role === "anonymous" && path !== "user") {
       throw new TRPCError({ code: "UNAUTHORIZED" });
     }
     return next();
