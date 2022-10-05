@@ -6,10 +6,11 @@ type TitleProps = {
   children: string;
 };
 
-export const Title = ({ children }: TitleProps): JSX.Element => (
-  <Head>
-    <title>
-      {children} | {APP_NAME}
-    </title>
-  </Head>
-);
+export const Title = ({ children }: TitleProps): JSX.Element => {
+  const title = `${children} | ${APP_NAME}`;
+  return (
+    <Head>
+      <title>{title}</title>
+    </Head>
+  );
+};
