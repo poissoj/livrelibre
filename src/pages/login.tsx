@@ -3,6 +3,7 @@ import {
   faEye,
   faEyeSlash,
   faSignInAlt,
+  faSpinner,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -40,7 +41,7 @@ type LoginFormData = {
 };
 
 const Login = () => {
-  const { register, handleSubmit } = useForm<LoginFormData>();
+  const { register, handleSubmit, formState } = useForm<LoginFormData>();
   const utils = trpc.useContext();
   const router = useRouter();
   const [errorMsg, setErrorMsg] = useState("");
@@ -60,6 +61,8 @@ const Login = () => {
       setErrorMsg(translateErrorMessage(error));
     }
   };
+  const { isSubmitting } = formState;
+
   return (
     <div tw="h-full w-full relative">
       <Title>Se connecter</Title>
@@ -111,8 +114,12 @@ const Login = () => {
               required
             />
           </FormGroup>
-          <Button type="submit">
-            <FontAwesomeIcon icon={faSignInAlt} tw="mr-2" />
+          <Button type="submit" disabled={isSubmitting}>
+            <FontAwesomeIcon
+              icon={isSubmitting ? faSpinner : faSignInAlt}
+              spin={isSubmitting}
+              tw="mr-2"
+            />
             Connexion
           </Button>
         </Form>
