@@ -55,7 +55,7 @@ const Login = () => {
     });
     await utils.invalidateQueries(["user"]);
     if (res.ok) {
-      void router.push("/");
+      await router.push("/");
     } else {
       const { error } = (await res.json()) as { error: string };
       setErrorMsg(translateErrorMessage(error));
