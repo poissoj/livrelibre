@@ -1,3 +1,4 @@
+import bcrypt from "bcrypt";
 import { withIronSessionApiRoute } from "iron-session/next";
 import type { NextApiHandler } from "next";
 import { z } from "zod";
@@ -11,7 +12,7 @@ const credentialsSchema = z.object({
   password: z.string(),
 });
 
-type DBUser = { name: string; password: string; role: "admin" | "guest" };
+type DBUser = { name: string; hash: string; role: "admin" | "guest" };
 
 const loginRoute: NextApiHandler = async (req, res) => {
   try {
@@ -25,8 +26,14 @@ const loginRoute: NextApiHandler = async (req, res) => {
     const dbUser = await db
       .collection<DBUser>("users")
       .findOne({ name: username });
+    if (!dbUser) {
+      logger.info("User not found", { username });
+      res.status(401).json({ error: "Invalid credentials" });
+      return;
+    }
+    const passwordMatches = await bcrypt.compare(password, dbUser.hash);
 
-    if (dbUser && password === dbUser.password) {
+    if (passwordMatches) {
       const user = { name: dbUser.name, role: dbUser.role };
       req.session.user = user;
       await req.session.save();
