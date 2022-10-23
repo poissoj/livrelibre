@@ -9,6 +9,7 @@ const envSchema = z.object({
   MONGODB_URI: z.string().startsWith("mongodb://"),
   NEXT_PUBLIC_APP_NAME: z.string().optional(),
   NODE_ENV: z.enum(["development", "test", "production"]),
+  AUTHORIZED_DOMAINS: z.string().optional(),
 });
 
 const env = envSchema.safeParse(process.env);
