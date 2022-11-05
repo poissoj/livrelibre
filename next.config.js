@@ -1,8 +1,11 @@
 require("./src/validate_env");
 
-const DEFAULT_SRC = process.env.AUTHORIZED_DOMAINS
+let DEFAULT_SRC = process.env.AUTHORIZED_DOMAINS
   ? `'self' ${process.env.AUTHORIZED_DOMAINS}`
   : "'self'";
+if (process.env.NODE_ENV === "development") {
+  DEFAULT_SRC += " 'unsafe-eval' 'unsafe-inline'";
+}
 const ContentSecurityPolicy = `
   default-src ${DEFAULT_SRC};
   style-src 'self' 'unsafe-inline';
