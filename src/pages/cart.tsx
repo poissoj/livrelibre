@@ -56,7 +56,9 @@ const ItemTitle = ({ item }: { item: CartItems[number] }) => {
   if (item.itemId) {
     return (
       <span tw="text-primary-darkest">
-        <Link href={`/item/${item.itemId}`}>{item.title}</Link>
+        <Link href={`/item/${item.itemId}`} legacyBehavior>
+          {item.title}
+        </Link>
       </span>
     );
   }
@@ -260,8 +262,8 @@ const ErrorList = ({
           {error.message === CART_ERRORS.NO_STOCK && error.id ? (
             <span>
               Pas de stock pour{" "}
-              <Link href={`/item/${error.id}`} passHref>
-                <a tw="underline">{error.title}</a>
+              <Link href={`/item/${error.id}`} passHref tw="underline">
+                {error.title}
               </Link>
             </span>
           ) : null}

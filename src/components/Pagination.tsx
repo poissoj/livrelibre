@@ -21,7 +21,7 @@ const ConditionalLink = ({
 }) => {
   if (href) {
     return (
-      <Link href={href} passHref>
+      <Link href={href} passHref legacyBehavior>
         {children}
       </Link>
     );

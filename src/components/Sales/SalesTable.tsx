@@ -77,8 +77,12 @@ export const SalesTable = ({ carts }: { carts: Carts }) => {
               </Cell>
               <Cell>
                 {sale.itemId ? (
-                  <Link href={`/item/${sale.itemId}`} passHref>
-                    <a tw="text-primary-darkest">{sale.title}</a>
+                  <Link
+                    href={`/item/${sale.itemId}`}
+                    passHref
+                    tw="text-primary-darkest"
+                  >
+                    {sale.title}
                   </Link>
                 ) : (
                   sale.title

@@ -113,7 +113,7 @@ const TitleWithButtons = ({ item }: { item: ItemWithCount }) => {
           spin={mutation.isLoading}
         />
       </Button>
-      <Link href={`/update/${item._id}`} passHref>
+      <Link href={`/update/${item._id}`} passHref legacyBehavior>
         <Button
           as="a"
           title="Modifier"

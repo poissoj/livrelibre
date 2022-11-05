@@ -28,7 +28,9 @@ const ItemsTable = ({ items }: { items: ItemWithCount[] }) => (
           <td>{i + 1}</td>
           <td>
             <span tw="text-primary-darkest">
-              <Link href={`/item/${item._id}`}>{item.title}</Link>
+              <Link href={`/item/${item._id}`} legacyBehavior>
+                {item.title}
+              </Link>
             </span>
           </td>
           <td>{item.author}</td>

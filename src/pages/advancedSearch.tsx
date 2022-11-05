@@ -104,8 +104,8 @@ const SearchLoader = ({
             <CardBody>Aucun résultat pour &quot;{queryLabel}&quot;</CardBody>
           </p>
           <p tw="mt-2">
-            <Link href="/search" passHref>
-              <a tw="text-primary-darkest">Nouvelle recherche</a>
+            <Link href="/search" passHref tw="text-primary-darkest">
+              Nouvelle recherche
             </Link>
           </p>
         </StyledCard>

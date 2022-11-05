@@ -76,7 +76,9 @@ const SalesTable = ({ sales }: { sales: Sale[] }): JSX.Element => {
             onClick={() => router.push({ pathname: makeSaleURL(sale) })}
           >
             <td tw="pl-2">
-              <Link href={makeSaleURL(sale)}>{sale.month}</Link>
+              <Link href={makeSaleURL(sale)} legacyBehavior>
+                {sale.month}
+              </Link>
             </td>
             <td tw="text-right font-number">{formatNumber(sale.count)}</td>
             <td tw="text-right font-number">

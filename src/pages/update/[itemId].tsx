@@ -87,7 +87,7 @@ const ItemLoader = ({ id }: { id: string }) => {
       data={data}
       onSuccess={onSuccess}
     >
-      <Link href={`/item/${id}`} passHref>
+      <Link href={`/item/${id}`} passHref legacyBehavior>
         <Button as="a" tw="mr-2 px-md background-color[#6E6E6E]">
           <FontAwesomeIcon icon={faTimesCircle} tw="mr-sm" />
           Annuler

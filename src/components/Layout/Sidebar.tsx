@@ -32,7 +32,7 @@ const NavLink = ({ href, icon, children }: NavLinkProps) => {
   const router = useRouter();
   const ariaCurrent = router.pathname === href ? "page" : undefined;
   return (
-    <Link href={href} passHref>
+    <Link href={href} passHref legacyBehavior>
       <StyledLink aria-current={ariaCurrent}>
         <FontAwesomeIcon icon={icon} tw="mr-sm" fixedWidth />
         {children}

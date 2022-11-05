@@ -54,7 +54,7 @@ const CartBadge = () => {
 };
 
 const CartButton = () => (
-  <Link href="/cart" passHref>
+  <Link href="/cart" passHref legacyBehavior>
     <StyledButton as="a" tw="flex-shrink-0" title="Voir le panier">
       <FontAwesomeIcon icon={faShoppingCart} />
       <CartBadge />
@@ -65,7 +65,7 @@ const CartButton = () => (
 export const Header = (): JSX.Element => {
   return (
     <header tw="bg-primary-dark text-gray-darker flex items-center pr-lg">
-      <Link href="/" passHref>
+      <Link href="/" passHref legacyBehavior>
         <StyledLink tw="mr-auto">{APP_NAME}</StyledLink>
       </Link>
       <QuickSearch />

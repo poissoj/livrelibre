@@ -24,7 +24,9 @@ const BookmarksContent = ({
           tw="flex text-primary-dark hover:bg-gray-light pl-sm pr-xs"
         >
           <span tw="flex flex-1 items-center text-primary-darkest">
-            <Link href={`/item/${bookmark._id}`}>{bookmark.title}</Link>
+            <Link href={`/item/${bookmark._id}`} legacyBehavior>
+              {bookmark.title}
+            </Link>
           </span>
           <AddToCartButton item={bookmark} />
         </li>
