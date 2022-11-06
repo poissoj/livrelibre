@@ -100,9 +100,7 @@ const SearchLoader = ({
         <StyledCard>
           <CardTitle>{title}</CardTitle>
           <ToggleStock />
-          <p>
-            <CardBody>Aucun résultat pour &quot;{queryLabel}&quot;</CardBody>
-          </p>
+          <CardBody>Aucun résultat pour &quot;{queryLabel}&quot;</CardBody>
           <p tw="mt-2">
             <Link href="/search" passHref tw="text-primary-darkest">
               Nouvelle recherche
