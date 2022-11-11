@@ -25,7 +25,7 @@ const DeleteSale = ({
       type="button"
       name="saleId"
       aria-label="Supprimer la vente"
-      tw="background-color[#FF9800]"
+      tw="[background-color:#FF9800]"
       title="Supprimer"
       onClick={() => {
         mutate({ saleId, itemId });

@@ -26,7 +26,7 @@ type TAlert = {
   message: string;
 };
 
-const Column = tw.div`flex-1 min-width[20rem] ml-md`;
+const Column = tw.div`flex-1 [min-width:20rem] ml-md`;
 
 const ISBNSearchButton = ({
   clickHandler,

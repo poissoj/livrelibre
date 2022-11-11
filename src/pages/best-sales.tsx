@@ -11,7 +11,7 @@ import { trpc } from "@/utils/trpc";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
 const ItemsTable = ({ items }: { items: ItemWithCount[] }) => (
-  <table tw="flex-1 border-collapse[separate] border-spacing[2px 0.5rem]">
+  <table tw="flex-1 [border-collapse:separate] [border-spacing:2px 0.5rem]">
     <thead>
       <tr>
         <StickyTh tw="text-left">#</StickyTh>
@@ -78,7 +78,7 @@ const BestSalesLoader = () => {
 };
 
 const BestSales = (): JSX.Element => (
-  <div tw="margin-left[10%] margin-right[10%] flex flex-1 flex-col gap-lg">
+  <div tw="[margin-left:10%] [margin-right:10%] flex flex-1 flex-col gap-lg">
     <Title>Meilleurs ventes</Title>
     <Card tw="max-h-full overflow-hidden flex flex-col">
       <CardTitle>Meilleures ventes</CardTitle>

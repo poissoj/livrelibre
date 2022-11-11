@@ -7,7 +7,7 @@ import Link, { LinkProps } from "next/link";
 import { useRouter } from "next/router";
 import tw from "twin.macro";
 
-const Anchor = tw.a`border px-md py-sm text-primary-darker border-color[#AAA]`;
+const Anchor = tw.a`border px-md py-sm text-primary-darker [border-color:#AAA]`;
 const CurrentPageAnchor = tw(
   Anchor
 )`text-white bg-primary-darker border-primary-darker`;

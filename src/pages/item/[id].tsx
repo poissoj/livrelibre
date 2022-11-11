@@ -32,9 +32,9 @@ import { useAddToCart } from "@/utils/useAddToCart";
 
 const SalesByMonth = dynamic(() => import("@/components/Charts/SalesByMonth"));
 
-const DL = tw.dl`flex flex-wrap min-width[24rem]`;
-const DT = tw.dt`flex-basis[30%] p-sm font-medium`;
-const DD = tw.dd`flex[1 0 70%] p-sm`;
+const DL = tw.dl`flex flex-wrap [min-width:24rem]`;
+const DT = tw.dt`[flex-basis:30%] p-sm font-medium`;
+const DD = tw.dd`[flex:1 0 70%] p-sm`;
 
 const formatStringPrice = (price: string) =>
   price ? formatPrice(Number(price)) : "";
@@ -104,7 +104,7 @@ const TitleWithButtons = ({ item }: { item: ItemWithCount }) => {
         type="button"
         title={item.starred ? "Enlever des favoris" : "Ajouter aux favoris"}
         onClick={handleClick}
-        tw="border-top-right-radius[0] border-bottom-right-radius[0] px-md border-r border-primary-darkest"
+        tw="[border-top-right-radius:0] [border-bottom-right-radius:0] px-md border-r border-primary-darkest"
       >
         <FontAwesomeIcon
           icon={
@@ -117,7 +117,7 @@ const TitleWithButtons = ({ item }: { item: ItemWithCount }) => {
         <Button
           as="a"
           title="Modifier"
-          tw="border-top-left-radius[0] border-bottom-left-radius[0] px-md"
+          tw="[border-top-left-radius:0] [border-bottom-left-radius:0] px-md"
         >
           <FontAwesomeIcon icon={faEdit} />
         </Button>

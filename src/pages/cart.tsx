@@ -38,7 +38,7 @@ const RemoveFromCartButton = ({ id }: { id: string }) => {
   return (
     <Button
       type="button"
-      tw="background-color[#FF9800]"
+      tw="[background-color:#FF9800]"
       onClick={() => mutate(id)}
       title="Enlever du panier"
     >
@@ -66,7 +66,7 @@ const ItemTitle = ({ item }: { item: CartItems[number] }) => {
 };
 
 const CartTable = ({ items }: { items: CartItems }) => (
-  <table tw="flex-1 border-separate border-spacing[2px 0.5rem]">
+  <table tw="flex-1 border-separate [border-spacing:2px 0.5rem]">
     <thead>
       <tr>
         <StickyTh tw="text-left">Article</StickyTh>
@@ -168,9 +168,12 @@ const PaymentForm = ({ cb }: { cb: (amount: number | null) => void }) => {
         {...register("amount")}
         step={0.01}
         min={0}
-        css={[tw`width[7em] font-number`, paymentType !== "cash" && tw`hidden`]}
+        css={[
+          tw`[width:7em] font-number`,
+          paymentType !== "cash" && tw`hidden`,
+        ]}
       />
-      <Button type="submit" tw="padding[10px 15px]">
+      <Button type="submit" tw="[padding:10px 15px]">
         <FontAwesomeIcon icon={faCheckCircle} />
         <span tw="ml-sm">Payer</span>
       </Button>
@@ -296,7 +299,7 @@ const AsideButton = () => {
     <form onSubmit={handleSubmit(submit)}>
       <Button
         type="submit"
-        tw="padding[10px 15px]"
+        tw="[padding:10px 15px]"
         value="put-aside"
         disabled={isLoading || asideCart.data.count > 0}
       >
@@ -344,7 +347,7 @@ const ReactivateButton = () => {
     <form onSubmit={handleSubmit(submit)}>
       <Button
         type="submit"
-        tw="padding[10px 15px] mb-2"
+        tw="[padding:10px 15px] mb-2"
         disabled={cart.data.count > 0 || isLoading}
       >
         <FontAwesomeIcon
@@ -466,7 +469,7 @@ const CartLoader = () => {
         </CardBody>
         <CardFooter>
           <p tw="mb-2">
-            <span tw="font-medium font-size[1.1rem]">
+            <span tw="font-medium [font-size:1.1rem]">
               Total : <span tw="font-number">{formatPrice(total)}</span>
             </span>
           </p>
@@ -483,7 +486,7 @@ const CartLoader = () => {
 
 const CartPage = () => {
   return (
-    <div tw="margin-left[10%] margin-right[10%] flex-1 flex flex-col gap-6">
+    <div tw="[margin-left:10%] [margin-right:10%] flex-1 flex flex-col gap-6">
       <Title>Panier</Title>
       <CartLoader />
     </div>

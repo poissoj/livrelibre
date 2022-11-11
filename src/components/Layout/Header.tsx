@@ -26,7 +26,7 @@ const UserName = ({ className }: { className?: string }) => {
   );
 };
 
-const StyledButton = tw.button`text-white padding[14px 16px] hover:background-color[rgba(0,0,0,0.1)]`;
+const StyledButton = tw.button`text-white [padding:14px 16px] hover:[background-color:rgba(0,0,0,0.1)]`;
 
 const Logout = () => {
   const utils = trpc.useContext();
@@ -43,7 +43,7 @@ const Logout = () => {
   );
 };
 
-const Badge = tw.span`border-radius[10rem] bg-gray-dark  px-2 py-0.5 font-size[12px] font-medium`;
+const Badge = tw.span`[border-radius:10rem] bg-gray-dark  px-2 py-0.5 [font-size:12px] font-medium`;
 
 const CartBadge = () => {
   const result = trpc.useQuery(["cart"]);
@@ -55,7 +55,7 @@ const CartBadge = () => {
 
 const CartButton = () => (
   <Link href="/cart" passHref legacyBehavior>
-    <StyledButton as="a" tw="flex-shrink-0" title="Voir le panier">
+    <StyledButton as="a" tw="shrink-0" title="Voir le panier">
       <FontAwesomeIcon icon={faShoppingCart} />
       <CartBadge />
     </StyledButton>

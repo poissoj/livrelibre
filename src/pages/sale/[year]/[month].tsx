@@ -37,7 +37,7 @@ const SalesTable = ({ sales }: { sales: TSalesByDay }) => {
           <StickyTh tw="text-right">Recette totale</StickyTh>
         </tr>
       </thead>
-      <tbody tw="line-height[2.3rem]">
+      <tbody tw="[line-height:2.3rem]">
         {sales.map((sale, i) => (
           <tr
             key={i}
@@ -140,7 +140,7 @@ const TVACard = () => {
     return null;
   }
   return (
-    <Card tw="min-height[12rem] flex flex-col">
+    <Card tw="[min-height:12rem] flex flex-col">
       <CardTitle>Répartition par TVA</CardTitle>
       <CardBody>
         <TVALoader month={month} year={year} />

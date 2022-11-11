@@ -8,7 +8,7 @@ import type { Item } from "@/utils/item";
 import { AddToCartButton } from "./AddToCartButton";
 
 export const ItemsTable = ({ items }: { items: Item[] }) => (
-  <table tw="flex-1 border-separate border-spacing[2px 0.5rem]">
+  <table tw="flex-1 border-separate [border-spacing:2px 0.5rem]">
     <thead>
       <tr tw="sticky top-0 bg-white z-10">
         <th tw="text-left">Distributeur</th>

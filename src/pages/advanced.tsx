@@ -138,7 +138,7 @@ const StockExport = () => (
 
 const DilicomTable = ({ items }: { items: DilicomRowWithId[] }) => {
   return (
-    <table tw="flex-1 border-separate border-spacing[0.5rem]">
+    <table tw="flex-1 border-separate [border-spacing:0.5rem]">
       <thead>
         <tr tw="sticky top-0 bg-white z-10">
           <th tw="text-left">EAN</th>
@@ -223,7 +223,7 @@ const DilicomPage = () => {
         <ImportBooks books={file.data}>
           <Button
             type="button"
-            tw="mr-2 px-md background-color[#6E6E6E]"
+            tw="mr-2 px-md [background-color:#6E6E6E]"
             onClick={() => setFile(null)}
           >
             <FontAwesomeIcon icon={faTimesCircle} tw="mr-sm" />
@@ -247,7 +247,7 @@ const Advanced = (): JSX.Element => {
   }
 
   return (
-    <div tw="margin-left[10%] margin-right[10%] flex flex-1 flex-col gap-lg">
+    <div tw="[margin-left:10%] [margin-right:10%] flex flex-1 flex-col gap-lg">
       <Title>Avancé</Title>
       <DilicomImport />
       <StockExport />

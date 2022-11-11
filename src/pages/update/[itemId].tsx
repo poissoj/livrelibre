@@ -88,7 +88,7 @@ const ItemLoader = ({ id }: { id: string }) => {
       onSuccess={onSuccess}
     >
       <Link href={`/item/${id}`} passHref legacyBehavior>
-        <Button as="a" tw="mr-2 px-md background-color[#6E6E6E]">
+        <Button as="a" tw="mr-2 px-md [background-color:#6E6E6E]">
           <FontAwesomeIcon icon={faTimesCircle} tw="mr-sm" />
           Annuler
         </Button>
@@ -108,7 +108,7 @@ const UpdateItem = () => {
     return null;
   }
   return (
-    <div tw="2xl:(margin-left[10%] margin-right[10%]) flex-1">
+    <div tw="2xl:([margin-left:10%] [margin-right:10%]) flex-1">
       <Title>Modifier un article</Title>
       <ItemLoader id={itemId} />
     </div>

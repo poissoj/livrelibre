@@ -16,7 +16,7 @@ const Add = (): JSX.Element => {
     return await mutation.mutateAsync(item);
   };
   return (
-    <div tw="margin-left[10%] margin-right[10%] flex-1">
+    <div tw="[margin-left:10%] [margin-right:10%] flex-1">
       <Title>Ajouter un article</Title>
       <ItemForm title="Ajouter un article" onSubmit={submit}>
         <Button type="submit" tw="px-md">

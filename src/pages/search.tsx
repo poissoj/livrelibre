@@ -12,7 +12,7 @@ import { Title } from "@/components/Title";
 import { formatTVA } from "@/utils/format";
 import { ITEM_TYPES, TVAValues } from "@/utils/item";
 
-const Column = tw.div`flex-1 min-width[20rem] ml-md`;
+const Column = tw.div`flex-1 [min-width:20rem] ml-md`;
 
 const Search = (): JSX.Element => {
   const { register, handleSubmit } = useForm();
@@ -23,7 +23,7 @@ const Search = (): JSX.Element => {
     void router.push({ pathname: "/advancedSearch", query });
   };
   return (
-    <div tw="margin-left[10%] margin-right[10%] flex-1">
+    <div tw="[margin-left:10%] [margin-right:10%] flex-1">
       <Title>Chercher un article</Title>
       <Card tw="mb-lg">
         <CardTitle>Chercher un article</CardTitle>

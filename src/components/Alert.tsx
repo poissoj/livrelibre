@@ -9,23 +9,23 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import tw from "twin.macro";
 
-const BasicAlert = tw.div`p-sm border border-radius[4px] flex items-center`;
+const BasicAlert = tw.div`p-sm border [border-radius:4px] flex items-center`;
 
 const AlertSuccess = tw(
   BasicAlert
-)`color[#0f5132] border-color[#badbcc] background-color[#d1e7dd]`;
+)`[color:#0f5132] [border-color:#badbcc] [background-color:#d1e7dd]`;
 
 const AlertWarning = tw(
   BasicAlert
-)`color[#664d03] border-color[#ffecb5] background-color[#fff3cd]`;
+)`[color:#664d03] [border-color:#ffecb5] [background-color:#fff3cd]`;
 
 const AlertDanger = tw(
   BasicAlert
-)`color[#842029] border-color[#f5c2c7] background-color[#f8d7da]`;
+)`[color:#842029] [border-color:#f5c2c7] [background-color:#f8d7da]`;
 
 const AlertInfo = tw(
   BasicAlert
-)`color[#055160] border-color[#b6effb] background-color[#cff4fc]`;
+)`[color:#055160] [border-color:#b6effb] [background-color:#cff4fc]`;
 
 export const Alert = ({
   children,

@@ -98,7 +98,7 @@ const StatsLoader = () => {
       </Card>
       <Card>
         <CardTitle>Nombre de ventes par jour</CardTitle>
-        <CardBody tw="width[900px] justify-center">{daySales}</CardBody>
+        <CardBody tw="[width:900px] justify-center">{daySales}</CardBody>
       </Card>
       <Spacer />
     </>

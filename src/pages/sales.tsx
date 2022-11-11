@@ -68,7 +68,7 @@ const SalesTable = ({ sales }: { sales: Sale[] }): JSX.Element => {
           <StickyTh tw="text-right pr-1">Panier moyen</StickyTh>
         </tr>
       </thead>
-      <tbody tw="line-height[2.3rem]">
+      <tbody tw="[line-height:2.3rem]">
         {sales.map((sale, i) => (
           <tr
             key={i}
@@ -97,7 +97,7 @@ const SalesTable = ({ sales }: { sales: Sale[] }): JSX.Element => {
 
 const Sales = (): JSX.Element => (
   <Restricted role="admin">
-    <div tw="margin-left[10%] margin-right[10%] flex-1">
+    <div tw="[margin-left:10%] [margin-right:10%] flex-1">
       <Title>Liste des ventes par mois</Title>
       <Card tw="mb-lg max-h-full overflow-hidden flex flex-col">
         <CardTitle>Liste des ventes par mois</CardTitle>

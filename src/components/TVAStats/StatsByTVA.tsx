@@ -18,7 +18,7 @@ export const StatsByTVA = ({ stats }: { stats: TStats }) => {
           <StickyTh tw="text-right">Total</StickyTh>
         </tr>
       </thead>
-      <tbody tw="line-height[1.9rem]">
+      <tbody tw="[line-height:1.9rem]">
         {stats.map((stat, i) => (
           <tr key={i}>
             <td>{stat[1]}</td>

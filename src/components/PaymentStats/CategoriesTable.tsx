@@ -19,7 +19,7 @@ export const CategoriesTable = ({
         <StickyTh tw="text-right">Total</StickyTh>
       </tr>
     </thead>
-    <tbody tw="line-height[1.9rem]">
+    <tbody tw="[line-height:1.9rem]">
       {categories.map((category, i) => (
         <tr key={i}>
           <td>{category.type}</td>

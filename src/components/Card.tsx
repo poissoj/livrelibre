@@ -9,7 +9,7 @@ const SHADOW = `
 0 3px 1px -2px rgba(0, 0, 0, 0.2)`;
 
 export const Card = styled.section({
-  ...tw`bg-white border-radius[4px] p-md 2xl:p-lg`,
+  ...tw`bg-white [border-radius:4px] p-md 2xl:p-lg`,
   boxShadow: SHADOW,
 });
 
@@ -27,4 +27,4 @@ export const CardBody = ({
 
 export const CardTitle = tw.h3`text-2xl font-bold`;
 
-export const CardFooter = tw.div`border-top[1px solid #ddd] mt-sm padding[16px 8px 8px 0]`;
+export const CardFooter = tw.div`[border-top:1px solid #ddd] mt-sm [padding:16px 8px 8px 0]`;

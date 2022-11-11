@@ -6,9 +6,9 @@ const transition = `
 `;
 
 export const Button = styled.button({
-  ...tw`bg-primary-dark text-white border-radius[3px] p-sm uppercase tracking-wide font-medium text-sm whitespace-nowrap`,
+  ...tw`bg-primary-dark text-white [border-radius:3px] p-sm uppercase tracking-wide font-medium text-sm whitespace-nowrap`,
   transition,
-  "&[disabled]": tw`cursor-not-allowed opacity[0.65]`,
+  "&[disabled]": tw`cursor-not-allowed [opacity:0.65]`,
   "&:not([disabled]):hover, &:focus": {
     outline: "none",
     transform: "translate3d(0, -1px, 0)",

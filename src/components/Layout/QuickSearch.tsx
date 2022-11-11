@@ -7,8 +7,8 @@ import tw from "twin.macro";
 
 import { trpc } from "@/utils/trpc";
 
-const Input = tw.input`flex-1 padding[5px 10px] rounded bg-white/80 pr-7
-  focus-visible:(ring-2 ring-inset outline-none) --tw-ring-color[#AAA]`;
+const Input = tw.input`flex-1 [padding:5px 10px] rounded bg-white/80 pr-7
+  focus-visible:(ring-2 ring-inset outline-none) [--tw-ring-color:#AAA]`;
 const SearchButton = tw.button`text-black absolute top-2 bottom-2 right-1 px-2`;
 
 export const QuickSearch = ({
@@ -45,7 +45,7 @@ export const QuickSearch = ({
     <form
       role="search"
       className={className}
-      tw="flex p-sm width[27rem] relative"
+      tw="flex p-sm [width:27rem] relative"
       onSubmit={handleSubmit}
     >
       <Input type="text" placeholder="ISBN, titre, auteur" name="search" />
