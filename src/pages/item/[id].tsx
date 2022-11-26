@@ -6,14 +6,14 @@ import {
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { createSSGHelpers } from "@trpc/react/ssg";
+import type { DehydratedState } from "@tanstack/react-query";
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import type { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
 import { useForm } from "react-hook-form";
-import type { DehydratedState } from "react-query";
 import tw from "twin.macro";
 
 import { Alert } from "@/components/Alert";
@@ -136,7 +136,7 @@ const AddToCartFooter = ({ id, stock }: { id: string; stock: number }) => {
       { id, quantity: Number(quantity) },
       {
         async onSuccess() {
-          await utils.invalidateQueries("searchItem");
+          await utils.searchItem.invalidate();
         },
       }
     );
@@ -181,7 +181,7 @@ const StatusMessage = ({ itemTitle }: { itemTitle: string }) => {
 };
 
 const ItemLoader = ({ id }: { id: string }) => {
-  const result = trpc.useQuery(["searchItem", id]);
+  const result = trpc.searchItem.useQuery(id);
 
   if (result.status === "error") {
     return (
@@ -258,11 +258,11 @@ const SalesSkeleton = () => (
 );
 
 const Sales = ({ id }: { id: string }) => {
-  const result = trpc.useQuery(["lastSales", id]);
+  const result = trpc.lastSales.useQuery(id);
   if (result.status === "error") {
     return <ErrorMessage />;
   }
-  if (result.status === "loading" || result.status === "idle") {
+  if (result.status === "loading") {
     return <SalesSkeleton />;
   }
   return <SalesByMonth sales={result.data} />;
@@ -301,15 +301,15 @@ export default ItemPage;
 export const getServerSideProps: GetServerSideProps<{
   trpcState: DehydratedState;
 }> = async (context) => {
-  const ssg = createSSGHelpers({
+  const ssg = createProxySSGHelpers({
     router: appRouter,
     ctx: await createContext(),
   });
   const id = context.params?.id;
   if (typeof id === "string") {
     await Promise.all([
-      ssg.fetchQuery("searchItem", id),
-      ssg.fetchQuery("lastSales", id),
+      ssg.searchItem.prefetch(id),
+      ssg.lastSales.prefetch(id),
     ]);
   }
   return {

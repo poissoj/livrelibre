@@ -1,9 +1,9 @@
-import { createSSGHelpers } from "@trpc/react/ssg";
+import type { DehydratedState } from "@tanstack/react-query";
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import type { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
-import type { DehydratedState } from "react-query";
 import tw from "twin.macro";
 
 import { Card, CardBody, CardTitle } from "@/components/Card";
@@ -17,11 +17,11 @@ import { Title } from "@/components/Title";
 import { appRouter } from "@/pages/api/trpc/[trpc]";
 import { createContext } from "@/server/context";
 import { formatPrice } from "@/utils/format";
-import { InferQueryOutput, trpc } from "@/utils/trpc";
+import { RouterOutput, trpc } from "@/utils/trpc";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
 
-type TSalesByDay = InferQueryOutput<"salesByMonth">["salesByDay"];
+type TSalesByDay = RouterOutput["salesByMonth"]["salesByDay"];
 
 const makeSaleURL = (date: string) =>
   `/sale/${date.split("/").reverse().join("/")}`;
@@ -85,15 +85,12 @@ type MonthProps = {
 };
 
 const SalesLoader = (props: MonthProps) => {
-  const result = trpc.useQuery(["salesByMonth", props]);
+  const result = trpc.salesByMonth.useQuery(props);
   if (result.isError) {
     return <ErrorMessage />;
   }
   if (result.isLoading) {
     return <SalesSkeleton />;
-  }
-  if (result.isIdle) {
-    return null;
   }
   return <SalesTable sales={result.data.salesByDay} />;
 };
@@ -120,15 +117,12 @@ const SalesCard = () => {
 };
 
 const TVALoader = (props: MonthProps) => {
-  const result = trpc.useQuery(["salesByMonth", props]);
+  const result = trpc.salesByMonth.useQuery(props);
   if (result.isError) {
     return <ErrorMessage />;
   }
   if (result.isLoading) {
     return <TVASkeleton />;
-  }
-  if (result.isIdle) {
-    return null;
   }
   return <StatsByTVA stats={result.data.stats} />;
 };
@@ -150,15 +144,12 @@ const TVACard = () => {
 };
 
 const CategoriesLoader = (props: MonthProps) => {
-  const result = trpc.useQuery(["salesByMonth", props]);
+  const result = trpc.salesByMonth.useQuery(props);
   if (result.isError) {
     return <ErrorMessage />;
   }
   if (result.isLoading) {
     return <CategorySkeleton />;
-  }
-  if (result.isIdle) {
-    return null;
   }
   return <CategoriesTable categories={result.data.itemTypes} />;
 };
@@ -199,14 +190,14 @@ export default SalesByMonth;
 export const getServerSideProps: GetServerSideProps<{
   trpcState: DehydratedState;
 }> = async (context) => {
-  const ssg = createSSGHelpers({
+  const ssg = createProxySSGHelpers({
     router: appRouter,
     ctx: await createContext(),
   });
   const year = context.params?.year;
   const month = context.params?.month;
   if (typeof year === "string" && typeof month === "string") {
-    await ssg.fetchQuery("salesByMonth", { month, year });
+    await ssg.salesByMonth.prefetch({ month, year });
   }
   return {
     props: {

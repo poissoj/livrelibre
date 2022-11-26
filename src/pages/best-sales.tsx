@@ -64,15 +64,12 @@ const BestSalesSkeleton = () => (
 );
 
 const BestSalesLoader = () => {
-  const result = trpc.useQuery(["bestsales"]);
+  const result = trpc.bestsales.useQuery();
   if (result.status === "error") {
     return <ErrorMessage />;
   }
   if (result.status === "loading") {
     return <BestSalesSkeleton />;
-  }
-  if (result.status === "idle") {
-    return null;
   }
   return <ItemsTable items={result.data} />;
 };

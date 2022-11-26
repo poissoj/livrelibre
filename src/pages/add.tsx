@@ -9,7 +9,7 @@ import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
 
 const Add = (): JSX.Element => {
-  const mutation = trpc.useMutation("addItem");
+  const mutation = trpc.addItem.useMutation();
   const submit = async (data: FormFields) => {
     const datebought = data.datebought.split("-").reverse().join("/");
     const item = { ...data, amount: Number(data.amount), datebought };

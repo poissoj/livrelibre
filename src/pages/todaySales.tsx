@@ -1,6 +1,6 @@
-import { createSSGHelpers } from "@trpc/react/ssg";
+import type { DehydratedState } from "@tanstack/react-query";
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import type { GetServerSideProps } from "next";
-import type { DehydratedState } from "react-query";
 
 import { SalesByDay } from "@/components/Sales/SalesByDay";
 import { appRouter } from "@/pages/api/trpc/[trpc]";
@@ -21,12 +21,12 @@ export default SalesByDayPage;
 export const getServerSideProps: GetServerSideProps<{
   trpcState: DehydratedState;
 }> = async () => {
-  const ssg = createSSGHelpers({
+  const ssg = createProxySSGHelpers({
     router: appRouter,
     ctx: await createContext(),
   });
   const date = getToday();
-  await ssg.fetchQuery("salesByDay", date);
+  await ssg.salesByDay.prefetch(date);
   return {
     props: {
       trpcState: ssg.dehydrate(),

@@ -5,7 +5,7 @@ import tw from "twin.macro";
 
 import { Button } from "@/components/Button";
 import { formatNumber, formatPrice, formatTVA } from "@/utils/format";
-import { InferQueryOutput, trpc } from "@/utils/trpc";
+import { RouterOutput, trpc } from "@/utils/trpc";
 
 const DeleteSale = ({
   saleId,
@@ -15,9 +15,9 @@ const DeleteSale = ({
   itemId: string | null;
 }) => {
   const utils = trpc.useContext();
-  const { mutate, isLoading } = trpc.useMutation("deleteSale", {
+  const { mutate, isLoading } = trpc.deleteSale.useMutation({
     async onSuccess() {
-      await utils.invalidateQueries("salesByDay");
+      await utils.salesByDay.invalidate();
     },
   });
   return (
@@ -39,7 +39,7 @@ const DeleteSale = ({
   );
 };
 
-type Carts = InferQueryOutput<"salesByDay">["carts"];
+type Carts = RouterOutput["salesByDay"]["carts"];
 
 const SalesRow = ({
   deleted,

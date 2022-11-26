@@ -2,14 +2,14 @@ import { trpc } from "./trpc";
 
 export const useAddToCart = () => {
   const utils = trpc.useContext();
-  const mutation = trpc.useMutation("addToCart", {
+  const mutation = trpc.addToCart.useMutation({
     async onSuccess() {
       await Promise.all([
-        utils.invalidateQueries("cart"),
-        utils.invalidateQueries("bookmarks"),
-        utils.invalidateQueries("quicksearch"),
-        utils.invalidateQueries("items"),
-        utils.invalidateQueries("advancedSearch"),
+        utils.cart.invalidate(),
+        utils.bookmarks.invalidate(),
+        utils.quicksearch.invalidate(),
+        utils.items.invalidate(),
+        utils.advancedSearch.invalidate(),
       ]);
     },
   });

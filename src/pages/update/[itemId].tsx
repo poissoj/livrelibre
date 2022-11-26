@@ -38,8 +38,8 @@ const ItemFormSkeleton = (): JSX.Element => (
 );
 
 const ItemLoader = ({ id }: { id: string }) => {
-  const result = trpc.useQuery(["searchItem", id]);
-  const mutation = trpc.useMutation("updateItem");
+  const result = trpc.searchItem.useQuery(id);
+  const mutation = trpc.updateItem.useMutation();
   const router = useRouter();
 
   const submit = async (data: FormFields) => {

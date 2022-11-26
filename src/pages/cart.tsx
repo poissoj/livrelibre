@@ -24,15 +24,15 @@ import { CART_ERRORS } from "@/utils/errors";
 import { formatNumber, formatPrice } from "@/utils/format";
 import { PAYMENT_METHODS } from "@/utils/sale";
 import { trpc } from "@/utils/trpc";
-import type { InferQueryOutput } from "@/utils/trpc";
+import type { RouterOutput } from "@/utils/trpc";
 
 const StickyTh = tw.th`sticky top-0 bg-white`;
 
 const RemoveFromCartButton = ({ id }: { id: string }) => {
   const utils = trpc.useContext();
-  const { mutate, isLoading } = trpc.useMutation("removeFromCart", {
+  const { mutate, isLoading } = trpc.removeFromCart.useMutation({
     async onSuccess() {
-      await utils.invalidateQueries("cart");
+      await utils.cart.invalidate();
     },
   });
   return (
@@ -50,7 +50,7 @@ const RemoveFromCartButton = ({ id }: { id: string }) => {
   );
 };
 
-type CartItems = InferQueryOutput<"cart">["items"];
+type CartItems = RouterOutput["cart"]["items"];
 
 const ItemTitle = ({ item }: { item: CartItems[number] }) => {
   if (item.itemId) {
@@ -117,9 +117,9 @@ const ItemsSkeleton = (): JSX.Element => (
 
 const usePayCart = () => {
   const utils = trpc.useContext();
-  const mutation = trpc.useMutation("payCart", {
+  const mutation = trpc.payCart.useMutation({
     onSuccess() {
-      void utils.invalidateQueries("cart");
+      void utils.cart.invalidate();
     },
   });
   return mutation;
@@ -185,7 +185,7 @@ const QuickAdd = ({ addError }: { addError(error: ISBNError): void }) => {
   type FormFields = { isbn: string };
   const { register, handleSubmit, resetField } = useForm<FormFields>();
   const utils = trpc.useContext();
-  const mutation = trpc.useMutation("addISBNToCart", {
+  const mutation = trpc.addISBNToCart.useMutation({
     onError(error, isbn) {
       addError({ message: CART_ERRORS.INTERNAL_ERROR, isbn });
     },
@@ -200,11 +200,11 @@ const QuickAdd = ({ addError }: { addError(error: ISBNError): void }) => {
         return;
       }
       await Promise.all([
-        utils.invalidateQueries("cart"),
-        utils.invalidateQueries("bookmarks"),
-        utils.invalidateQueries("quicksearch"),
-        utils.invalidateQueries("items"),
-        utils.invalidateQueries("advancedSearch"),
+        utils.cart.invalidate(),
+        utils.bookmarks.invalidate(),
+        utils.quicksearch.invalidate(),
+        utils.items.invalidate(),
+        utils.advancedSearch.invalidate(),
       ]);
     },
   });
@@ -279,12 +279,12 @@ const ErrorList = ({
 const AsideButton = () => {
   const { handleSubmit } = useForm();
   const utils = trpc.useContext();
-  const asideCart = trpc.useQuery(["asideCart"]);
-  const { mutateAsync, isLoading } = trpc.useMutation("putCartAside", {
+  const asideCart = trpc.asideCart.useQuery();
+  const { mutateAsync, isLoading } = trpc.putCartAside.useMutation({
     async onSuccess() {
       await Promise.all([
-        utils.invalidateQueries("cart"),
-        utils.invalidateQueries("asideCart"),
+        utils.cart.invalidate(),
+        utils.asideCart.invalidate(),
       ]);
     },
   });
@@ -324,14 +324,14 @@ const AsideCartWrapper = ({ children }: { children?: React.ReactNode }) => {
 
 const ReactivateButton = () => {
   const { handleSubmit } = useForm();
-  const cart = trpc.useQuery(["cart"]);
+  const cart = trpc.cart.useQuery();
 
   const utils = trpc.useContext();
-  const { mutateAsync, isLoading } = trpc.useMutation("reactivateCart", {
+  const { mutateAsync, isLoading } = trpc.reactivateCart.useMutation({
     async onSuccess() {
       await Promise.all([
-        utils.invalidateQueries("cart"),
-        utils.invalidateQueries("asideCart"),
+        utils.cart.invalidate(),
+        utils.asideCart.invalidate(),
       ]);
     },
   });
@@ -361,7 +361,7 @@ const ReactivateButton = () => {
 };
 
 const AsideCartLoader = () => {
-  const result = trpc.useQuery(["asideCart"]);
+  const result = trpc.asideCart.useQuery();
   if (result.status === "error") {
     return (
       <AsideCartWrapper>
@@ -369,7 +369,7 @@ const AsideCartLoader = () => {
       </AsideCartWrapper>
     );
   }
-  if (result.status === "loading" || result.status === "idle") {
+  if (result.status === "loading") {
     return null;
   }
   const { count, total } = result.data;
@@ -391,7 +391,7 @@ const AsideCartLoader = () => {
 };
 
 const CartLoader = () => {
-  const result = trpc.useQuery(["cart"]);
+  const result = trpc.cart.useQuery();
   const [change, setChange] = useState<number | null>(null);
   const [errors, setErrors] = useState<ISBNError[]>([]);
 
@@ -419,13 +419,6 @@ const CartLoader = () => {
         <CardBody>
           <ItemsSkeleton />
         </CardBody>
-      </Card>
-    );
-  }
-  if (result.status === "idle") {
-    return (
-      <Card>
-        <CardTitle>Panier</CardTitle>
       </Card>
     );
   }

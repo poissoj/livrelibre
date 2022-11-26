@@ -1,6 +1,6 @@
-import { createSSGHelpers } from "@trpc/react/ssg";
+import type { DehydratedState } from "@tanstack/react-query";
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import type { GetServerSideProps } from "next";
-import type { DehydratedState } from "react-query";
 
 import { Dashboard } from "@/components/Dashboard/Dashboard";
 import { appRouter } from "@/pages/api/trpc/[trpc]";
@@ -11,11 +11,11 @@ export default Dashboard;
 export const getServerSideProps: GetServerSideProps<{
   trpcState: DehydratedState;
 }> = async () => {
-  const ssg = createSSGHelpers({
+  const ssg = createProxySSGHelpers({
     router: appRouter,
     ctx: await createContext(),
   });
-  await ssg.fetchQuery("bookmarks");
+  await ssg.bookmarks.prefetch();
   return {
     props: {
       trpcState: ssg.dehydrate(),

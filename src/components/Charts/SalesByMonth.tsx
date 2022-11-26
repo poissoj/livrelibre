@@ -11,9 +11,9 @@ import type {
   Payload,
 } from "recharts/types/component/DefaultTooltipContent";
 
-import type { InferQueryOutput } from "@/utils/trpc";
+import type { RouterOutput } from "@/utils/trpc";
 
-type Sales = InferQueryOutput<"lastSales">;
+type Sales = RouterOutput["lastSales"];
 
 /* Don't display 0 for empty columns, they appear on top of labels */
 const formatter = (n: number) => (n ? n : "");

@@ -1,16 +1,46 @@
-import { createReactQueryHooks } from "@trpc/react";
-import type { inferProcedureOutput } from "@trpc/server";
+import { httpBatchLink } from "@trpc/client";
+import { createTRPCNext } from "@trpc/next";
+import type { inferRouterOutputs } from "@trpc/server";
 
 import type { AppRouter } from "@/pages/api/trpc/[trpc]";
 
-export const trpc = createReactQueryHooks<AppRouter>();
+const getBaseUrl = () => {
+  if (typeof window !== "undefined") {
+    return "";
+  }
+
+  // reference for vercel.com
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+
+  // self-hosted
+  if (process.env.APP_URL) {
+    return process.env.APP_URL;
+  }
+
+  // assume localhost
+  return `http://localhost:${process.env.PORT ?? 3000}`;
+};
+
+export const trpc = createTRPCNext<AppRouter>({
+  config() {
+    return {
+      links: [
+        httpBatchLink({
+          url: `${getBaseUrl()}/api/trpc`,
+        }),
+      ],
+    };
+  },
+});
 
 export const useBookmark = () => {
   const utils = trpc.useContext();
-  const mutation = trpc.useMutation(["star"], {
+  const mutation = trpc.star.useMutation({
     onSuccess(_input, vars) {
-      void utils.invalidateQueries(["bookmarks"]);
-      void utils.invalidateQueries(["searchItem", vars.id]);
+      void utils.bookmarks.invalidate();
+      void utils.searchItem.invalidate(vars.id);
     },
   });
   const star = (id: string, starred: boolean) => {
@@ -22,7 +52,4 @@ export const useBookmark = () => {
   return { star, mutation };
 };
 
-export type TQuery = keyof AppRouter["_def"]["queries"];
-export type InferQueryOutput<TRouteKey extends TQuery> = inferProcedureOutput<
-  AppRouter["_def"]["queries"][TRouteKey]
->;
+export type RouterOutput = inferRouterOutputs<AppRouter>;

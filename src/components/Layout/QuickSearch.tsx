@@ -17,7 +17,7 @@ export const QuickSearch = ({
   className?: string;
 }): JSX.Element => {
   const router = useRouter();
-  const isbnSearch = trpc.useMutation(["isbnSearch"]);
+  const isbnSearch = trpc.isbnSearch.useMutation();
 
   const handleSubmit: DOMAttributes<HTMLFormElement>["onSubmit"] = async (
     event

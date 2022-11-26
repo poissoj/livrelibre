@@ -1,9 +1,9 @@
-import { createSSGHelpers } from "@trpc/react/ssg";
+import type { DehydratedState } from "@tanstack/react-query";
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
 import type { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
-import type { DehydratedState } from "react-query";
 import tw from "twin.macro";
 
 import { Card, CardBody, CardTitle } from "@/components/Card";
@@ -39,15 +39,12 @@ const SalesSkeleton = (): JSX.Element => (
 );
 
 const SalesLoader = (): JSX.Element | null => {
-  const result = trpc.useQuery(["sales"]);
+  const result = trpc.sales.useQuery();
   if (result.status === "error") {
     return <ErrorMessage />;
   }
   if (result.status === "loading") {
     return <SalesSkeleton />;
-  }
-  if (result.status === "idle") {
-    return null;
   }
   return <SalesTable sales={result.data} />;
 };
@@ -114,11 +111,11 @@ export default Sales;
 export const getServerSideProps: GetServerSideProps<{
   trpcState: DehydratedState;
 }> = async () => {
-  const ssg = createSSGHelpers({
+  const ssg = createProxySSGHelpers({
     router: appRouter,
     ctx: await createContext(),
   });
-  await ssg.fetchQuery("sales");
+  await ssg.sales.prefetch();
   return {
     props: {
       trpcState: ssg.dehydrate(),

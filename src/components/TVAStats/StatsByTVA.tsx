@@ -1,11 +1,11 @@
 import tw from "twin.macro";
 
 import { formatNumber, formatPrice, formatTVA } from "@/utils/format";
-import type { InferQueryOutput } from "@/utils/trpc";
+import type { RouterOutput } from "@/utils/trpc";
 
 export const StickyTh = tw.th`sticky top-0 bg-white`;
 
-type TStats = InferQueryOutput<"salesByMonth">["stats"];
+type TStats = RouterOutput["salesByMonth"]["stats"];
 
 export const StatsByTVA = ({ stats }: { stats: TStats }) => {
   return (

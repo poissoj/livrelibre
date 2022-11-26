@@ -65,7 +65,7 @@ const SalesByDay = dynamic(() => import("@/components/Charts/SalesByDay"), {
 const Spacer = tw.div`w-1 h-1 flex-shrink-0`;
 
 const StatsLoader = () => {
-  const result = trpc.useQuery(["stats"]);
+  const result = trpc.stats.useQuery();
   let hourSales: JSX.Element | null = null;
   let daySales: JSX.Element | null = null;
   if (result.status === "error") {

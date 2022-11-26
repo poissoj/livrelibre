@@ -53,7 +53,7 @@ const Login = () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
     });
-    await utils.invalidateQueries(["user"]);
+    await utils.user.invalidate();
     if (res.ok) {
       await router.push("/");
     } else {

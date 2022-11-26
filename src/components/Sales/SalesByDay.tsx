@@ -16,29 +16,23 @@ import { SalesSkeleton } from "./SalesSkeleton";
 import { SalesTable } from "./SalesTable";
 
 const TVALoader = ({ date }: { date: string }) => {
-  const result = trpc.useQuery(["salesByDay", date]);
+  const result = trpc.salesByDay.useQuery(date);
   if (result.isError) {
     return <ErrorMessage />;
   }
   if (result.isLoading) {
     return <TVASkeleton />;
   }
-  if (result.isIdle) {
-    return null;
-  }
   return <StatsByTVA stats={result.data.tva} />;
 };
 
 const CategoriesLoader = ({ date }: { date: string }) => {
-  const result = trpc.useQuery(["salesByDay", date]);
+  const result = trpc.salesByDay.useQuery(date);
   if (result.isError) {
     return <ErrorMessage />;
   }
   if (result.isLoading) {
     return <CategorySkeleton />;
-  }
-  if (result.isIdle) {
-    return null;
   }
   return (
     <div tw="flex flex-1 flex-col gap-3">
@@ -52,7 +46,7 @@ const CategoriesLoader = ({ date }: { date: string }) => {
 };
 
 const SalesLoader = ({ date }: { date: string }) => {
-  const result = trpc.useQuery(["salesByDay", date]);
+  const result = trpc.salesByDay.useQuery(date);
   if (result.isError) {
     return <ErrorMessage />;
   }
@@ -65,9 +59,6 @@ const SalesLoader = ({ date }: { date: string }) => {
         </CardBody>
       </Card>
     );
-  }
-  if (result.isIdle) {
-    return null;
   }
   return (
     <Card tw="flex flex-col">

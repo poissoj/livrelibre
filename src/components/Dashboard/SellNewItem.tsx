@@ -23,9 +23,9 @@ export const SellNewItem = (): JSX.Element => {
   const { register, handleSubmit, reset } = useForm<NewCartItem>();
   const utils = trpc.useContext();
   const [alert, setAlert] = React.useState<TAlert | null>(null);
-  const { mutateAsync, isLoading } = trpc.useMutation("addNewItemToCart", {
+  const { mutateAsync, isLoading } = trpc.addNewItemToCart.useMutation({
     async onSuccess() {
-      await utils.invalidateQueries("cart");
+      await utils.cart.invalidate();
     },
     onError() {
       setAlert({ type: "error", message: "Impossible d'ajouter au panier" });

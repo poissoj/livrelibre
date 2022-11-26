@@ -33,7 +33,7 @@ const Logout = () => {
   const router = useRouter();
   const logout = async () => {
     await fetch("/api/logout", { method: "POST" });
-    await utils.invalidateQueries(["user"]);
+    await utils.user.invalidate();
     void router.push("/login");
   };
   return (
@@ -46,7 +46,7 @@ const Logout = () => {
 const Badge = tw.span`[border-radius:10rem] bg-gray-dark  px-2 py-0.5 [font-size:12px] font-medium`;
 
 const CartBadge = () => {
-  const result = trpc.useQuery(["cart"]);
+  const result = trpc.cart.useQuery();
   if (result.status === "success" && result.data.count > 0) {
     return <Badge>{result.data.count}</Badge>;
   }

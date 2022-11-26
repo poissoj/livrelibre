@@ -81,9 +81,9 @@ const SearchLoader = ({
   query: Record<string, string>;
   page: number;
 }) => {
-  const result = trpc.useQuery(["advancedSearch", { search: query, page }], {
-    keepPreviousData: true,
-  });
+    const result = trpc.advancedSearch.useQuery({ search: query, page }, {
+        keepPreviousData: true,
+    });
   let title = "Recherche avancée";
   let subtitle = "Recherche en cours…";
   let pageCount = 0;

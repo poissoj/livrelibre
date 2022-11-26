@@ -36,15 +36,12 @@ const BookmarksContent = ({
 };
 
 const BookmarksLoader = (): JSX.Element | null => {
-  const result = trpc.useQuery(["bookmarks"]);
+  const result = trpc.bookmarks.useQuery();
   if (result.status === "error") {
     return <ErrorMessage />;
   }
   if (result.status === "loading") {
     return <BookmarksSkeleton />;
-  }
-  if (result.status === "idle") {
-    return null;
   }
   return <BookmarksContent bookmarks={result.data} />;
 };

@@ -47,7 +47,7 @@ const ItemsSkeleton = (): JSX.Element => (
 );
 
 const ItemsLoader = ({ page }: { page: number }) => {
-  const result = trpc.useQuery(["items", page], { keepPreviousData: true });
+    const result = trpc.items.useQuery(page, { keepPreviousData: true });
   let pageTitle = "Liste des articles";
   if (result.status === "error") {
     return (
@@ -62,9 +62,6 @@ const ItemsLoader = ({ page }: { page: number }) => {
         <ItemsSkeleton />
       </ItemsCard>
     );
-  }
-  if (result.status === "idle") {
-    return null;
   }
   const { count, pageCount, items } = result.data;
   let title = "Tous les articles";
