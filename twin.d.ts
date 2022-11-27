@@ -1,5 +1,7 @@
+import type { CSSInterpolation } from "@emotion/css";
+import { css as cssImport } from "@emotion/react";
+import styledImport from "@emotion/styled";
 import "twin.macro";
-import styledImport, { CSSProp, css as cssImport } from "styled-components";
 
 declare module "twin.macro" {
   // The styled and css imports
@@ -8,17 +10,13 @@ declare module "twin.macro" {
 }
 
 declare module "react" {
-  // The css prop
-  interface HTMLAttributes<T> extends DOMAttributes<T> {
-    css?: CSSProp;
-  }
-  // The inline svg css prop
-  interface SVGProps extends SVGProps<SVGSVGElement> {
-    css?: CSSProp;
+  // The tw and css prop
+  interface DOMAttributes {
+    tw?: string;
+    css?: CSSInterpolation;
   }
 }
 
-// The 'as' prop on styled components
 declare global {
   namespace JSX {
     interface IntrinsicAttributes<T> extends DOMAttributes<T> {

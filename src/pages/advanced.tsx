@@ -11,7 +11,7 @@ import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { toast } from "react-toastify";
 import "twin.macro";
 
-import { Button } from "@/components/Button";
+import { Button, ButtonAnchor } from "@/components/Button";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { Title } from "@/components/Title";
 import type { DilicomRowWithId } from "@/utils/dilicomItem";
@@ -128,10 +128,10 @@ const StockExport = () => (
       <p>Export du stock au format CSV</p>
     </CardBody>
     <CardFooter>
-      <Button as="a" tw="px-4 inline-block" href="/api/export" download>
+      <ButtonAnchor tw="px-4 inline-block" href="/api/export" download>
         <FontAwesomeIcon icon={faDownload} tw="mr-2" />
         Télécharger
-      </Button>
+      </ButtonAnchor>
     </CardFooter>
   </Card>
 );

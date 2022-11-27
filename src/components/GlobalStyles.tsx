@@ -1,30 +1,32 @@
+import { Global, css } from "@emotion/react";
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import "react-toastify/dist/ReactToastify.css";
-import { createGlobalStyle } from "styled-components";
 import tw, { GlobalStyles as BaseStyles } from "twin.macro";
 
 config.autoAddCss = false;
 
-const CustomStyles = createGlobalStyle`
-  html, body, #__next {
+const customStyles = css`
+  html,
+  body,
+  #__next {
     height: 100%;
   }
   body {
     ${tw`antialiased bg-gray-light text-black font-sans`}
   }
   @font-face {
-    font-family: 'Niconne';
+    font-family: "Niconne";
     font-style: normal;
     font-weight: 400;
-    src: url(/fonts/Niconne.woff2) format('woff2');
+    src: url(/fonts/Niconne.woff2) format("woff2");
     font-display: fallback;
   }
   @font-face {
-    font-family: 'Roboto Mono';
+    font-family: "Roboto Mono";
     font-style: normal;
     font-weight: regular;
-    src: url(/fonts/Roboto-Mono.woff2) format('woff2');
+    src: url(/fonts/Roboto-Mono.woff2) format("woff2");
     font-display: fallback;
   }
   .Toastify {
@@ -35,7 +37,7 @@ const CustomStyles = createGlobalStyle`
 const GlobalStyles = (): JSX.Element => (
   <>
     <BaseStyles />
-    <CustomStyles />
+    <Global styles={customStyles} />
   </>
 );
 

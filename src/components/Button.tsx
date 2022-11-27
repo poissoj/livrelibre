@@ -5,7 +5,7 @@ const transition = `
     transform 0.2s cubic-bezier(0.35, 0, 0.25, 1),
 `;
 
-export const Button = styled.button({
+const styles = {
   ...tw`bg-primary-dark text-white [border-radius:3px] p-sm uppercase tracking-wide font-medium text-sm whitespace-nowrap`,
   transition,
   "&[disabled]": tw`cursor-not-allowed [opacity:0.65]`,
@@ -14,7 +14,11 @@ export const Button = styled.button({
     transform: "translate3d(0, -1px, 0)",
     boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.4)",
   },
-});
+};
+
+export const Button = styled.button(styles);
+
+export const ButtonAnchor = styled.a(styles);
 
 export const ButtonWithInput = styled(Button)`
   border-top-left-radius: 0;

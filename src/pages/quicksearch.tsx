@@ -54,9 +54,12 @@ const SearchLoader = ({
   search: string;
   inStock: boolean;
 }) => {
-    const result = trpc.quicksearch.useQuery({ search, page, inStock }, {
-        keepPreviousData: true,
-    });
+  const result = trpc.quicksearch.useQuery(
+    { search, page, inStock },
+    {
+      keepPreviousData: true,
+    }
+  );
   let title = "Recherche rapide";
   let subtitle = "Recherche en cours…";
   let pageCount = 0;

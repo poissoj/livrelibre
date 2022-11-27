@@ -10,6 +10,10 @@
     "format": "prettier --write src"
   },
   "dependencies": {
+    "@emotion/css": "11.10.5",
+    "@emotion/react": "11.10.5",
+    "@emotion/server": "11.10.0",
+    "@emotion/styled": "11.10.5",
     "@fortawesome/fontawesome-svg-core": "6.2.1",
     "@fortawesome/free-regular-svg-icons": "6.2.1",
     "@fortawesome/free-solid-svg-icons": "6.2.1",
@@ -42,19 +46,18 @@
     "react-is": "18.2.0",
     "react-toastify": "9.1.1",
     "recharts": "2.1.16",
-    "styled-components": "5.3.6",
     "winston": "3.8.2",
     "xlsx": "0.18.5",
     "zod": "3.19.1"
   },
   "devDependencies": {
+    "@babel/core": "7.20.2",
+    "@emotion/babel-plugin": "11.10.5",
     "@trivago/prettier-plugin-sort-imports": "4.0.0",
     "@types/node": "18.11.9",
     "@types/react": "18.0.25",
-    "@types/styled-components": "5.1.26",
     "@typescript-eslint/eslint-plugin": "5.44.0",
     "babel-plugin-macros": "3.1.0",
-    "babel-plugin-styled-components": "2.0.7",
     "eslint": "8.28.0",
     "eslint-config-next": "13.0.5",
     "eslint-config-prettier": "8.5.0",
@@ -65,7 +68,7 @@
   },
   "babelMacros": {
     "twin": {
-      "preset": "styled-components"
+      "preset": "emotion"
     }
   }
 }

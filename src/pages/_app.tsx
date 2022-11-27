@@ -1,3 +1,5 @@
+import { cache } from "@emotion/css";
+import { CacheProvider } from "@emotion/react";
 import type { AppProps } from "next/dist/shared/lib/router/router";
 import Head from "next/head";
 import React from "react";
@@ -16,19 +18,21 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
   const showComponent = "isPublic" in Component ? true : isLoggedIn;
 
   return (
-    <PageLayout>
-      <Head>
-        <title>{APP_NAME}</title>
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <GlobalStyles />
-      {showComponent && <Component {...pageProps} />}
-      <ToastContainer
-        position="bottom-right"
-        theme="colored"
-        transition={Slide}
-      />
-    </PageLayout>
+    <CacheProvider value={cache}>
+      <PageLayout>
+        <Head>
+          <title>{APP_NAME}</title>
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+        <GlobalStyles />
+        {showComponent && <Component {...pageProps} />}
+        <ToastContainer
+          position="bottom-right"
+          theme="colored"
+          transition={Slide}
+        />
+      </PageLayout>
+    </CacheProvider>
   );
 }
 
