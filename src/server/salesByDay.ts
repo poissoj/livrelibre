@@ -33,7 +33,7 @@ type AggregatedSale = WithId<
   >
 >;
 
-type PaymentMethod = typeof PAYMENT_METHODS[PaymentType] | "Inconnu";
+type PaymentMethod = (typeof PAYMENT_METHODS)[PaymentType] | "Inconnu";
 
 type ItemSale = Omit<DBItem, "price" | "type"> & {
   itemId: string;

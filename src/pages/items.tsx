@@ -47,7 +47,7 @@ const ItemsSkeleton = (): JSX.Element => (
 );
 
 const ItemsLoader = ({ page }: { page: number }) => {
-    const result = trpc.items.useQuery(page, { keepPreviousData: true });
+  const result = trpc.items.useQuery(page, { keepPreviousData: true });
   let pageTitle = "Liste des articles";
   if (result.status === "error") {
     return (

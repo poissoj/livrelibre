@@ -7,7 +7,7 @@ export default function useUser({
   redirectTo = "",
   redirectIfFound = false,
 } = {}) {
-    const { data: user } = trpc.user.useQuery(undefined, { retry: 1 });
+  const { data: user } = trpc.user.useQuery(undefined, { retry: 1 });
 
   const isLoggedIn = user && user.role !== "anonymous";
   useEffect(() => {

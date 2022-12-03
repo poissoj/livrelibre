@@ -20,7 +20,7 @@ export const ItemTypes = [
 ] as const;
 
 export const TVAValues = ["20", "5.5", "2.1", "0"] as const;
-export type TVA = typeof TVAValues[number];
+export type TVA = (typeof TVAValues)[number];
 
 export type BaseItem = {
   type: ItemType;
