@@ -21,10 +21,12 @@ export const StatsByTVA = ({ stats }: { stats: TStats }) => {
       <tbody tw="[line-height:1.9rem]">
         {stats.map((stat, i) => (
           <tr key={i}>
-            <td>{stat[1]}</td>
-            <td tw="text-right font-number">{formatTVA(stat[0])}</td>
-            <td tw="text-right font-number">{formatNumber(stat[2])}</td>
-            <td tw="text-right font-number">{formatPrice(Number(stat[3]))}</td>
+            <td>{stat.type}</td>
+            <td tw="text-right font-number">{formatTVA(stat.tva)}</td>
+            <td tw="text-right font-number">{formatNumber(stat.nb)}</td>
+            <td tw="text-right font-number">
+              {formatPrice(Number(stat.totalPrice))}
+            </td>
           </tr>
         ))}
       </tbody>

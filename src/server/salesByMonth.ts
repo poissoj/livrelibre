@@ -79,14 +79,16 @@ export const getSalesByMonth = async (month: string, year: string) => {
       const type = isIn(PAYMENT_METHODS, typeId)
         ? PAYMENT_METHODS[typeId]
         : "Inconnu";
-      return [
+      return {
         tva,
         type,
-        tvaStats[item].nb,
-        tvaStats[item].totalPrice.toFixed(2),
-      ] as const;
+        nb: tvaStats[item].nb,
+        totalPrice: tvaStats[item].totalPrice.toFixed(2),
+      } as const;
     })
-    .sort((a, b) => Number(b[0]) - Number(a[0]) || a[1].localeCompare(b[1]));
+    .sort(
+      (a, b) => Number(b.tva) - Number(a.tva) || a.type.localeCompare(b.type)
+    );
 
   const itemTypes = Object.entries(itemTypesStats)
     .map(([type, stat]) => ({

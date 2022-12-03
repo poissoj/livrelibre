@@ -152,14 +152,16 @@ export const getSalesByDay = async (date: string) => {
   const stats = Object.keys(tvaStats)
     .map((item) => {
       const [tva] = item.split(",");
-      return [
+      return {
         tva,
-        tvaStats[item].type,
-        tvaStats[item].count,
-        tvaStats[item].total.toFixed(2),
-      ] as const;
+        type: tvaStats[item].type,
+        nb: tvaStats[item].count,
+        totalPrice: tvaStats[item].total.toFixed(2),
+      };
     })
-    .sort((a, b) => Number(b[0]) - Number(a[0]) || a[1].localeCompare(b[1]));
+    .sort(
+      (a, b) => Number(b.tva) - Number(a.tva) || a.type.localeCompare(b.type)
+    );
 
   const paymentMethods = Object.entries(paymentStats)
     .map(([type, data]) => ({

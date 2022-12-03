@@ -191,11 +191,11 @@ const QuickAdd = ({ addError }: { addError(error: ISBNError): void }) => {
     },
     async onSuccess(data, isbn) {
       if (data) {
+        const { errorCode: message, ...rest } = data;
         addError({
-          message: data.errorCode,
+          message,
           isbn,
-          title: data.title,
-          id: data.id,
+          ...rest,
         });
         return;
       }
