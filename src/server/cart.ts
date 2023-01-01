@@ -156,6 +156,7 @@ export const addISBNToCart = async (username: string, isbn: string) => {
     };
   }
   await addItemToCart(result.value, username);
+  return { errorCode: null };
 };
 
 export const addNewItemToCart = async (username: string, item: NewCartItem) => {

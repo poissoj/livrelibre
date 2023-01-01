@@ -19,5 +19,6 @@ module.exports = {
       { checksVoidReturn: false },
     ],
     "react/no-unknown-property": ["warn", { ignore: ["css", "tw"] }],
+    "@typescript-eslint/no-unnecessary-condition": "warn",
   },
 };

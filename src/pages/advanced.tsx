@@ -18,7 +18,7 @@ import type { DilicomRowWithId } from "@/utils/dilicomItem";
 import { formatNumber, formatPrice } from "@/utils/format";
 
 type FormFields = {
-  dilicom: FileList;
+  dilicom: FileList | undefined;
 };
 
 type TFile = { filename: string; data: DilicomRowWithId[] } | null;
@@ -45,7 +45,7 @@ const DilicomForm = ({ children }: { children: React.ReactNode }) => {
   const methods = useForm<FormFields>();
   const [, setFile] = useFileContext();
   const submit = async ({ dilicom }: FormFields) => {
-    if (dilicom.length !== 1) return;
+    if (!dilicom || dilicom.length !== 1) return;
     const formData = new FormData();
     formData.append("dilicom", dilicom[0]);
     const response = await fetch("/api/importFile", {
@@ -91,7 +91,7 @@ const SubmitButton = () => {
     watch,
   } = useFormContext<FormFields>();
   const file = watch("dilicom");
-  const hasFile = file?.length > 0;
+  const hasFile = file && file.length > 0;
   return (
     <Button tw="px-4" type="submit" disabled={isSubmitting || !hasFile}>
       <FontAwesomeIcon

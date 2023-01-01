@@ -60,7 +60,7 @@ const makeCSV = async () => {
 };
 
 const exportCSV = async (req: NextApiRequest, res: NextApiResponse) => {
-  if (!req.session?.user) {
+  if (!req.session.user) {
     res.status(401).json({ error: "Unauthenticated" });
     return;
   }

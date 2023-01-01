@@ -35,22 +35,27 @@ export const getSalesByMonth = async (month: string, year: string) => {
     .toArray();
 
   type Stat = { nb: number; totalPrice: number };
-  const salesByDayStats: Record<string, Stat> = {};
-  const tvaStats: Record<string, Stat> = {};
+  const salesByDayStats = new Map<string, Stat>();
+  const tvaStats = new Map<string, Stat>();
   const itemTypesStats: Partial<Record<ItemType, Stat>> = {};
 
   for (const sale of sales) {
-    salesByDayStats[sale.date] = salesByDayStats[sale.date] || {
-      nb: 0,
-      totalPrice: 0,
-    };
-    salesByDayStats[sale.date].nb += sale.quantity;
-    salesByDayStats[sale.date].totalPrice += sale.price;
+    let salesByDayStat = salesByDayStats.get(sale.date);
+    if (!salesByDayStat) {
+      salesByDayStat = { nb: 0, totalPrice: 0 };
+      salesByDayStats.set(sale.date, salesByDayStat);
+    }
+    salesByDayStat.nb += sale.quantity;
+    salesByDayStat.totalPrice += sale.price;
 
     const tvaAndType = [sale.tva || "Inconnu", sale.type].join();
-    tvaStats[tvaAndType] = tvaStats[tvaAndType] || { nb: 0, totalPrice: 0 };
-    tvaStats[tvaAndType].nb += sale.quantity;
-    tvaStats[tvaAndType].totalPrice += sale.price;
+    let tvaStat = tvaStats.get(tvaAndType);
+    if (!tvaStat) {
+      tvaStat = { nb: 0, totalPrice: 0 };
+      tvaStats.set(tvaAndType, tvaStat);
+    }
+    tvaStat.nb += sale.quantity;
+    tvaStat.totalPrice += sale.price;
 
     const stat = itemTypesStats[sale.itemType] || {
       nb: 0,
@@ -61,20 +66,20 @@ export const getSalesByMonth = async (month: string, year: string) => {
     itemTypesStats[sale.itemType] = stat;
   }
 
-  const salesByDay = Object.keys(salesByDayStats)
+  const salesByDay = [...salesByDayStats.entries()]
     .sort(function (s1, s2) {
-      const d1 = s1.split("/");
-      const d2 = s2.split("/");
+      const d1 = s1[0].split("/");
+      const d2 = s2[0].split("/");
       return -d1[1].localeCompare(d2[1]) || -d1[0].localeCompare(d2[0]);
     })
-    .map((date) => ({
+    .map(([date, salesByDayStat]) => ({
       date,
-      count: salesByDayStats[date].nb,
-      amount: salesByDayStats[date].totalPrice.toFixed(2),
+      count: salesByDayStat.nb,
+      amount: salesByDayStat.totalPrice.toFixed(2),
     }));
 
-  const stats = Object.keys(tvaStats)
-    .map((item) => {
+  const stats = [...tvaStats.entries()]
+    .map(([item, tvaStat]) => {
       const [tva, typeId] = item.split(",");
       const type = isIn(PAYMENT_METHODS, typeId)
         ? PAYMENT_METHODS[typeId]
@@ -82,8 +87,8 @@ export const getSalesByMonth = async (month: string, year: string) => {
       return {
         tva,
         type,
-        nb: tvaStats[item].nb,
-        totalPrice: tvaStats[item].totalPrice.toFixed(2),
+        nb: tvaStat.nb,
+        totalPrice: tvaStat.totalPrice.toFixed(2),
       } as const;
     })
     .sort(

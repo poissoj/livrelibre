@@ -190,7 +190,7 @@ const QuickAdd = ({ addError }: { addError(error: ISBNError): void }) => {
       addError({ message: CART_ERRORS.INTERNAL_ERROR, isbn });
     },
     async onSuccess(data, isbn) {
-      if (data) {
+      if (data.errorCode) {
         const { errorCode: message, ...rest } = data;
         addError({
           message,

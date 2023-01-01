@@ -10,8 +10,9 @@ export const getBookData = async (isbn: string): Promise<BookData> => {
   const url = process.env.ISBN_SEARCH_URL + isbn;
   const body = await got(url).text();
   const $ = cheerio.load(body);
-  if ($(".main-infos [itemprop=name]")) {
-    const title = $(".main-infos [itemprop=name]").text().trim();
+  const mainInfos = $(".main-infos [itemprop=name]");
+  if (mainInfos.length > 0) {
+    const title = mainInfos.text().trim();
     // TODO: handle multiple authors
     const author = $(".main-infos [itemprop=author]").eq(0).text().trim();
     const publisher = $(".main-infos > h3 > a").text().trim();

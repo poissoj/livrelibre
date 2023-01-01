@@ -81,11 +81,14 @@ export const getSalesByDay = async (date: string) => {
     .find({ _id: { $in: itemIds } })
     .toArray();
 
-  const tvaStats: Record<
+  const tvaStats = new Map<
     string,
     { count: number; total: number; type: PaymentMethod }
-  > = {};
-  const paymentStats: Record<string, { count: number; total: number }> = {};
+  >();
+  const paymentStats = new Map<
+    PaymentMethod,
+    { count: number; total: number }
+  >();
   let salesCount = 0;
   let lastCartId = dbSales[0]?.cartId;
   let total = 0;
@@ -104,15 +107,23 @@ export const getSalesByDay = async (date: string) => {
         ? PAYMENT_METHODS[sale.type]
         : "Inconnu";
     const key = [sale.tva || "Inconnu", type].join();
-    tvaStats[key] = tvaStats[key] || { count: 0, total: 0, type };
-    paymentStats[type] = paymentStats[type] || { count: 0, total: 0 };
+    let tvaStat = tvaStats.get(key);
+    if (!tvaStat) {
+      tvaStat = { count: 0, total: 0, type };
+      tvaStats.set(key, tvaStat);
+    }
+    let paymentStat = paymentStats.get(type);
+    if (!paymentStat) {
+      paymentStat = { count: 0, total: 0 };
+      paymentStats.set(type, paymentStat);
+    }
 
     if (!sale.deleted) {
-      tvaStats[key].count += sale.quantity;
-      tvaStats[key].total += sale.price;
+      tvaStat.count += sale.quantity;
+      tvaStat.total += sale.price;
       salesCount += sale.quantity;
-      paymentStats[type].count += sale.quantity;
-      paymentStats[type].total += sale.price;
+      paymentStat.count += sale.quantity;
+      paymentStat.total += sale.price;
       total += sale.price;
     }
 
@@ -149,23 +160,23 @@ export const getSalesByDay = async (date: string) => {
     carts.push({ sales });
   }
 
-  const stats = Object.keys(tvaStats)
-    .map((item) => {
-      const [tva] = item.split(",");
+  const stats = [...tvaStats.entries()]
+    .map(([key, tvaStat]) => {
+      const [tva] = key.split(",");
       return {
         tva,
-        type: tvaStats[item].type,
-        nb: tvaStats[item].count,
-        totalPrice: tvaStats[item].total.toFixed(2),
+        type: tvaStat.type,
+        nb: tvaStat.count,
+        totalPrice: tvaStat.total.toFixed(2),
       };
     })
     .sort(
       (a, b) => Number(b.tva) - Number(a.tva) || a.type.localeCompare(b.type)
     );
 
-  const paymentMethods = Object.entries(paymentStats)
+  const paymentMethods = [...paymentStats.entries()]
     .map(([type, data]) => ({
-      type: type as PaymentMethod,
+      type,
       nb: data.count,
       totalPrice: data.total.toFixed(2),
     }))
