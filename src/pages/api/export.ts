@@ -14,6 +14,7 @@ type Item = {
   amount: number;
   price: string;
   type: ItemType;
+  isbn: string;
 };
 
 const trim = (str: string | undefined) => str?.trim() || "";
@@ -34,13 +35,14 @@ const makeCSV = async () => {
           amount: 1,
           price: 1,
           type: 1,
+          isbn: 1,
         },
       },
       { $sort: { distributor: 1, author: 1, title: 1 } },
     ])
     .toArray();
   logger.info("Export stock", { nbItems: items.length });
-  const HEADER = "Catégorie,Titre,Auteur,Distributeur,Qté,Valeur TTC\n";
+  const HEADER = "Catégorie,Titre,Auteur,Distributeur,ISBN,Qté,Valeur TTC\n";
   const csv =
     HEADER +
     items
@@ -50,6 +52,7 @@ const makeCSV = async () => {
           `"${trim(item.title)}"`,
           `"${trim(item.author)}"`,
           `"${trim(item.distributor)}"`,
+          item.isbn,
           item.amount,
           `"${formatNumber(item.price)}"`,
         ].join()
