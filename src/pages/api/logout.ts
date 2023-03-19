@@ -1,7 +1,7 @@
 import { withIronSessionApiRoute } from "iron-session/next";
 import type { NextApiHandler } from "next";
 
-import { User, sessionOptions } from "@/lib/session";
+import { type User, sessionOptions } from "@/lib/session";
 import { logger } from "@/utils/logger";
 
 const logoutRoute: NextApiHandler = (req, res) => {

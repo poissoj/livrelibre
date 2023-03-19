@@ -17,7 +17,7 @@ import { FormRow } from "@/components/FormRow";
 import { formatDate } from "@/utils/date";
 import { formatTVA } from "@/utils/format";
 import type { BookData } from "@/utils/getBookData";
-import { BaseItem, ITEM_TYPES, TVAValues } from "@/utils/item";
+import { type BaseItem, ITEM_TYPES, TVAValues } from "@/utils/item";
 
 export type FormFields = Omit<BaseItem, "amount"> & { amount: string };
 

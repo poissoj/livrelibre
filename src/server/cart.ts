@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import { ObjectId, WithId } from "mongodb";
+import { ObjectId, type WithId } from "mongodb";
 
 import { CART_ERRORS } from "@/utils/errors";
 import type { DBItem, ItemType, TVA } from "@/utils/item";

@@ -1,5 +1,5 @@
 import { extractCritical } from "@emotion/server";
-import Document, { DocumentContext } from "next/document";
+import Document, { type DocumentContext } from "next/document";
 
 export default class MyDocument extends Document {
   static async getInitialProps(ctx: DocumentContext) {

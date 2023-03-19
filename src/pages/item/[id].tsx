@@ -26,7 +26,7 @@ import { Title } from "@/components/Title";
 import { appRouter } from "@/pages/api/trpc/[trpc]";
 import { createContext } from "@/server/context";
 import { formatNumber, formatPrice, formatTVA } from "@/utils/format";
-import { ITEM_TYPES, ItemWithCount } from "@/utils/item";
+import { ITEM_TYPES, type ItemWithCount } from "@/utils/item";
 import { trpc, useBookmark } from "@/utils/trpc";
 import { useAddToCart } from "@/utils/useAddToCart";
 

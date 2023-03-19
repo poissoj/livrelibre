@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "twin.macro";
 
 import { Button } from "@/components/Button";
-import { FormFields, ItemForm } from "@/components/ItemForm";
+import { type FormFields, ItemForm } from "@/components/ItemForm";
 import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
 

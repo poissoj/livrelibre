@@ -4,7 +4,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { sessionOptions } from "@/lib/session";
 import { getDb } from "@/server/database";
 import { formatDate } from "@/utils/date";
-import { ITEM_TYPES, ItemType } from "@/utils/item";
+import { ITEM_TYPES, type ItemType } from "@/utils/item";
 import { logger } from "@/utils/logger";
 
 type Item = {

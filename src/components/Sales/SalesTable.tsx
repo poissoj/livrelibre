@@ -5,7 +5,7 @@ import tw from "twin.macro";
 
 import { Button } from "@/components/Button";
 import { formatNumber, formatPrice, formatTVA } from "@/utils/format";
-import { RouterOutput, trpc } from "@/utils/trpc";
+import { type RouterOutput, trpc } from "@/utils/trpc";
 
 const DeleteSale = ({
   saleId,

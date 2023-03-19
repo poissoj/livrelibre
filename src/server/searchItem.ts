@@ -1,4 +1,4 @@
-import { Filter, ObjectId } from "mongodb";
+import { type Filter, ObjectId } from "mongodb";
 
 import type { DBItem, ItemWithCount } from "@/utils/item";
 import { logger } from "@/utils/logger";

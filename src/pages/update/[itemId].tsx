@@ -12,7 +12,7 @@ import "twin.macro";
 import { Button } from "@/components/Button";
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
-import { FormFields, ItemForm } from "@/components/ItemForm";
+import { type FormFields, ItemForm } from "@/components/ItemForm";
 import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
 
