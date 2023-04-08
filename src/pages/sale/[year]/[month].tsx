@@ -1,6 +1,3 @@
-import type { DehydratedState } from "@tanstack/react-query";
-import { createProxySSGHelpers } from "@trpc/react-query/ssg";
-import type { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
@@ -14,8 +11,6 @@ import { Restricted } from "@/components/Restricted";
 import { StatsByTVA } from "@/components/TVAStats/StatsByTVA";
 import { TVASkeleton } from "@/components/TVAStats/TVASkeleton";
 import { Title } from "@/components/Title";
-import { appRouter } from "@/pages/api/trpc/[trpc]";
-import { createContext } from "@/server/context";
 import { formatPrice } from "@/utils/format";
 import { type RouterOutput, trpc } from "@/utils/trpc";
 
@@ -186,22 +181,3 @@ const SalesByMonth = (): JSX.Element => {
 };
 
 export default SalesByMonth;
-
-export const getServerSideProps: GetServerSideProps<{
-  trpcState: DehydratedState;
-}> = async (context) => {
-  const ssg = createProxySSGHelpers({
-    router: appRouter,
-    ctx: await createContext(),
-  });
-  const year = context.params?.year;
-  const month = context.params?.month;
-  if (typeof year === "string" && typeof month === "string") {
-    await ssg.salesByMonth.prefetch({ month, year });
-  }
-  return {
-    props: {
-      trpcState: ssg.dehydrate(),
-    },
-  };
-};

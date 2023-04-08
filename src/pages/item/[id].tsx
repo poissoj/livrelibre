@@ -6,9 +6,6 @@ import {
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import type { DehydratedState } from "@tanstack/react-query";
-import { createProxySSGHelpers } from "@trpc/react-query/ssg";
-import type { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -23,8 +20,6 @@ import { ErrorMessage } from "@/components/ErrorMessage";
 import { Input } from "@/components/FormControls";
 import { NoResults } from "@/components/NoResults";
 import { Title } from "@/components/Title";
-import { appRouter } from "@/pages/api/trpc/[trpc]";
-import { createContext } from "@/server/context";
 import { formatNumber, formatPrice, formatTVA } from "@/utils/format";
 import { ITEM_TYPES, type ItemWithCount } from "@/utils/item";
 import { trpc, useBookmark } from "@/utils/trpc";
@@ -297,24 +292,3 @@ const ItemPage = (): JSX.Element => {
 };
 
 export default ItemPage;
-
-export const getServerSideProps: GetServerSideProps<{
-  trpcState: DehydratedState;
-}> = async (context) => {
-  const ssg = createProxySSGHelpers({
-    router: appRouter,
-    ctx: await createContext(),
-  });
-  const id = context.params?.id;
-  if (typeof id === "string") {
-    await Promise.all([
-      ssg.searchItem.prefetch(id),
-      ssg.lastSales.prefetch(id),
-    ]);
-  }
-  return {
-    props: {
-      trpcState: ssg.dehydrate(),
-    },
-  };
-};

@@ -1,6 +1,3 @@
-import type { DehydratedState } from "@tanstack/react-query";
-import { createProxySSGHelpers } from "@trpc/react-query/ssg";
-import type { GetServerSideProps } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
@@ -10,8 +7,6 @@ import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Restricted } from "@/components/Restricted";
 import { Title } from "@/components/Title";
-import { appRouter } from "@/pages/api/trpc/[trpc]";
-import { createContext } from "@/server/context";
 import type { Sale } from "@/server/sales";
 import { formatNumber, formatPrice } from "@/utils/format";
 import { trpc } from "@/utils/trpc";
@@ -107,18 +102,3 @@ const Sales = (): JSX.Element => (
 );
 
 export default Sales;
-
-export const getServerSideProps: GetServerSideProps<{
-  trpcState: DehydratedState;
-}> = async () => {
-  const ssg = createProxySSGHelpers({
-    router: appRouter,
-    ctx: await createContext(),
-  });
-  await ssg.sales.prefetch();
-  return {
-    props: {
-      trpcState: ssg.dehydrate(),
-    },
-  };
-};
