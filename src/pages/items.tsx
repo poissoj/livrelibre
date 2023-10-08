@@ -1,7 +1,6 @@
 import { useRouter } from "next/router";
 import React from "react";
 import ContentLoader from "react-content-loader";
-import "twin.macro";
 
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
@@ -20,7 +19,7 @@ const ItemsCard = ({
   children: React.ReactNode;
   subtitle?: React.ReactNode;
 }) => (
-  <Card tw="max-h-full overflow-hidden flex flex-col">
+  <Card className="max-h-full overflow-hidden flex flex-col">
     <CardTitle>{title}</CardTitle>
     {subtitle}
     <CardBody>{children}</CardBody>
@@ -73,17 +72,17 @@ const ItemsLoader = ({ page }: { page: number }) => {
   const Wrapper = result.isFetching ? LoadingOverlay : React.Fragment;
 
   return (
-    <Card tw="max-h-full overflow-hidden flex flex-col relative">
+    <Card className="max-h-full overflow-hidden flex flex-col relative">
       <Title>{pageTitle}</Title>
       <CardTitle>{title}</CardTitle>
-      <p tw="mt-sm">{count} articles</p>
+      <p className="mt-sm">{count} articles</p>
       <CardBody>
         <Wrapper>
           <ItemsTable items={items} />
         </Wrapper>
       </CardBody>
       {pageCount > 1 ? (
-        <CardFooter tw="flex justify-center pt-6 2xl:pt-8">
+        <CardFooter className="flex justify-center pt-6 2xl:pt-8">
           <Pagination count={pageCount} />
         </CardFooter>
       ) : null}
@@ -96,7 +95,7 @@ const Items = (): JSX.Element => {
   const { page: queryPage } = router.query;
   const page = typeof queryPage === "string" ? Number(queryPage) : 1;
   return (
-    <div tw="flex flex-1 flex-col gap-lg">
+    <div className="flex flex-1 flex-col gap-lg">
       <Title>Liste des articles</Title>
       <ItemsLoader page={page} />
     </div>

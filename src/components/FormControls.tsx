@@ -1,20 +1,59 @@
-import tw, { styled } from "twin.macro";
+import { clsx } from "clsx";
+import React from "react";
 
-const formControl = tw`[border-radius:3px] [padding:8px 12px] w-full focus:(border-primary-default outline-none)
-  [border:2px solid #ccc] [transition:border-color ease-in-out 0.15s]`;
+const COMMON_STYLES = clsx(
+  "rounded px-3 py-2 w-full focus:border-primary-default focus:outline-none [border:2px_solid_#ccc]",
+  "[transition:border-color_ease-in-out_0.15s]"
+);
 
-export const Input = styled.input`
-  ${formControl}
-`;
+export const Input = React.forwardRef<
+  HTMLInputElement,
+  React.PropsWithChildren<JSX.IntrinsicElements["input"]>
+>(function Input(props, ref) {
+  const { children, className, ...rest } = props;
+  return (
+    <input className={clsx(COMMON_STYLES, className)} ref={ref} {...rest}>
+      {children}
+    </input>
+  );
+});
 
-export const InputWithButton = tw(
-  Input
-)`[border-top-right-radius:0] [border-bottom-right-radius:0]`;
+export const InputWithButton = React.forwardRef<
+  HTMLInputElement,
+  React.PropsWithChildren<JSX.IntrinsicElements["input"]>
+>(function InputWithButton(props, ref) {
+  const { children, className, ...rest } = props;
+  return (
+    <input
+      className={clsx(COMMON_STYLES, "rounded-r-none", className)}
+      ref={ref}
+      {...rest}
+    >
+      {children}
+    </input>
+  );
+});
 
-export const Select = styled.select`
-  ${formControl}
-`;
+export const Select = React.forwardRef<
+  HTMLSelectElement,
+  React.PropsWithChildren<JSX.IntrinsicElements["select"]>
+>(function Select(props, ref) {
+  const { children, className, ...rest } = props;
+  return (
+    <select className={clsx(COMMON_STYLES, className)} ref={ref} {...rest}>
+      {children}
+    </select>
+  );
+});
 
-export const Textarea = styled.textarea`
-  ${formControl}
-`;
+export const Textarea = React.forwardRef<
+  HTMLTextAreaElement,
+  React.PropsWithChildren<JSX.IntrinsicElements["textarea"]>
+>(function Textarea(props, ref) {
+  const { children, ...rest } = props;
+  return (
+    <textarea className={COMMON_STYLES} ref={ref} {...rest}>
+      {children}
+    </textarea>
+  );
+});

@@ -1,7 +1,7 @@
 import { faSpinner, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { clsx } from "clsx";
 import Link from "next/link";
-import tw from "twin.macro";
 
 import { Button } from "@/components/Button";
 import { formatNumber, formatPrice, formatTVA } from "@/utils/format";
@@ -25,7 +25,7 @@ const DeleteSale = ({
       type="button"
       name="saleId"
       aria-label="Supprimer la vente"
-      tw="[background-color:#FF9800]"
+      className="[background-color:#FF9800]"
       title="Supprimer"
       onClick={() => {
         mutate({ saleId, itemId });
@@ -47,32 +47,37 @@ const SalesRow = ({
 }: {
   deleted: boolean;
   children: React.ReactNode;
-}) => <tr css={[deleted && tw`line-through italic`]}>{children}</tr>;
+}) => <tr className={clsx(deleted && "line-through italic")}>{children}</tr>;
 
-const StickyTh = tw.th`sticky top-0 bg-white`;
+const TH_STYLES = "sticky top-0 bg-white";
 
-const Cell = tw.td`p-sm`;
+const Cell = ({
+  className,
+  children,
+}: React.PropsWithChildren<{ className?: string }>) => (
+  <td className={clsx("p-sm", className)}>{children}</td>
+);
 
 export const SalesTable = ({ carts }: { carts: Carts }) => {
   return (
-    <table tw="flex-1" cellPadding={8}>
+    <table className="flex-1" cellPadding={8}>
       <thead>
         <tr>
-          <StickyTh tw="text-right">Stock</StickyTh>
-          <StickyTh tw="text-left">Titre</StickyTh>
-          <StickyTh tw="text-left">Auteur</StickyTh>
-          <StickyTh tw="text-right">Quantité</StickyTh>
-          <StickyTh tw="text-right">Prix total</StickyTh>
-          <StickyTh tw="text-right">TVA</StickyTh>
-          <StickyTh tw="text-left">Paiement</StickyTh>
-          <StickyTh></StickyTh>
+          <th className={clsx(TH_STYLES, "text-right")}>Stock</th>
+          <th className={clsx(TH_STYLES, "text-left")}>Titre</th>
+          <th className={clsx(TH_STYLES, "text-left")}>Auteur</th>
+          <th className={clsx(TH_STYLES, "text-right")}>Quantité</th>
+          <th className={clsx(TH_STYLES, "text-right")}>Prix total</th>
+          <th className={clsx(TH_STYLES, "text-right")}>TVA</th>
+          <th className={clsx(TH_STYLES, "text-left")}>Paiement</th>
+          <th className={TH_STYLES}></th>
         </tr>
       </thead>
       {carts.map((cart, i) => (
-        <tbody tw="odd:bg-gray-light" key={i}>
+        <tbody className="odd:bg-gray-light" key={i}>
           {cart.sales.map((sale) => (
             <SalesRow key={sale._id} deleted={sale.deleted}>
-              <Cell tw="text-right font-number">
+              <Cell className="text-right font-number">
                 {"amount" in sale ? formatNumber(sale.amount) : ""}
               </Cell>
               <Cell>
@@ -80,7 +85,7 @@ export const SalesTable = ({ carts }: { carts: Carts }) => {
                   <Link
                     href={`/item/${sale.itemId}`}
                     passHref
-                    tw="text-primary-darkest"
+                    className="text-primary-darkest"
                   >
                     {sale.title}
                   </Link>
@@ -89,11 +94,15 @@ export const SalesTable = ({ carts }: { carts: Carts }) => {
                 )}
               </Cell>
               <Cell>{"author" in sale ? sale.author : ""}</Cell>
-              <Cell tw="text-right font-number">{sale.quantity}</Cell>
-              <Cell tw="text-right font-number">{formatPrice(sale.price)}</Cell>
-              <Cell tw="text-right font-number">{formatTVA(sale.tva)}</Cell>
-              <Cell tw="whitespace-nowrap">{sale.type}</Cell>
-              <Cell tw="pr-3">
+              <Cell className="text-right font-number">{sale.quantity}</Cell>
+              <Cell className="text-right font-number">
+                {formatPrice(sale.price)}
+              </Cell>
+              <Cell className="text-right font-number">
+                {formatTVA(sale.tva)}
+              </Cell>
+              <Cell className="whitespace-nowrap">{sale.type}</Cell>
+              <Cell className="pr-3">
                 {sale.deleted ? null : (
                   <DeleteSale saleId={sale._id} itemId={sale.itemId} />
                 )}

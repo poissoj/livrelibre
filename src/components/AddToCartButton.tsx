@@ -4,7 +4,7 @@ import {
   faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "twin.macro";
+import { clsx } from "clsx";
 
 import type { Bookmark } from "@/server/bookmarks";
 import { useAddToCart } from "@/utils/useAddToCart";
@@ -23,13 +23,15 @@ export const AddToCartButton = ({
   }
   return (
     <button
-      tw="p-xs mr-xs disabled:(cursor-not-allowed opacity-80) hover:text-primary-darkest"
+      className={clsx(
+        "p-xs mr-xs disabled:(cursor-not-allowed opacity-80) hover:text-primary-darkest",
+        className
+      )}
       name="Ajouter au panier"
       title="Ajouter au panier"
       type="button"
       onClick={() => mutate({ id: item._id })}
       disabled={item.amount === 0}
-      className={className}
     >
       <FontAwesomeIcon icon={icon} spin={isLoading} />
     </button>

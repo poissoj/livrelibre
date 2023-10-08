@@ -1,7 +1,7 @@
+import { clsx } from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
-import tw from "twin.macro";
 
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
@@ -11,7 +11,7 @@ import type { Sale } from "@/server/sales";
 import { formatNumber, formatPrice } from "@/utils/format";
 import { trpc } from "@/utils/trpc";
 
-const StickyTh = tw.th`sticky top-0 bg-white`;
+const TH_STYLES = "sticky top-0 bg-white";
 
 const SkeletonRow = ({ n }: { n: number }) => (
   <>
@@ -50,34 +50,38 @@ const makeSaleURL = (sale: Sale) =>
 const SalesTable = ({ sales }: { sales: Sale[] }): JSX.Element => {
   const router = useRouter();
   return (
-    <table tw="flex-1">
+    <table className="flex-1">
       <thead>
         <tr>
-          <StickyTh tw="text-left pl-2">Mois</StickyTh>
-          <StickyTh tw="text-right">Nombre de ventes</StickyTh>
-          <StickyTh tw="text-right">Recette totale HT</StickyTh>
-          <StickyTh tw="text-right">Recette totale TTC</StickyTh>
-          <StickyTh tw="text-right pr-1">Panier moyen</StickyTh>
+          <th className={clsx(TH_STYLES, "text-left pl-2")}>Mois</th>
+          <th className={clsx(TH_STYLES, "text-right")}>Nombre de ventes</th>
+          <th className={clsx(TH_STYLES, "text-right")}>Recette totale HT</th>
+          <th className={clsx(TH_STYLES, "text-right")}>Recette totale TTC</th>
+          <th className={clsx(TH_STYLES, "text-right pr-1")}>Panier moyen</th>
         </tr>
       </thead>
-      <tbody tw="[line-height:2.3rem]">
+      <tbody className="[line-height:2.3rem]">
         {sales.map((sale, i) => (
           <tr
             key={i}
-            tw="cursor-pointer hover:bg-gray-light"
+            className="cursor-pointer hover:bg-gray-light"
             onClick={() => router.push({ pathname: makeSaleURL(sale) })}
           >
-            <td tw="pl-2">
+            <td className="pl-2">
               <Link href={makeSaleURL(sale)} legacyBehavior>
                 {sale.month}
               </Link>
             </td>
-            <td tw="text-right font-number">{formatNumber(sale.count)}</td>
-            <td tw="text-right font-number">
+            <td className="text-right font-number">
+              {formatNumber(sale.count)}
+            </td>
+            <td className="text-right font-number">
               {sale.ht ? formatPrice(sale.ht) : "Inconnu"}
             </td>
-            <td tw="text-right font-number">{formatPrice(sale.amount)}</td>
-            <td tw="text-right font-number pr-2">
+            <td className="text-right font-number">
+              {formatPrice(sale.amount)}
+            </td>
+            <td className="text-right font-number pr-2">
               {sale.avg ? `${formatPrice(sale.avg)}` : "Inconnu"}
             </td>
           </tr>
@@ -89,9 +93,9 @@ const SalesTable = ({ sales }: { sales: Sale[] }): JSX.Element => {
 
 const Sales = (): JSX.Element => (
   <Restricted role="admin">
-    <div tw="[margin-left:10%] [margin-right:10%] flex-1">
+    <div className="[margin-left:10%] [margin-right:10%] flex-1">
       <Title>Liste des ventes par mois</Title>
-      <Card tw="mb-lg max-h-full overflow-hidden flex flex-col">
+      <Card className="mb-lg max-h-full overflow-hidden flex flex-col">
         <CardTitle>Liste des ventes par mois</CardTitle>
         <CardBody>
           <SalesLoader />

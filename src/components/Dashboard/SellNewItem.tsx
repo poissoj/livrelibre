@@ -2,7 +2,6 @@ import * as React from "react";
 import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useForm } from "react-hook-form";
-import "twin.macro";
 
 import { Alert } from "@/components/Alert";
 import { Button } from "@/components/Button";
@@ -38,15 +37,18 @@ export const SellNewItem = (): JSX.Element => {
   };
 
   return (
-    <Card tw="mb-lg">
+    <Card className="mb-lg">
       <CardTitle>Vendre un article non répertorié</CardTitle>
-      <CardBody tw="flex-col gap-4">
-        <form tw="flex flex-col flex-1" onSubmit={handleSubmit(onSubmit)}>
+      <CardBody className="flex-col gap-4">
+        <form
+          className="flex flex-col flex-1"
+          onSubmit={handleSubmit(onSubmit)}
+        >
           <FormRow label="Prix">
             <Input
               type="number"
               {...register("price")}
-              tw="font-number"
+              className="font-number"
               step={0.01}
               required
             />
@@ -68,7 +70,11 @@ export const SellNewItem = (): JSX.Element => {
             </Select>
           </FormRow>
           <FormRow label="TVA">
-            <Select {...register("tva")} defaultValue="5.5" tw="font-number">
+            <Select
+              {...register("tva")}
+              defaultValue="5.5"
+              className="font-number"
+            >
               {TVAValues.map((value) => (
                 <option value={value} key={value}>
                   {formatTVA(value)}
@@ -76,8 +82,8 @@ export const SellNewItem = (): JSX.Element => {
               ))}
             </Select>
           </FormRow>
-          <Button type="submit" tw="self-center" disabled={isLoading}>
-            <FontAwesomeIcon icon={faCartPlus} tw="mr-sm" />
+          <Button type="submit" className="self-center" disabled={isLoading}>
+            <FontAwesomeIcon icon={faCartPlus} className="mr-sm" />
             Ajouter au panier
           </Button>
         </form>

@@ -1,7 +1,6 @@
 import * as React from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import tw from "twin.macro";
 
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
@@ -15,7 +14,7 @@ import { ITEMS_PER_PAGE } from "@/utils/pagination";
 import { trpc } from "@/utils/trpc";
 import { isIn } from "@/utils/utils";
 
-const StyledCard = tw(Card)`max-h-full overflow-hidden flex flex-col relative`;
+const CARD_STYLES = "max-h-full overflow-hidden flex flex-col relative";
 
 const FIELD_LABELS = {
   type: "Type",
@@ -62,11 +61,11 @@ const ToggleStock = () => {
     await router.push({ query });
   };
   return (
-    <label tw="self-end cursor-pointer mr-6 ml-auto">
+    <label className="self-end cursor-pointer mr-6 ml-auto">
       <span>En stock</span>
       <input
         type="checkbox"
-        tw="ml-2"
+        className="ml-2"
         onChange={toggleStock}
         defaultChecked={router.query.inStock == "1"}
       />
@@ -100,25 +99,25 @@ const SearchLoader = ({
     subtitle = `${count} résultat${count > 1 ? "s" : ""} pour ${queryLabel}`;
     if (count === 0) {
       return (
-        <StyledCard>
+        <Card className={CARD_STYLES}>
           <CardTitle>{title}</CardTitle>
           <ToggleStock />
           <CardBody>Aucun résultat pour &quot;{queryLabel}&quot;</CardBody>
-          <p tw="mt-2">
-            <Link href="/search" passHref tw="text-primary-darkest">
+          <p className="mt-2">
+            <Link href="/search" passHref className="text-primary-darkest">
               Nouvelle recherche
             </Link>
           </p>
-        </StyledCard>
+        </Card>
       );
     }
   }
   const Wrapper = result.isFetching ? LoadingOverlay : React.Fragment;
 
   return (
-    <StyledCard>
+    <Card className={CARD_STYLES}>
       <CardTitle>{title}</CardTitle>
-      <div tw="flex flex-1">
+      <div className="flex flex-1">
         {subtitle}
         <ToggleStock />
       </div>
@@ -131,11 +130,11 @@ const SearchLoader = ({
         ) : null}
       </CardBody>
       {pageCount > 1 ? (
-        <CardFooter tw="flex justify-center pt-6 2xl:pt-8">
+        <CardFooter className="flex justify-center pt-6 2xl:pt-8">
           <Pagination count={pageCount} />
         </CardFooter>
       ) : null}
-    </StyledCard>
+    </Card>
   );
 };
 
@@ -156,7 +155,7 @@ const SearchResults = () => {
   const query = router.query;
   const page = typeof query.page === "string" ? Number(query.page) : 1;
   return (
-    <div tw="flex flex-1 flex-col gap-lg">
+    <div className="flex flex-1 flex-col gap-lg">
       <Title>Recherche avancée</Title>
       <SearchLoader query={filterNonString(query)} page={page} />
     </div>

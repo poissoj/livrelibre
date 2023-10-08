@@ -1,6 +1,6 @@
+import { clsx } from "clsx";
 import Link from "next/link";
 import ContentLoader from "react-content-loader";
-import tw from "twin.macro";
 
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
@@ -9,17 +9,20 @@ import { formatNumber } from "@/utils/format";
 import type { ItemWithCount } from "@/utils/item";
 import { trpc } from "@/utils/trpc";
 
-const StickyTh = tw.th`sticky top-0 bg-white`;
+const TH_STYLES = "sticky top-0 bg-white";
+
 const ItemsTable = ({ items }: { items: ItemWithCount[] }) => (
-  <table tw="flex-1 [border-collapse:separate] [border-spacing:2px 0.5rem]">
+  <table className="flex-1 [border-collapse:separate] [border-spacing:2px_0.5rem]">
     <thead>
       <tr>
-        <StickyTh tw="text-left">#</StickyTh>
-        <StickyTh tw="text-left">Titre</StickyTh>
-        <StickyTh tw="text-left">Auteur</StickyTh>
-        <StickyTh tw="text-right">Vendus</StickyTh>
-        <StickyTh tw="text-right whitespace-nowrap">En stock</StickyTh>
-        <StickyTh></StickyTh>
+        <th className={clsx(TH_STYLES, "text-left")}>#</th>
+        <th className={clsx(TH_STYLES, "text-left")}>Titre</th>
+        <th className={clsx(TH_STYLES, "text-left")}>Auteur</th>
+        <th className={clsx(TH_STYLES, "text-right")}>Vendus</th>
+        <th className={clsx(TH_STYLES, "text-right whitespace-nowrap")}>
+          En stock
+        </th>
+        <th className={TH_STYLES}></th>
       </tr>
     </thead>
     <tbody>
@@ -27,15 +30,17 @@ const ItemsTable = ({ items }: { items: ItemWithCount[] }) => (
         <tr key={i}>
           <td>{i + 1}</td>
           <td>
-            <span tw="text-primary-darkest">
+            <span className="text-primary-darkest">
               <Link href={`/item/${item._id}`} legacyBehavior>
                 {item.title}
               </Link>
             </span>
           </td>
           <td>{item.author}</td>
-          <td tw="text-right font-number">{formatNumber(item.count)}</td>
-          <td tw="pr-3 text-right font-number">{formatNumber(item.amount)}</td>
+          <td className="text-right font-number">{formatNumber(item.count)}</td>
+          <td className="pr-3 text-right font-number">
+            {formatNumber(item.amount)}
+          </td>
           <td></td>
         </tr>
       ))}
@@ -75,9 +80,9 @@ const BestSalesLoader = () => {
 };
 
 const BestSales = (): JSX.Element => (
-  <div tw="[margin-left:10%] [margin-right:10%] flex flex-1 flex-col gap-lg">
+  <div className="[margin-left:10%] [margin-right:10%] flex flex-1 flex-col gap-lg">
     <Title>Meilleurs ventes</Title>
-    <Card tw="max-h-full overflow-hidden flex flex-col">
+    <Card className="max-h-full overflow-hidden flex flex-col">
       <CardTitle>Meilleures ventes</CardTitle>
       <CardBody>
         <BestSalesLoader />

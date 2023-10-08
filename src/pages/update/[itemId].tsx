@@ -7,9 +7,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
-import "twin.macro";
 
-import { Button } from "@/components/Button";
+import { Button, ButtonAnchor } from "@/components/Button";
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { type FormFields, ItemForm } from "@/components/ItemForm";
@@ -88,13 +87,13 @@ const ItemLoader = ({ id }: { id: string }) => {
       onSuccess={onSuccess}
     >
       <Link href={`/item/${id}`} passHref legacyBehavior>
-        <Button as="a" tw="mr-2 px-md [background-color:#6E6E6E]">
-          <FontAwesomeIcon icon={faTimesCircle} tw="mr-sm" />
+        <ButtonAnchor className="mr-2 px-md [background-color:#6E6E6E]">
+          <FontAwesomeIcon icon={faTimesCircle} className="mr-sm" />
           Annuler
-        </Button>
+        </ButtonAnchor>
       </Link>
-      <Button type="submit" tw="px-md">
-        <FontAwesomeIcon icon={faCheckCircle} tw="mr-sm" />
+      <Button type="submit" className="px-md">
+        <FontAwesomeIcon icon={faCheckCircle} className="mr-sm" />
         Modifier
       </Button>
     </ItemForm>
@@ -108,7 +107,7 @@ const UpdateItem = () => {
     return null;
   }
   return (
-    <div tw="2xl:([margin-left:10%] [margin-right:10%]) flex-1">
+    <div className="2xl:([margin-left:10%] [margin-right:10%]) flex-1">
       <Title>Modifier un article</Title>
       <ItemLoader id={itemId} />
     </div>

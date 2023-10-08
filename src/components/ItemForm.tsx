@@ -2,7 +2,6 @@ import * as React from "react";
 import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useForm } from "react-hook-form";
-import tw from "twin.macro";
 
 import { Alert } from "@/components/Alert";
 import { ButtonWithInput } from "@/components/Button";
@@ -26,7 +25,9 @@ type TAlert = {
   message: string;
 };
 
-const Column = tw.div`flex-1 [min-width:20rem] ml-md`;
+const Column = ({ children }: React.PropsWithChildren) => (
+  <div className="flex-1 [min-width:20rem] ml-md">{children}</div>
+);
 
 const ISBNSearchButton = ({
   clickHandler,
@@ -44,7 +45,7 @@ const ISBNSearchButton = ({
       <FontAwesomeIcon
         icon={isLoading ? faSpinner : faSearch}
         spin={isLoading}
-        tw="mx-sm"
+        className="mx-sm"
       />
     </ButtonWithInput>
   );
@@ -105,11 +106,14 @@ export const ItemForm = ({
   };
 
   return (
-    <Card tw="max-h-full flex flex-col">
+    <Card className="max-h-full flex flex-col">
       <CardTitle>{title}</CardTitle>
-      <form tw="flex-1 flex flex-col h-0" onSubmit={handleSubmit(submit)}>
-        <CardBody tw="flex-col gap-5">
-          <div tw="flex flex-wrap">
+      <form
+        className="flex-1 flex flex-col h-0"
+        onSubmit={handleSubmit(submit)}
+      >
+        <CardBody className="flex-col gap-5">
+          <div className="flex flex-wrap">
             <Column>
               <FormRow label="Type">
                 <Select defaultValue="book" {...register("type")}>
@@ -165,7 +169,7 @@ export const ItemForm = ({
                   {...register("price")}
                   step={0.01}
                   required
-                  tw="font-number"
+                  className="font-number"
                 />
               </FormRow>
               <FormRow label="Quantité">
@@ -174,14 +178,14 @@ export const ItemForm = ({
                   {...register("amount")}
                   min={0}
                   defaultValue={1}
-                  tw="font-number"
+                  className="font-number"
                 />
               </FormRow>
               <FormRow label="TVA">
                 <Select
                   {...register("tva")}
                   defaultValue="5.5"
-                  tw="font-number"
+                  className="font-number"
                 >
                   {TVAValues.map((value) => (
                     <option value={value} key={value}>
@@ -194,7 +198,7 @@ export const ItemForm = ({
           </div>
         </CardBody>
         <CardFooter>
-          <div tw="flex justify-end mb-sm">{children}</div>
+          <div className="flex justify-end mb-sm">{children}</div>
           {alert ? (
             <Alert type={alert.type} onDismiss={() => setAlert(null)}>
               {alert.message}

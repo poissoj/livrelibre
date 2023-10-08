@@ -1,7 +1,6 @@
 import * as React from "react";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "twin.macro";
 
 import { Button } from "@/components/Button";
 import { type FormFields, ItemForm } from "@/components/ItemForm";
@@ -16,11 +15,11 @@ const Add = (): JSX.Element => {
     return await mutation.mutateAsync(item);
   };
   return (
-    <div tw="[margin-left:10%] [margin-right:10%] flex-1">
+    <div className="[margin-left:10%] [margin-right:10%] flex-1">
       <Title>Ajouter un article</Title>
       <ItemForm title="Ajouter un article" onSubmit={submit}>
-        <Button type="submit" tw="px-md">
-          <FontAwesomeIcon icon={faPlus} tw="mr-sm" />
+        <Button type="submit" className="px-md">
+          <FontAwesomeIcon icon={faPlus} className="mr-sm" />
           Ajouter
         </Button>
       </ItemForm>

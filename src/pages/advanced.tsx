@@ -9,7 +9,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, { createContext, useState } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { toast } from "react-toastify";
-import "twin.macro";
 
 import { Button, ButtonAnchor } from "@/components/Button";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
@@ -63,7 +62,7 @@ const DilicomForm = ({ children }: { children: React.ReactNode }) => {
   return (
     <FormProvider {...methods}>
       <form
-        tw="flex flex-col w-full"
+        className="flex flex-col w-full"
         method="post"
         onSubmit={methods.handleSubmit(submit)}
       >
@@ -78,7 +77,7 @@ const FileInput = () => {
   return (
     <input
       type="file"
-      tw="ml-2"
+      className="ml-2"
       accept=".csv, .slk, .xlsx"
       {...register("dilicom")}
     />
@@ -93,11 +92,11 @@ const SubmitButton = () => {
   const file = watch("dilicom");
   const hasFile = file && file.length > 0;
   return (
-    <Button tw="px-4" type="submit" disabled={isSubmitting || !hasFile}>
+    <Button className="px-4" type="submit" disabled={isSubmitting || !hasFile}>
       <FontAwesomeIcon
         icon={isSubmitting ? faSpinner : faUpload}
         spin={isSubmitting}
-        tw="mr-2"
+        className="mr-2"
       />
       {isSubmitting ? "Traitement…" : "Envoyer"}
     </Button>
@@ -108,7 +107,7 @@ const DilicomImport = () => (
   <Card>
     <CardTitle>Importer un fichier DILICOM</CardTitle>
     <DilicomForm>
-      <CardBody tw="flex flex-col gap-sm">
+      <CardBody className="flex flex-col gap-sm">
         <label>
           Fichier :
           <FileInput />
@@ -128,8 +127,8 @@ const StockExport = () => (
       <p>Export du stock au format CSV</p>
     </CardBody>
     <CardFooter>
-      <ButtonAnchor tw="px-4 inline-block" href="/api/export" download>
-        <FontAwesomeIcon icon={faDownload} tw="mr-2" />
+      <ButtonAnchor className="px-4 inline-block" href="/api/export" download>
+        <FontAwesomeIcon icon={faDownload} className="mr-2" />
         Télécharger
       </ButtonAnchor>
     </CardFooter>
@@ -138,17 +137,17 @@ const StockExport = () => (
 
 const DilicomTable = ({ items }: { items: DilicomRowWithId[] }) => {
   return (
-    <table tw="flex-1 border-separate [border-spacing:0.5rem]">
+    <table className="flex-1 border-separate [border-spacing:0.5rem]">
       <thead>
-        <tr tw="sticky top-0 bg-white z-10">
-          <th tw="text-left">EAN</th>
-          <th tw="text-left">Titre</th>
-          <th tw="text-left">Auteur</th>
-          <th tw="text-left">Éditeur</th>
-          <th tw="text-left">Distributeur</th>
-          <th tw="text-right">Stock</th>
-          <th tw="text-right">Prix</th>
-          <th tw="text-right">Quantité</th>
+        <tr className="sticky top-0 bg-white z-10">
+          <th className="text-left">EAN</th>
+          <th className="text-left">Titre</th>
+          <th className="text-left">Auteur</th>
+          <th className="text-left">Éditeur</th>
+          <th className="text-left">Distributeur</th>
+          <th className="text-right">Stock</th>
+          <th className="text-right">Prix</th>
+          <th className="text-right">Quantité</th>
         </tr>
       </thead>
       <tbody>
@@ -159,15 +158,15 @@ const DilicomTable = ({ items }: { items: DilicomRowWithId[] }) => {
             <td>{item.AUTEUR}</td>
             <td>{item.EDITEUR}</td>
             <td>{item.DISTRIBUTEUR}</td>
-            <td tw="text-right">
+            <td className="text-right">
               {item.amount == null ? (
                 "Nouveau"
               ) : (
-                <span tw="font-number">{formatNumber(item.amount)}</span>
+                <span className="font-number">{formatNumber(item.amount)}</span>
               )}
             </td>
-            <td tw="text-right font-number">{formatPrice(item.PRIX)}</td>
-            <td tw="text-right font-number">{formatNumber(item.QTE)}</td>
+            <td className="text-right font-number">{formatPrice(item.PRIX)}</td>
+            <td className="text-right font-number">{formatNumber(item.QTE)}</td>
           </tr>
         ))}
       </tbody>
@@ -211,26 +210,27 @@ const DilicomPage = () => {
   const nbItems = file.data.reduce((nb, row) => nb + row.QTE, 0);
 
   return (
-    <Card tw="self-start max-h-full flex flex-col flex-1">
+    <Card className="self-start max-h-full flex flex-col flex-1">
       <CardTitle>Import du fichier {file.filename}</CardTitle>
-      <CardBody tw="flex flex-col">
+      <CardBody className="flex flex-col">
         <DilicomTable items={file.data} />
       </CardBody>
-      <CardFooter tw="flex">
-        <span tw="font-bold mr-auto">
-          Total: <span tw="font-number">{formatNumber(nbItems)}</span> articles
+      <CardFooter className="flex">
+        <span className="font-bold mr-auto">
+          Total: <span className="font-number">{formatNumber(nbItems)}</span>{" "}
+          articles
         </span>
         <ImportBooks books={file.data}>
           <Button
             type="button"
-            tw="mr-2 px-md [background-color:#6E6E6E]"
+            className="mr-2 px-md [background-color:#6E6E6E]"
             onClick={() => setFile(null)}
           >
-            <FontAwesomeIcon icon={faTimesCircle} tw="mr-sm" />
+            <FontAwesomeIcon icon={faTimesCircle} className="mr-sm" />
             Annuler
           </Button>
-          <Button type="submit" tw="px-md">
-            <FontAwesomeIcon icon={faCheckCircle} tw="mr-sm" />
+          <Button type="submit" className="px-md">
+            <FontAwesomeIcon icon={faCheckCircle} className="mr-sm" />
             Valider
           </Button>
         </ImportBooks>
@@ -247,7 +247,7 @@ const Advanced = (): JSX.Element => {
   }
 
   return (
-    <div tw="[margin-left:10%] [margin-right:10%] flex flex-1 flex-col gap-lg">
+    <div className="[margin-left:10%] [margin-right:10%] flex flex-1 flex-col gap-lg">
       <Title>Avancé</Title>
       <DilicomImport />
       <StockExport />

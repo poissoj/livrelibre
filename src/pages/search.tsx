@@ -2,7 +2,6 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
-import tw from "twin.macro";
 
 import { Button } from "@/components/Button";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
@@ -12,7 +11,9 @@ import { Title } from "@/components/Title";
 import { formatTVA } from "@/utils/format";
 import { ITEM_TYPES, TVAValues } from "@/utils/item";
 
-const Column = tw.div`flex-1 [min-width:20rem] ml-md`;
+const Column = ({ children }: React.PropsWithChildren) => (
+  <div className="flex-1 [min-width:20rem] ml-md">{children}</div>
+);
 
 const Search = (): JSX.Element => {
   const { register, handleSubmit } = useForm();
@@ -23,13 +24,13 @@ const Search = (): JSX.Element => {
     void router.push({ pathname: "/advancedSearch", query });
   };
   return (
-    <div tw="[margin-left:10%] [margin-right:10%] flex-1">
+    <div className="[margin-left:10%] [margin-right:10%] flex-1">
       <Title>Chercher un article</Title>
-      <Card tw="mb-lg">
+      <Card className="mb-lg">
         <CardTitle>Chercher un article</CardTitle>
-        <form tw="flex-1" onSubmit={handleSubmit(onSubmit)}>
-          <CardBody tw="flex-col">
-            <div tw="flex flex-wrap">
+        <form className="flex-1" onSubmit={handleSubmit(onSubmit)}>
+          <CardBody className="flex-col">
+            <div className="flex flex-wrap">
               <Column>
                 <FormRow label="Type">
                   <Select defaultValue="" {...register("type")}>
@@ -73,7 +74,7 @@ const Search = (): JSX.Element => {
                     {...register("purchasePrice")}
                     min={0}
                     step={0.01}
-                    tw="font-number"
+                    className="font-number"
                   />
                 </FormRow>
                 <FormRow label="Prix de vente">
@@ -82,7 +83,7 @@ const Search = (): JSX.Element => {
                     {...register("price")}
                     min={0}
                     step={0.01}
-                    tw="font-number"
+                    className="font-number"
                   />
                 </FormRow>
                 <FormRow label="Quantité">
@@ -90,11 +91,15 @@ const Search = (): JSX.Element => {
                     type="number"
                     {...register("amount")}
                     min={0}
-                    tw="font-number"
+                    className="font-number"
                   />
                 </FormRow>
                 <FormRow label="TVA">
-                  <Select {...register("tva")} defaultValue="" tw="font-number">
+                  <Select
+                    {...register("tva")}
+                    defaultValue=""
+                    className="font-number"
+                  >
                     <option value="">--ignorer--</option>
                     {TVAValues.map((value) => (
                       <option value={value} key={value}>
@@ -105,9 +110,9 @@ const Search = (): JSX.Element => {
                 </FormRow>
               </Column>
             </div>
-            <CardFooter tw="flex justify-end">
-              <Button type="submit" tw="px-md">
-                <FontAwesomeIcon icon={faSearch} tw="mr-sm" />
+            <CardFooter className="flex justify-end">
+              <Button type="submit" className="px-md">
+                <FontAwesomeIcon icon={faSearch} className="mr-sm" />
                 Rechercher
               </Button>
             </CardFooter>

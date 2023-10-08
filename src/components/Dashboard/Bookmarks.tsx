@@ -1,5 +1,4 @@
 import Link from "next/link";
-import "twin.macro";
 
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { Card, CardBody, CardTitle } from "@/components/Card";
@@ -17,13 +16,13 @@ const BookmarksContent = ({
   bookmarks,
 }: BookmarksContentProps): JSX.Element => {
   return (
-    <ul tw="flex-1">
+    <ul className="flex-1">
       {bookmarks.map((bookmark) => (
         <li
           key={bookmark._id}
-          tw="flex text-primary-dark hover:bg-gray-light pl-sm pr-xs"
+          className="flex text-primary-dark hover:bg-gray-light pl-sm pr-xs"
         >
-          <span tw="flex flex-1 items-center text-primary-darkest">
+          <span className="flex flex-1 items-center text-primary-darkest">
             <Link href={`/item/${bookmark._id}`} legacyBehavior>
               {bookmark.title}
             </Link>
@@ -47,7 +46,7 @@ const BookmarksLoader = (): JSX.Element | null => {
 };
 
 export const Bookmarks = (): JSX.Element => (
-  <Card tw="flex-1 max-h-full overflow-hidden flex flex-col [min-width:24rem]">
+  <Card className="flex-1 max-h-full overflow-hidden flex flex-col [min-width:24rem]">
     <CardTitle>Favoris</CardTitle>
     <CardBody>
       <BookmarksLoader />

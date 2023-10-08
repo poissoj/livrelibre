@@ -1,4 +1,4 @@
-import "twin.macro";
+import { clsx } from "clsx";
 
 type MainProps = {
   className?: string;
@@ -6,7 +6,7 @@ type MainProps = {
 };
 export const Main = ({ className, children }: MainProps): JSX.Element => {
   return (
-    <main className={className} tw="p-lg flex overflow-auto">
+    <main className={clsx("p-lg flex overflow-auto", className)}>
       {children}
     </main>
   );

@@ -6,11 +6,11 @@ import {
   faTrashAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { clsx } from "clsx";
 import Link from "next/link";
 import { useState } from "react";
 import ContentLoader from "react-content-loader";
 import { useForm } from "react-hook-form";
-import tw from "twin.macro";
 
 import { Alert } from "@/components/Alert";
 import { Button } from "@/components/Button";
@@ -26,7 +26,7 @@ import { PAYMENT_METHODS } from "@/utils/sale";
 import { trpc } from "@/utils/trpc";
 import type { RouterOutput } from "@/utils/trpc";
 
-const StickyTh = tw.th`sticky top-0 bg-white`;
+const TH_STYLES = "sticky top-0 bg-white";
 
 const RemoveFromCartButton = ({ id }: { id: string }) => {
   const utils = trpc.useContext();
@@ -38,7 +38,7 @@ const RemoveFromCartButton = ({ id }: { id: string }) => {
   return (
     <Button
       type="button"
-      tw="[background-color:#FF9800]"
+      className="[background-color:#FF9800]"
       onClick={() => mutate(id)}
       title="Enlever du panier"
     >
@@ -55,7 +55,7 @@ type CartItems = RouterOutput["cart"]["items"];
 const ItemTitle = ({ item }: { item: CartItems[number] }) => {
   if (item.itemId) {
     return (
-      <span tw="text-primary-darkest">
+      <span className="text-primary-darkest">
         <Link href={`/item/${item.itemId}`} legacyBehavior>
           {item.title}
         </Link>
@@ -66,14 +66,14 @@ const ItemTitle = ({ item }: { item: CartItems[number] }) => {
 };
 
 const CartTable = ({ items }: { items: CartItems }) => (
-  <table tw="flex-1 border-separate [border-spacing:2px 0.5rem]">
+  <table className="flex-1 border-separate [border-spacing:2px_0.5rem]">
     <thead>
       <tr>
-        <StickyTh tw="text-left">Article</StickyTh>
-        <StickyTh tw="text-right">Prix unitaire</StickyTh>
-        <StickyTh tw="text-right">Quantité</StickyTh>
-        <StickyTh tw="text-right">Prix total</StickyTh>
-        <StickyTh></StickyTh>
+        <th className={clsx(TH_STYLES, "text-left")}>Article</th>
+        <th className={clsx(TH_STYLES, "text-right")}>Prix unitaire</th>
+        <th className={clsx(TH_STYLES, "text-right")}>Quantité</th>
+        <th className={clsx(TH_STYLES, "text-right")}>Prix total</th>
+        <th className={TH_STYLES}></th>
       </tr>
     </thead>
     <tbody>
@@ -82,12 +82,16 @@ const CartTable = ({ items }: { items: CartItems }) => (
           <td>
             <ItemTitle item={item} />
           </td>
-          <td tw="text-right font-number">{formatPrice(Number(item.price))}</td>
-          <td tw="text-right font-number">{formatNumber(item.quantity)}</td>
-          <td tw="text-right font-number">
+          <td className="text-right font-number">
+            {formatPrice(Number(item.price))}
+          </td>
+          <td className="text-right font-number">
+            {formatNumber(item.quantity)}
+          </td>
+          <td className="text-right font-number">
             {formatPrice(Number(item.price) * item.quantity)}
           </td>
-          <td tw="text-center">
+          <td className="text-center">
             <RemoveFromCartButton id={item._id} />
           </td>
         </tr>
@@ -139,17 +143,17 @@ const PaymentForm = ({ cb }: { cb: (amount: number | null) => void }) => {
   };
   const paymentType = watch("paymentType");
   return (
-    <form tw="flex justify-end gap-sm" onSubmit={handleSubmit(onSubmit)}>
-      <label htmlFor="paymentDate" tw="self-center cursor-pointer">
+    <form className="flex justify-end gap-sm" onSubmit={handleSubmit(onSubmit)}>
+      <label htmlFor="paymentDate" className="self-center cursor-pointer">
         Date
       </label>
       <Input
         id="paymentDate"
         type="date"
         {...register("paymentDate")}
-        tw="w-min"
+        className="w-min"
       />
-      <Select {...register("paymentType")} tw="w-min">
+      <Select {...register("paymentType")} className="w-min">
         {Object.entries(PAYMENT_METHODS).map(([value, label]) => (
           <option key={value} value={value}>
             {label}
@@ -158,7 +162,7 @@ const PaymentForm = ({ cb }: { cb: (amount: number | null) => void }) => {
       </Select>
       <label
         htmlFor="cash"
-        css={[tw`sr-only`, paymentType !== "cash" && tw`hidden`]}
+        className={clsx("sr-only", { hidden: paymentType !== "cash" })}
       >
         Espèces
       </label>
@@ -168,14 +172,13 @@ const PaymentForm = ({ cb }: { cb: (amount: number | null) => void }) => {
         {...register("amount")}
         step={0.01}
         min={0}
-        css={[
-          tw`[width:7em] font-number`,
-          paymentType !== "cash" && tw`hidden`,
-        ]}
+        className={clsx("!w-28 font-number", {
+          hidden: paymentType !== "cash",
+        })}
       />
-      <Button type="submit" tw="[padding:10px 15px]">
+      <Button type="submit" className="[padding:10px_15px]">
         <FontAwesomeIcon icon={faCheckCircle} />
-        <span tw="ml-sm">Payer</span>
+        <span className="ml-sm">Payer</span>
       </Button>
     </form>
   );
@@ -214,15 +217,15 @@ const QuickAdd = ({ addError }: { addError(error: ISBNError): void }) => {
     resetField("isbn");
   };
   return (
-    <form tw="flex items-center" onSubmit={handleSubmit(submit)}>
-      <label htmlFor="isbn-field" tw="flex-shrink-0 mr-2">
+    <form className="flex items-center" onSubmit={handleSubmit(submit)}>
+      <label htmlFor="isbn-field" className="flex-shrink-0 mr-2">
         Ajout rapide :
       </label>
       <Input
         type="text"
         placeholder="ISBN"
         maxLength={13}
-        tw="w-40"
+        className="!w-40"
         id="isbn-field"
         autoFocus
         {...register("isbn", { minLength: 10, maxLength: 13 })}
@@ -254,7 +257,7 @@ const ErrorList = ({
           }
           key={error.isbn}
           onDismiss={() => removeError(error.isbn)}
-          tw="mb-1"
+          className="mb-1"
         >
           {error.message === CART_ERRORS.INTERNAL_ERROR
             ? `Une erreur est survenue lors de l'ajout de ${error.isbn}`
@@ -265,7 +268,7 @@ const ErrorList = ({
           {error.message === CART_ERRORS.NO_STOCK && error.id ? (
             <span>
               Pas de stock pour{" "}
-              <Link href={`/item/${error.id}`} passHref tw="underline">
+              <Link href={`/item/${error.id}`} passHref className="underline">
                 {error.title}
               </Link>
             </span>
@@ -299,7 +302,7 @@ const AsideButton = () => {
     <form onSubmit={handleSubmit(submit)}>
       <Button
         type="submit"
-        tw="[padding:10px 15px]"
+        className="[padding:10px_15px]"
         value="put-aside"
         disabled={isLoading || asideCart.data.count > 0}
       >
@@ -307,7 +310,7 @@ const AsideButton = () => {
           icon={isLoading ? faSpinner : faHourglassStart}
           spin={isLoading}
         />
-        <span tw="ml-sm">Mettre de côté</span>
+        <span className="ml-sm">Mettre de côté</span>
       </Button>
     </form>
   );
@@ -347,14 +350,14 @@ const ReactivateButton = () => {
     <form onSubmit={handleSubmit(submit)}>
       <Button
         type="submit"
-        tw="[padding:10px 15px] mb-2"
+        className="[padding:10px_15px] mb-2"
         disabled={cart.data.count > 0 || isLoading}
       >
         <FontAwesomeIcon
           icon={isLoading ? faSpinner : faShareSquare}
           spin={isLoading}
         />
-        <span tw="ml-sm">Réactiver</span>
+        <span className="ml-sm">Réactiver</span>
       </Button>
     </form>
   );
@@ -379,10 +382,11 @@ const AsideCartLoader = () => {
   const plural = count > 1 ? "s" : "";
   return (
     <AsideCartWrapper>
-      <div tw="flex flex-1 justify-between">
+      <div className="flex flex-1 justify-between">
         <p>
-          <span tw="font-number">{count}</span> article{plural} en attente pour
-          <span tw="font-number ml-2">{formatPrice(total)}</span>
+          <span className="font-number">{count}</span> article{plural} en
+          attente pour
+          <span className="font-number ml-2">{formatPrice(total)}</span>
         </p>
         <ReactivateButton />
       </div>
@@ -427,16 +431,21 @@ const CartLoader = () => {
     return (
       <>
         <Card>
-          <div tw="flex items-center">
-            <CardTitle tw="mr-auto">Panier</CardTitle>
+          <div className="flex items-center">
+            <CardTitle className="mr-auto">Panier</CardTitle>
             <QuickAdd addError={addError} />
           </div>
-          <CardBody tw="flex-col">
+          <CardBody className="flex-col">
             <ErrorList errors={errors} removeError={removeError} />
             {change && (
-              <Alert type="info" tw="mb-5" onDismiss={() => setChange(null)}>
+              <Alert
+                type="info"
+                className="mb-5"
+                onDismiss={() => setChange(null)}
+              >
                 <span>
-                  À rendre: <span tw="font-number">{change.toFixed(2)}</span>€
+                  À rendre:{" "}
+                  <span className="font-number">{change.toFixed(2)}</span>€
                 </span>
               </Alert>
             )}
@@ -449,24 +458,24 @@ const CartLoader = () => {
   }
   return (
     <>
-      <Card tw="max-h-full flex flex-col">
-        <div tw="flex items-center">
-          <CardTitle tw="mr-auto">
+      <Card className="max-h-full flex flex-col">
+        <div className="flex items-center">
+          <CardTitle className="mr-auto">
             Panier - {count} article{count > 1 ? "s" : ""}
           </CardTitle>
           <QuickAdd addError={addError} />
         </div>
-        <CardBody tw="flex-col">
+        <CardBody className="flex-col">
           <ErrorList errors={errors} removeError={removeError} />
           <CartTable items={items} />
         </CardBody>
         <CardFooter>
-          <p tw="mb-2">
-            <span tw="font-medium [font-size:1.1rem]">
-              Total : <span tw="font-number">{formatPrice(total)}</span>
+          <p className="mb-2">
+            <span className="font-medium [font-size:1.1rem]">
+              Total : <span className="font-number">{formatPrice(total)}</span>
             </span>
           </p>
-          <div tw="flex justify-between">
+          <div className="flex justify-between">
             <AsideButton />
             <PaymentForm cb={setChange} />
           </div>
@@ -479,7 +488,7 @@ const CartLoader = () => {
 
 const CartPage = () => {
   return (
-    <div tw="[margin-left:10%] [margin-right:10%] flex-1 flex flex-col gap-6">
+    <div className="[margin-left:10%] [margin-right:10%] flex-1 flex flex-col gap-6">
       <Title>Panier</Title>
       <CartLoader />
     </div>

@@ -1,7 +1,7 @@
+import { clsx } from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
-import tw from "twin.macro";
 
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
@@ -14,7 +14,7 @@ import { Title } from "@/components/Title";
 import { formatPrice } from "@/utils/format";
 import { type RouterOutput, trpc } from "@/utils/trpc";
 
-const StickyTh = tw.th`sticky top-0 bg-white`;
+const TH_STYLES = "sticky top-0 bg-white";
 
 type TSalesByDay = RouterOutput["salesByMonth"]["salesByDay"];
 
@@ -24,28 +24,28 @@ const makeSaleURL = (date: string) =>
 const SalesTable = ({ sales }: { sales: TSalesByDay }) => {
   const router = useRouter();
   return (
-    <table tw="flex-1">
+    <table className="flex-1">
       <thead>
         <tr>
-          <StickyTh tw="text-left pl-2">Jour</StickyTh>
-          <StickyTh tw="text-right">Nombre de ventes</StickyTh>
-          <StickyTh tw="text-right">Recette totale</StickyTh>
+          <th className={clsx(TH_STYLES, "text-left pl-2")}>Jour</th>
+          <th className={clsx(TH_STYLES, "text-right")}>Nombre de ventes</th>
+          <th className={clsx(TH_STYLES, "text-right")}>Recette totale</th>
         </tr>
       </thead>
-      <tbody tw="[line-height:2.3rem]">
+      <tbody className="[line-height:2.3rem]">
         {sales.map((sale, i) => (
           <tr
             key={i}
-            tw="cursor-pointer hover:bg-gray-light"
+            className="cursor-pointer hover:bg-gray-light"
             onClick={() => router.push({ pathname: makeSaleURL(sale.date) })}
           >
-            <td tw="pl-2">
+            <td className="pl-2">
               <Link href={makeSaleURL(sale.date)} legacyBehavior>
                 {sale.date}
               </Link>
             </td>
-            <td tw="text-right font-number">{sale.count}</td>
-            <td tw="text-right font-number pr-2">
+            <td className="text-right font-number">{sale.count}</td>
+            <td className="text-right font-number pr-2">
               {formatPrice(Number(sale.amount))}
             </td>
           </tr>
@@ -102,7 +102,7 @@ const SalesCard = () => {
   ).toLocaleDateString("fr", { month: "long", year: "numeric" });
   const title = `Liste des ventes - ${monthLabel}`;
   return (
-    <Card tw="flex flex-col flex-1 max-h-full overflow-hidden">
+    <Card className="flex flex-col flex-1 max-h-full overflow-hidden">
       <CardTitle>{title}</CardTitle>
       <CardBody>
         <SalesLoader month={month} year={year} />
@@ -129,7 +129,7 @@ const TVACard = () => {
     return null;
   }
   return (
-    <Card tw="[min-height:12rem] flex flex-col">
+    <Card className="[min-height:12rem] flex flex-col">
       <CardTitle>Répartition par TVA</CardTitle>
       <CardBody>
         <TVALoader month={month} year={year} />
@@ -168,10 +168,10 @@ const CategoriesCard = () => {
 const SalesByMonth = (): JSX.Element => {
   return (
     <Restricted role="admin">
-      <div tw="flex items-start gap-lg flex-1 flex-wrap">
+      <div className="flex items-start gap-lg flex-1 flex-wrap">
         <Title>Voir un article</Title>
         <SalesCard />
-        <div tw="flex flex-col gap-lg flex-1 max-h-full">
+        <div className="flex flex-col gap-lg flex-1 max-h-full">
           <TVACard />
           <CategoriesCard />
         </div>

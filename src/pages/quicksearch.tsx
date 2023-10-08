@@ -1,6 +1,5 @@
 import * as React from "react";
 import { useRouter } from "next/router";
-import tw from "twin.macro";
 
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { ItemsTable } from "@/components/ItemsTable";
@@ -10,7 +9,7 @@ import { Title } from "@/components/Title";
 import { ITEMS_PER_PAGE } from "@/utils/pagination";
 import { trpc } from "@/utils/trpc";
 
-const StyledCard = tw(Card)`max-h-full overflow-hidden flex flex-col relative`;
+const CARD_STYLES = "max-h-full overflow-hidden flex flex-col relative";
 
 const useSearchParams = () => {
   const router = useRouter();
@@ -33,11 +32,11 @@ const ToggleStock = () => {
     await router.push({ query });
   };
   return (
-    <label tw="self-end cursor-pointer mr-6 ml-auto">
+    <label className="self-end cursor-pointer mr-6 ml-auto">
       <span>En stock</span>
       <input
         type="checkbox"
-        tw="ml-2"
+        className="ml-2"
         onChange={toggleStock}
         defaultChecked={inStock}
       />
@@ -72,20 +71,20 @@ const SearchLoader = ({
     subtitle = `${count} résultat${count > 1 ? "s" : ""} pour ${search}`;
     if (count === 0) {
       return (
-        <StyledCard>
+        <Card className={CARD_STYLES}>
           <CardTitle>{title}</CardTitle>
           <ToggleStock />
           <CardBody>Aucun résultat pour &quot;{search}&quot;</CardBody>
-        </StyledCard>
+        </Card>
       );
     }
   }
   const Wrapper = result.isFetching ? LoadingOverlay : React.Fragment;
 
   return (
-    <StyledCard>
+    <Card className={CARD_STYLES}>
       <CardTitle>{title}</CardTitle>
-      <div tw="flex flex-1">
+      <div className="flex flex-1">
         {subtitle}
         <ToggleStock />
       </div>
@@ -97,11 +96,11 @@ const SearchLoader = ({
         ) : null}
       </CardBody>
       {pageCount > 1 ? (
-        <CardFooter tw="flex justify-center pt-6 2xl:pt-8">
+        <CardFooter className="flex justify-center pt-6 2xl:pt-8">
           <Pagination count={pageCount} />
         </CardFooter>
       ) : null}
-    </StyledCard>
+    </Card>
   );
 };
 
@@ -109,7 +108,7 @@ const QuickSearchPage = (): JSX.Element => {
   const { search, page, inStock } = useSearchParams();
   const title = `Recherche de "${search}"`;
   return (
-    <div tw="flex flex-1 flex-col gap-lg">
+    <div className="flex flex-1 flex-col gap-lg">
       <Title>{title}</Title>
       {search ? (
         <SearchLoader search={search} page={page} inStock={inStock} />

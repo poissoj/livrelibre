@@ -1,27 +1,50 @@
-import tw, { styled } from "twin.macro";
+import { clsx } from "clsx";
 
-const transition = `
-    box-shadow 0.3s cubic-bezier(0.35, 0, 0.25, 1),
-    transform 0.2s cubic-bezier(0.35, 0, 0.25, 1),
-`;
+const COMMON_STYLES =
+  "bg-primary-dark text-white rounded p-sm uppercase tracking-wide font-medium " +
+  "text-sm whitespace-nowrap disabled:cursor-not-allowed disabled:opacity-60";
+const HOVER_STYLES =
+  "transition-shadow transition-transform " +
+  "hover:shadow-[0_4px_8px_0_rgba(0,0,0,0.4)] hover:outline-none hover:-translate-y-px";
 
-const styles = {
-  ...tw`bg-primary-dark text-white [border-radius:3px] p-sm uppercase tracking-wide font-medium text-sm whitespace-nowrap`,
-  transition,
-  "&[disabled]": tw`cursor-not-allowed [opacity:0.65]`,
-  "&:not([disabled]):hover, &:focus": {
-    outline: "none",
-    transform: "translate3d(0, -1px, 0)",
-    boxShadow: "0 4px 8px 0 rgba(0, 0, 0, 0.4)",
-  },
-};
+export const Button = ({
+  className,
+  children,
+  ...props
+}: {
+  className?: string;
+  children?: React.ReactNode;
+} & JSX.IntrinsicElements["button"]) => (
+  <button
+    className={clsx(COMMON_STYLES, !props.disabled && HOVER_STYLES, className)}
+    {...props}
+  >
+    {children}
+  </button>
+);
 
-export const Button = styled.button(styles);
+export const ButtonAnchor = ({
+  className,
+  children,
+  ...props
+}: {
+  className?: string;
+  children?: React.ReactNode;
+} & JSX.IntrinsicElements["a"]) => (
+  <a className={clsx(COMMON_STYLES, HOVER_STYLES, className)} {...props}>
+    {children}
+  </a>
+);
 
-export const ButtonAnchor = styled.a(styles);
-
-export const ButtonWithInput = styled(Button)`
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-  margin-left: -1px;
-`;
+export const ButtonWithInput = ({
+  className,
+  children,
+  ...props
+}: {
+  className?: string;
+  children?: React.ReactNode;
+} & JSX.IntrinsicElements["button"]) => (
+  <Button className={clsx("rounded-l-none -m[1px]", className)} {...props}>
+    {children}
+  </Button>
+);

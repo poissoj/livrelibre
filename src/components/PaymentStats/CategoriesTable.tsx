@@ -1,30 +1,32 @@
-import tw from "twin.macro";
+import { clsx } from "clsx";
 
 import { formatNumber, formatPrice } from "@/utils/format";
 
 type TCategories = { type: string; nb: number; totalPrice: string }[];
 
-const StickyTh = tw.th`sticky top-0 bg-white`;
+const COMMON_TH_STYLES = "sticky top-0 bg-white";
 
 export const CategoriesTable = ({
   categories,
 }: {
   categories: TCategories;
 }) => (
-  <table tw="flex-1">
+  <table className="flex-1">
     <thead>
       <tr>
-        <StickyTh tw="text-left">Catégorie</StickyTh>
-        <StickyTh tw="text-right">Quantité</StickyTh>
-        <StickyTh tw="text-right">Total</StickyTh>
+        <th className={clsx(COMMON_TH_STYLES, "text-left")}>Catégorie</th>
+        <th className={clsx(COMMON_TH_STYLES, "text-right")}>Quantité</th>
+        <th className={clsx(COMMON_TH_STYLES, "text-right")}>Total</th>
       </tr>
     </thead>
-    <tbody tw="[line-height:1.9rem]">
+    <tbody className="[line-height:1.9rem]">
       {categories.map((category, i) => (
         <tr key={i}>
           <td>{category.type}</td>
-          <td tw="text-right font-number">{formatNumber(category.nb)}</td>
-          <td tw="text-right font-number">
+          <td className="text-right font-number">
+            {formatNumber(category.nb)}
+          </td>
+          <td className="text-right font-number">
             {formatPrice(Number(category.totalPrice))}
           </td>
         </tr>

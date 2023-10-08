@@ -1,8 +1,8 @@
 import { faShoppingCart, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { clsx } from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import tw, { styled } from "twin.macro";
 
 import { APP_NAME } from "@/lib/config";
 import useUser from "@/lib/useUser";
@@ -10,23 +10,15 @@ import { trpc } from "@/utils/trpc";
 
 import { QuickSearch } from "./QuickSearch";
 
-const StyledLink = styled.a({
-  ...tw`bg-primary-dark text-white w-56 block text-center`,
-  fontFamily: "Niconne",
-  fontSize: "26px",
-  lineHeight: "50px",
-});
-
 const UserName = ({ className }: { className?: string }) => {
   const { user } = useUser();
   return (
-    <span className={className} tw="text-white">
-      {user?.name || ""}
-    </span>
+    <span className={clsx("text-white", className)}>{user?.name || ""}</span>
   );
 };
 
-const StyledButton = tw.button`text-white [padding:14px 16px] hover:[background-color:rgba(0,0,0,0.1)]`;
+const BUTTON_STYLES =
+  "text-white [padding:14px_16px] hover:[background-color:rgba(0,0,0,0.1)]";
 
 const Logout = () => {
   const utils = trpc.useContext();
@@ -37,39 +29,48 @@ const Logout = () => {
     void router.push("/login");
   };
   return (
-    <StyledButton type="button" onClick={logout} title="Se déconnecter">
+    <button
+      className={BUTTON_STYLES}
+      type="button"
+      onClick={logout}
+      title="Se déconnecter"
+    >
       <FontAwesomeIcon icon={faUser} />
-    </StyledButton>
+    </button>
   );
 };
-
-const Badge = tw.span`[border-radius:10rem] bg-gray-dark  px-2 py-0.5 [font-size:12px] font-medium`;
 
 const CartBadge = () => {
   const result = trpc.cart.useQuery();
   if (result.status === "success" && result.data.count > 0) {
-    return <Badge>{result.data.count}</Badge>;
+    return (
+      <span className="[border-radius:10rem] bg-gray-dark  px-2 py-0.5 [font-size:12px] font-medium">
+        {result.data.count}
+      </span>
+    );
   }
   return null;
 };
 
 const CartButton = () => (
   <Link href="/cart" passHref legacyBehavior>
-    <StyledButton as="a" tw="shrink-0" title="Voir le panier">
+    <a className={clsx(BUTTON_STYLES, "shrink-0")} title="Voir le panier">
       <FontAwesomeIcon icon={faShoppingCart} />
       <CartBadge />
-    </StyledButton>
+    </a>
   </Link>
 );
 
 export const Header = (): JSX.Element => {
   return (
-    <header tw="bg-primary-dark text-gray-darker flex items-center pr-lg">
+    <header className="bg-primary-dark text-gray-darker flex items-center pr-lg">
       <Link href="/" passHref legacyBehavior>
-        <StyledLink tw="mr-auto">{APP_NAME}</StyledLink>
+        <a className="bg-primary-dark text-white w-56 block text-center mr-auto font-['Niconne'] text-[26px] leading-[50px]">
+          {APP_NAME}
+        </a>
       </Link>
       <QuickSearch />
-      <UserName tw="ml-md mr-sm" />
+      <UserName className="ml-md mr-sm" />
       <CartButton />
       <Logout />
     </header>

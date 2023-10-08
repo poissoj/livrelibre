@@ -3,14 +3,26 @@ import {
   faChevronRight,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { clsx } from "clsx";
 import Link, { type LinkProps } from "next/link";
 import { useRouter } from "next/router";
-import tw from "twin.macro";
 
-const Anchor = tw.a`border px-md py-sm text-primary-darker [border-color:#AAA]`;
-const CurrentPageAnchor = tw(
-  Anchor
-)`text-white bg-primary-darker border-primary-darker`;
+const Anchor = ({
+  children,
+  className,
+  ...props
+}: React.PropsWithChildren<{ className?: string }> &
+  JSX.IntrinsicElements["a"]) => (
+  <a
+    className={clsx(
+      "border px-md py-sm text-primary-darker [border-color:#AAA]",
+      className
+    )}
+    {...props}
+  >
+    {children}
+  </a>
+);
 
 const ConditionalLink = ({
   href,
@@ -67,10 +79,10 @@ export const Pagination = ({ count }: PaginationProps) => {
   const pageList = createPageList(page, count);
 
   return (
-    <ol tw="flex">
+    <ol className="flex">
       <li>
         <ConditionalLink href={page > 1 ? makeHref(page - 1) : null}>
-          <Anchor tw="rounded-l-md" title="Page précédente">
+          <Anchor className="rounded-l-md" title="Page précédente">
             <FontAwesomeIcon icon={faChevronLeft} />
           </Anchor>
         </ConditionalLink>
@@ -78,7 +90,9 @@ export const Pagination = ({ count }: PaginationProps) => {
       {pageList.map((n, i) => (
         <li key={i}>
           {n === page ? (
-            <CurrentPageAnchor>{n}</CurrentPageAnchor>
+            <Anchor className="text-white bg-primary-darker border-primary-darker">
+              {n}
+            </Anchor>
           ) : (
             <ConditionalLink href={n > 0 ? makeHref(n) : null}>
               <Anchor>{n || "…"}</Anchor>
@@ -88,7 +102,7 @@ export const Pagination = ({ count }: PaginationProps) => {
       ))}
       <li>
         <ConditionalLink href={page < count ? makeHref(page + 1) : null}>
-          <Anchor tw="rounded-r-md" title="Page suivante">
+          <Anchor className="rounded-r-md" title="Page suivante">
             <FontAwesomeIcon icon={faChevronRight} />
           </Anchor>
         </ConditionalLink>

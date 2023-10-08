@@ -6,15 +6,15 @@ import {
   faStar,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { clsx } from "clsx";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
 import { useForm } from "react-hook-form";
-import tw from "twin.macro";
 
 import { Alert } from "@/components/Alert";
-import { Button } from "@/components/Button";
+import { Button, ButtonAnchor } from "@/components/Button";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Input } from "@/components/FormControls";
@@ -27,9 +27,18 @@ import { useAddToCart } from "@/utils/useAddToCart";
 
 const SalesByMonth = dynamic(() => import("@/components/Charts/SalesByMonth"));
 
-const DL = tw.dl`flex flex-wrap [min-width:24rem]`;
-const DT = tw.dt`[flex-basis:30%] p-sm font-medium`;
-const DD = tw.dd`[flex:1 0 70%] p-sm`;
+const DL = ({ children }: React.PropsWithChildren) => (
+  <dl className="flex flex-wrap min-w-[24rem]">{children}</dl>
+);
+const DT = ({ children }: React.PropsWithChildren) => (
+  <dt className="[flex-basis:30%] p-sm font-medium">{children}</dt>
+);
+const DD = ({
+  children,
+  className,
+}: React.PropsWithChildren<{ className?: string }>) => (
+  <dd className={clsx("[flex:1_0_70%] p-sm", className)}>{children}</dd>
+);
 
 const formatStringPrice = (price: string) =>
   price ? formatPrice(Number(price)) : "";
@@ -58,14 +67,14 @@ const ItemDetails = ({ item }: { item: ItemWithCount }) => {
         <pre>{item.comments}</pre>
       </DD>
       <DT>Prix de vente</DT>
-      <DD tw="font-number">{formatStringPrice(item.price)}</DD>
+      <DD className="font-number">{formatStringPrice(item.price)}</DD>
       <DT>Quantité</DT>
-      <DD tw="font-number">{formatNumber(item.amount)}</DD>
+      <DD className="font-number">{formatNumber(item.amount)}</DD>
       <DT>TVA</DT>
-      <DD tw="font-number">{formatTVA(item.tva)}</DD>
+      <DD className="font-number">{formatTVA(item.tva)}</DD>
       <DT>Vendu</DT>
       <DD>
-        <span tw="font-number">{formatNumber(item.count)}</span> fois
+        <span className="font-number">{formatNumber(item.count)}</span> fois
       </DD>
     </DL>
   );
@@ -93,13 +102,13 @@ const TitleWithButtons = ({ item }: { item: ItemWithCount }) => {
   const handleClick = () => star(item._id, !item.starred);
 
   return (
-    <div tw="flex items-center">
-      <CardTitle tw="mr-auto">{item.title}</CardTitle>
+    <div className="flex items-center">
+      <CardTitle className="mr-auto">{item.title}</CardTitle>
       <Button
         type="button"
         title={item.starred ? "Enlever des favoris" : "Ajouter aux favoris"}
         onClick={handleClick}
-        tw="[border-top-right-radius:0] [border-bottom-right-radius:0] px-md border-r border-primary-darkest"
+        className="rounded-r-none px-md border-r border-primary-darkest"
       >
         <FontAwesomeIcon
           icon={
@@ -109,13 +118,9 @@ const TitleWithButtons = ({ item }: { item: ItemWithCount }) => {
         />
       </Button>
       <Link href={`/update/${item._id}`} passHref legacyBehavior>
-        <Button
-          as="a"
-          title="Modifier"
-          tw="[border-top-left-radius:0] [border-bottom-left-radius:0] px-md"
-        >
+        <ButtonAnchor title="Modifier" className="rounded-l-none px-md">
           <FontAwesomeIcon icon={faEdit} />
-        </Button>
+        </ButtonAnchor>
       </Link>
     </div>
   );
@@ -137,24 +142,24 @@ const AddToCartFooter = ({ id, stock }: { id: string; stock: number }) => {
     );
   };
   return (
-    <form tw="flex justify-end" onSubmit={handleSubmit(submit)}>
+    <form className="flex justify-end" onSubmit={handleSubmit(submit)}>
       <label>
-        <span tw="font-medium mr-2">Quantité</span>
+        <span className="font-medium mr-2">Quantité</span>
         <Input
           type="number"
           {...register("quantity")}
           min={1}
           max={stock}
           step={1}
-          tw="font-number w-20"
+          className="font-number !w-20"
           defaultValue={1}
         />
       </label>
-      <Button type="submit" tw="ml-2 px-md" disabled={stock === 0}>
+      <Button type="submit" className="ml-2 px-md" disabled={stock === 0}>
         <FontAwesomeIcon
           icon={isLoading ? faSpinner : faCartPlus}
           spin={isLoading}
-          tw="mr-2"
+          className="mr-2"
         />
         Ajouter au panier
       </Button>
@@ -180,7 +185,7 @@ const ItemLoader = ({ id }: { id: string }) => {
 
   if (result.status === "error") {
     return (
-      <Card tw="flex-1">
+      <Card className="flex-1">
         <CardTitle>Article en erreur</CardTitle>
         <CardBody>
           <ErrorMessage />
@@ -190,10 +195,10 @@ const ItemLoader = ({ id }: { id: string }) => {
   }
   if (result.status === "success") {
     return result.data ? (
-      <Card tw="flex-1 max-h-full flex flex-col">
+      <Card className="flex-1 max-h-full flex flex-col">
         <Title>{`${result.data.title} | Voir un article`}</Title>
         <TitleWithButtons item={result.data} />
-        <CardBody tw="flex-col">
+        <CardBody className="flex-col">
           <StatusMessage itemTitle={result.data.title} />
           <ItemDetails item={result.data} />
         </CardBody>
@@ -202,7 +207,7 @@ const ItemLoader = ({ id }: { id: string }) => {
         </CardFooter>
       </Card>
     ) : (
-      <Card tw="flex-1">
+      <Card className="flex-1">
         <CardTitle>Article introuvable</CardTitle>
         <CardBody>
           <NoResults />
@@ -211,7 +216,7 @@ const ItemLoader = ({ id }: { id: string }) => {
     );
   }
   return (
-    <Card tw="flex-1">
+    <Card className="flex-1">
       <CardTitle>Chargement…</CardTitle>
       <CardBody>
         <ItemSkeleton />
@@ -228,7 +233,7 @@ const ItemCard = () => {
   }
   if (!/^[a-f\d]{24}$/i.test(id)) {
     return (
-      <Card tw="flex-1">
+      <Card className="flex-1">
         <CardTitle>Article introuvable</CardTitle>
         <CardBody>
           <NoResults />
@@ -270,7 +275,7 @@ const SalesCard = () => {
     return null;
   }
   return (
-    <Card tw="mb-lg">
+    <Card className="mb-lg">
       <CardTitle>Ventes des 2 dernières années</CardTitle>
       <CardBody>
         <Sales id={id} />
@@ -281,10 +286,10 @@ const SalesCard = () => {
 
 const ItemPage = (): JSX.Element => {
   return (
-    <div tw="flex items-start gap-lg flex-1 flex-wrap">
+    <div className="flex items-start gap-lg flex-1 flex-wrap">
       <Title>Voir un article</Title>
       <ItemCard />
-      <div tw="flex flex-col gap-lg flex-1">
+      <div className="flex flex-col gap-lg flex-1">
         <SalesCard />
       </div>
     </div>

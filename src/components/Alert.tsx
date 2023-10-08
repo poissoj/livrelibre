@@ -7,25 +7,26 @@ import {
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import tw from "twin.macro";
+import { clsx } from "clsx";
 
-const BasicAlert = tw.div`p-sm border [border-radius:4px] flex items-center`;
+const BasicAlert = ({
+  className,
+  children,
+}: {
+  className?: string;
+  children: React.ReactNode;
+}) => (
+  <div className={clsx("p-sm border rounded flex items-center", className)}>
+    {children}
+  </div>
+);
 
-const AlertSuccess = tw(
-  BasicAlert
-)`[color:#0f5132] [border-color:#badbcc] [background-color:#d1e7dd]`;
-
-const AlertWarning = tw(
-  BasicAlert
-)`[color:#664d03] [border-color:#ffecb5] [background-color:#fff3cd]`;
-
-const AlertDanger = tw(
-  BasicAlert
-)`[color:#842029] [border-color:#f5c2c7] [background-color:#f8d7da]`;
-
-const AlertInfo = tw(
-  BasicAlert
-)`[color:#055160] [border-color:#b6effb] [background-color:#cff4fc]`;
+const ALERT_STYLES = {
+  success: "[color:#0f5132] [border-color:#badbcc] [background-color:#d1e7dd]",
+  warning: "[color:#664d03] [border-color:#ffecb5] [background-color:#fff3cd]",
+  error: "[color:#842029] [border-color:#f5c2c7] [background-color:#f8d7da]",
+  info: "[color:#055160] [border-color:#b6effb] [background-color:#cff4fc]",
+};
 
 export const Alert = ({
   children,
@@ -38,12 +39,7 @@ export const Alert = ({
   className?: string;
   onDismiss?(): void;
 }): JSX.Element | null => {
-  const AlertWrapper = {
-    success: AlertSuccess,
-    warning: AlertWarning,
-    error: AlertDanger,
-    info: AlertInfo,
-  }[type];
+  const style = clsx(ALERT_STYLES[type], className);
   const icon = {
     success: faCheckCircle,
     warning: faExclamationTriangle,
@@ -51,19 +47,19 @@ export const Alert = ({
     info: faInfoCircle,
   }[type];
   return (
-    <AlertWrapper className={className}>
-      <FontAwesomeIcon icon={icon} tw="mr-sm" />
+    <BasicAlert className={style}>
+      <FontAwesomeIcon icon={icon} className="mr-sm" />
       {children}
       {onDismiss ? (
         <button
           type="button"
           onClick={onDismiss}
-          tw="ml-auto p-2"
+          className="ml-auto p-2"
           aria-label="Fermer"
         >
           <FontAwesomeIcon icon={faTimes} size="lg" />
         </button>
       ) : null}
-    </AlertWrapper>
+    </BasicAlert>
   );
 };
