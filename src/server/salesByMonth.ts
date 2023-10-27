@@ -92,7 +92,7 @@ export const getSalesByMonth = async (month: string, year: string) => {
       } as const;
     })
     .sort(
-      (a, b) => Number(b.tva) - Number(a.tva) || a.type.localeCompare(b.type)
+      (a, b) => Number(b.tva) - Number(a.tva) || a.type.localeCompare(b.type),
     );
 
   const itemTypes = Object.entries(itemTypesStats)

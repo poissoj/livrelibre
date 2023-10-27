@@ -138,7 +138,7 @@ const AddToCartFooter = ({ id, stock }: { id: string; stock: number }) => {
         async onSuccess() {
           await utils.searchItem.invalidate();
         },
-      }
+      },
     );
   };
   return (

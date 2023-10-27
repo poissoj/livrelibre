@@ -5,7 +5,7 @@ import { norm } from "@/utils/utils";
 import { getDb } from "./database";
 
 export const addItem = async (
-  item: BaseItem
+  item: BaseItem,
 ): Promise<{ type: "success" | "warning" | "error"; msg: string }> => {
   const db = await getDb();
   const existingItem = await db

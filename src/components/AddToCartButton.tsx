@@ -25,7 +25,7 @@ export const AddToCartButton = ({
     <button
       className={clsx(
         "p-xs mr-xs disabled:(cursor-not-allowed opacity-80) hover:text-primary-darkest",
-        className
+        className,
       )}
       name="Ajouter au panier"
       title="Ajouter au panier"

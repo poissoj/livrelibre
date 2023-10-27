@@ -3,7 +3,7 @@ import React from "react";
 
 const COMMON_STYLES = clsx(
   "rounded px-3 py-2 w-full focus:border-primary-default focus:outline-none [border:2px_solid_#ccc]",
-  "[transition:border-color_ease-in-out_0.15s]"
+  "[transition:border-color_ease-in-out_0.15s]",
 );
 
 export const Input = React.forwardRef<

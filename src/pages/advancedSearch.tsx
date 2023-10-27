@@ -84,7 +84,7 @@ const SearchLoader = ({
     { search: query, page },
     {
       keepPreviousData: true,
-    }
+    },
   );
   let title = "Recherche avancée";
   let subtitle = "Recherche en cours…";
@@ -139,7 +139,7 @@ const SearchLoader = ({
 };
 
 const filterNonString = (
-  object: Record<string, string | string[] | undefined>
+  object: Record<string, string | string[] | undefined>,
 ) => {
   const body: Record<string, string> = {};
   for (const [key, value] of Object.entries(object)) {

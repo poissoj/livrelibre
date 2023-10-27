@@ -195,7 +195,7 @@ const ImportBooks = ({
     toast.success(
       `Le fichier a été importé correctement (${books.length} article${
         books.length > 1 ? "s" : ""
-      }).`
+      }).`,
     );
     setFile(null);
   };

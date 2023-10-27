@@ -16,7 +16,7 @@ const Anchor = ({
   <a
     className={clsx(
       "border px-md py-sm text-primary-darker [border-color:#AAA]",
-      className
+      className,
     )}
     {...props}
   >
@@ -53,7 +53,7 @@ const createPageList = (pageNumber: number, count: number) => {
   const siblingsStart = Math.max(Math.min(pageNumber - 2, count - 6), 3);
   const siblingsEnd = Math.min(
     Math.max(pageNumber + 2, 7),
-    endPages.length > 0 ? endPages[0] - 2 : count - 1
+    endPages.length > 0 ? endPages[0] - 2 : count - 1,
   );
 
   return [

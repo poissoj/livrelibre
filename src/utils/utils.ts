@@ -1,6 +1,6 @@
 export function isIn<P extends PropertyKey, K extends P>(
   target: Record<K, unknown>,
-  property: P
+  property: P,
 ): property is K {
   return property in target;
 }

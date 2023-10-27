@@ -125,7 +125,7 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 router.use(
-  upload.single("dilicom") as unknown as Parameters<(typeof router)["use"]>[0]
+  upload.single("dilicom") as unknown as Parameters<(typeof router)["use"]>[0],
 );
 
 router.post(async (req, res) => {
@@ -157,7 +157,7 @@ router.post(async (req, res) => {
 
 export default withIronSessionApiRoute(
   importFile as NextApiHandler,
-  sessionOptions
+  sessionOptions,
 );
 
 export const config: PageConfig = {

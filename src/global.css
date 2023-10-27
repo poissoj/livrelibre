@@ -2,25 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-html, body, #__next {
-    height: 100%;
+html,
+body,
+#__next {
+  height: 100%;
 }
 
 @font-face {
-    font-family: "Niconne";
-    font-style: normal;
-    font-weight: 400;
-    src: url(/fonts/Niconne.woff2) format("woff2");
-    font-display: fallback;
+  font-family: "Niconne";
+  font-style: normal;
+  font-weight: 400;
+  src: url(/fonts/Niconne.woff2) format("woff2");
+  font-display: fallback;
 }
 @font-face {
-    font-family: "Roboto Mono";
-    font-style: normal;
-    font-weight: regular;
-    src: url(/fonts/Roboto-Mono.woff2) format("woff2");
-    font-display: fallback;
+  font-family: "Roboto Mono";
+  font-style: normal;
+  font-weight: regular;
+  src: url(/fonts/Roboto-Mono.woff2) format("woff2");
+  font-display: fallback;
 }
 
 .Toastify {
-    --toastify-color-success: #008073;
+  --toastify-color-success: #008073;
 }

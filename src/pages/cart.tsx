@@ -401,7 +401,7 @@ const CartLoader = () => {
 
   const addError = (error: ISBNError) =>
     setErrors((oldErrors) =>
-      oldErrors.filter((old) => old.isbn !== error.isbn).concat(error)
+      oldErrors.filter((old) => old.isbn !== error.isbn).concat(error),
     );
   const removeError = (isbn: string) =>
     setErrors((oldErrors) => oldErrors.filter((old) => old.isbn !== isbn));

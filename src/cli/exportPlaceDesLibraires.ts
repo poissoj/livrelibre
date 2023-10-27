@@ -41,7 +41,7 @@ const sendToFtp = async () => {
   const { FTP_HOST, FTP_USER, FTP_PASSWORD } = process.env;
   if (!FTP_HOST || !FTP_USER || !FTP_PASSWORD) {
     console.info(
-      "Env var FTP_HOST, FTP_USER or FTP_PASSWORD is missing, skip ftp send"
+      "Env var FTP_HOST, FTP_USER or FTP_PASSWORD is missing, skip ftp send",
     );
     return;
   }

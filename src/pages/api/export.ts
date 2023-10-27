@@ -55,7 +55,7 @@ const makeCSV = async () => {
           item.isbn,
           item.amount,
           `"${formatNumber(item.price)}"`,
-        ].join()
+        ].join(),
       )
       .join("\n");
 
@@ -73,7 +73,7 @@ const exportCSV = async (req: NextApiRequest, res: NextApiResponse) => {
     res.setHeader("Content-Type", "text/csv");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename="stocks-${date}.csv"`
+      `attachment; filename="stocks-${date}.csv"`,
     );
     res.send(csv);
   } catch (error) {

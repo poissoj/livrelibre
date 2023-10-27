@@ -57,7 +57,7 @@ const SearchLoader = ({
     { search, page, inStock },
     {
       keepPreviousData: true,
-    }
+    },
   );
   let title = "Recherche rapide";
   let subtitle = "Recherche en cours…";

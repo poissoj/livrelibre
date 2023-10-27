@@ -98,7 +98,7 @@ const SalesCard = () => {
   }
   const monthLabel = new Date(
     Number(year),
-    Number(month) - 1
+    Number(month) - 1,
   ).toLocaleDateString("fr", { month: "long", year: "numeric" });
   const title = `Liste des ventes - ${monthLabel}`;
   return (

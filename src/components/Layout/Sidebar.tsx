@@ -34,7 +34,7 @@ const NavLink = ({ href, icon, children }: NavLinkProps) => {
           "block p-md transition-colors duration-300 ease-out border-l-4",
           "hover:bg-gray-darkest",
           "focus:outline-none focus:bg-gray-darkest",
-          ariaCurrent ? "border-primary-default" : "border-transparent"
+          ariaCurrent ? "border-primary-default" : "border-transparent",
         )}
       >
         <FontAwesomeIcon icon={icon} className="mr-sm" fixedWidth />

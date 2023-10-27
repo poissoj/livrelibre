@@ -16,7 +16,7 @@ export const QuickSearch = ({
   const isbnSearch = trpc.isbnSearch.useMutation();
 
   const handleSubmit: DOMAttributes<HTMLFormElement>["onSubmit"] = async (
-    event
+    event,
   ) => {
     event.preventDefault();
     const form = new FormData(event.currentTarget);

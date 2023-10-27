@@ -118,7 +118,7 @@ export const searchItems = async ({
 
 export const advancedSearch = async (
   query: Record<string, string>,
-  pageNumber = 1
+  pageNumber = 1,
 ) => {
   logger.info("Advanced search", { query, pageNumber });
   const criteria = generateSearchCriteria(query);

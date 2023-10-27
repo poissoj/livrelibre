@@ -9,7 +9,7 @@ import { getDb } from "./database";
 type FormItem = BaseItem & { id: string };
 
 export const updateItem = async (
-  item: FormItem
+  item: FormItem,
 ): Promise<{ type: "success" | "error"; msg: string }> => {
   const db = await getDb();
   const newItem: Omit<DBItem, "starred"> = {

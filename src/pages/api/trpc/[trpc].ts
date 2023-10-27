@@ -70,7 +70,7 @@ export const appRouter = router({
     .input(z.object({ search: z.record(z.string()), page: z.number() }))
     .query(async ({ input }) => await advancedSearch(input.search, input.page)),
   asideCart: authProcedure.query(
-    async ({ ctx }) => await getAsideCart(ctx.user.name)
+    async ({ ctx }) => await getAsideCart(ctx.user.name),
   ),
   bestsales: authProcedure.query(getBestSales),
   bookmarks: authProcedure.query(getBookmarks),
@@ -87,7 +87,7 @@ export const appRouter = router({
         search: z.string(),
         page: z.number(),
         inStock: z.boolean().default(false),
-      })
+      }),
     )
     .query(async ({ input }) => await searchItems(input)),
   sales: authProcedure.query(getSales),
@@ -96,7 +96,7 @@ export const appRouter = router({
     .query(async ({ input }) => getSalesByDay(input)),
   salesByMonth: authProcedure
     .input(
-      z.object({ month: z.string().length(2), year: z.string().length(4) })
+      z.object({ month: z.string().length(2), year: z.string().length(4) }),
     )
     .query(async ({ input }) => await getSalesByMonth(input.month, input.year)),
   searchItem: authProcedure
@@ -122,7 +122,7 @@ export const appRouter = router({
         title: z.string(),
         tva: z.enum(TVAValues),
         type: z.enum(ItemTypes),
-      })
+      }),
     )
     .mutation(async ({ input, ctx }) => {
       logger.info("Add new item to cart", { user: ctx.user, item: input });
@@ -130,7 +130,7 @@ export const appRouter = router({
     }),
   addToCart: authProcedure
     .input(
-      z.object({ id: z.string().length(24), quantity: z.number().optional() })
+      z.object({ id: z.string().length(24), quantity: z.number().optional() }),
     )
     .mutation(async ({ input, ctx }) => {
       logger.info("Add to cart", { user: ctx.user, item: input });
@@ -141,7 +141,7 @@ export const appRouter = router({
       z.object({
         saleId: z.string().length(24),
         itemId: z.string().length(24).nullish(),
-      })
+      }),
     )
     .mutation(async ({ ctx, input }) => {
       logger.info("Delete sale", { user: ctx.user, input });

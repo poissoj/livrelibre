@@ -51,7 +51,7 @@ router.post(async (req, res) => {
         .collection("books")
         .updateOne(
           { _id: new ObjectId(row.id) },
-          { $inc: { amount: row.QTE }, $set: { price } }
+          { $inc: { amount: row.QTE }, $set: { price } },
         );
       continue;
     }

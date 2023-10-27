@@ -6,7 +6,7 @@ const saveScrollPos = (asPath: string, elt: HTMLElement | null) => {
   if (!elt) return;
   sessionStorage.setItem(
     `scrollPos:${asPath}`,
-    JSON.stringify({ top: elt.scrollTop })
+    JSON.stringify({ top: elt.scrollTop }),
   );
 };
 
