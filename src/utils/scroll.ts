@@ -29,7 +29,7 @@ export function useScrollRestoration(ref: RefObject<HTMLElement>) {
 
     const onBeforeUnload = (event: BeforeUnloadEvent) => {
       saveScrollPos(router.asPath, ref.current);
-      delete event["returnValue"];
+      delete event.returnValue;
     };
 
     const onRouteChangeStart = () => {

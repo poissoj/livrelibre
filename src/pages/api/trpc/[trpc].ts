@@ -126,7 +126,7 @@ export const appRouter = router({
     )
     .mutation(async ({ input, ctx }) => {
       logger.info("Add new item to cart", { user: ctx.user, item: input });
-      return await addNewItemToCart(ctx.user.name, input);
+      await addNewItemToCart(ctx.user.name, input);
     }),
   addToCart: authProcedure
     .input(
@@ -134,7 +134,7 @@ export const appRouter = router({
     )
     .mutation(async ({ input, ctx }) => {
       logger.info("Add to cart", { user: ctx.user, item: input });
-      return await addToCart(ctx.user.name, input.id, input.quantity);
+      await addToCart(ctx.user.name, input.id, input.quantity);
     }),
   deleteSale: authProcedure
     .input(
@@ -145,7 +145,7 @@ export const appRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       logger.info("Delete sale", { user: ctx.user, input });
-      return await deleteSale(input.saleId, input.itemId);
+      await deleteSale(input.saleId, input.itemId);
     }),
   isbnSearch: authProcedure
     .input(z.string().regex(/^\d{10,}$/))
@@ -159,16 +159,16 @@ export const appRouter = router({
       return await payCart(ctx.user.name, input);
     }),
   putCartAside: authProcedure.mutation(async ({ ctx }) => {
-    return await putCartAside(ctx.user.name);
+    await putCartAside(ctx.user.name);
   }),
   reactivateCart: authProcedure.mutation(async ({ ctx }) => {
-    return await reactivateCart(ctx.user.name);
+    await reactivateCart(ctx.user.name);
   }),
   removeFromCart: authProcedure
     .input(z.string().length(24))
     .mutation(async ({ ctx, input }) => {
       logger.info("Remove from cart", { user: ctx.user, cartItemId: input });
-      return await removeFromCart(input);
+      await removeFromCart(input);
     }),
   star: authProcedure
     .input(z.object({ id: z.string().length(24), starred: z.boolean() }))

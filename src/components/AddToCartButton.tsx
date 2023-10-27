@@ -30,7 +30,9 @@ export const AddToCartButton = ({
       name="Ajouter au panier"
       title="Ajouter au panier"
       type="button"
-      onClick={() => mutate({ id: item._id })}
+      onClick={() => {
+        mutate({ id: item._id });
+      }}
       disabled={item.amount === 0}
     >
       <FontAwesomeIcon icon={icon} spin={isLoading} />

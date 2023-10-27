@@ -200,7 +200,12 @@ export const ItemForm = ({
         <CardFooter>
           <div className="flex justify-end mb-sm">{children}</div>
           {alert ? (
-            <Alert type={alert.type} onDismiss={() => setAlert(null)}>
+            <Alert
+              type={alert.type}
+              onDismiss={() => {
+                setAlert(null);
+              }}
+            >
               {alert.message}
             </Alert>
           ) : null}

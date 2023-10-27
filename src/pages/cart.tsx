@@ -39,7 +39,9 @@ const RemoveFromCartButton = ({ id }: { id: string }) => {
     <Button
       type="button"
       className="[background-color:#FF9800]"
-      onClick={() => mutate(id)}
+      onClick={() => {
+        mutate(id);
+      }}
       title="Enlever du panier"
     >
       <FontAwesomeIcon
@@ -256,7 +258,9 @@ const ErrorList = ({
             error.message === CART_ERRORS.INTERNAL_ERROR ? "error" : "warning"
           }
           key={error.isbn}
-          onDismiss={() => removeError(error.isbn)}
+          onDismiss={() => {
+            removeError(error.isbn);
+          }}
           className="mb-1"
         >
           {error.message === CART_ERRORS.INTERNAL_ERROR
@@ -399,12 +403,14 @@ const CartLoader = () => {
   const [change, setChange] = useState<number | null>(null);
   const [errors, setErrors] = useState<ISBNError[]>([]);
 
-  const addError = (error: ISBNError) =>
+  const addError = (error: ISBNError) => {
     setErrors((oldErrors) =>
       oldErrors.filter((old) => old.isbn !== error.isbn).concat(error),
     );
-  const removeError = (isbn: string) =>
+  };
+  const removeError = (isbn: string) => {
     setErrors((oldErrors) => oldErrors.filter((old) => old.isbn !== isbn));
+  };
 
   if (result.status === "error") {
     return (
@@ -441,7 +447,9 @@ const CartLoader = () => {
               <Alert
                 type="info"
                 className="mb-5"
-                onDismiss={() => setChange(null)}
+                onDismiss={() => {
+                  setChange(null);
+                }}
               >
                 <span>
                   À rendre:{" "}

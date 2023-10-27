@@ -96,7 +96,9 @@ const Login = () => {
               <button
                 type="button"
                 className="ml-auto"
-                onClick={() => setShowPassword((show) => !show)}
+                onClick={() => {
+                  setShowPassword((show) => !show);
+                }}
               >
                 <FontAwesomeIcon
                   icon={showPassword ? faEyeSlash : faEye}

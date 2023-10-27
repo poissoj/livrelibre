@@ -99,7 +99,9 @@ const ItemSkeleton = () => (
 
 const TitleWithButtons = ({ item }: { item: ItemWithCount }) => {
   const { star, mutation } = useBookmark();
-  const handleClick = () => star(item._id, !item.starred);
+  const handleClick = () => {
+    star(item._id, !item.starred);
+  };
 
   return (
     <div className="flex items-center">

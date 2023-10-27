@@ -88,7 +88,12 @@ export const SellNewItem = (): JSX.Element => {
           </Button>
         </form>
         {alert ? (
-          <Alert type={alert.type} onDismiss={() => setAlert(null)}>
+          <Alert
+            type={alert.type}
+            onDismiss={() => {
+              setAlert(null);
+            }}
+          >
             {alert.message}
           </Alert>
         ) : null}

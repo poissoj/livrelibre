@@ -224,7 +224,9 @@ const DilicomPage = () => {
           <Button
             type="button"
             className="mr-2 px-md [background-color:#6E6E6E]"
-            onClick={() => setFile(null)}
+            onClick={() => {
+              setFile(null);
+            }}
           >
             <FontAwesomeIcon icon={faTimesCircle} className="mr-sm" />
             Annuler
