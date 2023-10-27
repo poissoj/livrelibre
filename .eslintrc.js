@@ -8,8 +8,7 @@ module.exports = {
   plugins: ["@typescript-eslint"],
   extends: [
     "next/core-web-vitals",
-    "plugin:@typescript-eslint/recommended",
-    "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "plugin:@typescript-eslint/strict-type-checked",
     "prettier",
   ],
   ignorePatterns: [".eslintrc.js", "*.config.js", "validate_env.js"],
