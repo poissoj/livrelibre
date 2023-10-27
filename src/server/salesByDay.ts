@@ -171,7 +171,7 @@ export const getSalesByDay = async (date: string) => {
       };
     })
     .sort(
-      (a, b) => Number(b.tva) - Number(a.tva) || a.type.localeCompare(b.type)
+      (a, b) => Number(b.tva) - Number(a.tva) || a.type.localeCompare(b.type),
     );
 
   const paymentMethods = [...paymentStats.entries()]
@@ -193,13 +193,12 @@ export const getSalesByDay = async (date: string) => {
 
 export const deleteSale = async (saleId: string, itemId?: string | null) => {
   const db = await getDb();
-  const result = await db
+  const item = await db
     .collection<DBSale>("sales")
     .findOneAndUpdate(
       { _id: new ObjectId(saleId) },
-      { $set: { deleted: true } }
+      { $set: { deleted: true } },
     );
-  const item = result.value;
   if (itemId && item) {
     const amount = item.quantity || 1;
     await db

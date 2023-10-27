@@ -1,4 +1,3 @@
-import { TRPCError } from "@trpc/server";
 import { ObjectId, type WithId } from "mongodb";
 
 import { CART_ERRORS } from "@/utils/errors";
@@ -88,7 +87,7 @@ export const payCart = async (username: string, data: PaymentFormData) => {
 const addItemToCart = async (
   item: WithId<DBItem>,
   username: string,
-  quantity = 1
+  quantity = 1,
 ) => {
   const db = await getDb();
   const cartResult = await db.collection<CartItem>("cart").findOne({
@@ -100,7 +99,7 @@ const addItemToCart = async (
       {
         _id: cartResult._id,
       },
-      { $inc: { quantity } }
+      { $inc: { quantity } },
     );
     return;
   }
@@ -119,19 +118,19 @@ const addItemToCart = async (
 export const addToCart = async (
   username: string,
   itemId: string,
-  quantity = 1
+  quantity = 1,
 ) => {
   const db = await getDb();
   const result = await db
     .collection<DBItem>("books")
     .findOneAndUpdate(
       { _id: new ObjectId(itemId), amount: { $gte: quantity } },
-      { $inc: { amount: -quantity } }
+      { $inc: { amount: -quantity } },
     );
-  if (!result.ok || !result.value) {
+  if (result === null) {
     throw new Error("Unable to find item");
   }
-  await addItemToCart(result.value, username, quantity);
+  await addItemToCart(result, username, quantity);
 };
 
 export const addISBNToCart = async (username: string, isbn: string) => {
@@ -139,10 +138,7 @@ export const addISBNToCart = async (username: string, isbn: string) => {
   const result = await db
     .collection<DBItem>("books")
     .findOneAndUpdate({ isbn, amount: { $gte: 1 } }, { $inc: { amount: -1 } });
-  if (!result.ok) {
-    throw new TRPCError({ code: "INTERNAL_SERVER_ERROR" });
-  }
-  if (!result.value) {
+  if (result === null) {
     const item = await db.collection<DBItem>("books").findOne({ isbn });
     if (!item) {
       logger.info("ISBN non trouvé", { username, isbn });
@@ -155,7 +151,7 @@ export const addISBNToCart = async (username: string, isbn: string) => {
       id: item._id.toString(),
     };
   }
-  await addItemToCart(result.value, username);
+  await addItemToCart(result, username);
   return { errorCode: null };
 };
 
@@ -175,11 +171,11 @@ export const removeFromCart = async (cartItemId: string) => {
   const result = await db
     .collection<CartItem>("cart")
     .findOneAndDelete({ _id: new ObjectId(cartItemId) });
-  if (!result.value) {
+  if (result === null) {
     return;
   }
-  const amount = result.value.quantity || 1;
-  const _id = result.value.itemId;
+  const amount = result.quantity || 1;
+  const _id = result.itemId;
   logger.info("Remove from cart", { cartItemId, itemId: _id });
   if (_id) {
     await db
