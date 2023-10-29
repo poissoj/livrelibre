@@ -14,7 +14,7 @@
     "exactOptionalPropertyTypes": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "Bundler",
     "resolveJsonModule": true,
     "jsx": "preserve",
     "incremental": true,
