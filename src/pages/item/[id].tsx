@@ -54,7 +54,7 @@ const ItemDetails = ({ item }: { item: ItemWithCount }) => {
       <DD>{item.author}</DD>
       <DT>Titre</DT>
       <DD>{item.title}</DD>
-      <DT>Éditeur</DT>
+      <DT>Maison d&apos;édition</DT>
       <DD>{item.publisher}</DD>
       <DT>Distributeur</DT>
       <DD>{item.distributor}</DD>

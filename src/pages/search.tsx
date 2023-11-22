@@ -51,7 +51,7 @@ const Search = (): JSX.Element => {
                 <FormRow label="Titre">
                   <Input type="text" {...register("title")} />
                 </FormRow>
-                <FormRow label="Éditeur">
+                <FormRow label="Maison d'édition">
                   <Input type="text" {...register("publisher")} />
                 </FormRow>
                 <FormRow label="Distributeur">

@@ -143,7 +143,7 @@ const DilicomTable = ({ items }: { items: DilicomRowWithId[] }) => {
           <th className="text-left">EAN</th>
           <th className="text-left">Titre</th>
           <th className="text-left">Auteur·ice</th>
-          <th className="text-left">Éditeur</th>
+          <th className="text-left">Maison d&apos;édition</th>
           <th className="text-left">Distributeur</th>
           <th className="text-right">Stock</th>
           <th className="text-right">Prix</th>

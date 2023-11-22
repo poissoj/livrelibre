@@ -142,7 +142,7 @@ export const ItemForm = ({
               <FormRow label="Titre">
                 <Input type="text" {...register("title")} required />
               </FormRow>
-              <FormRow label="Éditeur">
+              <FormRow label="Maison d'édition">
                 <Input type="text" {...register("publisher")} />
               </FormRow>
               <FormRow label="Distributeur">

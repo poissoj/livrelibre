@@ -21,7 +21,7 @@ const FIELD_LABELS = {
   isbn: "ISBN",
   author: "Auteur·ice",
   title: "Titre",
-  publisher: "Éditeur",
+  publisher: "Maison d'édition",
   distributor: "Distributeur",
   keywords: "Mots-clés",
   datebought: "Date d'achat",
