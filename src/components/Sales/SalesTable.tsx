@@ -65,7 +65,7 @@ export const SalesTable = ({ carts }: { carts: Carts }) => {
         <tr>
           <th className={clsx(TH_STYLES, "text-right")}>Stock</th>
           <th className={clsx(TH_STYLES, "text-left")}>Titre</th>
-          <th className={clsx(TH_STYLES, "text-left")}>Auteur</th>
+          <th className={clsx(TH_STYLES, "text-left")}>Auteur·ice</th>
           <th className={clsx(TH_STYLES, "text-right")}>Quantité</th>
           <th className={clsx(TH_STYLES, "text-right")}>Prix total</th>
           <th className={clsx(TH_STYLES, "text-right")}>TVA</th>

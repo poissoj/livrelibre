@@ -42,7 +42,8 @@ const makeCSV = async () => {
     ])
     .toArray();
   logger.info("Export stock", { nbItems: items.length });
-  const HEADER = "Catégorie,Titre,Auteur,Distributeur,ISBN,Qté,Valeur TTC\n";
+  const HEADER =
+    "Catégorie,Titre,Auteur·ice,Distributeur,ISBN,Qté,Valeur TTC\n";
   const csv =
     HEADER +
     items

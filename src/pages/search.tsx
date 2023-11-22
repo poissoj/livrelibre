@@ -45,7 +45,7 @@ const Search = (): JSX.Element => {
                 <FormRow label="ISBN">
                   <Input type="text" maxLength={13} {...register("isbn")} />
                 </FormRow>
-                <FormRow label="Auteur">
+                <FormRow label="Auteur·ice">
                   <Input type="text" {...register("author")} />
                 </FormRow>
                 <FormRow label="Titre">

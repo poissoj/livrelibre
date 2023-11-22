@@ -17,7 +17,7 @@ const ItemsTable = ({ items }: { items: ItemWithCount[] }) => (
       <tr>
         <th className={clsx(TH_STYLES, "text-left")}>#</th>
         <th className={clsx(TH_STYLES, "text-left")}>Titre</th>
-        <th className={clsx(TH_STYLES, "text-left")}>Auteur</th>
+        <th className={clsx(TH_STYLES, "text-left")}>Auteur·ice</th>
         <th className={clsx(TH_STYLES, "text-right")}>Vendus</th>
         <th className={clsx(TH_STYLES, "text-right whitespace-nowrap")}>
           En stock

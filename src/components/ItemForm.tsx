@@ -136,7 +136,7 @@ export const ItemForm = ({
                   isLoading={isbnLoading}
                 />
               </FormRow>
-              <FormRow label="Auteur">
+              <FormRow label="Auteur·ice">
                 <Input type="text" {...register("author")} />
               </FormRow>
               <FormRow label="Titre">

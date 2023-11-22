@@ -47,7 +47,7 @@ export const QuickSearch = ({
         type="text"
         className="flex-1 [padding:5px_10px] rounded bg-white/80 pr-7
   focus-visible:ring-2 focus-visible:ring-inset focus-visible:outline-none [--tw-ring-color:#AAA]"
-        placeholder="ISBN, titre, auteur"
+        placeholder="ISBN, titre, auteur·ice"
         name="search"
       />
       <button

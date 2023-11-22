@@ -19,7 +19,7 @@ const CARD_STYLES = "max-h-full overflow-hidden flex flex-col relative";
 const FIELD_LABELS = {
   type: "Type",
   isbn: "ISBN",
-  author: "Auteur",
+  author: "Auteur·ice",
   title: "Titre",
   publisher: "Éditeur",
   distributor: "Distributeur",
