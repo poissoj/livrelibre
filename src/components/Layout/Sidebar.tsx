@@ -7,6 +7,7 @@ import {
   faSearchPlus,
   faTachometerAlt,
   faThList,
+  faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import {
   FontAwesomeIcon,
@@ -86,6 +87,11 @@ export const Sidebar = (): JSX.Element => {
         <li>
           <NavLink href="/stats" icon={faChartPie}>
             Statistiques
+          </NavLink>
+        </li>
+        <li>
+          <NavLink href="/customers" icon={faUsers}>
+            Clients
           </NavLink>
         </li>
         <li>

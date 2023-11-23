@@ -18,6 +18,7 @@ import {
   removeFromCart,
 } from "@/server/cart";
 import { createContext } from "@/server/context";
+import { getCustomers } from "@/server/customers";
 import { getItems } from "@/server/items";
 import { lastSales } from "@/server/lastSales";
 import { getSales } from "@/server/sales";
@@ -78,6 +79,9 @@ export const appRouter = router({
   items: authProcedure
     .input(z.number())
     .query(async ({ input }) => await getItems({ pageNumber: input })),
+  customers: authProcedure
+    .input(z.number())
+    .query(async ({ input }) => await getCustomers({ pageNumber: input })),
   lastSales: authProcedure
     .input(z.string().length(24))
     .query(async ({ input }) => await lastSales(input)),
