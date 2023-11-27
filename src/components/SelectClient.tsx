@@ -2,7 +2,7 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Combobox } from "@headlessui/react";
 import { clsx } from "clsx";
-import { Fragment, useState } from "react";
+import { Dispatch, Fragment, SetStateAction, useState } from "react";
 
 import { DBCustomer } from "@/utils/customer";
 import { trpc } from "@/utils/trpc";
@@ -15,22 +15,22 @@ const INPUT_STYLES = clsx(
 const getLabel = (customer: DBCustomer | null) =>
   customer ? `${customer.fullname}` : "";
 
-export function SelectClient({ inputClass }: { inputClass?: string }) {
-  const [selectedCustomer, setSelectedCustomer] = useState<DBCustomer | null>(
-    null,
-  );
+export function SelectClient({
+  inputClass,
+  customer,
+  setCustomer,
+}: {
+  inputClass?: string;
+  customer: DBCustomer | undefined;
+  setCustomer: Dispatch<SetStateAction<DBCustomer | undefined>>;
+}) {
   const [query, setQuery] = useState("");
   const res = trpc.searchCustomer.useQuery(query);
 
   const filteredCustomers = res.data || [];
 
   return (
-    <Combobox
-      value={selectedCustomer}
-      by="_id"
-      onChange={setSelectedCustomer}
-      nullable
-    >
+    <Combobox value={customer} by="_id" onChange={setCustomer} nullable>
       <div className="relative w-fit">
         <Combobox.Input
           className={clsx(INPUT_STYLES, inputClass)}
@@ -40,7 +40,7 @@ export function SelectClient({ inputClass }: { inputClass?: string }) {
             setQuery(event.target.value);
           }}
         />
-        <Combobox.Options className="absolute w-full overflow-auto rounded-md p-1 shadow-lg ring-1 ring-black/5 bg-gray-light">
+        <Combobox.Options className="absolute z-10 w-full overflow-auto rounded-md p-1 shadow-lg ring-1 ring-black/5 bg-gray-light">
           {filteredCustomers.map((customer) => (
             <Combobox.Option key={customer._id} value={customer} as={Fragment}>
               {({ active, selected }) => (

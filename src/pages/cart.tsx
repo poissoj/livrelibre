@@ -20,6 +20,7 @@ import { Input, Select } from "@/components/FormControls";
 import { SelectClient } from "@/components/SelectClient";
 import { Title } from "@/components/Title";
 import type { PaymentFormData } from "@/server/cart";
+import { DBCustomer } from "@/utils/customer";
 import { formatDate } from "@/utils/date";
 import { CART_ERRORS } from "@/utils/errors";
 import { formatNumber, formatPrice } from "@/utils/format";
@@ -399,6 +400,47 @@ const AsideCartLoader = () => {
   );
 };
 
+const CustomerInfos = ({ customer }: { customer: DBCustomer }) => {
+  const amount = customer.purchases.reduce((s, p) => s + p.amount, 0);
+  return (
+    <div>
+      {customer.comment ? <div>{customer.comment}</div> : null}
+      <div>
+        {customer.purchases.length} achat
+        {customer.purchases.length > 1 ? "s" : ""}
+      </div>
+      <div>Total: {formatPrice(amount)}</div>
+      <div>
+        Remise possible:
+        <Input
+          type="number"
+          step={0.01}
+          min={0}
+          className="ml-2 !w-28 font-number"
+          defaultValue={Math.round(amount * 3) / 100}
+        />
+        <Button type="button" className="ml-2" disabled>
+          Appliquer
+        </Button>
+      </div>
+    </div>
+  );
+};
+
+const CustomerSelector = () => {
+  const [customer, setCustomer] = useState<DBCustomer>();
+  return (
+    <>
+      <SelectClient
+        inputClass="mb-1"
+        customer={customer}
+        setCustomer={setCustomer}
+      />
+      {customer && <CustomerInfos customer={customer} />}
+    </>
+  );
+};
+
 const CartLoader = () => {
   const result = trpc.cart.useQuery();
   const [change, setChange] = useState<number | null>(null);
@@ -474,6 +516,7 @@ const CartLoader = () => {
           </CardTitle>
           <QuickAdd addError={addError} />
         </div>
+        <CustomerSelector />
         <CardBody className="flex-col">
           <ErrorList errors={errors} removeError={removeError} />
           <CartTable items={items} />
@@ -484,7 +527,6 @@ const CartLoader = () => {
               Total : <span className="font-number">{formatPrice(total)}</span>
             </span>
           </p>
-          <SelectClient inputClass="mb-2" />
           <div className="flex justify-between">
             <AsideButton />
             <PaymentForm cb={setChange} />
