@@ -32,3 +32,18 @@ export const getCustomers = async ({
 
   return { count, pageCount, items };
 };
+
+const MAX_CUSTOMERS_TO_DISPLAY = 10;
+export const searchCustomers = async (search: string) => {
+  if (search.length < 2) {
+    return [];
+  }
+  const searchReg = new RegExp(search.toLowerCase(), "i");
+  const db = await getDb();
+  return await db
+    .collection<DBCustomer>("customers")
+    .find({ fullname: searchReg })
+    .sort({ lastname: 1 })
+    .limit(MAX_CUSTOMERS_TO_DISPLAY)
+    .toArray();
+};

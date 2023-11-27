@@ -17,6 +17,7 @@ import { Button } from "@/components/Button";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Input, Select } from "@/components/FormControls";
+import { SelectClient } from "@/components/SelectClient";
 import { Title } from "@/components/Title";
 import type { PaymentFormData } from "@/server/cart";
 import { formatDate } from "@/utils/date";
@@ -483,6 +484,7 @@ const CartLoader = () => {
               Total : <span className="font-number">{formatPrice(total)}</span>
             </span>
           </p>
+          <SelectClient inputClass="mb-2" />
           <div className="flex justify-between">
             <AsideButton />
             <PaymentForm cb={setChange} />
