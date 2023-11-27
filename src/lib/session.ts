@@ -1,10 +1,10 @@
-import type { IronSessionOptions } from "iron-session";
+import type { SessionOptions } from "iron-session";
 
 if (!process.env.COOKIE_PASSWORD) {
   throw new Error("COOKIE_PASSWORD is not set.");
 }
 
-export const sessionOptions: IronSessionOptions = {
+export const sessionOptions: SessionOptions = {
   password: process.env.COOKIE_PASSWORD,
   cookieName: "livreLibre",
 };
@@ -14,8 +14,4 @@ export type User = {
   role: "admin" | "guest" | "anonymous" | "ssg";
 };
 
-declare module "iron-session" {
-  interface IronSessionData {
-    user?: User;
-  }
-}
+export type SessionData = { user?: User };

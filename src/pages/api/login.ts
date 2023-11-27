@@ -1,9 +1,9 @@
 import bcrypt from "bcrypt";
-import { withIronSessionApiRoute } from "iron-session/next";
+import { getIronSession } from "iron-session";
 import type { NextApiHandler } from "next";
 import { z } from "zod";
 
-import { sessionOptions } from "@/lib/session";
+import { type SessionData, sessionOptions } from "@/lib/session";
 import { getDb } from "@/server/database";
 import { logger } from "@/utils/logger";
 
@@ -35,8 +35,13 @@ const loginRoute: NextApiHandler = async (req, res) => {
 
     if (passwordMatches) {
       const user = { name: dbUser.name, role: dbUser.role };
-      req.session.user = user;
-      await req.session.save();
+      const session = await getIronSession<SessionData>(
+        req,
+        res,
+        sessionOptions,
+      );
+      session.user = user;
+      await session.save();
       logger.info("Login successful", { user });
       res.json(user);
       return;
@@ -49,4 +54,4 @@ const loginRoute: NextApiHandler = async (req, res) => {
   }
 };
 
-export default withIronSessionApiRoute(loginRoute, sessionOptions);
+export default loginRoute;

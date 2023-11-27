@@ -1,13 +1,13 @@
-import { withIronSessionApiRoute } from "iron-session/next";
+import { getIronSession } from "iron-session";
 import type { NextApiHandler } from "next";
 
-import { sessionOptions } from "@/lib/session";
+import { type SessionData, sessionOptions } from "@/lib/session";
 import { getBookData } from "@/utils/getBookData";
 import { logger } from "@/utils/logger";
 
 const getBookDataRoute: NextApiHandler = async (req, res) => {
   const { isbn } = req.query;
-  const { user } = req.session;
+  const { user } = await getIronSession<SessionData>(req, res, sessionOptions);
   if (!user) {
     res.status(401).json({ error: "Unauthenticated" });
     return;
@@ -28,4 +28,4 @@ const getBookDataRoute: NextApiHandler = async (req, res) => {
   }
 };
 
-export default withIronSessionApiRoute(getBookDataRoute, sessionOptions);
+export default getBookDataRoute;

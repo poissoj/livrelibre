@@ -2,14 +2,18 @@ import type { inferAsyncReturnType } from "@trpc/server";
 import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { getIronSession } from "iron-session";
 
-import { type User, sessionOptions } from "@/lib/session";
+import { type SessionData, type User, sessionOptions } from "@/lib/session";
 
 export const createContext = async (opts?: CreateNextContextOptions) => {
   const getUser = async (): Promise<User> => {
     if (!opts) {
       return { name: "", role: "ssg" };
     }
-    const session = await getIronSession(opts.req, opts.res, sessionOptions);
+    const session = await getIronSession<SessionData>(
+      opts.req,
+      opts.res,
+      sessionOptions,
+    );
     if (session.user) {
       return session.user;
     }

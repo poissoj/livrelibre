@@ -1,14 +1,15 @@
-import { withIronSessionApiRoute } from "iron-session/next";
+import { getIronSession } from "iron-session";
 import type { NextApiHandler } from "next";
 
-import { type User, sessionOptions } from "@/lib/session";
+import { type SessionData, type User, sessionOptions } from "@/lib/session";
 import { logger } from "@/utils/logger";
 
-const logoutRoute: NextApiHandler = (req, res) => {
-  logger.info("Logout", { user: req.session.user });
-  req.session.destroy();
+const logoutRoute: NextApiHandler = async (req, res) => {
+  const session = await getIronSession<SessionData>(req, res, sessionOptions);
+  logger.info("Logout", { user: session.user });
+  session.destroy();
   const user: User = { name: "", role: "anonymous" };
   res.json(user);
 };
 
-export default withIronSessionApiRoute(logoutRoute, sessionOptions);
+export default logoutRoute;

@@ -1,9 +1,9 @@
-import { withIronSessionApiRoute } from "iron-session/next";
+import { getIronSession } from "iron-session";
 import { ObjectId } from "mongodb";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { createRouter } from "next-connect";
 
-import { sessionOptions } from "@/lib/session";
+import { type SessionData, sessionOptions } from "@/lib/session";
 import { getDb } from "@/server/database";
 import { formatDate } from "@/utils/date";
 import type { DilicomRowWithId } from "@/utils/dilicomItem";
@@ -27,7 +27,7 @@ const finalizeImport = router.handler({
 
 router.post(async (req, res) => {
   const data = JSON.parse(req.body as string) as DilicomRowWithId[];
-  const { user } = req.session;
+  const { user } = await getIronSession<SessionData>(req, res, sessionOptions);
   if (!user) {
     res.status(401).json({ error: "Unauthenticated" });
     return;
@@ -86,4 +86,4 @@ router.post(async (req, res) => {
   res.json({ status: "Import ok" });
 });
 
-export default withIronSessionApiRoute(finalizeImport, sessionOptions);
+export default finalizeImport;

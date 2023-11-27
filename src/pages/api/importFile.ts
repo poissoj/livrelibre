@@ -1,15 +1,10 @@
 import * as xlsx from "xlsx";
-import { withIronSessionApiRoute } from "iron-session/next";
+import { getIronSession } from "iron-session";
 import multer from "multer";
-import type {
-  NextApiHandler,
-  NextApiRequest,
-  NextApiResponse,
-  PageConfig,
-} from "next";
+import type { NextApiRequest, NextApiResponse, PageConfig } from "next";
 import { createRouter } from "next-connect";
 
-import { sessionOptions } from "@/lib/session";
+import { type SessionData, sessionOptions } from "@/lib/session";
 import { getDb } from "@/server/database";
 import type { DilicomRow, DilicomRowWithId } from "@/utils/dilicomItem";
 import { getBookData } from "@/utils/getBookData";
@@ -129,7 +124,7 @@ router.use(
 );
 
 router.post(async (req, res) => {
-  const { user } = req.session;
+  const { user } = await getIronSession<SessionData>(req, res, sessionOptions);
   if (!user) {
     res.status(401).json({ error: "Unauthenticated" });
     return;
@@ -155,10 +150,7 @@ router.post(async (req, res) => {
   }
 });
 
-export default withIronSessionApiRoute(
-  importFile as NextApiHandler,
-  sessionOptions,
-);
+export default importFile;
 
 export const config: PageConfig = {
   api: {
