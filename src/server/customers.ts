@@ -7,7 +7,7 @@ import { getDb } from "./database";
 
 export const getCustomers = async ({
   query = {},
-  sortParams = { name: 1 },
+  sortParams = { lastname: 1, firstname: 1 },
   pageNumber = 1,
 }: {
   query?: Filter<DBCustomer>;
