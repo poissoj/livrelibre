@@ -36,7 +36,7 @@ export const trpc = createTRPCNext<AppRouter>({
 });
 
 export const useBookmark = () => {
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const mutation = trpc.star.useMutation({
     onSuccess(_input, vars) {
       void utils.bookmarks.invalidate();

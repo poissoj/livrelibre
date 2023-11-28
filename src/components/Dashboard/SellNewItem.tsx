@@ -20,7 +20,7 @@ type TAlert = {
 
 export const SellNewItem = (): JSX.Element => {
   const { register, handleSubmit, reset } = useForm<NewCartItem>();
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const [alert, setAlert] = React.useState<TAlert | null>(null);
   const { mutateAsync, isLoading } = trpc.addNewItemToCart.useMutation({
     async onSuccess() {

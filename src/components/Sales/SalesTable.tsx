@@ -14,7 +14,7 @@ const DeleteSale = ({
   saleId: string;
   itemId: string | null;
 }) => {
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const { mutate, isLoading } = trpc.deleteSale.useMutation({
     async onSuccess() {
       await utils.salesByDay.invalidate();

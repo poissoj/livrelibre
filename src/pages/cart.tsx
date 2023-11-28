@@ -31,7 +31,7 @@ import type { RouterOutput } from "@/utils/trpc";
 const TH_STYLES = "sticky top-0 bg-white";
 
 const RemoveFromCartButton = ({ id }: { id: string }) => {
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const { mutate, isLoading } = trpc.removeFromCart.useMutation({
     async onSuccess() {
       await utils.cart.invalidate();
@@ -124,7 +124,7 @@ const ItemsSkeleton = (): JSX.Element => (
 );
 
 const usePayCart = () => {
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const mutation = trpc.payCart.useMutation({
     onSuccess() {
       void utils.cart.invalidate();
@@ -191,7 +191,7 @@ const PaymentForm = ({ cb }: { cb: (amount: number | null) => void }) => {
 const QuickAdd = ({ addError }: { addError(error: ISBNError): void }) => {
   type FormFields = { isbn: string };
   const { register, handleSubmit, resetField } = useForm<FormFields>();
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const mutation = trpc.addISBNToCart.useMutation({
     onError(error, isbn) {
       addError({ message: CART_ERRORS.INTERNAL_ERROR, isbn });
@@ -287,7 +287,7 @@ const ErrorList = ({
 
 const AsideButton = () => {
   const { handleSubmit } = useForm();
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const asideCart = trpc.asideCart.useQuery();
   const { mutateAsync, isLoading } = trpc.putCartAside.useMutation({
     async onSuccess() {
@@ -335,7 +335,7 @@ const ReactivateButton = () => {
   const { handleSubmit } = useForm();
   const cart = trpc.cart.useQuery();
 
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const { mutateAsync, isLoading } = trpc.reactivateCart.useMutation({
     async onSuccess() {
       await Promise.all([
@@ -407,9 +407,8 @@ const CustomerInfos = ({ customer }: { customer: DBCustomer }) => {
       {customer.comment ? <div>{customer.comment}</div> : null}
       <div>
         {customer.purchases.length} achat
-        {customer.purchases.length > 1 ? "s" : ""}
+        {customer.purchases.length > 1 ? "s" : ""}, total {formatPrice(amount)}
       </div>
-      <div>Total: {formatPrice(amount)}</div>
       <div>
         Remise possible:
         <Input

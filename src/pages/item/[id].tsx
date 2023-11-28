@@ -132,7 +132,7 @@ const AddToCartFooter = ({ id, stock }: { id: string; stock: number }) => {
   type FormFields = { quantity: string };
   const { register, handleSubmit } = useForm<FormFields>();
   const { mutate, isLoading } = useAddToCart();
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const submit = ({ quantity }: FormFields) => {
     mutate(
       { id, quantity: Number(quantity) },

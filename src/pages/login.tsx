@@ -38,7 +38,7 @@ type LoginFormData = {
 
 const Login = () => {
   const { register, handleSubmit, formState } = useForm<LoginFormData>();
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const router = useRouter();
   const [errorMsg, setErrorMsg] = useState("");
   const [showPassword, setShowPassword] = useState(false);

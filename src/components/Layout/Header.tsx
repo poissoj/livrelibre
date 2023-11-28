@@ -21,7 +21,7 @@ const BUTTON_STYLES =
   "text-white [padding:14px_16px] hover:[background-color:rgba(0,0,0,0.1)]";
 
 const Logout = () => {
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const router = useRouter();
   const logout = async () => {
     await fetch("/api/logout", { method: "POST" });

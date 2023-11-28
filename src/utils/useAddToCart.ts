@@ -1,7 +1,7 @@
 import { trpc } from "./trpc";
 
 export const useAddToCart = () => {
-  const utils = trpc.useContext();
+  const utils = trpc.useUtils();
   const mutation = trpc.addToCart.useMutation({
     async onSuccess() {
       await Promise.all([
