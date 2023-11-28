@@ -8,9 +8,10 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { clsx } from "clsx";
 import Link from "next/link";
-import { useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import ContentLoader from "react-content-loader";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 import { Alert } from "@/components/Alert";
 import { Button } from "@/components/Button";
@@ -402,6 +403,33 @@ const AsideCartLoader = () => {
 
 const CustomerInfos = ({ customer }: { customer: DBCustomer }) => {
   const amount = customer.purchases.reduce((s, p) => s + p.amount, 0);
+  const [discount, setDiscount] = useState(0);
+  const [applied, setApplied] = useState<number>();
+
+  useEffect(() => {
+    setDiscount(Math.round(amount * 3) / 100);
+  }, [amount]);
+
+  const utils = trpc.useUtils();
+  const { mutateAsync, isLoading } = trpc.addNewItemToCart.useMutation({
+    async onSuccess() {
+      await utils.cart.invalidate();
+    },
+    onError() {
+      toast.error("Impossible de faire la remise");
+    },
+  });
+  const onSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    setApplied(discount);
+    await mutateAsync({
+      price: String(-discount),
+      title: "Remise carte de fidélité",
+      type: "book",
+      tva: "5.5",
+    });
+  };
+
   return (
     <div>
       {customer.comment ? <div>{customer.comment}</div> : null}
@@ -409,19 +437,26 @@ const CustomerInfos = ({ customer }: { customer: DBCustomer }) => {
         {customer.purchases.length} achat
         {customer.purchases.length > 1 ? "s" : ""}, total {formatPrice(amount)}
       </div>
-      <div>
-        Remise possible:
-        <Input
-          type="number"
-          step={0.01}
-          min={0}
-          className="ml-2 !w-28 font-number"
-          defaultValue={Math.round(amount * 3) / 100}
-        />
-        <Button type="button" className="ml-2" disabled>
-          Appliquer
-        </Button>
-      </div>
+      {applied === undefined ? (
+        <form onSubmit={onSubmit}>
+          Remise possible:
+          <Input
+            type="number"
+            step={0.01}
+            min={0}
+            className="ml-2 !w-28 font-number"
+            value={discount}
+            onChange={(e) => {
+              setDiscount(Number(e.target.value));
+            }}
+          />
+          <Button type="submit" className="ml-2" disabled={isLoading}>
+            Appliquer
+          </Button>
+        </form>
+      ) : (
+        <div>Remise de {formatPrice(applied)} appliquée</div>
+      )}
     </div>
   );
 };
