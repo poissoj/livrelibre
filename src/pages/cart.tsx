@@ -3,6 +3,7 @@ import {
   faHourglassStart,
   faShareSquare,
   faSpinner,
+  faTimesCircle,
   faTrashAlt,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -462,14 +463,22 @@ const CustomerInfos = ({ customer }: { customer: DBCustomer }) => {
 };
 
 const CustomerSelector = () => {
-  const [customer, setCustomer] = useState<DBCustomer>();
+  const [customer, setCustomer] = useState<DBCustomer | null>(null);
   return (
     <>
-      <SelectClient
-        inputClass="mb-1"
-        customer={customer}
-        setCustomer={setCustomer}
-      />
+      <div className="flex gap-1">
+        <SelectClient customer={customer} setCustomer={setCustomer} />
+        {customer && (
+          <Button
+            type="button"
+            onClick={() => {
+              setCustomer(null);
+            }}
+          >
+            <FontAwesomeIcon icon={faTimesCircle} />
+          </Button>
+        )}
+      </div>
       {customer && <CustomerInfos customer={customer} />}
     </>
   );

@@ -21,8 +21,8 @@ export function SelectClient({
   setCustomer,
 }: {
   inputClass?: string;
-  customer: DBCustomer | undefined;
-  setCustomer: Dispatch<SetStateAction<DBCustomer | undefined>>;
+  customer: DBCustomer | null;
+  setCustomer: Dispatch<SetStateAction<DBCustomer | null>>;
 }) {
   const [query, setQuery] = useState("");
   const res = trpc.searchCustomer.useQuery(query);
