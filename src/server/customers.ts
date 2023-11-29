@@ -8,14 +8,18 @@ import { ITEMS_PER_PAGE } from "@/utils/pagination";
 import { getDb } from "./database";
 
 export const getCustomers = async ({
-  query = {},
   sortParams = { lastname: 1, firstname: 1 },
   pageNumber = 1,
+  fullname,
 }: {
-  query?: Filter<DBCustomer>;
   sortParams?: Sort;
   pageNumber?: number;
+  fullname?: string | undefined;
 }) => {
+  const query: Filter<DBCustomer> = {};
+  if (fullname) {
+    query.fullname = new RegExp(fullname, "i");
+  }
   const db = await getDb();
   const customersCollection = db.collection<DBCustomer>("customers");
   const countPromise = customersCollection.countDocuments(query);

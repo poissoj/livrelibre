@@ -1,13 +1,14 @@
 import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import ContentLoader from "react-content-loader";
 
 import { LinkButton } from "@/components/Button";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { CustomersTable } from "@/components/CustomersTable";
 import { ErrorMessage } from "@/components/ErrorMessage";
+import { Input } from "@/components/FormControls";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { Pagination } from "@/components/Pagination";
 import { Title } from "@/components/Title";
@@ -49,7 +50,11 @@ const ItemsSkeleton = (): JSX.Element => (
 );
 
 const CustomersLoader = ({ page }: { page: number }) => {
-  const result = trpc.customers.useQuery(page, { keepPreviousData: true });
+  const [search, setSearch] = useState("");
+  const query = { pageNumber: page, fullname: search };
+
+  const result = trpc.customers.useQuery(query, { keepPreviousData: true });
+
   let pageTitle = "Liste des clients";
   if (result.status === "error") {
     return (
@@ -77,8 +82,16 @@ const CustomersLoader = ({ page }: { page: number }) => {
   return (
     <Card className="max-h-full overflow-hidden flex flex-col relative">
       <Title>{pageTitle}</Title>
-      <CardTitle className="flex">
+      <CardTitle className="flex items-center">
         {title}
+        <Input
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value);
+          }}
+          className="mx-auto !w-[13rem] text-base"
+          placeholder="Nom, prénom"
+        />
         <LinkButton href="/customer/new" className="ml-auto">
           <FontAwesomeIcon icon={faUserPlus} className="mr-2" />
           Nouveau client

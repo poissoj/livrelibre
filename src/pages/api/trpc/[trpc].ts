@@ -92,8 +92,10 @@ export const appRouter = router({
     .input(z.string().length(24))
     .query(async ({ input }) => await getCustomer(input)),
   customers: authProcedure
-    .input(z.number())
-    .query(async ({ input }) => await getCustomers({ pageNumber: input })),
+    .input(
+      z.object({ pageNumber: z.number(), fullname: z.string().optional() }),
+    )
+    .query(async ({ input }) => await getCustomers(input)),
   searchCustomer: authProcedure
     .input(z.string())
     .query(async ({ input }) => await searchCustomers(input)),
