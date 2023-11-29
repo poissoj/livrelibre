@@ -1,5 +1,10 @@
 import { ObjectId, type WithId } from "mongodb";
 
+import {
+  addPurchase,
+  getSelectedCustomer,
+  resetCustomer,
+} from "@/server/customers";
 import { CART_ERRORS } from "@/utils/errors";
 import type { DBItem, ItemType, TVA } from "@/utils/item";
 import { logger } from "@/utils/logger";
@@ -75,6 +80,17 @@ export const payCart = async (username: string, data: PaymentFormData) => {
   await db.collection("sales").insertMany(sales);
   await db.collection("cart").deleteMany({ username });
   const total = sales.reduce((t, sale) => t + sale.price * 100, 0);
+  const customer = await getSelectedCustomer(username, false);
+  if (customer && customer.customerId) {
+    const hasDiscount = cartItems.some(
+      (it) => it.title === "Remise carte de fidélité",
+    );
+    if (hasDiscount) {
+      await resetCustomer(customer.customerId);
+    } else {
+      await addPurchase(customer.customerId, total / 100);
+    }
+  }
   return {
     success: true,
     change:

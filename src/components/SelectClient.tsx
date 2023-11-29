@@ -2,7 +2,8 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Combobox } from "@headlessui/react";
 import { clsx } from "clsx";
-import { Dispatch, Fragment, SetStateAction, useState } from "react";
+import { WithId } from "mongodb";
+import { Fragment, useState } from "react";
 
 import { DBCustomer } from "@/utils/customer";
 import { trpc } from "@/utils/trpc";
@@ -21,8 +22,8 @@ export function SelectClient({
   setCustomer,
 }: {
   inputClass?: string;
-  customer: DBCustomer | null;
-  setCustomer: Dispatch<SetStateAction<DBCustomer | null>>;
+  customer: WithId<DBCustomer> | null;
+  setCustomer: (customer: WithId<DBCustomer> | null) => void;
 }) {
   const [query, setQuery] = useState("");
   const res = trpc.searchCustomer.useQuery(query);

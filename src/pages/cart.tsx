@@ -8,6 +8,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { clsx } from "clsx";
+import { WithId } from "mongodb";
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import ContentLoader from "react-content-loader";
@@ -130,6 +131,12 @@ const usePayCart = () => {
   const mutation = trpc.payCart.useMutation({
     onSuccess() {
       void utils.cart.invalidate();
+      void utils.customers.invalidate();
+      void utils.selectedCustomer.invalidate();
+      void utils.searchCustomer.invalidate();
+    },
+    onError() {
+      toast.error("Impossible de valider le panier");
     },
   });
   return mutation;
@@ -463,16 +470,34 @@ const CustomerInfos = ({ customer }: { customer: DBCustomer }) => {
 };
 
 const CustomerSelector = () => {
-  const [customer, setCustomer] = useState<DBCustomer | null>(null);
+  const [customer, setCustomer] = useState<WithId<DBCustomer> | null>(null);
+  const utils = trpc.useUtils();
+
+  const { mutateAsync } = trpc.selectCustomer.useMutation({
+    async onSuccess() {
+      await utils.cart.invalidate();
+    },
+    onError() {
+      toast.error("Impossible de faire la remise");
+    },
+  });
+
+  const onSelect = (selectedCustomer: WithId<DBCustomer> | null) => {
+    setCustomer(selectedCustomer);
+    void mutateAsync({
+      asideCart: false,
+      customerId: selectedCustomer?._id.toString() ?? null,
+    });
+  };
   return (
     <>
       <div className="flex gap-1">
-        <SelectClient customer={customer} setCustomer={setCustomer} />
+        <SelectClient customer={customer} setCustomer={onSelect} />
         {customer && (
           <Button
             type="button"
             onClick={() => {
-              setCustomer(null);
+              onSelect(null);
             }}
           >
             <FontAwesomeIcon icon={faTimesCircle} />

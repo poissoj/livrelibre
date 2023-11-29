@@ -1,6 +1,7 @@
-import type { Filter, Sort } from "mongodb";
+import { type Filter, ObjectId, type Sort } from "mongodb";
 
 import { DBCustomer } from "@/utils/customer";
+import { formatDate } from "@/utils/date";
 import { ITEMS_PER_PAGE } from "@/utils/pagination";
 
 import { getDb } from "./database";
@@ -46,4 +47,45 @@ export const searchCustomers = async (search: string) => {
     .sort({ lastname: 1 })
     .limit(MAX_CUSTOMERS_TO_DISPLAY)
     .toArray();
+};
+
+export const resetCustomer = async (id: string) => {
+  const db = await getDb();
+  return await db
+    .collection<DBCustomer>("customers")
+    .updateOne({ _id: new ObjectId(id) }, { $set: { purchases: [] } });
+};
+
+export const addPurchase = async (customerId: string, amount: number) => {
+  const date = formatDate(new Date()).split("-").reverse().join("/");
+  const db = await getDb();
+  return await db
+    .collection<DBCustomer>("customers")
+    .updateOne(
+      { _id: new ObjectId(customerId) },
+      { $push: { purchases: { amount, date } } },
+    );
+};
+
+export type SelectedCustomer = {
+  customerId: string | null;
+  username: string;
+  asideCart: boolean;
+};
+
+export const getSelectedCustomer = async (
+  username: string,
+  asideCart: boolean,
+) => {
+  const db = await getDb();
+  return await db
+    .collection<SelectedCustomer>("selectedCustomer")
+    .findOne({ username, asideCart });
+};
+
+export const setSelectedCustomer = async (customer: SelectedCustomer) => {
+  const db = await getDb();
+  return await db
+    .collection<SelectedCustomer>("selectedCustomer")
+    .replaceOne({ username: customer.username }, customer, { upsert: true });
 };

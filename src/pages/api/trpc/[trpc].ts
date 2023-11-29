@@ -18,7 +18,12 @@ import {
   removeFromCart,
 } from "@/server/cart";
 import { createContext } from "@/server/context";
-import { getCustomers, searchCustomers } from "@/server/customers";
+import {
+  getCustomers,
+  getSelectedCustomer,
+  searchCustomers,
+  setSelectedCustomer,
+} from "@/server/customers";
 import { getItems } from "@/server/items";
 import { lastSales } from "@/server/lastSales";
 import { getSales } from "@/server/sales";
@@ -85,6 +90,9 @@ export const appRouter = router({
   searchCustomer: authProcedure
     .input(z.string())
     .query(async ({ input }) => await searchCustomers(input)),
+  selectedCustomer: authProcedure.query(
+    async ({ ctx }) => await getSelectedCustomer(ctx.user.name, false),
+  ),
   lastSales: authProcedure
     .input(z.string().length(24))
     .query(async ({ input }) => await lastSales(input)),
@@ -190,6 +198,17 @@ export const appRouter = router({
     .mutation(async ({ ctx, input }) => {
       logger.info("Update item", { user: ctx.user, item: input });
       return await updateItem(input);
+    }),
+  selectCustomer: authProcedure
+    .input(
+      z.object({
+        customerId: z.string().length(24).nullable(),
+        asideCart: z.boolean(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      logger.info(`${ctx.user.name} - Select customer ${input.customerId}`);
+      return await setSelectedCustomer({ ...input, username: ctx.user.name });
     }),
 });
 
