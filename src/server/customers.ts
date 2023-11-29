@@ -151,7 +151,6 @@ export const newCustomer = async (
     ...customerData,
     fullname,
     purchases: [],
-    total: 0,
   };
   try {
     await db.collection<DBCustomer>("customers").insertOne(customer);

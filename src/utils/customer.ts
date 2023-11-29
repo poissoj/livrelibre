@@ -10,7 +10,6 @@ export type DBCustomer = {
   contact: string;
   purchases: Purchase[];
   comment: string;
-  total: number;
 };
 
 export type Customer = DBCustomer & { _id: string };

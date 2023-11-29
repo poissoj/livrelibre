@@ -4,6 +4,9 @@ import React from "react";
 import { Customer } from "@/utils/customer";
 import { formatPrice } from "@/utils/format";
 
+const getTotal = (customer: Customer) =>
+  customer.purchases.reduce((s, p) => s + p.amount, 0);
+
 export const CustomersTable = ({ items }: { items: Customer[] }) => {
   const router = useRouter();
   return (
@@ -30,10 +33,10 @@ export const CustomersTable = ({ items }: { items: Customer[] }) => {
             <td>{item.contact}</td>
             <td>{item.comment}</td>
             <td className="text-right font-number pr-2">
-              {formatPrice(Math.round(item.total * 3) / 100)}
+              {formatPrice(Math.round(getTotal(item) * 3) / 100)}
             </td>
             <td className="text-right font-number pr-2">
-              {formatPrice(item.total)}
+              {formatPrice(getTotal(item))}
             </td>
           </tr>
         ))}
