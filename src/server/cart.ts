@@ -1,6 +1,7 @@
 import { ObjectId, type WithId } from "mongodb";
 
 import {
+  SelectedCustomer,
   addPurchase,
   getSelectedCustomer,
   resetCustomer,
@@ -213,6 +214,19 @@ const switchCarts = async (username: string, from: CartName, to: CartName) => {
     .toArray();
   await db.collection<CartItem>(to).insertMany(items);
   await db.collection<CartItem>(from).deleteMany({ username });
+
+  const selectedCustomer = await db
+    .collection<SelectedCustomer>("selectedCustomer")
+    .findOne({ username, asideCart: from === "asideCart" });
+
+  if (selectedCustomer && selectedCustomer.customerId) {
+    await db
+      .collection<SelectedCustomer>("selectedCustomer")
+      .findOneAndUpdate(
+        { _id: selectedCustomer._id },
+        { $set: { asideCart: !selectedCustomer.asideCart } },
+      );
+  }
 };
 
 export const putCartAside = (username: string) =>
