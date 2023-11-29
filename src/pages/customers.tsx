@@ -1,7 +1,10 @@
+import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import React from "react";
 import ContentLoader from "react-content-loader";
 
+import { LinkButton } from "@/components/Button";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { CustomersTable } from "@/components/CustomersTable";
 import { ErrorMessage } from "@/components/ErrorMessage";
@@ -74,7 +77,13 @@ const CustomersLoader = ({ page }: { page: number }) => {
   return (
     <Card className="max-h-full overflow-hidden flex flex-col relative">
       <Title>{pageTitle}</Title>
-      <CardTitle>{title}</CardTitle>
+      <CardTitle className="flex">
+        {title}
+        <LinkButton href="/customer/new" className="ml-auto">
+          <FontAwesomeIcon icon={faUserPlus} className="mr-2" />
+          Nouveau client
+        </LinkButton>
+      </CardTitle>
       <CardBody>
         <Wrapper>
           <CustomersTable items={items} />

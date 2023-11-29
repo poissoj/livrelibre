@@ -134,3 +134,26 @@ export const setCustomer = async (
     return { type: "error" as const, msg: "Impossible de modifier le client" };
   }
 };
+
+export const newCustomer = async (
+  customerData: Pick<
+    DBCustomer,
+    "firstname" | "lastname" | "contact" | "comment"
+  >,
+) => {
+  const db = await getDb();
+  const fullname = `${customerData.firstname} ${customerData.lastname}`;
+  const customer: DBCustomer = {
+    ...customerData,
+    fullname,
+    purchases: [],
+    total: 0,
+  };
+  try {
+    await db.collection<DBCustomer>("customers").insertOne(customer);
+    return { type: "success" as const, msg: "Le client a été ajouté" };
+  } catch (error) {
+    logger.error(error);
+    return { type: "error" as const, msg: "Impossible d'ajouter le client" };
+  }
+};

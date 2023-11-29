@@ -23,6 +23,7 @@ import {
   getCustomer,
   getCustomers,
   getSelectedCustomer,
+  newCustomer,
   searchCustomers,
   setCustomer,
   setSelectedCustomer,
@@ -178,7 +179,7 @@ export const appRouter = router({
   updateCustomer: authProcedure
     .input(
       z.object({
-        customerId: z.string().length(24),
+        customerId: z.string().length(24).optional(),
         customer: z.object({
           firstname: z.string(),
           lastname: z.string(),
@@ -188,8 +189,13 @@ export const appRouter = router({
       }),
     )
     .mutation(async ({ input }) => {
-      logger.info("Update customer", input.customerId);
-      return await setCustomer(input.customer, input.customerId);
+      if (input.customerId) {
+        logger.info("Update customer", input.customerId);
+        return await setCustomer(input.customer, input.customerId);
+      } else {
+        logger.info("New customer", input.customer);
+        return await newCustomer(input.customer);
+      }
     }),
   isbnSearch: authProcedure
     .input(z.string().regex(/^\d{10,}$/))

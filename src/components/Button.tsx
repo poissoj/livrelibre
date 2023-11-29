@@ -1,4 +1,5 @@
 import { clsx } from "clsx";
+import Link from "next/link";
 
 const COMMON_STYLES =
   "bg-primary-dark text-white rounded p-sm uppercase tracking-wide font-medium " +
@@ -34,6 +35,19 @@ export const ButtonAnchor = ({
   <a className={clsx(COMMON_STYLES, HOVER_STYLES, className)} {...props}>
     {children}
   </a>
+);
+
+export const LinkButton = ({
+  className,
+  children,
+  ...props
+}: {
+  className?: string;
+  children?: React.ReactNode;
+} & React.ComponentPropsWithoutRef<typeof Link>) => (
+  <Link className={clsx(COMMON_STYLES, HOVER_STYLES, className)} {...props}>
+    {children}
+  </Link>
 );
 
 export const ButtonWithInput = ({
