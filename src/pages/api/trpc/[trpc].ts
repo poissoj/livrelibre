@@ -19,10 +19,12 @@ import {
 } from "@/server/cart";
 import { createContext } from "@/server/context";
 import {
+  deleteCustomer,
   getCustomer,
   getCustomers,
   getSelectedCustomer,
   searchCustomers,
+  setCustomer,
   setSelectedCustomer,
 } from "@/server/customers";
 import { getItems } from "@/server/items";
@@ -85,6 +87,9 @@ export const appRouter = router({
   items: authProcedure
     .input(z.number())
     .query(async ({ input }) => await getItems({ pageNumber: input })),
+  customer: authProcedure
+    .input(z.string().length(24))
+    .query(async ({ input }) => await getCustomer(input)),
   customers: authProcedure
     .input(z.number())
     .query(async ({ input }) => await getCustomers({ pageNumber: input })),
@@ -163,6 +168,28 @@ export const appRouter = router({
     .mutation(async ({ ctx, input }) => {
       logger.info("Delete sale", { user: ctx.user, input });
       await deleteSale(input.saleId, input.itemId);
+    }),
+  deleteCustomer: authProcedure
+    .input(z.object({ id: z.string().length(24) }))
+    .mutation(async ({ ctx, input }) => {
+      logger.info("Delete customer", { user: ctx.user, input });
+      return await deleteCustomer(input.id);
+    }),
+  updateCustomer: authProcedure
+    .input(
+      z.object({
+        customerId: z.string().length(24),
+        customer: z.object({
+          firstname: z.string(),
+          lastname: z.string(),
+          contact: z.string(),
+          comment: z.string(),
+        }),
+      }),
+    )
+    .mutation(async ({ input }) => {
+      logger.info("Update customer", input.customerId);
+      return await setCustomer(input.customer, input.customerId);
     }),
   isbnSearch: authProcedure
     .input(z.string().regex(/^\d{10,}$/))

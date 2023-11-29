@@ -2,6 +2,7 @@ import { type Filter, ObjectId, type Sort } from "mongodb";
 
 import { DBCustomer } from "@/utils/customer";
 import { formatDate } from "@/utils/date";
+import { logger } from "@/utils/logger";
 import { ITEMS_PER_PAGE } from "@/utils/pagination";
 
 import { getDb } from "./database";
@@ -95,4 +96,41 @@ export const getCustomer = async (id: string) => {
   return await db
     .collection<DBCustomer>("customers")
     .findOne({ _id: new ObjectId(id) });
+};
+
+export const deleteCustomer = async (customerId: string) => {
+  try {
+    const db = await getDb();
+    await db
+      .collection<DBCustomer>("customers")
+      .deleteOne({ _id: new ObjectId(customerId) });
+    return { type: "success" as const, msg: "Le client a été supprimé" };
+  } catch (error) {
+    logger.error(error);
+    return { type: "error" as const, msg: "Impossible de supprimer le client" };
+  }
+};
+
+export const setCustomer = async (
+  customerData: Pick<
+    DBCustomer,
+    "firstname" | "lastname" | "contact" | "comment"
+  >,
+  id: string,
+) => {
+  const db = await getDb();
+  const fullname = `${customerData.firstname} ${customerData.lastname}`;
+  const customer: Omit<DBCustomer, "purchases" | "total"> = {
+    ...customerData,
+    fullname,
+  };
+  try {
+    await db
+      .collection<DBCustomer>("customers")
+      .findOneAndUpdate({ _id: new ObjectId(id) }, { $set: customer });
+    return { type: "success" as const, msg: "Le client a été modifié" };
+  } catch (error) {
+    logger.error(error);
+    return { type: "error" as const, msg: "Impossible de modifier le client" };
+  }
 };
