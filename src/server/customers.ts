@@ -89,3 +89,10 @@ export const setSelectedCustomer = async (customer: SelectedCustomer) => {
     .collection<SelectedCustomer>("selectedCustomer")
     .replaceOne({ username: customer.username }, customer, { upsert: true });
 };
+
+export const getCustomer = async (id: string) => {
+  const db = await getDb();
+  return await db
+    .collection<DBCustomer>("customers")
+    .findOne({ _id: new ObjectId(id) });
+};

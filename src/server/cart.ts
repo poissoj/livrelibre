@@ -4,6 +4,7 @@ import {
   addPurchase,
   getSelectedCustomer,
   resetCustomer,
+  setSelectedCustomer,
 } from "@/server/customers";
 import { CART_ERRORS } from "@/utils/errors";
 import type { DBItem, ItemType, TVA } from "@/utils/item";
@@ -90,6 +91,7 @@ export const payCart = async (username: string, data: PaymentFormData) => {
     } else {
       await addPurchase(customer.customerId, total / 100);
     }
+    await setSelectedCustomer({ asideCart: false, customerId: null, username });
   }
   return {
     success: true,

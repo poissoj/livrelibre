@@ -19,6 +19,7 @@ import {
 } from "@/server/cart";
 import { createContext } from "@/server/context";
 import {
+  getCustomer,
   getCustomers,
   getSelectedCustomer,
   searchCustomers,
@@ -90,9 +91,10 @@ export const appRouter = router({
   searchCustomer: authProcedure
     .input(z.string())
     .query(async ({ input }) => await searchCustomers(input)),
-  selectedCustomer: authProcedure.query(
-    async ({ ctx }) => await getSelectedCustomer(ctx.user.name, false),
-  ),
+  selectedCustomer: authProcedure.query(async ({ ctx }) => {
+    const customer = await getSelectedCustomer(ctx.user.name, false);
+    return customer?.customerId ? await getCustomer(customer.customerId) : null;
+  }),
   lastSales: authProcedure
     .input(z.string().length(24))
     .query(async ({ input }) => await lastSales(input)),

@@ -8,7 +8,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { clsx } from "clsx";
-import { WithId } from "mongodb";
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 import ContentLoader from "react-content-loader";
@@ -23,7 +22,7 @@ import { Input, Select } from "@/components/FormControls";
 import { SelectClient } from "@/components/SelectClient";
 import { Title } from "@/components/Title";
 import type { PaymentFormData } from "@/server/cart";
-import { DBCustomer } from "@/utils/customer";
+import { Customer } from "@/utils/customer";
 import { formatDate } from "@/utils/date";
 import { CART_ERRORS } from "@/utils/errors";
 import { formatNumber, formatPrice } from "@/utils/format";
@@ -409,7 +408,7 @@ const AsideCartLoader = () => {
   );
 };
 
-const CustomerInfos = ({ customer }: { customer: DBCustomer }) => {
+const CustomerInfos = ({ customer }: { customer: Customer }) => {
   const amount = customer.purchases.reduce((s, p) => s + p.amount, 0);
   const [discount, setDiscount] = useState(0);
   const [applied, setApplied] = useState<number>();
@@ -470,25 +469,30 @@ const CustomerInfos = ({ customer }: { customer: DBCustomer }) => {
 };
 
 const CustomerSelector = () => {
-  const [customer, setCustomer] = useState<WithId<DBCustomer> | null>(null);
+  const result = trpc.selectedCustomer.useQuery();
   const utils = trpc.useUtils();
-
   const { mutateAsync } = trpc.selectCustomer.useMutation({
     async onSuccess() {
-      await utils.cart.invalidate();
+      await utils.selectedCustomer.invalidate();
     },
     onError() {
       toast.error("Impossible de faire la remise");
     },
   });
 
-  const onSelect = (selectedCustomer: WithId<DBCustomer> | null) => {
-    setCustomer(selectedCustomer);
+  const onSelect = (selectedCustomer: Customer | null) => {
     void mutateAsync({
       asideCart: false,
-      customerId: selectedCustomer?._id.toString() ?? null,
+      customerId: selectedCustomer?._id ?? null,
     });
   };
+
+  if (!result.isSuccess) {
+    return null;
+  }
+
+  const customer = result.data;
+
   return (
     <>
       <div className="flex gap-1">

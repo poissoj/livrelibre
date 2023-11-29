@@ -2,10 +2,9 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Combobox } from "@headlessui/react";
 import { clsx } from "clsx";
-import { WithId } from "mongodb";
 import { Fragment, useState } from "react";
 
-import { DBCustomer } from "@/utils/customer";
+import { Customer, DBCustomer } from "@/utils/customer";
 import { trpc } from "@/utils/trpc";
 
 const INPUT_STYLES = clsx(
@@ -22,8 +21,8 @@ export function SelectClient({
   setCustomer,
 }: {
   inputClass?: string;
-  customer: WithId<DBCustomer> | null;
-  setCustomer: (customer: WithId<DBCustomer> | null) => void;
+  customer: Customer | null;
+  setCustomer: (customer: Customer | null) => void;
 }) {
   const [query, setQuery] = useState("");
   const res = trpc.searchCustomer.useQuery(query);

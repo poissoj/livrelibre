@@ -12,3 +12,5 @@ export type DBCustomer = {
   comment: string;
   total: number;
 };
+
+export type Customer = DBCustomer & { _id: string };
