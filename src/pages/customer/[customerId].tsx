@@ -37,7 +37,12 @@ const CustomerFormSkeleton = (): JSX.Element => (
 
 const CustomerLoader = ({ id }: { id: string }) => {
   const result = trpc.customer.useQuery(id);
-  const mutation = trpc.updateCustomer.useMutation();
+  const utils = trpc.useUtils();
+  const mutation = trpc.updateCustomer.useMutation({
+    async onSuccess() {
+      await utils.customer.invalidate();
+    },
+  });
   const deleteMutation = trpc.deleteCustomer.useMutation();
   const router = useRouter();
 
@@ -90,7 +95,7 @@ const CustomerLoader = ({ id }: { id: string }) => {
     >
       <Button
         type="button"
-        className="mr-auto bg-[#991b1b]"
+        className="mr-auto !bg-[#991b1b]"
         onClick={deleteCustomer}
       >
         <FontAwesomeIcon icon={faTrash} className="mr-sm" />

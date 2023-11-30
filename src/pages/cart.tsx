@@ -1,5 +1,6 @@
 import {
   faCheckCircle,
+  faEdit,
   faHourglassStart,
   faShareSquare,
   faSpinner,
@@ -15,7 +16,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 import { Alert } from "@/components/Alert";
-import { Button } from "@/components/Button";
+import { Button, LinkButton } from "@/components/Button";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Input, Select } from "@/components/FormControls";
@@ -498,14 +499,20 @@ const CustomerSelector = () => {
       <div className="flex gap-1">
         <SelectClient customer={customer} setCustomer={onSelect} />
         {customer && (
-          <Button
-            type="button"
-            onClick={() => {
-              onSelect(null);
-            }}
-          >
-            <FontAwesomeIcon icon={faTimesCircle} />
-          </Button>
+          <>
+            <LinkButton href={`/customer/${customer._id}`} title="Modifier">
+              <FontAwesomeIcon icon={faEdit} />
+            </LinkButton>
+            <Button
+              type="button"
+              title="Dissocier"
+              onClick={() => {
+                onSelect(null);
+              }}
+            >
+              <FontAwesomeIcon icon={faTimesCircle} />
+            </Button>
+          </>
         )}
       </div>
       {customer && <CustomerInfos customer={customer} />}
