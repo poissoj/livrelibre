@@ -183,8 +183,7 @@ export const appRouter = router({
       z.object({
         customerId: z.string().length(24).optional(),
         customer: z.object({
-          firstname: z.string(),
-          lastname: z.string(),
+          fullname: z.string(),
           contact: z.string(),
           comment: z.string(),
         }),

@@ -8,7 +8,7 @@ import { ITEMS_PER_PAGE } from "@/utils/pagination";
 import { getDb } from "./database";
 
 export const getCustomers = async ({
-  sortParams = { lastname: 1, firstname: 1 },
+  sortParams = { fullname: 1 },
   pageNumber = 1,
   fullname,
 }: {
@@ -49,7 +49,7 @@ export const searchCustomers = async (search: string) => {
   return await db
     .collection<DBCustomer>("customers")
     .find({ fullname: searchReg })
-    .sort({ lastname: 1 })
+    .sort({ fullname: 1 })
     .limit(MAX_CUSTOMERS_TO_DISPLAY)
     .toArray();
 };
@@ -116,18 +116,10 @@ export const deleteCustomer = async (customerId: string) => {
 };
 
 export const setCustomer = async (
-  customerData: Pick<
-    DBCustomer,
-    "firstname" | "lastname" | "contact" | "comment"
-  >,
+  customer: Pick<DBCustomer, "fullname" | "contact" | "comment">,
   id: string,
 ) => {
   const db = await getDb();
-  const fullname = `${customerData.firstname} ${customerData.lastname}`;
-  const customer: Omit<DBCustomer, "purchases" | "total"> = {
-    ...customerData,
-    fullname,
-  };
   try {
     await db
       .collection<DBCustomer>("customers")
@@ -140,16 +132,11 @@ export const setCustomer = async (
 };
 
 export const newCustomer = async (
-  customerData: Pick<
-    DBCustomer,
-    "firstname" | "lastname" | "contact" | "comment"
-  >,
+  customerData: Pick<DBCustomer, "fullname" | "contact" | "comment">,
 ) => {
   const db = await getDb();
-  const fullname = `${customerData.firstname} ${customerData.lastname}`;
   const customer: DBCustomer = {
     ...customerData,
-    fullname,
     purchases: [],
   };
   try {

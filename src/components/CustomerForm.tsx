@@ -9,7 +9,7 @@ import { Customer } from "@/utils/customer";
 
 export type CustomerFormFields = Pick<
   Customer,
-  "firstname" | "lastname" | "comment" | "contact"
+  "fullname" | "comment" | "contact"
 >;
 
 type TAlert = {
@@ -54,11 +54,8 @@ export const CustomerForm = ({
       >
         <CardBody className="flex-col gap-5">
           <div className="flex flex-wrap flex-col">
-            <FormRow label="Prénom">
-              <Input type="text" {...register("firstname")} />
-            </FormRow>
-            <FormRow label="Nom">
-              <Input type="text" {...register("lastname")} required />
+            <FormRow label="Nom complet">
+              <Input type="text" {...register("fullname")} />
             </FormRow>
             <FormRow label="Contact">
               <Input type="text" {...register("contact")} />

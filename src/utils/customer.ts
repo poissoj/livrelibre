@@ -4,8 +4,6 @@ type Purchase = {
 };
 
 export type DBCustomer = {
-  firstname: string;
-  lastname: string;
   fullname: string;
   contact: string;
   purchases: Purchase[];
