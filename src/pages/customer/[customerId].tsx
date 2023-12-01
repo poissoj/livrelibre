@@ -16,7 +16,7 @@ import { ErrorMessage } from "@/components/ErrorMessage";
 import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
 
-const CARD_TITLE = "Modifier un client";
+const CARD_TITLE = "Modifier un⋅e client⋅e";
 
 const SkeletonRow = ({ n }: { n: number }) => (
   <>

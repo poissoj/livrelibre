@@ -35,7 +35,7 @@ export function SelectClient({
         <Combobox.Input
           className={clsx(INPUT_STYLES, inputClass)}
           displayValue={getLabel}
-          placeholder="Associer un client…"
+          placeholder="Associer un⋅e client⋅e…"
           onChange={(event) => {
             setQuery(event.target.value);
           }}

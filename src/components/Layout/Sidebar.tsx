@@ -91,7 +91,7 @@ export const Sidebar = (): JSX.Element => {
         </li>
         <li>
           <NavLink href="/customers" icon={faUsers}>
-            Clients
+            Client⋅es
           </NavLink>
         </li>
         <li>

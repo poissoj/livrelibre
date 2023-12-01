@@ -55,7 +55,7 @@ const CustomersLoader = ({ page }: { page: number }) => {
 
   const result = trpc.customers.useQuery(query, { keepPreviousData: true });
 
-  let pageTitle = "Liste des clients";
+  let pageTitle = "Liste des client⋅es";
   if (result.status === "error") {
     return (
       <ItemsCard title={pageTitle}>
@@ -71,7 +71,7 @@ const CustomersLoader = ({ page }: { page: number }) => {
     );
   }
   const { count, pageCount, items } = result.data;
-  let title = `${count} clients `;
+  let title = `${count} client⋅es `;
   if (pageCount > 1) {
     const pageLabel = `Page ${page} sur ${pageCount}`;
     title += " - " + pageLabel;
@@ -117,7 +117,7 @@ const Customers = (): JSX.Element => {
   const page = typeof queryPage === "string" ? Number(queryPage) : 1;
   return (
     <div className="flex flex-1 flex-col gap-lg">
-      <Title>Liste des clients</Title>
+      <Title>Liste des client⋅es</Title>
       <CustomersLoader page={page} />
     </div>
   );
