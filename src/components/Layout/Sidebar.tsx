@@ -28,19 +28,18 @@ const NavLink = ({ href, icon, children }: NavLinkProps) => {
   const router = useRouter();
   const ariaCurrent = router.pathname === href ? "page" : undefined;
   return (
-    <Link href={href} passHref legacyBehavior>
-      <a
-        aria-current={ariaCurrent}
-        className={clsx(
-          "block p-md transition-colors duration-300 ease-out border-l-4",
-          "hover:bg-gray-darkest",
-          "focus:outline-none focus:bg-gray-darkest",
-          ariaCurrent ? "border-primary-default" : "border-transparent",
-        )}
-      >
-        <FontAwesomeIcon icon={icon} className="mr-sm" fixedWidth />
-        {children}
-      </a>
+    <Link
+      href={href}
+      aria-current={ariaCurrent}
+      className={clsx(
+        "block p-md transition-colors duration-300 ease-out border-l-4",
+        "hover:bg-gray-darkest",
+        "focus:outline-none focus:bg-gray-darkest",
+        ariaCurrent ? "border-primary-default" : "border-transparent",
+      )}
+    >
+      <FontAwesomeIcon icon={icon} className="mr-sm" fixedWidth />
+      {children}
     </Link>
   );
 };

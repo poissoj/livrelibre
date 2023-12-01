@@ -13,7 +13,6 @@ export const Button = ({
   children,
   ...props
 }: {
-  className?: string;
   children?: React.ReactNode;
 } & JSX.IntrinsicElements["button"]) => (
   <button
@@ -29,7 +28,6 @@ export const ButtonAnchor = ({
   children,
   ...props
 }: {
-  className?: string;
   children?: React.ReactNode;
 } & JSX.IntrinsicElements["a"]) => (
   <a className={clsx(COMMON_STYLES, HOVER_STYLES, className)} {...props}>
@@ -41,10 +39,7 @@ export const LinkButton = ({
   className,
   children,
   ...props
-}: {
-  className?: string;
-  children?: React.ReactNode;
-} & React.ComponentPropsWithoutRef<typeof Link>) => (
+}: React.ComponentPropsWithoutRef<typeof Link>) => (
   <Link className={clsx(COMMON_STYLES, HOVER_STYLES, className)} {...props}>
     {children}
   </Link>
@@ -55,7 +50,6 @@ export const ButtonWithInput = ({
   children,
   ...props
 }: {
-  className?: string;
   children?: React.ReactNode;
 } & JSX.IntrinsicElements["button"]) => (
   <Button className={clsx("rounded-l-none -m[1px]", className)} {...props}>

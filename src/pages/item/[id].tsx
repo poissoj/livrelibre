@@ -8,13 +8,12 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { clsx } from "clsx";
 import dynamic from "next/dynamic";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
 import { useForm } from "react-hook-form";
 
 import { Alert } from "@/components/Alert";
-import { Button, ButtonAnchor } from "@/components/Button";
+import { Button, LinkButton } from "@/components/Button";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Input } from "@/components/FormControls";
@@ -119,11 +118,13 @@ const TitleWithButtons = ({ item }: { item: ItemWithCount }) => {
           spin={mutation.isLoading}
         />
       </Button>
-      <Link href={`/update/${item._id}`} passHref legacyBehavior>
-        <ButtonAnchor title="Modifier" className="rounded-l-none px-md">
-          <FontAwesomeIcon icon={faEdit} />
-        </ButtonAnchor>
-      </Link>
+      <LinkButton
+        href={`/update/${item._id}`}
+        title="Modifier"
+        className="rounded-l-none px-md"
+      >
+        <FontAwesomeIcon icon={faEdit} />
+      </LinkButton>
     </div>
   );
 };

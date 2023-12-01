@@ -104,7 +104,7 @@ const SearchLoader = ({
           <ToggleStock />
           <CardBody>Aucun résultat pour &quot;{queryLabel}&quot;</CardBody>
           <p className="mt-2">
-            <Link href="/search" passHref className="text-primary-darkest">
+            <Link href="/search" className="text-primary-darkest">
               Nouvelle recherche
             </Link>
           </p>

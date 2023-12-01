@@ -283,7 +283,7 @@ const ErrorList = ({
           {error.message === CART_ERRORS.NO_STOCK && error.id ? (
             <span>
               Pas de stock pour{" "}
-              <Link href={`/item/${error.id}`} passHref className="underline">
+              <Link href={`/item/${error.id}`} className="underline">
                 {error.title}
               </Link>
             </span>

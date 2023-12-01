@@ -84,7 +84,6 @@ export const SalesTable = ({ carts }: { carts: Carts }) => {
                 {sale.itemId ? (
                   <Link
                     href={`/item/${sale.itemId}`}
-                    passHref
                     className="text-primary-darkest"
                   >
                     {sale.title}

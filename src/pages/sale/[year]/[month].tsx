@@ -40,9 +40,7 @@ const SalesTable = ({ sales }: { sales: TSalesByDay }) => {
             onClick={() => router.push({ pathname: makeSaleURL(sale.date) })}
           >
             <td className="pl-2">
-              <Link href={makeSaleURL(sale.date)} legacyBehavior>
-                {sale.date}
-              </Link>
+              <Link href={makeSaleURL(sale.date)}>{sale.date}</Link>
             </td>
             <td className="text-right font-number">{sale.count}</td>
             <td className="text-right font-number pr-2">

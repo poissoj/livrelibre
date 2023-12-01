@@ -4,41 +4,29 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { clsx } from "clsx";
-import Link, { type LinkProps } from "next/link";
+import Link from "next/link";
 import { useRouter } from "next/router";
 
-const Anchor = ({
-  children,
-  className,
-  ...props
-}: React.PropsWithChildren<{ className?: string }> &
-  JSX.IntrinsicElements["a"]) => (
-  <a
-    className={clsx(
-      "border px-md py-sm text-primary-darker [border-color:#AAA]",
-      className,
-    )}
-    {...props}
-  >
-    {children}
-  </a>
-);
+const LINK_STYLES =
+  "border px-md py-sm text-primary-darker [border-color:#AAA]";
 
 const ConditionalLink = ({
-  href,
   children,
+  className,
+  linkIf,
+  ...props
 }: {
-  href: LinkProps["href"] | null;
-  children: React.ReactNode;
-}) => {
-  if (href) {
+  linkIf: boolean;
+  className?: string;
+} & React.ComponentPropsWithoutRef<typeof Link>) => {
+  if (linkIf) {
     return (
-      <Link href={href} passHref legacyBehavior>
+      <Link className={clsx(LINK_STYLES, className)} {...props}>
         {children}
       </Link>
     );
   }
-  return <>{children}</>;
+  return <span className={LINK_STYLES}>{children}</span>;
 };
 
 const range = (start: number, end: number) => {
@@ -81,30 +69,41 @@ export const Pagination = ({ count }: PaginationProps) => {
   return (
     <ol className="flex">
       <li>
-        <ConditionalLink href={page > 1 ? makeHref(page - 1) : null}>
-          <Anchor className="rounded-l-md" title="Page précédente">
-            <FontAwesomeIcon icon={faChevronLeft} />
-          </Anchor>
+        <ConditionalLink
+          linkIf={page > 1}
+          href={makeHref(page - 1)}
+          className="rounded-l-md"
+          title="Page précédente"
+        >
+          <FontAwesomeIcon icon={faChevronLeft} />
         </ConditionalLink>
       </li>
       {pageList.map((n, i) => (
         <li key={i}>
           {n === page ? (
-            <Anchor className="text-white bg-primary-darker border-primary-darker">
+            <span
+              className={
+                LINK_STYLES +
+                " text-white bg-primary-darker border-primary-darker"
+              }
+            >
               {n}
-            </Anchor>
+            </span>
           ) : (
-            <ConditionalLink href={n > 0 ? makeHref(n) : null}>
-              <Anchor>{n || "…"}</Anchor>
+            <ConditionalLink linkIf={n > 0} href={makeHref(n)}>
+              {n || "…"}
             </ConditionalLink>
           )}
         </li>
       ))}
       <li>
-        <ConditionalLink href={page < count ? makeHref(page + 1) : null}>
-          <Anchor className="rounded-r-md" title="Page suivante">
-            <FontAwesomeIcon icon={faChevronRight} />
-          </Anchor>
+        <ConditionalLink
+          linkIf={page < count}
+          href={makeHref(page + 1)}
+          className="rounded-r-md"
+          title="Page suivante"
+        >
+          <FontAwesomeIcon icon={faChevronRight} />
         </ConditionalLink>
       </li>
     </ol>

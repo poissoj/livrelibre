@@ -4,11 +4,10 @@ import {
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import Link from "next/link";
 import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
 
-import { Button, ButtonAnchor } from "@/components/Button";
+import { Button, LinkButton } from "@/components/Button";
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { type FormFields, ItemForm } from "@/components/ItemForm";
@@ -86,12 +85,13 @@ const ItemLoader = ({ id }: { id: string }) => {
       data={data}
       onSuccess={onSuccess}
     >
-      <Link href={`/item/${id}`} passHref legacyBehavior>
-        <ButtonAnchor className="mr-2 px-md [background-color:#6E6E6E]">
-          <FontAwesomeIcon icon={faTimesCircle} className="mr-sm" />
-          Annuler
-        </ButtonAnchor>
-      </Link>
+      <LinkButton
+        href={`/item/${id}`}
+        className="mr-2 px-md [background-color:#6E6E6E]"
+      >
+        <FontAwesomeIcon icon={faTimesCircle} className="mr-sm" />
+        Annuler
+      </LinkButton>
       <Button type="submit" className="px-md">
         <FontAwesomeIcon icon={faCheckCircle} className="mr-sm" />
         Modifier

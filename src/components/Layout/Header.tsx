@@ -53,21 +53,24 @@ const CartBadge = () => {
 };
 
 const CartButton = () => (
-  <Link href="/cart" passHref legacyBehavior>
-    <a className={clsx(BUTTON_STYLES, "shrink-0")} title="Voir le panier">
-      <FontAwesomeIcon icon={faShoppingCart} />
-      <CartBadge />
-    </a>
+  <Link
+    href="/cart"
+    className={clsx(BUTTON_STYLES, "shrink-0")}
+    title="Voir le panier"
+  >
+    <FontAwesomeIcon icon={faShoppingCart} />
+    <CartBadge />
   </Link>
 );
 
 export const Header = (): JSX.Element => {
   return (
     <header className="bg-primary-dark text-gray-darker flex items-center pr-lg">
-      <Link href="/" passHref legacyBehavior>
-        <a className="bg-primary-dark text-white w-56 block text-center mr-auto font-['Niconne'] text-[26px] leading-[50px]">
-          {APP_NAME}
-        </a>
+      <Link
+        href="/"
+        className="bg-primary-dark text-white w-56 block text-center mr-auto font-['Niconne'] text-[26px] leading-[50px]"
+      >
+        {APP_NAME}
       </Link>
       <QuickSearch />
       <UserName className="ml-md mr-sm" />
