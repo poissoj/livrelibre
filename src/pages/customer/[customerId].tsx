@@ -14,6 +14,8 @@ import { Card, CardBody, CardTitle } from "@/components/Card";
 import { CustomerForm, CustomerFormFields } from "@/components/CustomerForm";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Title } from "@/components/Title";
+import { Customer } from "@/utils/customer";
+import { formatPrice } from "@/utils/format";
 import { trpc } from "@/utils/trpc";
 
 const CARD_TITLE = "Modifier un⋅e client⋅e";
@@ -34,6 +36,45 @@ const CustomerFormSkeleton = (): JSX.Element => (
       ))}
   </ContentLoader>
 );
+
+const Purchases = ({ purchases }: Pick<Customer, "purchases">) => {
+  const total = purchases.reduce((s, p) => s + p.amount, 0);
+  return (
+    <Card>
+      <CardTitle>Détail des achats</CardTitle>
+      <CardBody className="flex-col">
+        {purchases.length > 0 ? (
+          <>
+            <div className="mb-2">
+              {purchases.length} achat{purchases.length > 1 ? "s" : ""} pour un
+              total de {formatPrice(total)}
+            </div>
+            <table className="w-fit border-separate border-spacing-x-4 border-spacing-y-1">
+              <thead>
+                <tr>
+                  <th className="text-left">Date</th>
+                  <th className="text-right">Montant</th>
+                </tr>
+              </thead>
+              <tbody>
+                {purchases.map((purchase, i) => (
+                  <tr key={i}>
+                    <td>{purchase.date}</td>
+                    <td className="text-right font-number">
+                      {formatPrice(purchase.amount)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </>
+        ) : (
+          <span>Aucun achat pour ce⋅tte client⋅e</span>
+        )}
+      </CardBody>
+    </Card>
+  );
+};
 
 const CustomerLoader = ({ id }: { id: string }) => {
   const result = trpc.customer.useQuery(id);
@@ -87,32 +128,35 @@ const CustomerLoader = ({ id }: { id: string }) => {
   }
 
   return (
-    <CustomerForm
-      title={CARD_TITLE}
-      onSubmit={submit}
-      data={result.data}
-      onSuccess={onSuccess}
-    >
-      <Button
-        type="button"
-        className="mr-auto !bg-[#991b1b]"
-        onClick={deleteCustomer}
+    <div className="flex flex-col gap-4">
+      <CustomerForm
+        title={CARD_TITLE}
+        onSubmit={submit}
+        data={result.data}
+        onSuccess={onSuccess}
       >
-        <FontAwesomeIcon icon={faTrash} className="mr-sm" />
-        Supprimer
-      </Button>
-      <LinkButton
-        href="/customers"
-        className="mr-2 px-md [background-color:#6E6E6E]"
-      >
-        <FontAwesomeIcon icon={faTimesCircle} className="mr-sm" />
-        Annuler
-      </LinkButton>
-      <Button type="submit" className="px-md">
-        <FontAwesomeIcon icon={faCheckCircle} className="mr-sm" />
-        Modifier
-      </Button>
-    </CustomerForm>
+        <Button
+          type="button"
+          className="mr-auto !bg-[#991b1b]"
+          onClick={deleteCustomer}
+        >
+          <FontAwesomeIcon icon={faTrash} className="mr-sm" />
+          Supprimer
+        </Button>
+        <LinkButton
+          href="/customers"
+          className="mr-2 px-md [background-color:#6E6E6E]"
+        >
+          <FontAwesomeIcon icon={faTimesCircle} className="mr-sm" />
+          Annuler
+        </LinkButton>
+        <Button type="submit" className="px-md">
+          <FontAwesomeIcon icon={faCheckCircle} className="mr-sm" />
+          Modifier
+        </Button>
+      </CustomerForm>
+      <Purchases purchases={result.data.purchases} />
+    </div>
   );
 };
 
