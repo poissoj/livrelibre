@@ -11,14 +11,19 @@ export const getCustomers = async ({
   sortParams = { fullname: 1 },
   pageNumber = 1,
   fullname,
+  withPurchases = false,
 }: {
   sortParams?: Sort;
   pageNumber?: number;
   fullname?: string | undefined;
+  withPurchases?: boolean;
 }) => {
   const query: Filter<DBCustomer> = {};
   if (fullname) {
     query.fullname = new RegExp(fullname, "i");
+  }
+  if (withPurchases) {
+    query.purchases = { $not: { $size: 0 } };
   }
   const db = await getDb();
   const customersCollection = db.collection<DBCustomer>("customers");

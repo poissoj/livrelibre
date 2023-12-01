@@ -1,7 +1,7 @@
 import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React, { useReducer, useState } from "react";
 import ContentLoader from "react-content-loader";
 
 import { LinkButton } from "@/components/Button";
@@ -51,7 +51,8 @@ const ItemsSkeleton = (): JSX.Element => (
 
 const CustomersLoader = ({ page }: { page: number }) => {
   const [search, setSearch] = useState("");
-  const query = { pageNumber: page, fullname: search };
+  const [withPurchases, toggleWithPurchases] = useReducer((v) => !v, false);
+  const query = { pageNumber: page, fullname: search, withPurchases };
 
   const result = trpc.customers.useQuery(query, { keepPreviousData: true });
 
@@ -92,6 +93,14 @@ const CustomersLoader = ({ page }: { page: number }) => {
           className="mx-auto !w-[13rem] text-base"
           placeholder="Nom, prénom"
         />
+        <label className="text-base cursor-pointer">
+          <span>Avec achats</span>
+          <input
+            type="checkbox"
+            onChange={toggleWithPurchases}
+            className="ml-2"
+          />
+        </label>
         <LinkButton href="/customer/new" className="ml-auto">
           <FontAwesomeIcon icon={faUserPlus} className="mr-2" />
           Nouveau client

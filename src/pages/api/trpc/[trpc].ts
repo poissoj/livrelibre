@@ -93,7 +93,11 @@ export const appRouter = router({
     .query(async ({ input }) => await getCustomer(input)),
   customers: authProcedure
     .input(
-      z.object({ pageNumber: z.number(), fullname: z.string().optional() }),
+      z.object({
+        pageNumber: z.number(),
+        fullname: z.string().optional(),
+        withPurchases: z.boolean().default(false),
+      }),
     )
     .query(async ({ input }) => await getCustomers(input)),
   searchCustomer: authProcedure
