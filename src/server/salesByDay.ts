@@ -1,23 +1,10 @@
 import { ObjectId, type WithId } from "mongodb";
 
-import type { DBItem, ItemType, TVA } from "@/utils/item";
-import { PAYMENT_METHODS, type PaymentType } from "@/utils/sale";
+import type { DBItem } from "@/utils/item";
+import { DBSale, PAYMENT_METHODS, type PaymentType } from "@/utils/sale";
 import { isDefined, isIn } from "@/utils/utils";
 
 import { getDb } from "./database";
-
-type DBSale = {
-  cartId?: ObjectId;
-  date: string;
-  id: ObjectId | null;
-  itemType: ItemType;
-  price: number;
-  quantity: number;
-  title?: string;
-  tva?: TVA;
-  type?: PaymentType;
-  deleted?: boolean;
-};
 
 type AggregatedSale = WithId<
   Pick<
@@ -30,6 +17,7 @@ type AggregatedSale = WithId<
     | "type"
     | "quantity"
     | "deleted"
+    | "linkedToCustomer"
   >
 >;
 
@@ -42,6 +30,7 @@ type ItemSale = Omit<DBItem, "price" | "type"> & {
   quantity: number;
   deleted: boolean;
   _id: string;
+  linkedToCustomer: boolean | undefined;
 };
 
 type UnlistedSale = Omit<AggregatedSale, "type" | "_id" | "cartId"> & {
@@ -70,6 +59,7 @@ export const getSalesByDay = async (date: string) => {
           type: 1,
           quantity: 1,
           deleted: 1,
+          linkedToCustomer: 1,
         },
       },
     ])
@@ -144,6 +134,7 @@ export const getSalesByDay = async (date: string) => {
         quantity: sale.quantity,
         deleted,
         _id: sale._id.toString(),
+        linkedToCustomer: sale.linkedToCustomer,
       });
     } else {
       sales.push({

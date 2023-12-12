@@ -10,7 +10,7 @@ import {
 import { CART_ERRORS } from "@/utils/errors";
 import type { DBItem, ItemType, TVA } from "@/utils/item";
 import { logger } from "@/utils/logger";
-import type { PaymentType } from "@/utils/sale";
+import type { DBSale, PaymentType } from "@/utils/sale";
 
 import { getDb } from "./database";
 
@@ -68,7 +68,8 @@ export const payCart = async (username: string, data: PaymentFormData) => {
     throw new Error("No items in cart");
   }
   const cartId = cartItems[0]._id;
-  const sales = cartItems.map((item) => ({
+  const customer = await getSelectedCustomer(username, false);
+  const sales: DBSale[] = cartItems.map((item) => ({
     cartId,
     date: data.paymentDate.split("-").reverse().join("/"),
     id: item.itemId,
@@ -78,11 +79,11 @@ export const payCart = async (username: string, data: PaymentFormData) => {
     title: item.title,
     tva: item.tva,
     type: data.paymentType,
+    linkedToCustomer: Boolean(customer?.customerId),
   }));
-  await db.collection("sales").insertMany(sales);
+  await db.collection<DBSale>("sales").insertMany(sales);
   await db.collection("cart").deleteMany({ username });
   const total = sales.reduce((t, sale) => t + sale.price * 100, 0);
-  const customer = await getSelectedCustomer(username, false);
   if (customer && customer.customerId) {
     const hasDiscount = cartItems.some(
       (it) => it.title === "Remise carte de fidélité",

@@ -1,3 +1,4 @@
+import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { faSpinner, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { clsx } from "clsx";
@@ -53,9 +54,12 @@ const TH_STYLES = "sticky top-0 bg-white";
 
 const Cell = ({
   className,
+  rowSpan,
   children,
-}: React.PropsWithChildren<{ className?: string }>) => (
-  <td className={clsx("p-sm", className)}>{children}</td>
+}: React.PropsWithChildren<{ className?: string; rowSpan?: number }>) => (
+  <td className={clsx("p-sm", className)} rowSpan={rowSpan}>
+    {children}
+  </td>
 );
 
 export const SalesTable = ({ carts }: { carts: Carts }) => {
@@ -70,12 +74,13 @@ export const SalesTable = ({ carts }: { carts: Carts }) => {
           <th className={clsx(TH_STYLES, "text-right")}>Prix total</th>
           <th className={clsx(TH_STYLES, "text-right")}>TVA</th>
           <th className={clsx(TH_STYLES, "text-left")}>Paiement</th>
-          <th className={TH_STYLES}></th>
+          <th className={clsx(TH_STYLES, "w-8")}></th>
+          <th className={clsx(TH_STYLES, "w-10")}></th>
         </tr>
       </thead>
       {carts.map((cart, i) => (
         <tbody className="odd:bg-gray-light" key={i}>
-          {cart.sales.map((sale) => (
+          {cart.sales.map((sale, index) => (
             <SalesRow key={sale._id} deleted={sale.deleted}>
               <Cell className="text-right font-number">
                 {"amount" in sale ? formatNumber(sale.amount) : ""}
@@ -106,6 +111,16 @@ export const SalesTable = ({ carts }: { carts: Carts }) => {
                   <DeleteSale saleId={sale._id} itemId={sale.itemId} />
                 )}
               </Cell>
+              {index === 0 && (
+                <Cell rowSpan={cart.sales.length}>
+                  {"linkedToCustomer" in sale && sale.linkedToCustomer ? (
+                    <FontAwesomeIcon
+                      icon={faUser}
+                      title="Cette vente est associée à un⋅e client⋅e"
+                    />
+                  ) : null}
+                </Cell>
+              )}
             </SalesRow>
           ))}
         </tbody>
