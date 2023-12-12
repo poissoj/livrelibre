@@ -188,6 +188,8 @@ export const appRouter = router({
         customerId: z.string().length(24).optional(),
         customer: z.object({
           fullname: z.string(),
+          phone: z.string().optional(),
+          email: z.string().optional(),
           contact: z.string(),
           comment: z.string(),
         }),

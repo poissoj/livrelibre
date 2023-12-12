@@ -14,6 +14,8 @@ export const CustomersTable = ({ items }: { items: Customer[] }) => {
       <thead>
         <tr className="sticky top-0 bg-white z-10">
           <th className="text-left">Nom</th>
+          <th className="text-left">Téléphone</th>
+          <th className="text-left">Mail</th>
           <th className="text-left">Contact</th>
           <th className="text-left">Commentaire</th>
           <th className="text-right">Remise</th>
@@ -28,6 +30,8 @@ export const CustomersTable = ({ items }: { items: Customer[] }) => {
             onClick={() => router.push(`/customer/${item._id}`)}
           >
             <td>{item.fullname}</td>
+            <td>{item.phone}</td>
+            <td>{item.email}</td>
             <td>{item.contact}</td>
             <td>{item.comment}</td>
             <td className="text-right font-number pr-2">

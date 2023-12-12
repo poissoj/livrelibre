@@ -6,6 +6,8 @@ type Purchase = {
 export type DBCustomer = {
   fullname: string;
   contact: string;
+  phone?: string | undefined;
+  email?: string | undefined;
   purchases: Purchase[];
   comment: string;
 };

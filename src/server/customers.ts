@@ -121,7 +121,7 @@ export const deleteCustomer = async (customerId: string) => {
 };
 
 export const setCustomer = async (
-  customer: Pick<DBCustomer, "fullname" | "contact" | "comment">,
+  customer: Omit<DBCustomer, "purchases">,
   id: string,
 ) => {
   const db = await getDb();
@@ -137,7 +137,7 @@ export const setCustomer = async (
 };
 
 export const newCustomer = async (
-  customerData: Pick<DBCustomer, "fullname" | "contact" | "comment">,
+  customerData: Omit<DBCustomer, "purchases">,
 ) => {
   const db = await getDb();
   const customer: DBCustomer = {

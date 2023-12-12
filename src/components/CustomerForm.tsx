@@ -7,10 +7,7 @@ import { Input, Textarea } from "@/components/FormControls";
 import { FormRow } from "@/components/FormRow";
 import { Customer } from "@/utils/customer";
 
-export type CustomerFormFields = Pick<
-  Customer,
-  "fullname" | "comment" | "contact"
->;
+export type CustomerFormFields = Omit<Customer, "purchases">;
 
 type TAlert = {
   type: React.ComponentProps<typeof Alert>["type"];
@@ -59,6 +56,12 @@ export const CustomerForm = ({
             </FormRow>
             <FormRow label="Contact">
               <Input type="text" {...register("contact")} />
+            </FormRow>
+            <FormRow label="Téléphone">
+              <Input type="tel" {...register("phone")} />
+            </FormRow>
+            <FormRow label="Email">
+              <Input type="email" {...register("email")} />
             </FormRow>
             <FormRow label="Commentaires">
               <Textarea {...register("comment")} />
