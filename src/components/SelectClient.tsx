@@ -13,7 +13,7 @@ const INPUT_STYLES = clsx(
 );
 
 const getLabel = (customer: DBCustomer | null) =>
-  customer ? `${customer.fullname}` : "";
+  customer ? customer.fullname : "";
 
 export function SelectClient({
   inputClass,

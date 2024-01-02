@@ -80,7 +80,7 @@ const SalesTable = ({ sales }: { sales: Sale[] }): JSX.Element => {
               {formatPrice(sale.amount)}
             </td>
             <td className="text-right font-number pr-2">
-              {sale.avg ? `${formatPrice(sale.avg)}` : "Inconnu"}
+              {sale.avg ? formatPrice(sale.avg) : "Inconnu"}
             </td>
           </tr>
         ))}
