@@ -3,7 +3,7 @@ import { type Filter, ObjectId } from "mongodb";
 import type { DBItem, ItemWithCount } from "@/utils/item";
 import { logger } from "@/utils/logger";
 import { ITEMS_PER_PAGE } from "@/utils/pagination";
-import { norm } from "@/utils/utils";
+import { norm, sanitize } from "@/utils/utils";
 
 import { getDb } from "./database";
 
@@ -24,8 +24,6 @@ export const getItem = async (id: string): Promise<ItemWithCount | null> => {
   const count = salesCount.length > 0 ? salesCount[0].total : 0;
   return item ? { ...item, _id: _id.toString(), count } : null;
 };
-
-const sanitize = (str: string) => str.replace(/[#-.]|[[-^]|[?|{}]/g, "\\$&");
 
 const generateQuickSearchCriteria = (search: string, inStock: boolean) => {
   let criteria: Filter<DBItem>;

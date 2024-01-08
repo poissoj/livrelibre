@@ -11,3 +11,6 @@ export const isDefined = <Elt>(elt: Elt): elt is NonNullable<Elt> =>
 // Remove diacritics
 export const norm = (str: string) =>
   str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+
+export const sanitize = (str: string) =>
+  str.replace(/[#-.]|[[-^]|[?|{}]/g, "\\$&");

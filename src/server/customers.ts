@@ -4,6 +4,7 @@ import { DBCustomer } from "@/utils/customer";
 import { formatDate } from "@/utils/date";
 import { logger } from "@/utils/logger";
 import { ITEMS_PER_PAGE } from "@/utils/pagination";
+import { sanitize } from "@/utils/utils";
 
 import { getDb } from "./database";
 
@@ -20,7 +21,7 @@ export const getCustomers = async ({
 }) => {
   const query: Filter<DBCustomer> = {};
   if (fullname) {
-    query.fullname = new RegExp(fullname, "i");
+    query.fullname = new RegExp(sanitize(fullname), "i");
   }
   if (withPurchases) {
     query.purchases = { $not: { $size: 0 } };
@@ -49,7 +50,7 @@ export const searchCustomers = async (search: string) => {
   if (search.length < 2) {
     return [];
   }
-  const searchReg = new RegExp(search.toLowerCase(), "i");
+  const searchReg = new RegExp(sanitize(search), "i");
   const db = await getDb();
   return await db
     .collection<DBCustomer>("customers")
