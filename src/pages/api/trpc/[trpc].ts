@@ -39,6 +39,7 @@ import { middleware, procedure, router } from "@/server/trpc";
 import { updateItem } from "@/server/updateItem";
 import { ItemTypes, TVAValues } from "@/utils/item";
 import { logger } from "@/utils/logger";
+import { norm } from "@/utils/utils";
 
 const itemSchema = z.object({
   type: z.enum(ItemTypes),
@@ -196,12 +197,16 @@ export const appRouter = router({
       }),
     )
     .mutation(async ({ input }) => {
+      const customer = {
+        ...input.customer,
+        nmFullname: norm(input.customer.fullname),
+      };
       if (input.customerId) {
         logger.info("Update customer", input.customerId);
-        return await setCustomer(input.customer, input.customerId);
+        return await setCustomer(customer, input.customerId);
       } else {
         logger.info("New customer", input.customer);
-        return await newCustomer(input.customer);
+        return await newCustomer(customer);
       }
     }),
   isbnSearch: authProcedure
