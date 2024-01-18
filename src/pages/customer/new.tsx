@@ -3,7 +3,10 @@ import { faPlus, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 import { Button, LinkButton } from "@/components/Button";
-import { CustomerForm, CustomerFormFields } from "@/components/CustomerForm";
+import {
+  CustomerForm,
+  type CustomerFormFields,
+} from "@/components/CustomerForm";
 import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
 

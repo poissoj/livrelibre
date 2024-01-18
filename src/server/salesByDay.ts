@@ -1,7 +1,7 @@
 import { ObjectId, type WithId } from "mongodb";
 
 import type { DBItem } from "@/utils/item";
-import { DBSale, PAYMENT_METHODS, type PaymentType } from "@/utils/sale";
+import { type DBSale, PAYMENT_METHODS, type PaymentType } from "@/utils/sale";
 import { isDefined, isIn } from "@/utils/utils";
 
 import { getDb } from "./database";

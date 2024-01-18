@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import React from "react";
 
-import { Customer } from "@/utils/customer";
+import type { Customer } from "@/utils/customer";
 import { formatPrice } from "@/utils/format";
 
 const getTotal = (customer: Customer) =>

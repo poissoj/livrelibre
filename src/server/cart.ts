@@ -1,7 +1,7 @@
 import { ObjectId, type WithId } from "mongodb";
 
 import {
-  SelectedCustomer,
+  type SelectedCustomer,
   addPurchase,
   getSelectedCustomer,
   resetCustomer,

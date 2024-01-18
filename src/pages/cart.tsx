@@ -10,7 +10,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { clsx } from "clsx";
 import Link from "next/link";
-import { FormEvent, useEffect, useState } from "react";
+import { type FormEvent, useEffect, useState } from "react";
 import ContentLoader from "react-content-loader";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -23,7 +23,7 @@ import { Input, Select } from "@/components/FormControls";
 import { SelectClient } from "@/components/SelectClient";
 import { Title } from "@/components/Title";
 import type { PaymentFormData } from "@/server/cart";
-import { Customer } from "@/utils/customer";
+import type { Customer } from "@/utils/customer";
 import { formatDate } from "@/utils/date";
 import { CART_ERRORS } from "@/utils/errors";
 import { formatNumber, formatPrice } from "@/utils/format";

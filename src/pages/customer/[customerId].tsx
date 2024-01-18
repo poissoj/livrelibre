@@ -11,10 +11,13 @@ import { toast } from "react-toastify";
 
 import { Button, LinkButton } from "@/components/Button";
 import { Card, CardBody, CardTitle } from "@/components/Card";
-import { CustomerForm, CustomerFormFields } from "@/components/CustomerForm";
+import {
+  CustomerForm,
+  type CustomerFormFields,
+} from "@/components/CustomerForm";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Title } from "@/components/Title";
-import { Customer } from "@/utils/customer";
+import type { Customer } from "@/utils/customer";
 import { formatPrice } from "@/utils/format";
 import { trpc } from "@/utils/trpc";
 

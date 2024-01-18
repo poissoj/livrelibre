@@ -4,7 +4,7 @@ import { Combobox } from "@headlessui/react";
 import { clsx } from "clsx";
 import { Fragment, useState } from "react";
 
-import { Customer, DBCustomer } from "@/utils/customer";
+import type { Customer, DBCustomer } from "@/utils/customer";
 import { trpc } from "@/utils/trpc";
 
 const INPUT_STYLES = clsx(

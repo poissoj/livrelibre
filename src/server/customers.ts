@@ -1,6 +1,6 @@
 import { type Filter, ObjectId, type Sort } from "mongodb";
 
-import { DBCustomer } from "@/utils/customer";
+import type { DBCustomer } from "@/utils/customer";
 import { formatDate } from "@/utils/date";
 import { logger } from "@/utils/logger";
 import { ITEMS_PER_PAGE } from "@/utils/pagination";

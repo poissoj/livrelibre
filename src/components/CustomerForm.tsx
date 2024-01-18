@@ -5,7 +5,7 @@ import { Alert } from "@/components/Alert";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { Input, Textarea } from "@/components/FormControls";
 import { FormRow } from "@/components/FormRow";
-import { Customer } from "@/utils/customer";
+import type { Customer } from "@/utils/customer";
 
 export type CustomerFormFields = Omit<Customer, "purchases">;
 
