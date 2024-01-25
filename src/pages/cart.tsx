@@ -10,7 +10,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { clsx } from "clsx";
 import Link from "next/link";
-import { type FormEvent, useEffect, useState } from "react";
+import { type FormEvent, useState } from "react";
 import ContentLoader from "react-content-loader";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -411,12 +411,8 @@ const AsideCartLoader = () => {
 
 const CustomerInfos = ({ customer }: { customer: Customer }) => {
   const amount = customer.purchases.reduce((s, p) => s + p.amount, 0);
-  const [discount, setDiscount] = useState(0);
+  const [discount, setDiscount] = useState(Math.round(amount * 3) / 100);
   const [applied, setApplied] = useState<number>();
-
-  useEffect(() => {
-    setDiscount(Math.round(amount * 3) / 100);
-  }, [amount]);
 
   const utils = trpc.useUtils();
   const { mutateAsync, isLoading } = trpc.addNewItemToCart.useMutation({
