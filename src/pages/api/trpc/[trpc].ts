@@ -30,6 +30,7 @@ import {
 } from "@/server/customers";
 import { getItems } from "@/server/items";
 import { lastSales } from "@/server/lastSales";
+import { getOrders, newOrder, zOrder } from "@/server/orders";
 import { getSales } from "@/server/sales";
 import { deleteSale, getSalesByDay } from "@/server/salesByDay";
 import { getSalesByMonth } from "@/server/salesByMonth";
@@ -108,6 +109,7 @@ export const appRouter = router({
     const customer = await getSelectedCustomer(ctx.user.name, false);
     return customer?.customerId ? await getCustomer(customer.customerId) : null;
   }),
+  orders: authProcedure.query(getOrders),
   lastSales: authProcedure
     .input(z.string().length(24))
     .query(async ({ input }) => await lastSales(input)),
@@ -257,6 +259,9 @@ export const appRouter = router({
       logger.info(`${ctx.user.name} - Select customer ${input.customerId}`);
       return await setSelectedCustomer({ ...input, username: ctx.user.name });
     }),
+  newOrder: authProcedure
+    .input(zOrder)
+    .mutation(async ({ input }) => await newOrder(input)),
 });
 
 // export type definition of API

@@ -1,4 +1,5 @@
 import {
+  faBook,
   faChartLine,
   faChartPie,
   faEdit,
@@ -91,6 +92,11 @@ export const Sidebar = (): JSX.Element => {
         <li>
           <NavLink href="/customers" icon={faUsers}>
             Client⋅es
+          </NavLink>
+        </li>
+        <li>
+          <NavLink href="/orders" icon={faBook}>
+            Commandes
           </NavLink>
         </li>
         <li>
