@@ -20,7 +20,7 @@ import { Button, LinkButton } from "@/components/Button";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Input, Select } from "@/components/FormControls";
-import { SelectClient } from "@/components/SelectClient";
+import { SelectCustomer } from "@/components/SelectCustomer";
 import { Title } from "@/components/Title";
 import type { PaymentFormData } from "@/server/cart";
 import type { Customer } from "@/utils/customer";
@@ -493,7 +493,11 @@ const CustomerSelector = () => {
   return (
     <>
       <div className="flex gap-1">
-        <SelectClient customer={customer} setCustomer={onSelect} />
+        <SelectCustomer
+          customer={customer}
+          setCustomer={onSelect}
+          placeholder="Associer un⋅e client⋅e…"
+        />
         {customer && (
           <>
             <LinkButton href={`/customer/${customer._id}`} title="Modifier">

@@ -2,45 +2,49 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Combobox } from "@headlessui/react";
 import { clsx } from "clsx";
-import { Fragment, useState } from "react";
+import { Fragment, type HTMLProps, useState } from "react";
 
+import { COMMON_STYLES } from "@/components/FormControls";
 import type { Customer, DBCustomer } from "@/utils/customer";
 import { trpc } from "@/utils/trpc";
-
-const INPUT_STYLES = clsx(
-  "rounded px-2 py-1 focus:border-primary-default focus:outline-none [border:2px_solid_#ccc]",
-  "[transition:border-color_ease-in-out_0.15s]",
-);
 
 const getLabel = (customer: DBCustomer | null) =>
   customer ? customer.fullname : "";
 
-export function SelectClient({
-  inputClass,
-  customer,
-  setCustomer,
-}: {
+type Props = {
   inputClass?: string;
   customer: Customer | null;
   setCustomer: (customer: Customer | null) => void;
-}) {
+  fullWidth?: boolean;
+} & Pick<HTMLProps<HTMLInputElement>, "placeholder" | "required">;
+
+export function SelectCustomer({
+  inputClass,
+  customer,
+  setCustomer,
+  fullWidth,
+  ...inputProps
+}: Props) {
   const [query, setQuery] = useState("");
   const res = trpc.searchCustomer.useQuery(query);
 
   const filteredCustomers = res.data || [];
+  const inputStyles = fullWidth
+    ? COMMON_STYLES
+    : COMMON_STYLES.replace("w-full", "w-fit");
 
   return (
     <Combobox value={customer} by="_id" onChange={setCustomer} nullable>
-      <div className="relative w-fit">
+      <div className={clsx("relative", fullWidth ? "w-full" : "w-fit")}>
         <Combobox.Input
-          className={clsx(INPUT_STYLES, inputClass)}
+          className={clsx(inputStyles, inputClass)}
           displayValue={getLabel}
-          placeholder="Associer un⋅e client⋅e…"
           onChange={(event) => {
             setQuery(event.target.value);
           }}
+          {...inputProps}
         />
-        <Combobox.Options className="absolute z-10 w-full overflow-auto rounded-md p-1 shadow-lg ring-1 ring-black/5 bg-gray-light">
+        <Combobox.Options className="absolute z-10 w-full max-h-40 overflow-auto rounded-md p-1 shadow-lg ring-1 ring-black/5 bg-gray-light">
           {filteredCustomers.map((customer) => (
             <Combobox.Option key={customer._id} value={customer} as={Fragment}>
               {({ active, selected }) => (

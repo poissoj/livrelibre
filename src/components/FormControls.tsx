@@ -1,7 +1,7 @@
 import { clsx } from "clsx";
 import React from "react";
 
-const COMMON_STYLES = clsx(
+export const COMMON_STYLES = clsx(
   "rounded px-3 py-2 w-full focus:border-primary-default focus:outline-none [border:2px_solid_#ccc]",
   "[transition:border-color_ease-in-out_0.15s]",
 );
