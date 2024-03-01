@@ -30,7 +30,13 @@ import {
 } from "@/server/customers";
 import { getItems } from "@/server/items";
 import { lastSales } from "@/server/lastSales";
-import { getOrders, newOrder, zOrder } from "@/server/orders";
+import {
+  getOrder,
+  getOrders,
+  newOrder,
+  setOrder,
+  zInputOrder,
+} from "@/server/orders";
 import { getSales } from "@/server/sales";
 import { deleteSale, getSalesByDay } from "@/server/salesByDay";
 import { getSalesByMonth } from "@/server/salesByMonth";
@@ -40,6 +46,7 @@ import { middleware, procedure, router } from "@/server/trpc";
 import { updateItem } from "@/server/updateItem";
 import { ItemTypes, TVAValues } from "@/utils/item";
 import { logger } from "@/utils/logger";
+import { zOrder } from "@/utils/order";
 import { norm } from "@/utils/utils";
 
 const itemSchema = z.object({
@@ -109,6 +116,9 @@ export const appRouter = router({
     const customer = await getSelectedCustomer(ctx.user.name, false);
     return customer?.customerId ? await getCustomer(customer.customerId) : null;
   }),
+  order: authProcedure
+    .input(z.string().length(24))
+    .query(async ({ input }) => await getOrder(input)),
   orders: authProcedure.query(getOrders),
   lastSales: authProcedure
     .input(z.string().length(24))
@@ -117,7 +127,7 @@ export const appRouter = router({
     .input(
       z.object({
         search: z.string(),
-        page: z.number(),
+        page: z.number().default(1),
         inStock: z.boolean().default(false),
       }),
     )
@@ -260,8 +270,26 @@ export const appRouter = router({
       return await setSelectedCustomer({ ...input, username: ctx.user.name });
     }),
   newOrder: authProcedure
-    .input(zOrder)
-    .mutation(async ({ input }) => await newOrder(input)),
+    .input(zInputOrder)
+    .mutation(async ({ ctx, input }) => {
+      logger.info("New order", { user: ctx.user, order: input });
+      return await newOrder(input);
+    }),
+  updateOrder: authProcedure
+    .input(
+      z.object({
+        order: zOrder,
+        id: z.string().length(24),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      logger.info("Update order", {
+        user: ctx.user,
+        order: input.order,
+        orderId: input.id,
+      });
+      return await setOrder(input.order, input.id);
+    }),
 });
 
 // export type definition of API

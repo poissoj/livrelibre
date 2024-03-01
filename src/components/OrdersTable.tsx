@@ -1,25 +1,19 @@
-import Link from "next/link";
+import { useRouter } from "next/router";
 import React from "react";
 
 import { formatDate } from "@/utils/date";
-import type { DBOrder, Order } from "@/utils/order";
+import { type Order, STATUS_LABEL } from "@/utils/order";
 
 const formatBool = (bool: boolean) => (bool ? "Oui" : "Non");
 
-const STATUS_LABEL: Record<DBOrder["ordered"], string> = {
-  new: "Nouveau",
-  ordered: "Commandé",
-  received: "Reçu",
-  unavailable: "Indisponible",
-};
-
 export const OrdersTable = ({ items }: { items: Order[] }) => {
+  const router = useRouter();
   return (
     <table className="flex-1">
       <thead>
         <tr className="sticky top-0 bg-white z-10">
           <th className="text-left">Nom</th>
-          <th className="text-left">ISBN</th>
+          <th className="text-left">Titre</th>
           <th className="text-left">Date</th>
           <th className="text-left">État</th>
           <th className="text-left">Client prévenu</th>
@@ -29,13 +23,13 @@ export const OrdersTable = ({ items }: { items: Order[] }) => {
       </thead>
       <tbody className="leading-7">
         {items.map((item, i) => (
-          <tr key={i} className="hover:bg-gray-light">
-            <td>
-              <Link href={`/customer/${item.customer._id}`}>
-                {item.customer.fullname}
-              </Link>
-            </td>
-            <td>{item.isbn}</td>
+          <tr
+            key={i}
+            className="cursor-pointer hover:bg-gray-light"
+            onClick={() => router.push(`/order/${item._id}`)}
+          >
+            <td>{item.customer.fullname}</td>
+            <td>{item.itemTitle}</td>
             <td>{formatDate(item.date)}</td>
             <td>{STATUS_LABEL[item.ordered]}</td>
             <td>{formatBool(item.customerNotified)}</td>

@@ -1,8 +1,10 @@
 import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useRouter } from "next/router";
 import React from "react";
 import ContentLoader from "react-content-loader";
 
+import { Alert } from "@/components/Alert";
 import { LinkButton } from "@/components/Button";
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
@@ -10,7 +12,7 @@ import { ItemsCard } from "@/components/ItemsCard";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { OrdersTable } from "@/components/OrdersTable";
 import { Title } from "@/components/Title";
-import type { Order } from "@/utils/order";
+import { type Order, deserializeOrder } from "@/utils/order";
 import { trpc } from "@/utils/trpc";
 
 const SkeletonRow = ({ n }: { n: number }) => (
@@ -32,6 +34,23 @@ const ItemsSkeleton = (): JSX.Element => (
   </ContentLoader>
 );
 
+const StatusMessage = () => {
+  const router = useRouter();
+  const { status } = router.query;
+  if (status === "updated") {
+    return (
+      <Alert
+        type="success"
+        onDismiss={() => router.push("/orders")}
+        className="mb-2"
+      >
+        La commande a été modifiée.
+      </Alert>
+    );
+  }
+  return null;
+};
+
 const OrdersLoader = () => {
   const result = trpc.orders.useQuery();
 
@@ -50,11 +69,7 @@ const OrdersLoader = () => {
       </ItemsCard>
     );
   }
-  const items: Order[] = result.data.map((item) => ({
-    ...item,
-    date: new Date(item.date),
-    isbn: item.isbn,
-  }));
+  const items: Order[] = result.data.map(deserializeOrder);
   const Wrapper = result.isFetching ? LoadingOverlay : React.Fragment;
 
   return (
@@ -67,7 +82,8 @@ const OrdersLoader = () => {
           Nouvelle commande
         </LinkButton>
       </CardTitle>
-      <CardBody>
+      <CardBody className="flex-col">
+        <StatusMessage />
         <Wrapper>
           <OrdersTable items={items} />
         </Wrapper>
