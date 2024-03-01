@@ -9,26 +9,11 @@ import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { CustomersTable } from "@/components/CustomersTable";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Input } from "@/components/FormControls";
+import { ItemsCard } from "@/components/ItemsCard";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { Pagination } from "@/components/Pagination";
 import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
-
-const ItemsCard = ({
-  title,
-  subtitle,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-  subtitle?: React.ReactNode;
-}) => (
-  <Card className="max-h-full overflow-hidden flex flex-col">
-    <CardTitle>{title}</CardTitle>
-    {subtitle}
-    <CardBody>{children}</CardBody>
-  </Card>
-);
 
 const SkeletonRow = ({ n }: { n: number }) => (
   <>

@@ -6,27 +6,12 @@ import ContentLoader from "react-content-loader";
 import { LinkButton } from "@/components/Button";
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
+import { ItemsCard } from "@/components/ItemsCard";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { OrdersTable } from "@/components/OrdersTable";
 import { Title } from "@/components/Title";
 import type { Order } from "@/utils/order";
 import { trpc } from "@/utils/trpc";
-
-const ItemsCard = ({
-  title,
-  subtitle,
-  children,
-}: {
-  title: string;
-  children: React.ReactNode;
-  subtitle?: React.ReactNode;
-}) => (
-  <Card className="max-h-full overflow-hidden flex flex-col">
-    <CardTitle>{title}</CardTitle>
-    {subtitle}
-    <CardBody>{children}</CardBody>
-  </Card>
-);
 
 const SkeletonRow = ({ n }: { n: number }) => (
   <>
