@@ -2,7 +2,7 @@ import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { clsx } from "clsx";
 import { useRouter } from "next/router";
-import type { DOMAttributes } from "react";
+import { type DOMAttributes, useState } from "react";
 import { toast } from "react-toastify";
 
 import { trpc } from "@/utils/trpc";
@@ -13,7 +13,8 @@ export const QuickSearch = ({
   className?: string;
 }): JSX.Element => {
   const router = useRouter();
-  const isbnSearch = trpc.isbnSearch.useMutation();
+  const utils = trpc.useUtils();
+  const [isLoading, setLoading] = useState(false);
 
   const handleSubmit: DOMAttributes<HTMLFormElement>["onSubmit"] = async (
     event,
@@ -25,7 +26,9 @@ export const QuickSearch = ({
       return;
     }
     if (/^\d{10,}$/.test(search)) {
-      const result = await isbnSearch.mutateAsync(search);
+      setLoading(true);
+      const result = await utils.isbnSearch.fetch(search);
+      setLoading(false);
       if (result.count === 0) {
         toast.info("Aucun article trouvé pour cet ISBN");
         return;
@@ -54,11 +57,11 @@ export const QuickSearch = ({
         type="submit"
         className="text-black absolute top-2 bottom-2 right-1 px-2"
         aria-label="Rechercher"
-        disabled={isbnSearch.isLoading}
+        disabled={isLoading}
       >
         <FontAwesomeIcon
-          icon={isbnSearch.isLoading ? faSpinner : faSearch}
-          spin={isbnSearch.isLoading}
+          icon={isLoading ? faSpinner : faSearch}
+          spin={isLoading}
           className="mx-1"
         />
       </button>

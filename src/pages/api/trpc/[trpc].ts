@@ -146,6 +146,11 @@ export const appRouter = router({
     .query(async ({ input }) => await getItem(input)),
   stats: authProcedure.query(getStats),
   user: procedure.query(({ ctx }) => ctx.user),
+  isbnSearch: authProcedure
+    .input(z.string().regex(/^\d{10,}$/))
+    .query(async ({ input }) => {
+      return await searchItems({ search: input });
+    }),
   // Mutations
   addISBNToCart: authProcedure
     .input(z.string().regex(/^\d{10,13}$/))
@@ -220,11 +225,6 @@ export const appRouter = router({
         logger.info("New customer", input.customer);
         return await newCustomer(customer);
       }
-    }),
-  isbnSearch: authProcedure
-    .input(z.string().regex(/^\d{10,}$/))
-    .mutation(async ({ input }) => {
-      return await searchItems({ search: input });
     }),
   payCart: authProcedure
     .input(payCartSchema)
