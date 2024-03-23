@@ -99,9 +99,9 @@ const main = async () => {
     const db = mongoClient.db();
     const csvFile = await fs.readFile("./customers.csv", { encoding: "utf-8" });
     const customers = parse(csvFile, { columns: true }) as Customer[];
-    console.log(customers.length + " customers found");
+    console.log(customers.length, " customers found");
     const dbCustomers = customers.map(toDbCustomer);
-    console.log(errorCount + " errors");
+    console.log(errorCount, " errors");
     const result = await db.collection("customers").insertMany(dbCustomers);
     console.log(`Inserted ${result.insertedCount} documents.`);
   } catch (error) {
