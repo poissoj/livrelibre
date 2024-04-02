@@ -9,7 +9,6 @@ module.exports = {
   extends: [
     "next/core-web-vitals",
     "plugin:@typescript-eslint/strict-type-checked",
-    "prettier",
   ],
   ignorePatterns: [".eslintrc.js", "*.config.js", "validate_env.js"],
   rules: {
