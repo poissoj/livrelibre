@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import React from "react";
 
-import { formatDate } from "@/utils/date";
+import { formatDateFR } from "@/utils/date";
 import { type Order, STATUS_LABEL } from "@/utils/order";
 
 const formatBool = (bool: boolean) => (bool ? "Oui" : "Non");
@@ -14,6 +14,8 @@ export const OrdersTable = ({ items }: { items: Order[] }) => {
         <tr className="sticky top-0 bg-white z-10">
           <th className="text-left">Nom</th>
           <th className="text-left">Titre</th>
+          <th className="text-left">ISBN</th>
+          <th className="text-left">Distributeur</th>
           <th className="text-left">Date</th>
           <th className="text-left">État</th>
           <th className="text-left">Client prévenu</th>
@@ -30,7 +32,9 @@ export const OrdersTable = ({ items }: { items: Order[] }) => {
           >
             <td>{item.customer.fullname}</td>
             <td>{item.itemTitle}</td>
-            <td>{formatDate(item.date)}</td>
+            <td>{item.item?.isbn}</td>
+            <td>{item.item?.distributor}</td>
+            <td>{formatDateFR(item.date)}</td>
             <td>{STATUS_LABEL[item.ordered]}</td>
             <td>{formatBool(item.customerNotified)}</td>
             <td>{formatBool(item.paid)}</td>

@@ -8,7 +8,14 @@ export const zOrder = z.object({
   customerId: z.string().length(24),
   itemId: z.string().length(24).optional(),
   itemTitle: z.string(),
-  ordered: z.enum(["new", "ordered", "received", "unavailable", "canceled"]),
+  ordered: z.enum([
+    "new",
+    "ordered",
+    "received",
+    "unavailable",
+    "canceled",
+    "done",
+  ]),
   customerNotified: z.boolean(),
   paid: z.boolean(),
   comment: z.string(),
@@ -37,4 +44,5 @@ export const STATUS_LABEL: Record<DBOrder["ordered"], string> = {
   received: "Reçu",
   unavailable: "Indisponible",
   canceled: "Annulé",
+  done: "Terminée",
 };
