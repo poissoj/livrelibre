@@ -1,15 +1,17 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 import { Alert } from "@/components/Alert";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
-import { Select, Textarea } from "@/components/FormControls";
+import { Input, Select, Textarea } from "@/components/FormControls";
 import { FormRow } from "@/components/FormRow";
 import { SelectCustomer } from "@/components/SelectCustomer";
 import { type NewItem, SelectItem } from "@/components/SelectItem";
 import type { Customer } from "@/utils/customer";
 import type { Item } from "@/utils/item";
 import { type Order, STATUS_LABEL } from "@/utils/order";
+import { trpc } from "@/utils/trpc";
 
 type TAlert = {
   type: React.ComponentProps<typeof Alert>["type"];
@@ -31,6 +33,7 @@ export const OrderForm = ({
 }): JSX.Element => {
   const { register, handleSubmit, reset, setValue } = useForm<Order>({
     defaultValues: data || {},
+    shouldUseNativeValidation: true,
   });
   const [alert, setAlert] = React.useState<TAlert | null>(null);
   const [customer, setCustomer] = React.useState<Customer | null>(
@@ -39,9 +42,21 @@ export const OrderForm = ({
   const [item, setItem] = React.useState<Item | NewItem | null>(
     data?.item ?? { _id: null, title: data?.itemTitle ?? "" },
   );
+  const utils = trpc.useUtils();
 
   const submit = async (data: Order) => {
     const order = data.itemId ? data : { ...data, itemId: undefined }; // Fix case itemId === ""
+    if (order.item?.isbn && !order.itemId) {
+      const result = await utils.isbnSearch.fetch(order.item.isbn);
+      if (result.count === 0) {
+        toast.info("Aucun article trouvé pour cet ISBN");
+      }
+      updateItem(result.items[0]);
+      return;
+    }
+    if (!order.itemTitle) {
+      return;
+    }
     const { type, msg: message } = await onSubmit(order);
     setAlert({ type, message });
     if (type === "success") {
@@ -77,8 +92,16 @@ export const OrderForm = ({
                 required
               />
             </FormRow>
+            <FormRow label="ISBN">
+              <Input
+                {...register("item.isbn", {
+                  validate: (isbn: string | null) =>
+                    !isbn || /^\d{10,13}$/.test(isbn) || "ISBN invalide",
+                })}
+              />
+            </FormRow>
             <FormRow label="Titre">
-              <SelectItem item={item} setItem={updateItem} fullWidth required />
+              <SelectItem item={item} setItem={updateItem} fullWidth />
             </FormRow>
             <FormRow label="Commentaires">
               <Textarea {...register("comment")} />
