@@ -5,6 +5,7 @@ import {
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
 import { toast } from "react-toastify";
@@ -19,6 +20,7 @@ import { ErrorMessage } from "@/components/ErrorMessage";
 import { Title } from "@/components/Title";
 import type { Customer } from "@/utils/customer";
 import { formatPrice } from "@/utils/format";
+import { STATUS_LABEL } from "@/utils/order";
 import { trpc } from "@/utils/trpc";
 
 const CARD_TITLE = "Modifier un⋅e client⋅e";
@@ -40,10 +42,45 @@ const CustomerFormSkeleton = (): JSX.Element => (
   </ContentLoader>
 );
 
+const OrdersContent = ({ customerId }: { customerId: string }) => {
+  const [orders] = trpc.customerOrders.useSuspenseQuery(customerId);
+  return (
+    <>
+      <CardTitle>{`Commandes en cours: ${orders.length}`}</CardTitle>
+      <CardBody>
+        {orders.length === 0 ? (
+          "Aucune commande en cours pour ce⋅tte client⋅e"
+        ) : (
+          <ul>
+            {orders.map((order) => (
+              <li key={order._id}>
+                <Link href={`/order/${order._id}`}>
+                  {order.itemTitle} ({STATUS_LABEL[order.ordered]}
+                </Link>
+                )
+              </li>
+            ))}
+          </ul>
+        )}
+      </CardBody>
+    </>
+  );
+};
+
+const Orders = ({ customerId }: { customerId: string }) => {
+  return (
+    <Card className="flex-1">
+      <React.Suspense fallback={<CardBody>Chargement…</CardBody>}>
+        <OrdersContent customerId={customerId} />
+      </React.Suspense>
+    </Card>
+  );
+};
+
 const Purchases = ({ purchases }: Pick<Customer, "purchases">) => {
   const total = purchases.reduce((s, p) => s + p.amount, 0);
   return (
-    <Card>
+    <Card className="flex-1">
       <CardTitle>Détail des achats</CardTitle>
       <CardBody className="flex-col">
         {purchases.length > 0 ? (
@@ -131,7 +168,7 @@ const CustomerLoader = ({ id }: { id: string }) => {
   }
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 mb-lg">
       <CustomerForm
         title={CARD_TITLE}
         onSubmit={submit}
@@ -158,7 +195,10 @@ const CustomerLoader = ({ id }: { id: string }) => {
           Modifier
         </Button>
       </CustomerForm>
-      <Purchases purchases={result.data.purchases} />
+      <div className="flex-grow flex gap-4">
+        <Purchases purchases={result.data.purchases} />
+        <Orders customerId={id} />
+      </div>
     </div>
   );
 };

@@ -72,6 +72,15 @@ export const getOrders = async (): Promise<Order[]> => {
   return dbItems;
 };
 
+export const getCustomerActiveOrders = async (customerId: string) => {
+  const db = await getDb();
+  const orders = await db
+    .collection<DBOrder>("orders")
+    .find({ customerId, ordered: { $in: ["new", "ordered", "received"] } })
+    .toArray();
+  return orders;
+};
+
 export const zInputOrder = z.object({
   customerId: z.string().length(24),
   itemId: z.string().optional(),
