@@ -9,6 +9,7 @@ import {
   type DBOrder,
   type Order,
   type RawOrder,
+  dbIdSchema,
   deserializeOrder,
 } from "@/utils/order";
 
@@ -98,7 +99,7 @@ export const getCustomerActiveOrders = async (customerId: string) => {
 };
 
 export const zInputOrder = z.object({
-  customerId: z.string().length(24),
+  customerId: dbIdSchema,
   itemId: z.string().optional(),
   itemTitle: z.string(),
   comment: z.string(),

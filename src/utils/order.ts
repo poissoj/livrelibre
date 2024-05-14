@@ -3,10 +3,12 @@ import { z } from "zod";
 import type { Customer } from "@/utils/customer";
 import type { Item } from "@/utils/item";
 
+export const dbIdSchema = z.string().length(24);
+
 export const zOrder = z.object({
   date: z.string(),
-  customerId: z.string().length(24),
-  itemId: z.string().length(24).optional(),
+  customerId: dbIdSchema,
+  itemId: dbIdSchema.optional(),
   itemTitle: z.string(),
   ordered: z.enum([
     "new",

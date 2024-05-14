@@ -48,7 +48,7 @@ import { middleware, procedure, router } from "@/server/trpc";
 import { updateItem } from "@/server/updateItem";
 import { ItemTypes, TVAValues } from "@/utils/item";
 import { logger } from "@/utils/logger";
-import { zOrder } from "@/utils/order";
+import { dbIdSchema, zOrder } from "@/utils/order";
 import { norm } from "@/utils/utils";
 
 const itemSchema = z.object({
@@ -100,7 +100,7 @@ export const appRouter = router({
     .input(z.number())
     .query(async ({ input }) => await getItems({ pageNumber: input })),
   customer: authProcedure
-    .input(z.string().length(24))
+    .input(dbIdSchema)
     .query(async ({ input }) => await getCustomer(input)),
   customers: authProcedure
     .input(
@@ -119,17 +119,17 @@ export const appRouter = router({
     return customer?.customerId ? await getCustomer(customer.customerId) : null;
   }),
   order: authProcedure
-    .input(z.string().length(24))
+    .input(dbIdSchema)
     .query(async ({ input }) => await getOrder(input)),
   itemOrders: authProcedure
-    .input(z.string().length(24))
+    .input(dbIdSchema)
     .query(async ({ input }) => await getItemOrders(input)),
   orders: authProcedure.query(getOrders),
   customerOrders: authProcedure
-    .input(z.string().length(24))
+    .input(dbIdSchema)
     .query(async ({ input }) => await getCustomerActiveOrders(input)),
   lastSales: authProcedure
-    .input(z.string().length(24))
+    .input(dbIdSchema)
     .query(async ({ input }) => await lastSales(input)),
   quicksearch: authProcedure
     .input(
@@ -150,7 +150,7 @@ export const appRouter = router({
     )
     .query(async ({ input }) => await getSalesByMonth(input.month, input.year)),
   searchItem: authProcedure
-    .input(z.string().length(24))
+    .input(dbIdSchema)
     .query(async ({ input }) => await getItem(input)),
   stats: authProcedure.query(getStats),
   user: procedure.query(({ ctx }) => ctx.user),
@@ -184,9 +184,7 @@ export const appRouter = router({
       await addNewItemToCart(ctx.user.name, input);
     }),
   addToCart: authProcedure
-    .input(
-      z.object({ id: z.string().length(24), quantity: z.number().optional() }),
-    )
+    .input(z.object({ id: dbIdSchema, quantity: z.number().optional() }))
     .mutation(async ({ input, ctx }) => {
       logger.info("Add to cart", { user: ctx.user, item: input });
       await addToCart(ctx.user.name, input.id, input.quantity);
@@ -194,8 +192,8 @@ export const appRouter = router({
   deleteSale: authProcedure
     .input(
       z.object({
-        saleId: z.string().length(24),
-        itemId: z.string().length(24).nullish(),
+        saleId: dbIdSchema,
+        itemId: dbIdSchema.nullish(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -203,7 +201,7 @@ export const appRouter = router({
       await deleteSale(input.saleId, input.itemId);
     }),
   deleteCustomer: authProcedure
-    .input(z.object({ id: z.string().length(24) }))
+    .input(z.object({ id: dbIdSchema }))
     .mutation(async ({ ctx, input }) => {
       logger.info("Delete customer", { user: ctx.user, input });
       return await deleteCustomer(input.id);
@@ -211,7 +209,7 @@ export const appRouter = router({
   updateCustomer: authProcedure
     .input(
       z.object({
-        customerId: z.string().length(24).optional(),
+        customerId: dbIdSchema.optional(),
         customer: z.object({
           fullname: z.string(),
           phone: z.string().optional(),
@@ -247,13 +245,13 @@ export const appRouter = router({
     await reactivateCart(ctx.user.name);
   }),
   removeFromCart: authProcedure
-    .input(z.string().length(24))
+    .input(dbIdSchema)
     .mutation(async ({ ctx, input }) => {
       logger.info("Remove from cart", { user: ctx.user, cartItemId: input });
       await removeFromCart(input);
     }),
   star: authProcedure
-    .input(z.object({ id: z.string().length(24), starred: z.boolean() }))
+    .input(z.object({ id: dbIdSchema, starred: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
       logger.info(`${input.starred ? "Star" : "Unstar"} item ${input.id}`, {
         user: ctx.user,
@@ -269,7 +267,7 @@ export const appRouter = router({
   selectCustomer: authProcedure
     .input(
       z.object({
-        customerId: z.string().length(24).nullable(),
+        customerId: dbIdSchema.nullable(),
         asideCart: z.boolean(),
       }),
     )
@@ -287,7 +285,7 @@ export const appRouter = router({
     .input(
       z.object({
         order: zOrder,
-        id: z.string().length(24),
+        id: dbIdSchema,
       }),
     )
     .mutation(async ({ ctx, input }) => {
