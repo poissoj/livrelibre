@@ -1,4 +1,4 @@
-import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import React from "react";
@@ -78,7 +78,7 @@ const OrdersLoader = () => {
       <CardTitle className="flex items-center">
         {`${items.length} commande${items.length > 1 ? "s" : ""}`}
         <LinkButton href="/order/new" className="ml-auto">
-          <FontAwesomeIcon icon={faUserPlus} className="mr-2" />
+          <FontAwesomeIcon icon={faPlus} className="mr-2" />
           Nouvelle commande
         </LinkButton>
       </CardTitle>

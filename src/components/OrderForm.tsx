@@ -1,8 +1,11 @@
 import * as React from "react";
+import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 import { Alert } from "@/components/Alert";
+import { LinkButton } from "@/components/Button";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { Input, Select, Textarea } from "@/components/FormControls";
 import { FormRow } from "@/components/FormRow";
@@ -91,6 +94,13 @@ export const OrderForm = ({
                 fullWidth
                 required
               />
+              <LinkButton
+                href="/customer/new"
+                className="ml-sm self-center"
+                title="Nouveau client"
+              >
+                <FontAwesomeIcon icon={faUserPlus} />
+              </LinkButton>
             </FormRow>
             <FormRow label="ISBN">
               <Input
