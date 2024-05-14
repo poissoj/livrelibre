@@ -32,6 +32,7 @@ import { getItems } from "@/server/items";
 import { lastSales } from "@/server/lastSales";
 import {
   getCustomerActiveOrders,
+  getItemOrders,
   getOrder,
   getOrders,
   newOrder,
@@ -120,6 +121,9 @@ export const appRouter = router({
   order: authProcedure
     .input(z.string().length(24))
     .query(async ({ input }) => await getOrder(input)),
+  itemOrders: authProcedure
+    .input(z.string().length(24))
+    .query(async ({ input }) => await getItemOrders(input)),
   orders: authProcedure.query(getOrders),
   customerOrders: authProcedure
     .input(z.string().length(24))

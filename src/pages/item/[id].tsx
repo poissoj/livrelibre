@@ -21,6 +21,7 @@ import { NoResults } from "@/components/NoResults";
 import { Title } from "@/components/Title";
 import { formatNumber, formatPrice, formatTVA } from "@/utils/format";
 import { ITEM_TYPES, type ItemWithCount } from "@/utils/item";
+import { type DBOrder, STATUS_LABEL } from "@/utils/order";
 import { trpc, useBookmark } from "@/utils/trpc";
 import { useAddToCart } from "@/utils/useAddToCart";
 
@@ -42,7 +43,20 @@ const DD = ({
 const formatStringPrice = (price: string) =>
   price ? formatPrice(Number(price)) : "";
 
-const ItemDetails = ({ item }: { item: ItemWithCount }) => {
+type ItemOrder = { _id: DBOrder["ordered"]; count: number };
+
+const formatOrders = (orders: ItemOrder[]) =>
+  orders
+    .map((order) => `${STATUS_LABEL[order._id]}: ${order.count}`)
+    .join(", ");
+
+const ItemDetails = ({
+  item,
+  orders,
+}: {
+  item: ItemWithCount;
+  orders: ItemOrder[] | undefined;
+}) => {
   return (
     <DL>
       <DT>Type</DT>
@@ -69,6 +83,14 @@ const ItemDetails = ({ item }: { item: ItemWithCount }) => {
       <DD className="font-number">{formatStringPrice(item.price)}</DD>
       <DT>Quantité</DT>
       <DD className="font-number">{formatNumber(item.amount)}</DD>
+      <DT>Commandes</DT>
+      <DD>
+        {orders
+          ? orders.length > 0
+            ? formatOrders(orders)
+            : "Aucune commande en cours"
+          : "Chargement…"}
+      </DD>
       <DT>TVA</DT>
       <DD className="font-number">{formatTVA(item.tva)}</DD>
       <DT>Vendu</DT>
@@ -185,6 +207,7 @@ const StatusMessage = ({ itemTitle }: { itemTitle: string }) => {
 
 const ItemLoader = ({ id }: { id: string }) => {
   const result = trpc.searchItem.useQuery(id);
+  const orders = trpc.itemOrders.useQuery(id);
 
   if (result.status === "error") {
     return (
@@ -203,7 +226,7 @@ const ItemLoader = ({ id }: { id: string }) => {
         <TitleWithButtons item={result.data} />
         <CardBody className="flex-col">
           <StatusMessage itemTitle={result.data.title} />
-          <ItemDetails item={result.data} />
+          <ItemDetails item={result.data} orders={orders.data} />
         </CardBody>
         <CardFooter>
           <AddToCartFooter id={id} stock={result.data.amount} />

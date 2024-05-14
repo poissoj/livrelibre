@@ -34,6 +34,22 @@ export const getOrder = async (id: string) => {
   return null;
 };
 
+export const getItemOrders = async (itemId: string) => {
+  const db = await getDb();
+  const items = await db
+    .collection<DBOrder>("orders")
+    .aggregate<{ _id: DBOrder["ordered"]; count: number }>([
+      {
+        $match: { itemId, ordered: { $in: ["new", "ordered", "received"] } },
+      },
+      {
+        $group: { _id: "$ordered", count: { $sum: 1 } },
+      },
+    ])
+    .toArray();
+  return items;
+};
+
 export const getOrders = async (): Promise<Order[]> => {
   const db = await getDb();
   const ordersCollection = db.collection<DBOrder>("orders");
