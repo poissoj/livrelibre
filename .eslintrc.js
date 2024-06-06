@@ -10,7 +10,12 @@ module.exports = {
     "next/core-web-vitals",
     "plugin:@typescript-eslint/strict-type-checked",
   ],
-  ignorePatterns: [".eslintrc.js", "*.config.js", "validate_env.js"],
+  ignorePatterns: [
+    ".eslintrc.js",
+    "*.config.js",
+    "validate_env.js",
+    "*.spec.ts",
+  ],
   rules: {
     "@typescript-eslint/no-misused-promises": [
       "error",
