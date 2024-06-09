@@ -4,41 +4,44 @@ import React from "react";
 import { formatDateFR } from "@/utils/date";
 import { type Order, STATUS_LABEL } from "@/utils/order";
 
-const formatBool = (bool: boolean) => (bool ? "Oui" : "Non");
-
 export const OrdersTable = ({ items }: { items: Order[] }) => {
   const router = useRouter();
   return (
-    <table className="flex-1">
+    <table className="flex-1 text-sm">
       <thead>
-        <tr className="sticky top-0 bg-white z-10">
+        <tr className="sticky top-0 bg-white z-10 shadow-sm shadow-black">
           <th className="text-left">Date</th>
           <th className="text-left">Nom</th>
-          <th className="text-left">Titre</th>
-          <th className="text-left">ISBN</th>
+          <th className="text-left">Article</th>
           <th className="text-left">Distributeur</th>
           <th className="text-left">État</th>
-          <th className="text-left">Client prévenu</th>
-          <th className="text-left">Payé</th>
-          <th className="text-left">Commentaire</th>
+          <th className="text-left">Prévenu⋅e</th>
+          <th className="text-left px-1">Payé</th>
         </tr>
       </thead>
       <tbody className="leading-7">
         {items.map((item, i) => (
           <tr
             key={i}
-            className="cursor-pointer hover:bg-gray-light"
+            className="cursor-pointer even:bg-gray-light"
             onClick={() => router.push(`/order/${item._id}`)}
           >
-            <td>{formatDateFR(item.date)}</td>
-            <td>{item.customer.fullname}</td>
-            <td>{item.itemTitle}</td>
-            <td>{item.item?.isbn}</td>
-            <td>{item.item?.distributor}</td>
-            <td>{STATUS_LABEL[item.ordered]}</td>
-            <td>{formatBool(item.customerNotified)}</td>
-            <td>{formatBool(item.paid)}</td>
-            <td>{item.comment}</td>
+            <td className="p-1" title={item.comment}>
+              {formatDateFR(item.date)}
+            </td>
+            <td className="p-1">{item.customer.fullname}</td>
+            <td className="p-1">
+              <div className="leading-4">{item.itemTitle}</div>
+              <div className="italic">{item.item?.isbn}</div>
+            </td>
+            <td className="p-1">{item.item?.distributor}</td>
+            <td className="p-1">{STATUS_LABEL[item.ordered]}</td>
+            <td className="p-1 text-center">
+              <input type="checkbox" disabled checked={item.customerNotified} />
+            </td>
+            <td className="p-1 text-center">
+              <input type="checkbox" disabled checked={item.paid} />
+            </td>
           </tr>
         ))}
       </tbody>
