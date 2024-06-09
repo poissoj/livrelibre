@@ -15,10 +15,6 @@ const ContentSecurityPolicy = `
 /** @type {{key: string; value: string }[]} */
 const securityHeaders = [
   {
-    key: "X-XSS-Protection",
-    value: "1; mode=block",
-  },
-  {
     key: "X-Content-Type-Options",
     value: "nosniff",
   },
