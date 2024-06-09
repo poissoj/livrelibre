@@ -10,14 +10,7 @@ export const zOrder = z.object({
   customerId: dbIdSchema,
   itemId: dbIdSchema.optional(),
   itemTitle: z.string(),
-  ordered: z.enum([
-    "new",
-    "ordered",
-    "received",
-    "unavailable",
-    "canceled",
-    "done",
-  ]),
+  ordered: z.enum(["new", "received", "unavailable", "canceled", "done"]),
   customerNotified: z.boolean(),
   paid: z.boolean(),
   comment: z.string(),
@@ -42,7 +35,6 @@ export const deserializeOrder = <T extends { date: string }>(order: T) => ({
 
 export const STATUS_LABEL: Record<DBOrder["ordered"], string> = {
   new: "Nouveau",
-  ordered: "Commandé",
   received: "Reçu",
   unavailable: "Indisponible",
   canceled: "Annulé",

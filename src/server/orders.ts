@@ -41,7 +41,7 @@ export const getItemOrders = async (itemId: string) => {
     .collection<DBOrder>("orders")
     .aggregate<{ _id: DBOrder["ordered"]; count: number }>([
       {
-        $match: { itemId, ordered: { $in: ["new", "ordered", "received"] } },
+        $match: { itemId, ordered: { $nin: ["done"] } },
       },
       {
         $group: { _id: "$ordered", count: { $sum: 1 } },
@@ -93,7 +93,7 @@ export const getCustomerActiveOrders = async (customerId: string) => {
   const db = await getDb();
   const orders = await db
     .collection<DBOrder>("orders")
-    .find({ customerId, ordered: { $in: ["new", "ordered", "received"] } })
+    .find({ customerId, ordered: { $nin: ["done"] } })
     .toArray();
   return orders;
 };
