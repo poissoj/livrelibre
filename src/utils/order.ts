@@ -40,3 +40,11 @@ export const STATUS_LABEL: Record<DBOrder["ordered"], string> = {
   canceled: "Annulé",
   done: "Terminée",
 };
+
+export const STATUS_COLOR = {
+  new: "bg-yellow",
+  received: "bg-green",
+  unavailable: "bg-blue",
+  canceled: "bg-red",
+  done: "bg-white",
+} as const satisfies Record<DBOrder["ordered"], string>;

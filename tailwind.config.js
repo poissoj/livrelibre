@@ -20,6 +20,10 @@ module.exports = {
       },
       white: "#FFF",
       black: "hsl(210deg 10.8% 14.5%)",
+      green: "rgb(101 163 13)",
+      yellow: "rgb(250 204 21)",
+      red: "rgb(220 38 38)",
+      blue: "rgb(37 99 235)",
     },
     extend: {
       spacing: {
