@@ -1,19 +1,21 @@
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useState } from "react";
 import ContentLoader from "react-content-loader";
 
 import { Alert } from "@/components/Alert";
 import { LinkButton } from "@/components/Button";
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
+import { Input } from "@/components/FormControls";
 import { ItemsCard } from "@/components/ItemsCard";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { OrdersTable } from "@/components/OrdersTable";
 import { Title } from "@/components/Title";
 import { type Order, deserializeOrder } from "@/utils/order";
 import { trpc } from "@/utils/trpc";
+import { norm } from "@/utils/utils";
 
 const SkeletonRow = ({ n }: { n: number }) => (
   <>
@@ -85,10 +87,35 @@ const OrdersLoader = () => {
       <CardBody className="flex-col">
         <StatusMessage />
         <Wrapper>
-          <OrdersTable items={items} />
+          <OrdersBody orders={items} />
         </Wrapper>
       </CardBody>
     </Card>
+  );
+};
+
+const OrdersBody = ({ orders }: { orders: Order[] }) => {
+  const [search, setSearch] = useState("");
+  const filteredOrders =
+    search === ""
+      ? orders
+      : orders.filter(
+          (order) =>
+            order.customer.nmFullname.toLowerCase().includes(norm(search)) ||
+            norm(order.itemTitle.toLowerCase()).includes(norm(search)),
+        );
+  return (
+    <>
+      <Input
+        value={search}
+        onChange={(e) => {
+          setSearch(e.target.value.toLowerCase());
+        }}
+        className="text-base mb-2 !w-[30rem]"
+        placeholder="Nom, prénom, titre"
+      />
+      <OrdersTable items={filteredOrders} />
+    </>
   );
 };
 

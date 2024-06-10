@@ -15,7 +15,7 @@ export const OrdersTable = ({ items }: { items: Order[] }) => {
   return (
     <table className="flex-1 text-sm">
       <thead>
-        <tr className="sticky top-0 bg-white z-10 shadow-sm shadow-black">
+        <tr className="sticky top-0 bg-white z-10 shadow-b shadow-black">
           <th className="text-left pl-2">Date</th>
           <th className="text-left pl-1">Nom</th>
           <th className="text-left pl-1">Article</th>

@@ -26,6 +26,9 @@ module.exports = {
       blue: "rgb(37 99 235)",
     },
     extend: {
+      boxShadow: {
+        b: "0 1px 1px 0 rgb(0 0 0 § 0.05)",
+      },
       spacing: {
         xs: "4px",
         sm: "8px",
