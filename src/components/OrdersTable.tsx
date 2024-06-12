@@ -1,3 +1,5 @@
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import React from "react";
 
@@ -23,6 +25,7 @@ export const OrdersTable = ({ items }: { items: Order[] }) => {
           <th className="text-center">État</th>
           <th className="text-center">Prévenu⋅e</th>
           <th className="text-center px-1">Payé</th>
+          <th className="text-center"></th>
         </tr>
       </thead>
       <tbody className="leading-7">
@@ -32,9 +35,7 @@ export const OrdersTable = ({ items }: { items: Order[] }) => {
             className="cursor-pointer even:bg-gray-light"
             onClick={() => router.push(`/order/${item._id}`)}
           >
-            <td className="pl-2 py-1" title={item.comment}>
-              {formatDateFR(item.date)}
-            </td>
+            <td className="pl-2 py-1">{formatDateFR(item.date)}</td>
             <td className="p-1">{item.customer.fullname}</td>
             <td className="p-1">
               <div className="leading-4">{item.itemTitle}</div>
@@ -49,6 +50,16 @@ export const OrdersTable = ({ items }: { items: Order[] }) => {
             </td>
             <td className="p-1 text-center">
               <input type="checkbox" disabled checked={item.paid} />
+            </td>
+            <td className="p-1">
+              {item.comment && (
+                <FontAwesomeIcon
+                  icon={faInfoCircle}
+                  title={item.comment}
+                  size="lg"
+                  style={{ color: "#23a3b9" }}
+                />
+              )}
             </td>
           </tr>
         ))}
