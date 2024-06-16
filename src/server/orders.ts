@@ -8,6 +8,7 @@ import { logger } from "@/utils/logger";
 import {
   type DBOrder,
   type Order,
+  type OrderStatus,
   type RawOrder,
   dbIdSchema,
   deserializeOrder,
@@ -51,11 +52,14 @@ export const getItemOrders = async (itemId: string) => {
   return items;
 };
 
-export const getOrders = async (): Promise<Order[]> => {
+export const getOrders = async (status: OrderStatus[]): Promise<Order[]> => {
   const db = await getDb();
   const ordersCollection = db.collection<DBOrder>("orders");
   const dbItems = await ordersCollection
     .aggregate<Order>([
+      {
+        $match: { ordered: { $in: status } },
+      },
       {
         $addFields: {
           customerId: { $toObjectId: "$customerId" },

@@ -48,7 +48,7 @@ import { middleware, procedure, router } from "@/server/trpc";
 import { updateItem } from "@/server/updateItem";
 import { ItemTypes, TVAValues } from "@/utils/item";
 import { logger } from "@/utils/logger";
-import { dbIdSchema, zOrder } from "@/utils/order";
+import { dbIdSchema, zOrder, zOrderStatusArray } from "@/utils/order";
 import { norm } from "@/utils/utils";
 
 const itemSchema = z.object({
@@ -124,7 +124,9 @@ export const appRouter = router({
   itemOrders: authProcedure
     .input(dbIdSchema)
     .query(async ({ input }) => await getItemOrders(input)),
-  orders: authProcedure.query(getOrders),
+  orders: authProcedure
+    .input(zOrderStatusArray)
+    .query(async ({ input }) => await getOrders(input)),
   customerOrders: authProcedure
     .input(dbIdSchema)
     .query(async ({ input }) => await getCustomerActiveOrders(input)),

@@ -5,12 +5,25 @@ import type { Item } from "@/utils/item";
 
 export const dbIdSchema = z.string().length(24);
 
+export const ORDER_STATUS = [
+  "new",
+  "received",
+  "unavailable",
+  "canceled",
+  "done",
+] as const;
+
+export type OrderStatus = (typeof ORDER_STATUS)[number];
+
+const zOrderStatus = z.enum(ORDER_STATUS);
+export const zOrderStatusArray = z.array(zOrderStatus);
+
 export const zOrder = z.object({
   date: z.string(),
   customerId: dbIdSchema,
   itemId: dbIdSchema.optional(),
   itemTitle: z.string(),
-  ordered: z.enum(["new", "received", "unavailable", "canceled", "done"]),
+  ordered: zOrderStatus,
   customerNotified: z.boolean(),
   paid: z.boolean(),
   comment: z.string(),
@@ -33,7 +46,7 @@ export const deserializeOrder = <T extends { date: string }>(order: T) => ({
   date: new Date(order.date),
 });
 
-export const STATUS_LABEL: Record<DBOrder["ordered"], string> = {
+export const STATUS_LABEL: Record<OrderStatus, string> = {
   new: "Nouveau",
   received: "Reçu",
   unavailable: "Indisponible",
@@ -47,4 +60,4 @@ export const STATUS_COLOR = {
   unavailable: "bg-blue",
   canceled: "bg-red",
   done: "bg-white",
-} as const satisfies Record<DBOrder["ordered"], string>;
+} as const satisfies Record<OrderStatus, string>;

@@ -4,20 +4,16 @@ import { useRouter } from "next/router";
 import React from "react";
 
 import { formatDateFR } from "@/utils/date";
-import { type Order, STATUS_COLOR, STATUS_LABEL } from "@/utils/order";
+import { type Order } from "@/utils/order";
 
-const StatusCircle = ({ status }: { status: Order["ordered"] }) => {
-  const className =
-    "border border-black/60 rounded-xl w-5 h-5 mx-auto " + STATUS_COLOR[status];
-  return <div className={className} title={STATUS_LABEL[status]} />;
-};
+import { StatusCircle } from "./StatusCircle";
 
 export const OrdersTable = ({ items }: { items: Order[] }) => {
   const router = useRouter();
   return (
     <table className="flex-1 text-sm">
       <thead>
-        <tr className="sticky top-0 bg-white z-10 shadow-b shadow-black">
+        <tr className="sticky top-0 bg-white shadow-b shadow-black">
           <th className="text-left pl-2">Date</th>
           <th className="text-left pl-1">Nom</th>
           <th className="text-left pl-1">Article</th>
@@ -43,7 +39,7 @@ export const OrdersTable = ({ items }: { items: Order[] }) => {
             </td>
             <td className="p-1">{item.item?.distributor}</td>
             <td className="p-1">
-              <StatusCircle status={item.ordered} />
+              <StatusCircle status={item.ordered} className="mx-auto" />
             </td>
             <td className="p-1 text-center">
               <input type="checkbox" disabled checked={item.customerNotified} />

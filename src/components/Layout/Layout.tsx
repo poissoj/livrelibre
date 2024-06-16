@@ -8,7 +8,7 @@ type LayoutProps = {
 
 const Layout = ({ children }: LayoutProps): JSX.Element => {
   return (
-    <div className="h-full flex flex-col">
+    <div className="h-full flex flex-col isolate">
       <Header />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />

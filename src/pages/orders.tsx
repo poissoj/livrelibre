@@ -1,40 +1,34 @@
-import { faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faFilter, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  Listbox,
+  ListboxButton,
+  ListboxOption,
+  ListboxOptions,
+  Transition,
+} from "@headlessui/react";
+import clsx from "clsx";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
-import ContentLoader from "react-content-loader";
 
 import { Alert } from "@/components/Alert";
 import { LinkButton } from "@/components/Button";
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
-import { Input } from "@/components/FormControls";
+import { COMMON_STYLES_BASE, Input } from "@/components/FormControls";
 import { ItemsCard } from "@/components/ItemsCard";
-import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { OrdersTable } from "@/components/OrdersTable";
+import { StatusCircle } from "@/components/StatusCircle";
 import { Title } from "@/components/Title";
-import { type Order, deserializeOrder } from "@/utils/order";
+import {
+  ORDER_STATUS,
+  type Order,
+  type OrderStatus,
+  STATUS_LABEL,
+  deserializeOrder,
+} from "@/utils/order";
 import { trpc } from "@/utils/trpc";
 import { norm } from "@/utils/utils";
-
-const SkeletonRow = ({ n }: { n: number }) => (
-  <>
-    <rect x="2%" y={n * 30 + 15} rx="2" ry="2" width="25%" height="10" />
-    <rect x="32%" y={n * 30 + 15} rx="2" ry="2" width="25%" height="10" />
-    <rect x="62%" y={n * 30 + 15} rx="2" ry="2" width="25%" height="10" />
-    <rect x="92%" y={n * 30 + 15} rx="2" ry="2" width="6%" height="10" />
-  </>
-);
-
-const ItemsSkeleton = (): JSX.Element => (
-  <ContentLoader height={300} width="100%">
-    {Array(10)
-      .fill(0)
-      .map((_, i) => (
-        <SkeletonRow key={i} n={i} />
-      ))}
-  </ContentLoader>
-);
 
 const StatusMessage = () => {
   const router = useRouter();
@@ -54,7 +48,13 @@ const StatusMessage = () => {
 };
 
 const OrdersLoader = () => {
-  const result = trpc.orders.useQuery();
+  const [orderStatus, setOrderStatus] = useState<OrderStatus[]>([
+    "new",
+    "received",
+    "unavailable",
+    "canceled",
+  ]);
+  const result = trpc.orders.useQuery(orderStatus);
 
   const pageTitle = "Liste des commandes";
   if (result.status === "error") {
@@ -64,21 +64,20 @@ const OrdersLoader = () => {
       </ItemsCard>
     );
   }
-  if (result.status === "loading") {
-    return (
-      <ItemsCard title={pageTitle}>
-        <ItemsSkeleton />
-      </ItemsCard>
-    );
-  }
-  const items: Order[] = result.data.map(deserializeOrder);
-  const Wrapper = result.isFetching ? LoadingOverlay : React.Fragment;
+
+  const items: Order[] =
+    result.status === "loading" ? [] : result.data.map(deserializeOrder);
+
+  const cardTitle =
+    result.status === "loading"
+      ? "Chargement"
+      : `${items.length} commande${items.length > 1 ? "s" : ""}`;
 
   return (
     <Card className="max-h-full overflow-hidden flex flex-col relative">
       <Title>{pageTitle}</Title>
       <CardTitle className="flex items-center">
-        {`${items.length} commande${items.length > 1 ? "s" : ""}`}
+        {cardTitle}
         <LinkButton href="/order/new" className="ml-auto">
           <FontAwesomeIcon icon={faPlus} className="mr-2" />
           Nouvelle commande
@@ -86,15 +85,50 @@ const OrdersLoader = () => {
       </CardTitle>
       <CardBody className="flex-col">
         <StatusMessage />
-        <Wrapper>
-          <OrdersBody orders={items} />
-        </Wrapper>
+        <OrdersBody orders={items}>
+          <Listbox multiple value={orderStatus} onChange={setOrderStatus}>
+            <ListboxButton className={clsx(COMMON_STYLES_BASE, "relative")}>
+              États
+              <FontAwesomeIcon icon={faFilter} className="ml-2" />
+            </ListboxButton>
+            <Transition
+              leave="transition ease-out duration-100"
+              leaveFrom="opacity-100"
+              leaveTo="opacity-0"
+            >
+              <ListboxOptions
+                anchor="bottom end"
+                className="border border-[#ccc] rounded-xl bg-white p-2 focus:outline-none shadow-lg"
+              >
+                {ORDER_STATUS.map((status) => (
+                  <ListboxOption
+                    key={status}
+                    value={status}
+                    className="flex gap-2 items-center p-1 group data-[focus]:bg-gray-light"
+                  >
+                    <StatusCircle status={status} />
+                    <span className="opacity-80 group-data-[selected]:opacity-100">
+                      {STATUS_LABEL[status]}
+                    </span>
+                    <FontAwesomeIcon
+                      icon={faCheck}
+                      className="ml-auto invisible group-data-[selected]:visible"
+                    />
+                  </ListboxOption>
+                ))}
+              </ListboxOptions>
+            </Transition>
+          </Listbox>
+        </OrdersBody>
       </CardBody>
     </Card>
   );
 };
 
-const OrdersBody = ({ orders }: { orders: Order[] }) => {
+const OrdersBody = ({
+  orders,
+  children,
+}: React.PropsWithChildren<{ orders: Order[] }>) => {
   const [search, setSearch] = useState("");
   const filteredOrders =
     search === ""
@@ -106,15 +140,20 @@ const OrdersBody = ({ orders }: { orders: Order[] }) => {
         );
   return (
     <>
-      <Input
-        value={search}
-        onChange={(e) => {
-          setSearch(e.target.value.toLowerCase());
-        }}
-        className="text-base mb-2 !w-[30rem]"
-        placeholder="Nom, prénom, titre"
-      />
-      <OrdersTable items={filteredOrders} />
+      <div className="flex justify-between">
+        <Input
+          value={search}
+          onChange={(e) => {
+            setSearch(e.target.value.toLowerCase());
+          }}
+          className="text-base mb-2 !w-[30rem] h-fit"
+          placeholder="Nom, prénom, titre"
+        />
+        {children}
+      </div>
+      <div className="overflow-auto flex mt-2">
+        <OrdersTable items={filteredOrders} />
+      </div>
     </>
   );
 };
