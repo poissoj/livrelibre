@@ -11,7 +11,6 @@ import clsx from "clsx";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 
-import { Alert } from "@/components/Alert";
 import { LinkButton } from "@/components/Button";
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
@@ -30,22 +29,6 @@ import {
 import { trpc } from "@/utils/trpc";
 import { norm } from "@/utils/utils";
 
-const StatusMessage = () => {
-  const router = useRouter();
-  const { status } = router.query;
-  if (status === "updated") {
-    return (
-      <Alert
-        type="success"
-        onDismiss={() => router.push("/orders")}
-        className="mb-2"
-      >
-        La commande a été modifiée.
-      </Alert>
-    );
-  }
-  return null;
-};
 
 const OrdersLoader = () => {
   const [orderStatus, setOrderStatus] = useState<OrderStatus[]>([
@@ -84,7 +67,6 @@ const OrdersLoader = () => {
         </LinkButton>
       </CardTitle>
       <CardBody className="flex-col">
-        <StatusMessage />
         <OrdersBody orders={items}>
           <Listbox multiple value={orderStatus} onChange={setOrderStatus}>
             <ListboxButton className={clsx(COMMON_STYLES_BASE, "relative")}>

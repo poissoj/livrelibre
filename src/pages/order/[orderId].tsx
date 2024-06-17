@@ -6,6 +6,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
+import { toast } from "react-toastify";
 
 import { Button, LinkButton } from "@/components/Button";
 import { Card, CardBody, CardTitle } from "@/components/Card";
@@ -37,20 +38,22 @@ const OrderFormSkeleton = (): JSX.Element => (
 const OrderLoader = ({ id }: { id: string }) => {
   const result = trpc.order.useQuery(id);
   const utils = trpc.useUtils();
+  const router = useRouter();
   const mutation = trpc.updateOrder.useMutation({
-    async onSuccess() {
-      await utils.order.invalidate();
+    async onSuccess(data) {
+      if (data.type === "success") {
+        await utils.order.invalidate();
+        toast.success(data.msg);
+        void router.push("/orders");
+      } else {
+        toast.error(data.msg);
+      }
     },
   });
-  const router = useRouter();
 
   const submit = async (data: Order) => {
     const order = { ...data, date: data.date.toISOString() };
     return await mutation.mutateAsync({ order, id });
-  };
-
-  const onSuccess = () => {
-    void router.push(`/orders?status=updated`);
   };
 
   if (result.status === "error") {
@@ -81,7 +84,6 @@ const OrderLoader = ({ id }: { id: string }) => {
         title={CARD_TITLE}
         onSubmit={submit}
         data={deserializeOrder(result.data)}
-        onSuccess={onSuccess}
       >
         <LinkButton
           href="/orders"

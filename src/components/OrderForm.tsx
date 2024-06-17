@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-import { Alert } from "@/components/Alert";
 import { LinkButton } from "@/components/Button";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { Input, Select, Textarea } from "@/components/FormControls";
@@ -16,29 +15,21 @@ import type { Item } from "@/utils/item";
 import { type Order, STATUS_LABEL } from "@/utils/order";
 import { trpc } from "@/utils/trpc";
 
-type TAlert = {
-  type: React.ComponentProps<typeof Alert>["type"];
-  message: string;
-};
-
 export const OrderForm = ({
   title,
   onSubmit,
   data,
   children,
-  onSuccess,
 }: {
   title: string;
   onSubmit(data?: Order): Promise<{ type: "error" | "success"; msg: string }>;
   data?: Order;
-  onSuccess?(): void;
   children: React.ReactNode;
 }): JSX.Element => {
   const { register, handleSubmit, reset, setValue } = useForm<Order>({
     defaultValues: data || {},
     shouldUseNativeValidation: true,
   });
-  const [alert, setAlert] = React.useState<TAlert | null>(null);
   const [customer, setCustomer] = React.useState<Customer | null>(
     data?.customer ?? null,
   );
@@ -58,12 +49,12 @@ export const OrderForm = ({
       return;
     }
     if (!order.itemTitle) {
+      toast.info("Merci de renseigner le titre ou l'ISBN de l'article");
       return;
     }
-    const { type, msg: message } = await onSubmit(order);
-    setAlert({ type, message });
-    if (type === "success") {
-      onSuccess ? onSuccess() : reset();
+    const { type } = await onSubmit(order);
+    if (type !== "success") {
+      reset();
     }
   };
 
@@ -135,16 +126,6 @@ export const OrderForm = ({
         </CardBody>
         <CardFooter>
           <div className="flex justify-end mb-sm">{children}</div>
-          {alert ? (
-            <Alert
-              type={alert.type}
-              onDismiss={() => {
-                setAlert(null);
-              }}
-            >
-              {alert.message}
-            </Alert>
-          ) : null}
         </CardFooter>
       </form>
     </Card>
