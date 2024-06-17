@@ -1,6 +1,11 @@
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Combobox } from "@headlessui/react";
+import {
+  Combobox,
+  ComboboxInput,
+  ComboboxOption,
+  ComboboxOptions,
+} from "@headlessui/react";
 import { clsx } from "clsx";
 import { Fragment, type HTMLProps, useState } from "react";
 
@@ -34,9 +39,9 @@ export function SelectCustomer({
     : COMMON_STYLES.replace("w-full", "w-fit");
 
   return (
-    <Combobox value={customer} by="_id" onChange={setCustomer} nullable>
+    <Combobox value={customer} by="_id" onChange={setCustomer}>
       <div className={clsx("relative", fullWidth ? "w-full" : "w-fit")}>
-        <Combobox.Input
+        <ComboboxInput
           className={clsx(inputStyles, inputClass)}
           displayValue={getLabel}
           onChange={(event) => {
@@ -44,14 +49,14 @@ export function SelectCustomer({
           }}
           {...inputProps}
         />
-        <Combobox.Options className="absolute z-10 w-full max-h-40 overflow-auto rounded-md p-1 shadow-lg ring-1 ring-black/5 bg-gray-light">
+        <ComboboxOptions className="absolute z-10 w-full max-h-40 overflow-auto rounded-md p-1 shadow-lg ring-1 ring-black/5 bg-gray-light">
           {filteredCustomers.map((customer) => (
-            <Combobox.Option key={customer._id} value={customer} as={Fragment}>
-              {({ active, selected }) => (
+            <ComboboxOption key={customer._id} value={customer} as={Fragment}>
+              {({ focus, selected }) => (
                 <li
                   className={clsx(
                     "pl-8 relative",
-                    active ? "bg-gray-light" : "bg-white",
+                    focus ? "bg-gray-light" : "bg-white",
                   )}
                 >
                   {getLabel(customer)}
@@ -62,9 +67,9 @@ export function SelectCustomer({
                   )}
                 </li>
               )}
-            </Combobox.Option>
+            </ComboboxOption>
           ))}
-        </Combobox.Options>
+        </ComboboxOptions>
       </div>
     </Combobox>
   );
