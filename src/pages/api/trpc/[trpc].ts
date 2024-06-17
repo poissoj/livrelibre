@@ -31,6 +31,7 @@ import {
 import { getItems } from "@/server/items";
 import { lastSales } from "@/server/lastSales";
 import {
+  deleteOrder,
   getCustomerActiveOrders,
   getItemOrders,
   getOrder,
@@ -297,6 +298,12 @@ export const appRouter = router({
         orderId: input.id,
       });
       return await setOrder(input.order, input.id);
+    }),
+  deleteOrder: authProcedure
+    .input(z.object({ id: dbIdSchema }))
+    .mutation(async ({ ctx, input }) => {
+      logger.info("Delete order", { user: ctx.user, input });
+      return await deleteOrder(input.id);
     }),
 });
 

@@ -160,3 +160,19 @@ export const setOrder = async (order: RawOrder, id: string) => {
     };
   }
 };
+
+export const deleteOrder = async (orderId: string) => {
+  const db = await getDb();
+  try {
+    await db
+      .collection<DBOrder>("orders")
+      .deleteOne({ _id: new ObjectId(orderId) });
+    return { type: "success" as const, msg: "La commande a été supprimée" };
+  } catch (error) {
+    logger.error(error);
+    return {
+      type: "error" as const,
+      msg: "Impossible de supprimer la commande",
+    };
+  }
+};

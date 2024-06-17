@@ -2,6 +2,7 @@ import * as React from "react";
 import {
   faCheckCircle,
   faTimesCircle,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
@@ -50,6 +51,16 @@ const OrderLoader = ({ id }: { id: string }) => {
       }
     },
   });
+  const deleteMutation = trpc.deleteOrder.useMutation();
+  const deleteOrder = async () => {
+    const res = await deleteMutation.mutateAsync({ id });
+    if (res.type === "success") {
+      toast.success(res.msg);
+      await router.push("/orders");
+    } else {
+      toast.error(res.msg);
+    }
+  };
 
   const submit = async (data: Order) => {
     const order = { ...data, date: data.date.toISOString() };
@@ -85,6 +96,14 @@ const OrderLoader = ({ id }: { id: string }) => {
         onSubmit={submit}
         data={deserializeOrder(result.data)}
       >
+        <Button
+          type="button"
+          className="mr-auto !bg-[#991b1b]"
+          onClick={deleteOrder}
+        >
+          <FontAwesomeIcon icon={faTrash} className="mr-sm" />
+          Supprimer
+        </Button>
         <LinkButton
           href="/orders"
           className="mr-2 px-md [background-color:#6E6E6E]"
