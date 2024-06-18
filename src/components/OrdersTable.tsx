@@ -1,31 +1,75 @@
-import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import {
+  faInfoCircle,
+  faSort,
+  faSortDesc,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import React from "react";
 
 import { formatDateFR } from "@/utils/date";
-import { type Order } from "@/utils/order";
+import { type Order, STATUS_LABEL } from "@/utils/order";
 
 import { StatusCircle } from "./StatusCircle";
 
 export const OrdersTable = ({ items }: { items: Order[] }) => {
   const router = useRouter();
+  const sortBy =
+    typeof router.query.sortBy === "string" ? router.query.sortBy : "date";
+  const sortedItems = items.toSorted((a, b) => {
+    if (sortBy === "distributor") {
+      return (a.item?.distributor || "").localeCompare(
+        b.item?.distributor || "",
+      );
+    }
+    if (sortBy === "status") {
+      return STATUS_LABEL[a.ordered].localeCompare(STATUS_LABEL[b.ordered]);
+    }
+    return 0; // sorted by date by default
+  });
+  const updateSort = (by: string) => () =>
+    router.push({ query: { ...router.query, sortBy: by } });
+
   return (
     <table className="flex-1 text-sm">
       <thead>
         <tr className="sticky top-0 bg-white shadow-b shadow-black">
-          <th className="text-left pl-2">Date</th>
+          <th className="text-left pl-2">
+            <button type="button" onClick={updateSort("date")}>
+              Date
+              <FontAwesomeIcon
+                icon={sortBy === "date" ? faSortDesc : faSort}
+                className="ml-2"
+              />
+            </button>
+          </th>
           <th className="text-left pl-1">Nom</th>
           <th className="text-left pl-1">Article</th>
-          <th className="text-left pl-1">Distributeur</th>
-          <th className="text-center">État</th>
+          <th className="text-left pl-1">
+            <button type="button" onClick={updateSort("distributor")}>
+              Distributeur
+              <FontAwesomeIcon
+                icon={sortBy === "distributor" ? faSortDesc : faSort}
+                className="ml-2"
+              />
+            </button>
+          </th>
+          <th className="text-center">
+            <button type="button" onClick={updateSort("status")}>
+              État
+              <FontAwesomeIcon
+                icon={sortBy === "status" ? faSortDesc : faSort}
+                className="ml-2"
+              />
+            </button>
+          </th>
           <th className="text-center">Prévenu⋅e</th>
           <th className="text-center px-1">Payé</th>
           <th className="text-center"></th>
         </tr>
       </thead>
       <tbody className="leading-7">
-        {items.map((item, i) => (
+        {sortedItems.map((item, i) => (
           <tr
             key={i}
             className="cursor-pointer even:bg-gray-light"
