@@ -29,7 +29,12 @@ export const OrdersTable = ({ items }: { items: Order[] }) => {
           <tr
             key={i}
             className="cursor-pointer even:bg-gray-light"
-            onClick={() => router.push(`/order/${item._id}`)}
+            onClick={() =>
+              router.push({
+                pathname: `/order/${item._id}`,
+                query: router.query,
+              })
+            }
           >
             <td className="pl-2 py-1">{formatDateFR(item.date)}</td>
             <td className="p-1">{item.customer.fullname}</td>

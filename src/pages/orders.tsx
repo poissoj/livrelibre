@@ -9,7 +9,7 @@ import {
 } from "@headlessui/react";
 import clsx from "clsx";
 import { useRouter } from "next/router";
-import React, { useState } from "react";
+import React from "react";
 
 import { LinkButton } from "@/components/Button";
 import { Card, CardBody, CardTitle } from "@/components/Card";
@@ -25,19 +25,31 @@ import {
   type OrderStatus,
   STATUS_LABEL,
   deserializeOrder,
+  zOrderStatus,
+  zOrderStatusArray,
 } from "@/utils/order";
 import { trpc } from "@/utils/trpc";
 import { norm } from "@/utils/utils";
 
+const getStatus = (query: string | string[] | undefined): OrderStatus[] => {
+  const statusList = zOrderStatusArray.safeParse(query);
+  if (statusList.success) {
+    return statusList.data;
+  }
+  const status = zOrderStatus.safeParse(query);
+  if (status.success) {
+    return [status.data];
+  }
+  return ["new", "received", "unavailable", "canceled"];
+};
 
 const OrdersLoader = () => {
-  const [orderStatus, setOrderStatus] = useState<OrderStatus[]>([
-    "new",
-    "received",
-    "unavailable",
-    "canceled",
-  ]);
+  const router = useRouter();
+  const orderStatus = getStatus(router.query.status);
   const result = trpc.orders.useQuery(orderStatus);
+  const setOrderStatus = (status: OrderStatus[]) => {
+    void router.push({ query: { ...router.query, status } });
+  };
 
   const pageTitle = "Liste des commandes";
   if (result.status === "error") {
@@ -111,7 +123,9 @@ const OrdersBody = ({
   orders,
   children,
 }: React.PropsWithChildren<{ orders: Order[] }>) => {
-  const [search, setSearch] = useState("");
+  const router = useRouter();
+  const search =
+    typeof router.query.search === "string" ? router.query.search : "";
   const filteredOrders =
     search === ""
       ? orders
@@ -126,7 +140,9 @@ const OrdersBody = ({
         <Input
           value={search}
           onChange={(e) => {
-            setSearch(e.target.value.toLowerCase());
+            void router.push({
+              query: { ...router.query, search: e.target.value.toLowerCase() },
+            });
           }}
           className="text-base mb-2 !w-[30rem] h-fit"
           placeholder="Nom, prénom, titre"

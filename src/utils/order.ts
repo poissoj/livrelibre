@@ -15,7 +15,7 @@ export const ORDER_STATUS = [
 
 export type OrderStatus = (typeof ORDER_STATUS)[number];
 
-const zOrderStatus = z.enum(ORDER_STATUS);
+export const zOrderStatus = z.enum(ORDER_STATUS);
 export const zOrderStatusArray = z.array(zOrderStatus);
 
 export const zOrder = z.object({

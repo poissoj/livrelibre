@@ -4,7 +4,7 @@ import {
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useRouter } from "next/router";
+import { type NextRouter, useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
 import { toast } from "react-toastify";
 
@@ -36,6 +36,12 @@ const OrderFormSkeleton = (): JSX.Element => (
   </ContentLoader>
 );
 
+const getOrdersURL = (router: NextRouter) => {
+  const { orderId, ...query } = router.query;
+  orderId; // Remove ignoreId (dynamic param) from the query params
+  return { pathname: "/orders", query };
+};
+
 const DeleteOrder = ({ id }: { id: string }) => {
   const router = useRouter();
   const deleteMutation = trpc.deleteOrder.useMutation();
@@ -43,7 +49,7 @@ const DeleteOrder = ({ id }: { id: string }) => {
     const res = await deleteMutation.mutateAsync({ id });
     if (res.type === "success") {
       toast.success(res.msg);
-      await router.push("/orders");
+      await router.push(getOrdersURL(router));
     } else {
       toast.error(res.msg);
     }
@@ -67,7 +73,7 @@ const OrderLoader = ({ id }: { id: string }) => {
       if (data.type === "success") {
         await utils.order.invalidate();
         toast.success(data.msg);
-        void router.push("/orders");
+        void router.push(getOrdersURL(router));
       } else {
         toast.error(data.msg);
       }
@@ -110,7 +116,7 @@ const OrderLoader = ({ id }: { id: string }) => {
       >
         <DeleteOrder id={id} />
         <LinkButton
-          href="/orders"
+          href={getOrdersURL(router)}
           className="mr-2 px-md [background-color:#6E6E6E]"
         >
           <FontAwesomeIcon icon={faTimesCircle} className="mr-sm" />
