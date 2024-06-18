@@ -2,21 +2,15 @@ import * as React from "react";
 import {
   faCheckCircle,
   faTimesCircle,
-  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-  Transition,
-} from "@headlessui/react";
 import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
 import { toast } from "react-toastify";
 
 import { Button, LinkButton } from "@/components/Button";
 import { Card, CardBody, CardTitle } from "@/components/Card";
+import { ConfirmationDialog } from "@/components/ConfirmationDialog";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { OrderForm } from "@/components/OrderForm";
 import { Title } from "@/components/Title";
@@ -45,11 +39,6 @@ const OrderFormSkeleton = (): JSX.Element => (
 const DeleteOrder = ({ id }: { id: string }) => {
   const router = useRouter();
   const deleteMutation = trpc.deleteOrder.useMutation();
-  const [isOpen, setIsOpen] = React.useState(false);
-  const close = () => {
-    setIsOpen(false);
-  };
-
   const deleteOrder = async () => {
     const res = await deleteMutation.mutateAsync({ id });
     if (res.type === "success") {
@@ -61,61 +50,11 @@ const DeleteOrder = ({ id }: { id: string }) => {
   };
 
   return (
-    <>
-      <Button
-        type="button"
-        className="mr-auto !bg-[#991b1b]"
-        onClick={() => {
-          setIsOpen(true);
-        }}
-      >
-        <FontAwesomeIcon icon={faTrash} className="mr-sm" />
-        Supprimer
-      </Button>
-      <Transition
-        appear
-        show={isOpen}
-        enter="ease-out duration-300"
-        enterFrom="opacity-0 transform-[scale(95%)]"
-        enterTo="opacity-100 transform-[scale(100%)]"
-        leave="ease-in duration-200"
-        leaveFrom="opacity-100 transform-[scale(100%)]"
-        leaveTo="opacity-0 transform-[scale(95%)]"
-      >
-        <Dialog onClose={close} className="relative">
-          <div className="fixed inset-0 bg-black/30" aria-hidden="true" />
-          <div className="fixed inset-0 flex w-screen items-center justify-center p-4">
-            <DialogPanel className="max-w-lg space-y-4 bg-white p-8 rounded-xl">
-              <DialogTitle className="font-bold">
-                Supprimer une commande
-              </DialogTitle>
-              <p>
-                Êtes vous sûr de vouloir supprimer cette commande ? Cette action
-                ne peut pas être annulée.
-              </p>
-              <div className="flex">
-                <Button
-                  type="button"
-                  className="bg-[#991b1b]"
-                  onClick={deleteOrder}
-                >
-                  <FontAwesomeIcon icon={faTrash} className="mr-sm" />
-                  Oui, supprimer
-                </Button>
-                <Button
-                  type="button"
-                  className="ml-auto bg-[#6E6E6E]"
-                  onClick={close}
-                >
-                  <FontAwesomeIcon icon={faTimesCircle} className="mr-sm" />
-                  Non, annuler
-                </Button>
-              </div>
-            </DialogPanel>
-          </div>
-        </Dialog>
-      </Transition>
-    </>
+    <ConfirmationDialog
+      title="Supprimer une commande"
+      message="Êtes-vous sûr⋅e de vouloir supprimer cette commande ? Cette action ne peut pas être annulée."
+      onConfirm={deleteOrder}
+    />
   );
 };
 

@@ -2,7 +2,6 @@ import * as React from "react";
 import {
   faCheckCircle,
   faTimesCircle,
-  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Link from "next/link";
@@ -12,6 +11,7 @@ import { toast } from "react-toastify";
 
 import { Button, LinkButton } from "@/components/Button";
 import { Card, CardBody, CardTitle } from "@/components/Card";
+import { ConfirmationDialog } from "@/components/ConfirmationDialog";
 import {
   CustomerForm,
   type CustomerFormFields,
@@ -116,25 +116,9 @@ const Purchases = ({ purchases }: Pick<Customer, "purchases">) => {
   );
 };
 
-const CustomerLoader = ({ id }: { id: string }) => {
-  const result = trpc.customer.useQuery(id);
-  const utils = trpc.useUtils();
-  const mutation = trpc.updateCustomer.useMutation({
-    async onSuccess() {
-      await utils.customer.invalidate();
-    },
-  });
+const DeleteCustomerButton = ({ id }: { id: string }) => {
   const deleteMutation = trpc.deleteCustomer.useMutation();
   const router = useRouter();
-
-  const submit = async (customer: CustomerFormFields) => {
-    return await mutation.mutateAsync({ customer, customerId: id });
-  };
-
-  const onSuccess = () => {
-    // do nothing
-  };
-
   const deleteCustomer = async () => {
     const res = await deleteMutation.mutateAsync({ id });
     if (res.type === "success") {
@@ -143,6 +127,32 @@ const CustomerLoader = ({ id }: { id: string }) => {
     } else {
       toast.error(res.msg);
     }
+  };
+
+  return (
+    <ConfirmationDialog
+      title="Supprimer un⋅e client⋅e"
+      message="Êtes-vous sûr⋅e de vouloir supprimer ce⋅tte client⋅e ? Cette action ne peut pas être annulée."
+      onConfirm={deleteCustomer}
+    />
+  );
+};
+
+const CustomerLoader = ({ id }: { id: string }) => {
+  const result = trpc.customer.useQuery(id);
+  const utils = trpc.useUtils();
+  const mutation = trpc.updateCustomer.useMutation({
+    async onSuccess() {
+      await utils.customer.invalidate();
+    },
+  });
+
+  const submit = async (customer: CustomerFormFields) => {
+    return await mutation.mutateAsync({ customer, customerId: id });
+  };
+
+  const onSuccess = () => {
+    // do nothing
   };
 
   if (result.status === "error") {
@@ -175,14 +185,7 @@ const CustomerLoader = ({ id }: { id: string }) => {
         data={result.data}
         onSuccess={onSuccess}
       >
-        <Button
-          type="button"
-          className="mr-auto !bg-[#991b1b]"
-          onClick={deleteCustomer}
-        >
-          <FontAwesomeIcon icon={faTrash} className="mr-sm" />
-          Supprimer
-        </Button>
+        <DeleteCustomerButton id={id} />
         <LinkButton
           href="/customers"
           className="mr-2 px-md [background-color:#6E6E6E]"
