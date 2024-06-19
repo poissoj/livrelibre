@@ -111,7 +111,26 @@ export const zInputOrder = z.object({
 
 type InputOrder = z.infer<typeof zInputOrder>;
 
-export const newOrder = async (order: InputOrder) => {
+type OrderHistoryBase = {
+  author: string;
+  timestamp: Date;
+};
+type OrderHistoryNew = OrderHistoryBase & {
+  type: "new";
+  order: DBOrder;
+};
+type OrderHistoryEdit = OrderHistoryBase & {
+  type: "edit";
+  oldOrder: DBOrder;
+  newOrder: DBOrder;
+};
+type OrderHistoryDelete = OrderHistoryBase & {
+  type: "delete";
+  order: DBOrder;
+};
+type OrderHistory = OrderHistoryNew | OrderHistoryEdit | OrderHistoryDelete;
+
+export const newOrder = async (order: InputOrder, user: string) => {
   const db = await getDb();
   const newOrder: DBOrder = {
     ...order,
@@ -138,6 +157,12 @@ export const newOrder = async (order: InputOrder) => {
       newOrder.itemId = undefined;
     }
     await db.collection<DBOrder>("orders").insertOne(newOrder);
+    await db.collection<OrderHistory>("orderHistory").insertOne({
+      type: "new",
+      order: newOrder,
+      author: user,
+      timestamp: new Date(),
+    });
     return { type: "success" as const, msg: "La commande a été ajoutée" };
   } catch (error) {
     logger.error(error);
@@ -145,12 +170,23 @@ export const newOrder = async (order: InputOrder) => {
   }
 };
 
-export const setOrder = async (order: RawOrder, id: string) => {
+export const setOrder = async (order: RawOrder, id: string, user: string) => {
   const db = await getDb();
   try {
-    await db
+    const newOrder = deserializeOrder(order);
+    const oldOrder = await db
       .collection<DBOrder>("orders")
-      .findOneAndReplace({ _id: new ObjectId(id) }, deserializeOrder(order));
+      .findOneAndReplace({ _id: new ObjectId(id) }, newOrder);
+    if (oldOrder === null) {
+      return { type: "error" as const, msg: "La commande n'existe pas" };
+    }
+    await db.collection<OrderHistory>("orderHistory").insertOne({
+      type: "edit",
+      author: user,
+      timestamp: new Date(),
+      oldOrder,
+      newOrder,
+    });
     return { type: "success" as const, msg: "La commande a été modifiée" };
   } catch (error) {
     logger.error(error);
@@ -161,12 +197,21 @@ export const setOrder = async (order: RawOrder, id: string) => {
   }
 };
 
-export const deleteOrder = async (orderId: string) => {
+export const deleteOrder = async (orderId: string, user: string) => {
   const db = await getDb();
   try {
-    await db
+    const order = await db
       .collection<DBOrder>("orders")
-      .deleteOne({ _id: new ObjectId(orderId) });
+      .findOneAndDelete({ _id: new ObjectId(orderId) });
+    if (order === null) {
+      return { type: "error" as const, msg: "La commande n'existe pas" };
+    }
+    await db.collection<OrderHistory>("orderHistory").insertOne({
+      type: "delete",
+      order,
+      author: user,
+      timestamp: new Date(),
+    });
     return { type: "success" as const, msg: "La commande a été supprimée" };
   } catch (error) {
     logger.error(error);

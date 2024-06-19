@@ -282,7 +282,7 @@ export const appRouter = router({
     .input(zInputOrder)
     .mutation(async ({ ctx, input }) => {
       logger.info("New order", { user: ctx.user, order: input });
-      return await newOrder(input);
+      return await newOrder(input, ctx.user.name);
     }),
   updateOrder: authProcedure
     .input(
@@ -297,13 +297,13 @@ export const appRouter = router({
         order: input.order,
         orderId: input.id,
       });
-      return await setOrder(input.order, input.id);
+      return await setOrder(input.order, input.id, ctx.user.name);
     }),
   deleteOrder: authProcedure
     .input(z.object({ id: dbIdSchema }))
     .mutation(async ({ ctx, input }) => {
       logger.info("Delete order", { user: ctx.user, input });
-      return await deleteOrder(input.id);
+      return await deleteOrder(input.id, ctx.user.name);
     }),
 });
 
