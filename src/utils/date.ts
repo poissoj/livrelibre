@@ -11,3 +11,5 @@ export const formatDateFR = (date: Date) =>
     String(date.getMonth() + 1).padStart(2, "0"),
     date.getFullYear(),
   ].join("/");
+
+export const toInputDate = (date: Date) => date.toISOString().slice(0, 10);

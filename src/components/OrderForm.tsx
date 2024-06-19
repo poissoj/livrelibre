@@ -11,9 +11,12 @@ import { FormRow } from "@/components/FormRow";
 import { SelectCustomer } from "@/components/SelectCustomer";
 import { type NewItem, SelectItem } from "@/components/SelectItem";
 import type { Customer } from "@/utils/customer";
+import { toInputDate } from "@/utils/date";
 import type { Item } from "@/utils/item";
 import { type Order, STATUS_LABEL } from "@/utils/order";
 import { trpc } from "@/utils/trpc";
+
+type InputOrder = Omit<Order, "date"> & { date: string };
 
 export const OrderForm = ({
   title,
@@ -26,8 +29,11 @@ export const OrderForm = ({
   data?: Order;
   children: React.ReactNode;
 }): JSX.Element => {
-  const { register, handleSubmit, reset, setValue } = useForm<Order>({
-    defaultValues: data || {},
+  const defaultValues = data
+    ? { ...data, date: toInputDate(data.date) }
+    : { date: toInputDate(new Date()) };
+  const { register, handleSubmit, reset, setValue } = useForm<InputOrder>({
+    defaultValues,
     shouldUseNativeValidation: true,
   });
   const [customer, setCustomer] = React.useState<Customer | null>(
@@ -38,8 +44,12 @@ export const OrderForm = ({
   );
   const utils = trpc.useUtils();
 
-  const submit = async (data: Order) => {
-    const order = data.itemId ? data : { ...data, itemId: undefined }; // Fix case itemId === ""
+  const submit = async (data: InputOrder) => {
+    const order = {
+      ...data,
+      itemId: data.itemId || undefined,
+      date: new Date(data.date),
+    };
     if (order.item?.isbn && !order.itemId) {
       const result = await utils.isbnSearch.fetch(order.item.isbn);
       if (result.count === 0) {
@@ -92,6 +102,9 @@ export const OrderForm = ({
               >
                 <FontAwesomeIcon icon={faUserPlus} />
               </LinkButton>
+            </FormRow>
+            <FormRow label="Date">
+              <Input type="date" {...register("date")} />
             </FormRow>
             <FormRow label="ISBN">
               <Input
