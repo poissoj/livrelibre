@@ -138,7 +138,7 @@ const OrdersBody = ({
     <>
       <div className="flex justify-between">
         <Input
-          value={search}
+          defaultValue={search}
           onChange={(e) => {
             void router.push({
               query: { ...router.query, search: e.target.value.toLowerCase() },
