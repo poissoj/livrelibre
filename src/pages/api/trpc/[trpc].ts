@@ -38,7 +38,6 @@ import {
   getOrders,
   newOrder,
   setOrder,
-  zInputOrder,
 } from "@/server/orders";
 import { getSales } from "@/server/sales";
 import { deleteSale, getSalesByDay } from "@/server/salesByDay";
@@ -278,12 +277,10 @@ export const appRouter = router({
       logger.info(`${ctx.user.name} - Select customer ${input.customerId}`);
       return await setSelectedCustomer({ ...input, username: ctx.user.name });
     }),
-  newOrder: authProcedure
-    .input(zInputOrder)
-    .mutation(async ({ ctx, input }) => {
-      logger.info("New order", { user: ctx.user, order: input });
-      return await newOrder(input, ctx.user.name);
-    }),
+  newOrder: authProcedure.input(zOrder).mutation(async ({ ctx, input }) => {
+    logger.info("New order", { user: ctx.user, order: input });
+    return await newOrder(input, ctx.user.name);
+  }),
   updateOrder: authProcedure
     .input(
       z.object({

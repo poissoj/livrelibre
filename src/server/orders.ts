@@ -1,5 +1,4 @@
 import { ObjectId } from "mongodb";
-import { z } from "zod";
 
 import { getDb } from "@/server/database";
 import type { DBCustomer } from "@/utils/customer";
@@ -10,7 +9,6 @@ import {
   type Order,
   type OrderStatus,
   type RawOrder,
-  dbIdSchema,
   deserializeOrder,
 } from "@/utils/order";
 
@@ -102,15 +100,6 @@ export const getCustomerActiveOrders = async (customerId: string) => {
   return orders;
 };
 
-export const zInputOrder = z.object({
-  customerId: dbIdSchema,
-  itemId: z.string().optional(),
-  itemTitle: z.string(),
-  comment: z.string(),
-});
-
-type InputOrder = z.infer<typeof zInputOrder>;
-
 type OrderHistoryBase = {
   author: string;
   timestamp: Date;
@@ -130,15 +119,9 @@ type OrderHistoryDelete = OrderHistoryBase & {
 };
 type OrderHistory = OrderHistoryNew | OrderHistoryEdit | OrderHistoryDelete;
 
-export const newOrder = async (order: InputOrder, user: string) => {
+export const newOrder = async (order: RawOrder, user: string) => {
   const db = await getDb();
-  const newOrder: DBOrder = {
-    ...order,
-    date: new Date(),
-    ordered: "new",
-    customerNotified: false,
-    paid: false,
-  };
+  const newOrder = deserializeOrder(order);
   try {
     const customer = await db
       .collection<DBCustomer>("customers")

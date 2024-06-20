@@ -25,7 +25,8 @@ const NewOrder = (): JSX.Element => {
       toast.error("Impossible d'ajouter la commande");
     },
   });
-  const submit = async (order: Order) => {
+  const submit = async (data: Order) => {
+    const order = { ...data, date: data.date.toISOString() };
     return await mutation.mutateAsync(order);
   };
   return (
