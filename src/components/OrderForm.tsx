@@ -31,7 +31,7 @@ export const OrderForm = ({
 }): JSX.Element => {
   const defaultValues = data
     ? { ...data, date: toInputDate(data.date) }
-    : { date: toInputDate(new Date()) };
+    : { date: toInputDate(new Date()), nb: 1 };
   const { register, handleSubmit, reset, setValue } = useForm<InputOrder>({
     defaultValues,
     shouldUseNativeValidation: true,
@@ -119,6 +119,13 @@ export const OrderForm = ({
             </FormRow>
             <FormRow label="Commentaires">
               <Textarea {...register("comment")} />
+            </FormRow>
+            <FormRow label="Nb d'exemplaires">
+              <Input
+                type="number"
+                min="1"
+                {...register("nb", { valueAsNumber: true })}
+              />
             </FormRow>
             <FormRow label="État">
               <Select {...register("ordered")} defaultValue="new">

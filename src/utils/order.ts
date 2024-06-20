@@ -27,6 +27,7 @@ export const zOrder = z.object({
   customerNotified: z.boolean(),
   paid: z.boolean(),
   comment: z.string(),
+  nb: z.number().positive(),
 });
 
 export type RawOrder = z.infer<typeof zOrder>;

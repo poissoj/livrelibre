@@ -66,6 +66,7 @@ export const OrdersTable = ({ items }: { items: Order[] }) => {
           </th>
           <th className="text-center">Prévenu⋅e</th>
           <th className="text-center px-1">Payé</th>
+          <th className="text-right">Nb</th>
           <th className="text-center"></th>
         </tr>
       </thead>
@@ -87,7 +88,7 @@ export const OrdersTable = ({ items }: { items: Order[] }) => {
             <td className="p-1">{item.customer.fullname}</td>
             <td className="p-1">
               <div className="leading-4">{item.itemTitle}</div>
-              <div className="italic">{item.item?.isbn}</div>
+              <div className="italic font-number">{item.item?.isbn}</div>
             </td>
             <td className="p-1">{item.item?.distributor}</td>
             <td className="p-1">
@@ -99,6 +100,7 @@ export const OrdersTable = ({ items }: { items: Order[] }) => {
             <td className="p-1 text-center">
               <input type="checkbox" disabled checked={item.paid} />
             </td>
+            <td className="p-1 text-right font-number">{item.nb}</td>
             <td className="p-1">
               {item.comment && (
                 <FontAwesomeIcon
