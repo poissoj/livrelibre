@@ -25,7 +25,7 @@ export const OrdersTable = ({ items }: { items: Order[] }) => {
     if (sortBy === "status") {
       return STATUS_LABEL[a.ordered].localeCompare(STATUS_LABEL[b.ordered]);
     }
-    return 0; // sorted by date by default
+    return a.date.getTime() - b.date.getTime();
   });
   const updateSort = (by: string) => () =>
     router.push({ query: { ...router.query, sortBy: by } });
