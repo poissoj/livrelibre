@@ -28,7 +28,7 @@ function MyApp({ Component, pageProps }: AppProps): JSX.Element {
       </Head>
       {showComponent && <Component {...pageProps} />}
       <ToastContainer
-        position="bottom-right"
+        position="bottom-left"
         theme="colored"
         transition={Slide}
       />
