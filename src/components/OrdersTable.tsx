@@ -4,6 +4,7 @@ import {
   faSortDesc,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import clsx from "clsx";
 import { useRouter } from "next/router";
 import React from "react";
 
@@ -72,7 +73,9 @@ export const OrdersTable = ({ items }: { items: Order[] }) => {
         {sortedItems.map((item, i) => (
           <tr
             key={i}
-            className="cursor-pointer even:bg-gray-light"
+            className={clsx("cursor-pointer even:bg-gray-light", {
+              "!bg-[rgba(245,0,0,0.3)]": item.paid,
+            })}
             onClick={() =>
               router.push({
                 pathname: `/order/${item._id}`,
