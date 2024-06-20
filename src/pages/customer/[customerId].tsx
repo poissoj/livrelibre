@@ -17,10 +17,10 @@ import {
   type CustomerFormFields,
 } from "@/components/CustomerForm";
 import { ErrorMessage } from "@/components/ErrorMessage";
+import { StatusCircle } from "@/components/StatusCircle";
 import { Title } from "@/components/Title";
 import type { Customer } from "@/utils/customer";
 import { formatPrice } from "@/utils/format";
-import { STATUS_LABEL } from "@/utils/order";
 import { trpc } from "@/utils/trpc";
 
 const CARD_TITLE = "Modifier un⋅e client⋅e";
@@ -53,11 +53,14 @@ const OrdersContent = ({ customerId }: { customerId: string }) => {
         ) : (
           <ul>
             {orders.map((order) => (
-              <li key={order._id}>
-                <Link href={`/order/${order._id}`}>
-                  {order.itemTitle} ({STATUS_LABEL[order.ordered]}
+              <li key={order._id} className="mb-1">
+                <Link
+                  href={`/order/${order._id}`}
+                  className="flex gap-2 items-center"
+                >
+                  <StatusCircle status={order.ordered} />
+                  {order.itemTitle}
                 </Link>
-                )
               </li>
             ))}
           </ul>
