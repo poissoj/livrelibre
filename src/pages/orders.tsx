@@ -132,6 +132,7 @@ const OrdersBody = ({
       : orders.filter(
           (order) =>
             order.customer.nmFullname.toLowerCase().includes(norm(search)) ||
+            order.item?.isbn.includes(search) ||
             norm(order.itemTitle.toLowerCase()).includes(norm(search)),
         );
   return (
@@ -145,7 +146,7 @@ const OrdersBody = ({
             });
           }}
           className="text-base mb-2 !w-[30rem] h-fit"
-          placeholder="Nom, prénom, titre"
+          placeholder="Nom, prénom, titre, ISBN"
         />
         {children}
       </div>
