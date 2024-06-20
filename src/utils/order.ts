@@ -47,7 +47,7 @@ export const deserializeOrder = <T extends { date: string }>(order: T) => ({
 });
 
 export const STATUS_LABEL: Record<OrderStatus, string> = {
-  new: "Nouveau",
+  new: "En cours",
   received: "Reçu",
   unavailable: "Indisponible",
   canceled: "Annulé",
