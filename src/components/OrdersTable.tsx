@@ -47,6 +47,7 @@ export const OrdersTable = ({ items }: { items: Order[] }) => {
           <th className="text-left pl-1">Nom</th>
           <th></th>
           <th className="text-left pl-1">Article</th>
+          <th className="text-right">Nb</th>
           <th className="text-left pl-1">
             <button type="button" onClick={updateSort("distributor")}>
               Distributeur
@@ -67,7 +68,6 @@ export const OrdersTable = ({ items }: { items: Order[] }) => {
           </th>
           <th className="text-center">Prévenu⋅e</th>
           <th className="text-center px-1">Payé</th>
-          <th className="text-right">Nb</th>
           <th className="text-center"></th>
         </tr>
       </thead>
@@ -92,6 +92,9 @@ export const OrdersTable = ({ items }: { items: Order[] }) => {
               <div className="leading-4">{item.itemTitle}</div>
               <div className="italic font-number">{item.item?.isbn}</div>
             </td>
+            <td className="p-1 text-right font-number">
+              {item.nb > 1 ? item.nb : ""}
+            </td>
             <td className="p-1">{item.item?.distributor}</td>
             <td className="p-1">
               <StatusCircle status={item.ordered} className="mx-auto" />
@@ -102,7 +105,6 @@ export const OrdersTable = ({ items }: { items: Order[] }) => {
             <td className="p-1 text-center">
               <input type="checkbox" disabled checked={item.paid} />
             </td>
-            <td className="p-1 text-right font-number">{item.nb}</td>
             <td className="p-1">
               {item.comment && (
                 <FontAwesomeIcon
