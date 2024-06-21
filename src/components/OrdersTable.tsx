@@ -45,6 +45,7 @@ export const OrdersTable = ({ items }: { items: Order[] }) => {
             </button>
           </th>
           <th className="text-left pl-1">Nom</th>
+          <th></th>
           <th className="text-left pl-1">Article</th>
           <th className="text-left pl-1">
             <button type="button" onClick={updateSort("distributor")}>
@@ -74,9 +75,7 @@ export const OrdersTable = ({ items }: { items: Order[] }) => {
         {sortedItems.map((item, i) => (
           <tr
             key={i}
-            className={clsx("cursor-pointer even:bg-gray-light", {
-              "!bg-[rgba(245,0,0,0.3)]": item.paid,
-            })}
+            className="cursor-pointer even:bg-gray-light"
             onClick={() =>
               router.push({
                 pathname: `/order/${item._id}`,
@@ -86,6 +85,9 @@ export const OrdersTable = ({ items }: { items: Order[] }) => {
           >
             <td className="pl-2 py-1">{formatDateFR(item.date)}</td>
             <td className="p-1">{item.customer.fullname}</td>
+            <td
+              className={clsx("w-2", { "bg-[rgba(245,0,0,0.5)]": item.paid })}
+            ></td>
             <td className="p-1">
               <div className="leading-4">{item.itemTitle}</div>
               <div className="italic font-number">{item.item?.isbn}</div>
