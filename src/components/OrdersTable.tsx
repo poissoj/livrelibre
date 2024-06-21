@@ -1,6 +1,7 @@
 import {
   faInfoCircle,
   faSort,
+  faSortAsc,
   faSortDesc,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,58 +14,84 @@ import { type Order, STATUS_LABEL } from "@/utils/order";
 
 import { StatusCircle } from "./StatusCircle";
 
+const SortButton = ({ label, by: sortBy }: { label: string; by: string }) => {
+  const router = useRouter();
+  const selected =
+    typeof router.query.sortBy === "string" ? router.query.sortBy : "date";
+  let icon = faSort;
+  if (sortBy === selected) {
+    icon = faSortDesc;
+  } else if (sortBy + "Desc" === selected) {
+    icon = faSortAsc;
+  }
+  const updateSort = () => {
+    let by = sortBy;
+    if (selected === by) {
+      by = selected + "Desc";
+    }
+    void router.push({ query: { ...router.query, sortBy: by } });
+  };
+  return (
+    <button type="button" onClick={updateSort}>
+      {label}
+      <FontAwesomeIcon icon={icon} className="ml-2" />
+    </button>
+  );
+};
+
+const sortOrders = (sortBy: string) => {
+  switch (sortBy) {
+    case "distributor":
+      return (a: Order, b: Order) =>
+        (a.item?.distributor || "").localeCompare(b.item?.distributor || "");
+    case "distributorDesc":
+      return (a: Order, b: Order) =>
+        (b.item?.distributor || "").localeCompare(a.item?.distributor || "");
+    case "status":
+      return (a: Order, b: Order) =>
+        STATUS_LABEL[a.ordered].localeCompare(STATUS_LABEL[b.ordered]);
+    case "statusDesc":
+      return (a: Order, b: Order) =>
+        STATUS_LABEL[b.ordered].localeCompare(STATUS_LABEL[a.ordered]);
+    case "name":
+      return (a: Order, b: Order) =>
+        a.customer.fullname.localeCompare(b.customer.fullname);
+    case "nameDesc":
+      return (a: Order, b: Order) =>
+        b.customer.fullname.localeCompare(a.customer.fullname);
+    case "date":
+      return (a: Order, b: Order) => a.date.getTime() - b.date.getTime();
+    case "dateDesc":
+      return (a: Order, b: Order) => b.date.getTime() - a.date.getTime();
+    default:
+      return () => 0;
+  }
+};
+
 export const OrdersTable = ({ items }: { items: Order[] }) => {
   const router = useRouter();
   const sortBy =
     typeof router.query.sortBy === "string" ? router.query.sortBy : "date";
-  const sortedItems = items.toSorted((a, b) => {
-    if (sortBy === "distributor") {
-      return (a.item?.distributor || "").localeCompare(
-        b.item?.distributor || "",
-      );
-    }
-    if (sortBy === "status") {
-      return STATUS_LABEL[a.ordered].localeCompare(STATUS_LABEL[b.ordered]);
-    }
-    return a.date.getTime() - b.date.getTime();
-  });
-  const updateSort = (by: string) => () =>
-    router.push({ query: { ...router.query, sortBy: by } });
+  const sortedItems = items.toSorted(sortOrders(sortBy));
 
   return (
     <table className="flex-1 text-sm">
       <thead>
         <tr className="sticky top-0 bg-white shadow-b shadow-black">
           <th className="text-left pl-2">
-            <button type="button" onClick={updateSort("date")}>
-              Date
-              <FontAwesomeIcon
-                icon={sortBy === "date" ? faSortDesc : faSort}
-                className="ml-2"
-              />
-            </button>
+            <SortButton label="Date" by="date" />
           </th>
-          <th className="text-left pl-1">Nom</th>
+          <th className="text-left pl-1">
+            <SortButton label="Nom" by="name" />
+          </th>
           <th></th>
           <th className="text-left pl-1">Article</th>
           <th className="text-right">Nb</th>
           <th className="text-left pl-1">
-            <button type="button" onClick={updateSort("distributor")}>
-              Distributeur
-              <FontAwesomeIcon
-                icon={sortBy === "distributor" ? faSortDesc : faSort}
-                className="ml-2"
-              />
-            </button>
+            <SortButton label="Distributeur" by="distributor" />
           </th>
           <th className="text-center">
-            <button type="button" onClick={updateSort("status")}>
-              État
-              <FontAwesomeIcon
-                icon={sortBy === "status" ? faSortDesc : faSort}
-                className="ml-2"
-              />
-            </button>
+            <SortButton label="État" by="status" />
           </th>
           <th className="text-center">Prévenu⋅e</th>
           <th className="text-center px-1">Payé</th>
