@@ -40,7 +40,7 @@ const getStatus = (query: string | string[] | undefined): OrderStatus[] => {
   if (status.success) {
     return [status.data];
   }
-  return ["new", "received", "unavailable", "canceled"];
+  return ["new", "received", "unavailable", "other", "canceled"];
 };
 
 const OrdersLoader = () => {

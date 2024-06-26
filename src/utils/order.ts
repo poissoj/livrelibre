@@ -11,6 +11,7 @@ export const ORDER_STATUS = [
   "unavailable",
   "canceled",
   "done",
+  "other",
 ] as const;
 
 export type OrderStatus = (typeof ORDER_STATUS)[number];
@@ -52,6 +53,7 @@ export const STATUS_LABEL: Record<OrderStatus, string> = {
   received: "Reçu",
   unavailable: "Indisponible",
   canceled: "Annulé",
+  other: "Autre",
   done: "Terminée",
 };
 
@@ -60,5 +62,6 @@ export const STATUS_COLOR = {
   received: "bg-green",
   unavailable: "bg-blue",
   canceled: "bg-red",
+  other: "bg-purple",
   done: "bg-white",
 } as const satisfies Record<OrderStatus, string>;
