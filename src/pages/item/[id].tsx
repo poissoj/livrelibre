@@ -18,10 +18,11 @@ import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Input } from "@/components/FormControls";
 import { NoResults } from "@/components/NoResults";
+import { StatusCircle } from "@/components/StatusCircle";
 import { Title } from "@/components/Title";
 import { formatNumber, formatPrice, formatTVA } from "@/utils/format";
 import { ITEM_TYPES, type ItemWithCount } from "@/utils/item";
-import { type DBOrder, STATUS_LABEL } from "@/utils/order";
+import { type DBOrder } from "@/utils/order";
 import { trpc, useBookmark } from "@/utils/trpc";
 import { useAddToCart } from "@/utils/useAddToCart";
 
@@ -45,10 +46,20 @@ const formatStringPrice = (price: string) =>
 
 type ItemOrder = { _id: DBOrder["ordered"]; count: number };
 
-const formatOrders = (orders: ItemOrder[]) =>
-  orders
-    .map((order) => `${STATUS_LABEL[order._id]}: ${order.count}`)
-    .join(", ");
+const OrderStatus = ({ orders }: { orders: ItemOrder[] }) => {
+  if (orders.length === 0) {
+    return "Aucune commande en cours";
+  }
+  return (
+    <div className="flex gap-2">
+      {orders.map((order) => (
+        <div key={order._id} className="flex">
+          <StatusCircle status={order._id} className="mr-1" />: {order.count}
+        </div>
+      ))}
+    </div>
+  );
+};
 
 const ItemDetails = ({
   item,
@@ -84,13 +95,7 @@ const ItemDetails = ({
       <DT>Quantité</DT>
       <DD className="font-number">{formatNumber(item.amount)}</DD>
       <DT>Commandes</DT>
-      <DD>
-        {orders
-          ? orders.length > 0
-            ? formatOrders(orders)
-            : "Aucune commande en cours"
-          : "Chargement…"}
-      </DD>
+      <DD>{orders ? <OrderStatus orders={orders} /> : "Chargement…"}</DD>
       <DT>TVA</DT>
       <DD className="font-number">{formatTVA(item.tva)}</DD>
       <DT>Vendu</DT>
