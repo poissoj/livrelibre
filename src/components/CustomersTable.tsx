@@ -16,7 +16,7 @@ export const CustomersTable = ({ items }: { items: Customer[] }) => {
           <th className="text-left">Nom</th>
           <th className="text-left">Téléphone</th>
           <th className="text-left">Mail</th>
-          <th className="text-left">Contact</th>
+          <th className="text-left">Remarque contact</th>
           <th className="text-left">Commentaire</th>
           <th className="text-right">Remise</th>
           <th className="text-right">Total</th>

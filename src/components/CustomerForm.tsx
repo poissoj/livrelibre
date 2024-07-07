@@ -54,14 +54,14 @@ export const CustomerForm = ({
             <FormRow label="Nom complet">
               <Input type="text" {...register("fullname")} />
             </FormRow>
-            <FormRow label="Contact">
-              <Input type="text" {...register("contact")} />
-            </FormRow>
             <FormRow label="Téléphone">
               <Input type="tel" {...register("phone")} />
             </FormRow>
             <FormRow label="Email">
               <Input type="email" {...register("email")} />
+            </FormRow>
+            <FormRow label="Remarque contact">
+              <Input type="text" {...register("contact")} />
             </FormRow>
             <FormRow label="Commentaires">
               <Textarea {...register("comment")} />
