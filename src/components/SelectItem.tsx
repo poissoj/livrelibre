@@ -10,6 +10,7 @@ import { clsx } from "clsx";
 import { Fragment, type HTMLProps, useState } from "react";
 
 import { COMMON_STYLES } from "@/components/FormControls";
+import { formatPrice } from "@/utils/format";
 import type { Item } from "@/utils/item";
 import { trpc } from "@/utils/trpc";
 
@@ -52,7 +53,10 @@ export function SelectItem({
           }}
           {...inputProps}
         />
-        <ComboboxOptions className="absolute z-10 w-full max-h-40 overflow-auto rounded-md p-1 shadow-lg ring-1 ring-black/5 bg-gray-light">
+        <ComboboxOptions
+          className="absolute z-10 w-full max-h-56 overflow-auto rounded-md shadow-lg ring-1 ring-black/5 bg-gray-light"
+          as="ul"
+        >
           {search.length > 0 && (
             <ComboboxOption value={{ _id: null, title: search }}>
               {search}
@@ -63,16 +67,23 @@ export function SelectItem({
               {({ focus, selected }) => (
                 <li
                   className={clsx(
-                    "pl-8 relative",
+                    "px-2 flex gap-2 items-center",
                     focus ? "bg-gray-light" : "bg-white",
                   )}
                 >
-                  {getLabel(item)}
-                  {selected && (
-                    <span className="absolute inset-y-0 left-0 pl-2 flex items-center">
-                      <FontAwesomeIcon icon={faCheck} />
-                    </span>
-                  )}
+                  <span className={clsx(!selected && "invisible")}>
+                    <FontAwesomeIcon icon={faCheck} />
+                  </span>
+                  <div className="flex flex-col grow py-1">
+                    <span className="leading-tight">{item.title}</span>
+                    <div className="text-xs">
+                      <span className="mr-2">{item.distributor}</span>
+                      <span className="italic mr-auto">{item.isbn}</span>
+                    </div>
+                  </div>
+                  <span className="font-number text-sm">
+                    {formatPrice(Number(item.price))}
+                  </span>
                 </li>
               )}
             </ComboboxOption>
