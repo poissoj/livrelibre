@@ -5,13 +5,17 @@ import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 
 import { Button } from "@/components/Button";
+import { ErrorMessage } from "@/components/ErrorMessage";
 import { OrderForm } from "@/components/OrderForm";
 import { Title } from "@/components/Title";
 import type { Order } from "@/utils/order";
 import { trpc } from "@/utils/trpc";
 
-const NewOrder = (): JSX.Element => {
+const OrderBody = () => {
   const router = useRouter();
+  const rawId = router.query.item;
+  const id = typeof rawId === "string" ? rawId : "";
+  const result = trpc.searchItem.useQuery(id, { enabled: id !== "" });
   const mutation = trpc.newOrder.useMutation({
     onSuccess(data) {
       if (data.type === "success") {
@@ -25,19 +29,37 @@ const NewOrder = (): JSX.Element => {
       toast.error("Impossible d'ajouter la commande");
     },
   });
+
   const submit = async (data: Order) => {
     const order = { ...data, date: data.date.toISOString() };
     return await mutation.mutateAsync(order);
   };
+  if (result.status === "error") {
+    return <ErrorMessage />;
+  }
+  if (result.status === "loading" && id) {
+    return <div>Chargement…</div>;
+  }
+  const data: React.ComponentProps<typeof OrderForm>["data"] = {
+    item: result.data || null,
+    nb: 1,
+    date: new Date(),
+  };
   return (
-    <div className="[margin-left:10%] [margin-right:10%] flex-1">
+    <OrderForm title="Nouvelle commande" onSubmit={submit} data={data}>
+      <Button type="submit" className="px-md">
+        <FontAwesomeIcon icon={faPlus} className="mr-sm" />
+        Ajouter
+      </Button>
+    </OrderForm>
+  );
+};
+
+const NewOrder = (): JSX.Element => {
+  return (
+    <div className="flex-1 max-w-6xl mx-auto">
       <Title>Nouvelle commande</Title>
-      <OrderForm title="Nouvelle commande" onSubmit={submit}>
-        <Button type="submit" className="px-md">
-          <FontAwesomeIcon icon={faPlus} className="mr-sm" />
-          Ajouter
-        </Button>
-      </OrderForm>
+      <OrderBody />
     </div>
   );
 };

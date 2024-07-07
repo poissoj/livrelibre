@@ -26,21 +26,19 @@ export const OrderForm = ({
 }: {
   title: string;
   onSubmit(data?: Order): Promise<{ type: "error" | "success"; msg: string }>;
-  data?: Order;
+  data: Partial<Order> & { date: Order["date"] };
   children: React.ReactNode;
 }): JSX.Element => {
-  const defaultValues = data
-    ? { ...data, date: toInputDate(data.date) }
-    : { date: toInputDate(new Date()), nb: 1 };
+  const defaultValues = { ...data, date: toInputDate(data.date) };
   const { register, handleSubmit, reset, setValue } = useForm<InputOrder>({
     defaultValues,
     shouldUseNativeValidation: true,
   });
   const [customer, setCustomer] = React.useState<Customer | null>(
-    data?.customer ?? null,
+    data.customer ?? null,
   );
   const [item, setItem] = React.useState<Item | NewItem | null>(
-    data?.item ?? { _id: null, title: data?.itemTitle ?? "" },
+    data.item ?? { _id: null, title: data.itemTitle ?? "" },
   );
   const utils = trpc.useUtils();
 

@@ -138,7 +138,7 @@ const UpdateOrder = () => {
     return null;
   }
   return (
-    <div className="2xl:([margin-left:10%] [margin-right:10%]) flex-1">
+    <div className="flex-1 max-w-6xl mx-auto">
       <Title>Modifier une commande</Title>
       <OrderLoader id={orderId} />
     </div>

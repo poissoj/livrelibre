@@ -1,5 +1,6 @@
 import { faStar as emptyStar } from "@fortawesome/free-regular-svg-icons";
 import {
+  faBook,
   faCartPlus,
   faEdit,
   faSpinner,
@@ -132,11 +133,18 @@ const TitleWithButtons = ({ item }: { item: ItemWithCount }) => {
   return (
     <div className="flex items-center">
       <CardTitle className="mr-auto">{item.title}</CardTitle>
+      <LinkButton
+        href={`/order/new?item=${item._id}`}
+        title="Commander"
+        className="rounded-r-none px-md"
+      >
+        <FontAwesomeIcon icon={faBook} />
+      </LinkButton>
       <Button
         type="button"
         title={item.starred ? "Enlever des favoris" : "Ajouter aux favoris"}
         onClick={handleClick}
-        className="rounded-r-none px-md border-r border-primary-darkest"
+        className="rounded-none px-md border-primary-darkest"
       >
         <FontAwesomeIcon
           icon={
