@@ -80,6 +80,11 @@ export const Sidebar = (): JSX.Element => {
           </NavLink>
         </li>
         <li>
+          <NavLink href="/customers" icon={faUsers}>
+            Client⋅es
+          </NavLink>
+        </li>
+        <li>
           <hr className="mx-lg my-md" />
         </li>
         <li>
@@ -95,11 +100,6 @@ export const Sidebar = (): JSX.Element => {
         <li>
           <NavLink href="/stats" icon={faChartPie}>
             Statistiques
-          </NavLink>
-        </li>
-        <li>
-          <NavLink href="/customers" icon={faUsers}>
-            Client⋅es
           </NavLink>
         </li>
         <li>
