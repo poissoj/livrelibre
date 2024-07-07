@@ -104,7 +104,7 @@ export const OrderForm = ({
               </LinkButton>
             </FormRow>
             <FormRow label="Date">
-              <Input type="date" {...register("date")} />
+              <Input type="datetime-local" {...register("date")} />
             </FormRow>
             <FormRow label="ISBN">
               <Input

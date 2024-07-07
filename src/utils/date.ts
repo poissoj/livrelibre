@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+
 export const formatDate = (date: Date) =>
   [
     date.getFullYear(),
@@ -12,4 +14,4 @@ export const formatDateFR = (date: Date) =>
     date.getFullYear(),
   ].join("/");
 
-export const toInputDate = (date: Date) => date.toISOString().slice(0, 10);
+export const toInputDate = (date: Date) => format(date, "yyyy-MM-dd'T'HH:mm");
