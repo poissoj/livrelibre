@@ -14,10 +14,14 @@ import { type Order, STATUS_LABEL } from "@/utils/order";
 
 import { StatusCircle } from "./StatusCircle";
 
+const DEFAULT_SORTBY = "dateDesc";
+
 const SortButton = ({ label, by: sortBy }: { label: string; by: string }) => {
   const router = useRouter();
   const selected =
-    typeof router.query.sortBy === "string" ? router.query.sortBy : "date";
+    typeof router.query.sortBy === "string"
+      ? router.query.sortBy
+      : DEFAULT_SORTBY;
   let icon = faSort;
   if (sortBy === selected) {
     icon = faSortDesc;
@@ -71,7 +75,9 @@ const sortOrders = (sortBy: string) => {
 export const OrdersTable = ({ items }: { items: Order[] }) => {
   const router = useRouter();
   const sortBy =
-    typeof router.query.sortBy === "string" ? router.query.sortBy : "date";
+    typeof router.query.sortBy === "string"
+      ? router.query.sortBy
+      : DEFAULT_SORTBY;
   const sortedItems = items.toSorted(sortOrders(sortBy));
 
   return (
