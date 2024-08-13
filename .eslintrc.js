@@ -26,5 +26,6 @@ module.exports = {
       "warn",
       { allowNumber: true },
     ],
+    "@typescript-eslint/method-signature-style": "error",
   },
 };

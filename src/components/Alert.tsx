@@ -37,7 +37,7 @@ export const Alert = ({
   type: "success" | "warning" | "error" | "info";
   children: React.ReactNode;
   className?: string;
-  onDismiss?(): void;
+  onDismiss?: () => void;
 }): JSX.Element | null => {
   const style = clsx(ALERT_STYLES[type], className);
   const icon = {

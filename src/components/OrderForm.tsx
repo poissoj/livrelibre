@@ -25,7 +25,9 @@ export const OrderForm = ({
   children,
 }: {
   title: string;
-  onSubmit(data?: Order): Promise<{ type: "error" | "success"; msg: string }>;
+  onSubmit: (
+    data?: Order,
+  ) => Promise<{ type: "error" | "success"; msg: string }>;
   data: Partial<Order> & { date: Order["date"] };
   children: React.ReactNode;
 }): JSX.Element => {

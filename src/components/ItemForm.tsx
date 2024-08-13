@@ -33,7 +33,7 @@ const ISBNSearchButton = ({
   clickHandler,
   isLoading,
 }: {
-  clickHandler(): Promise<void>;
+  clickHandler: () => Promise<void>;
   isLoading: boolean;
 }) => {
   return (
@@ -59,11 +59,11 @@ export const ItemForm = ({
   onSuccess,
 }: {
   title: string;
-  onSubmit(
+  onSubmit: (
     data?: FormFields,
-  ): Promise<{ type: "error" | "success" | "warning"; msg: string }>;
+  ) => Promise<{ type: "error" | "success" | "warning"; msg: string }>;
   data?: FormFields;
-  onSuccess?(): void;
+  onSuccess?: () => void;
   children: React.ReactNode;
 }): JSX.Element => {
   const { register, handleSubmit, reset, getValues, setValue } =

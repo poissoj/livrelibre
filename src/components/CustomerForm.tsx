@@ -22,11 +22,11 @@ export const CustomerForm = ({
   onSuccess,
 }: {
   title: string;
-  onSubmit(
+  onSubmit: (
     data?: CustomerFormFields,
-  ): Promise<{ type: "error" | "success"; msg: string }>;
+  ) => Promise<{ type: "error" | "success"; msg: string }>;
   data?: CustomerFormFields;
-  onSuccess?(): void;
+  onSuccess?: () => void;
   children: React.ReactNode;
 }): JSX.Element => {
   const { register, handleSubmit, reset } = useForm<CustomerFormFields>({

@@ -197,7 +197,7 @@ const PaymentForm = ({ cb }: { cb: (amount: number | null) => void }) => {
   );
 };
 
-const QuickAdd = ({ addError }: { addError(error: ISBNError): void }) => {
+const QuickAdd = ({ addError }: { addError: (error: ISBNError) => void }) => {
   type FormFields = { isbn: string };
   const { register, handleSubmit, resetField } = useForm<FormFields>();
   const utils = trpc.useUtils();
@@ -259,7 +259,7 @@ const ErrorList = ({
   removeError,
 }: {
   errors: ISBNError[];
-  removeError(isbn: string): void;
+  removeError: (isbn: string) => void;
 }) => {
   return (
     <>
