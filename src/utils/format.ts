@@ -15,7 +15,7 @@ const percentFormatter = Intl.NumberFormat(LOCALE, {
 export const formatPercent = (n: number) =>
   percentFormatter.format(n).replace(/\s/g, " ");
 
-export const formatTVA = (tva: string | undefined) =>
+export const formatTVA = (tva: string | null | undefined) =>
   !tva || tva === "Inconnu" ? tva : formatPercent(Number(tva) / 100);
 
 const numberFormatter = Intl.NumberFormat(LOCALE, { style: "decimal" });

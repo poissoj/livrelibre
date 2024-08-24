@@ -12,14 +12,15 @@ import { StatsByTVA } from "@/components/TVAStats/StatsByTVA";
 import { TVASkeleton } from "@/components/TVAStats/TVASkeleton";
 import { Title } from "@/components/Title";
 import { formatPrice } from "@/utils/format";
+import { ITEM_TYPES } from "@/utils/item";
 import { type RouterOutput, trpc } from "@/utils/trpc";
 
 const TH_STYLES = "sticky top-0 bg-white";
 
 type TSalesByDay = RouterOutput["salesByMonth"]["salesByDay"];
 
-const makeSaleURL = (date: string) =>
-  `/sale/${date.split("/").reverse().join("/")}`;
+const formatDate = (date: string) => date.split("-").reverse().join("/");
+const makeSaleURL = (date: string) => `/sale/${formatDate(date)}`;
 
 const SalesTable = ({ sales }: { sales: TSalesByDay }) => {
   const router = useRouter();
@@ -40,11 +41,11 @@ const SalesTable = ({ sales }: { sales: TSalesByDay }) => {
             onClick={() => router.push({ pathname: makeSaleURL(sale.date) })}
           >
             <td className="pl-2">
-              <Link href={makeSaleURL(sale.date)}>{sale.date}</Link>
+              <Link href={makeSaleURL(sale.date)}>{formatDate(sale.date)}</Link>
             </td>
             <td className="text-right font-number">{sale.count}</td>
             <td className="text-right font-number pr-2">
-              {formatPrice(Number(sale.amount))}
+              {formatPrice(Number(sale.total))}
             </td>
           </tr>
         ))}
@@ -144,7 +145,11 @@ const CategoriesLoader = (props: MonthProps) => {
   if (result.isLoading) {
     return <CategorySkeleton />;
   }
-  return <CategoriesTable categories={result.data.itemTypes} />;
+  const categories = result.data.itemTypes.map((it) => ({
+    ...it,
+    label: ITEM_TYPES[it.itemType],
+  }));
+  return <CategoriesTable categories={categories} />;
 };
 
 const CategoriesCard = () => {

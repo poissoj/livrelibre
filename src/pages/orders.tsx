@@ -21,7 +21,7 @@ import { StatusCircle } from "@/components/StatusCircle";
 import { Title } from "@/components/Title";
 import {
   ORDER_STATUS,
-  type Order,
+  type OrderRow,
   type OrderStatus,
   STATUS_LABEL,
   deserializeOrder,
@@ -60,7 +60,7 @@ const OrdersLoader = () => {
     );
   }
 
-  const items: Order[] =
+  const items: OrderRow[] =
     result.status === "loading" ? [] : result.data.map(deserializeOrder);
 
   const cardTitle =
@@ -122,7 +122,7 @@ const OrdersLoader = () => {
 const OrdersBody = ({
   orders,
   children,
-}: React.PropsWithChildren<{ orders: Order[] }>) => {
+}: React.PropsWithChildren<{ orders: OrderRow[] }>) => {
   const router = useRouter();
   const search =
     typeof router.query.search === "string" ? router.query.search : "";
@@ -131,8 +131,8 @@ const OrdersBody = ({
       ? orders
       : orders.filter(
           (order) =>
-            order.customer.nmFullname.toLowerCase().includes(norm(search)) ||
-            order.item?.isbn.includes(search) ||
+            norm(order.customerName).toLowerCase().includes(norm(search)) ||
+            order.isbn?.includes(search) ||
             norm(order.itemTitle.toLowerCase()).includes(norm(search)),
         );
   return (

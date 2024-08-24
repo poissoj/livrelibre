@@ -43,7 +43,7 @@ export const useBookmark = () => {
       void utils.searchItem.invalidate(vars.id);
     },
   });
-  const star = (id: string, starred: boolean) => {
+  const star = (id: number, starred: boolean) => {
     if (mutation.isLoading) {
       return;
     }

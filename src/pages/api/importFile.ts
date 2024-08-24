@@ -1,14 +1,15 @@
 import * as xlsx from "xlsx";
+import { inArray } from "drizzle-orm";
 import { getIronSession } from "iron-session";
 import multer from "multer";
 import type { NextApiRequest, NextApiResponse, PageConfig } from "next";
 import { createRouter } from "next-connect";
 
+import { db } from "@/db/database";
+import { items } from "@/db/schema";
 import { type SessionData, sessionOptions } from "@/lib/session";
-import { getDb } from "@/server/database";
 import type { DilicomRow, DilicomRowWithId } from "@/utils/dilicomItem";
 import { getBookData } from "@/utils/getBookData";
-import type { DBItem } from "@/utils/item";
 import { logger } from "@/utils/logger";
 
 const header = [
@@ -59,13 +60,12 @@ const filterRows = (json: DilicomRow[]) => {
 
 const updateFields = async (rows: DilicomRow[]) => {
   const fileEANs = rows.map((row) => String(row.EAN));
-  const db = await getDb();
   const dbItems = await db
-    .collection<DBItem>("books")
-    .find({ isbn: { $in: fileEANs } })
-    .toArray();
+    .select()
+    .from(items)
+    .where(inArray(items.isbn, fileEANs));
 
-  const items: DilicomRowWithId[] = [];
+  const itemsList: DilicomRowWithId[] = [];
   for (const row of rows) {
     const item = dbItems.find((it) => it.isbn === row.EAN);
     let newRow: DilicomRowWithId;
@@ -76,7 +76,7 @@ const updateFields = async (rows: DilicomRow[]) => {
         TITRE: item.title,
         EDITEUR: item.publisher,
         DISTRIBUTEUR: item.distributor,
-        id: item._id.toString(),
+        id: item.id,
         amount: item.amount,
       };
     } else {
@@ -93,10 +93,10 @@ const updateFields = async (rows: DilicomRow[]) => {
         newRow = { ...row, id: null, amount: null };
       }
     }
-    items.push(newRow);
+    itemsList.push(newRow);
   }
 
-  return items;
+  return itemsList;
 };
 
 const router = createRouter<

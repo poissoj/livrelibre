@@ -12,6 +12,6 @@ export type DilicomRow = {
 };
 
 export type DilicomRowWithId = DilicomRow & {
-  id: string | null;
+  id: number | null;
   amount: number | null;
 };

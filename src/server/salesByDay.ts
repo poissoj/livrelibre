@@ -1,82 +1,73 @@
-import { ObjectId, type WithId } from "mongodb";
+import { eq, inArray, sql } from "drizzle-orm";
 
-import type { DBItem } from "@/utils/item";
-import { type DBSale, PAYMENT_METHODS, type PaymentType } from "@/utils/sale";
-import { isDefined, isIn } from "@/utils/utils";
+import { db } from "@/db/database";
+import { items, sales } from "@/db/schema";
+import type { DBItem, TVA } from "@/utils/item";
+import { type PaymentType } from "@/utils/sale";
+import { isDefined } from "@/utils/utils";
 
-import { getDb } from "./database";
-
-type AggregatedSale = WithId<
-  Pick<
-    DBSale,
-    | "cartId"
-    | "id"
-    | "price"
-    | "title"
-    | "tva"
-    | "type"
-    | "quantity"
-    | "deleted"
-    | "linkedToCustomer"
-  >
->;
-
-type PaymentMethod = (typeof PAYMENT_METHODS)[PaymentType] | "Inconnu";
+type AggregatedSale = Pick<
+  typeof sales.$inferSelect,
+  | "cartId"
+  | "id"
+  | "title"
+  | "tva"
+  | "paymentType"
+  | "quantity"
+  | "deleted"
+  | "linkedToCustomer"
+> & { price: number };
 
 type ItemSale = Omit<DBItem, "price" | "type"> & {
-  itemId: string;
+  itemId: number;
   price: number;
-  type: PaymentMethod;
+  paymentType: PaymentType | null;
   quantity: number;
   deleted: boolean;
-  _id: string;
+  id: number;
   linkedToCustomer: boolean | undefined;
 };
 
-type UnlistedSale = Omit<AggregatedSale, "type" | "_id" | "cartId"> & {
-  type: PaymentMethod;
+type UnlistedSale = Omit<AggregatedSale, "paymentType" | "id" | "cartId"> & {
+  paymentType: PaymentType | null;
   itemId: null;
   deleted: boolean;
-  _id: string;
-  cartId: string | undefined;
+  id: number;
+  cartId: number | null;
 };
 
 type Sale = ItemSale | UnlistedSale;
 
 export const getSalesByDay = async (date: string) => {
-  const db = await getDb();
   const dbSales = await db
-    .collection("sales")
-    .aggregate<AggregatedSale>([
-      { $match: { date } },
-      {
-        $project: {
-          cartId: 1,
-          id: 1,
-          price: 1,
-          title: 1,
-          tva: 1,
-          type: 1,
-          quantity: 1,
-          deleted: 1,
-          linkedToCustomer: 1,
-        },
-      },
-    ])
-    .toArray();
+    .select({
+      id: sales.id,
+      itemId: sales.itemId,
+      cartId: sales.cartId,
+      price: sql`${sales.price}`.mapWith(Number),
+      title: sales.title,
+      tva: sales.tva,
+      paymentType: sales.paymentType,
+      quantity: sales.quantity,
+      deleted: sales.deleted,
+      linkedToCustomer: sales.linkedToCustomer,
+    })
+    .from(sales)
+    .where(eq(sql`CAST(${sales.created} AS date)`, date))
+    .orderBy(sales.created, sales.cartId, sales.title);
 
-  const itemIds = dbSales.map((s) => s.id).filter(isDefined);
-  const items = await db
-    .collection<DBItem>("books")
-    .find({ _id: { $in: itemIds } })
-    .toArray();
+  const itemIds = dbSales.map((s) => s.itemId).filter(isDefined);
+  const itemList = await db
+    .select()
+    .from(items)
+    .where(inArray(items.id, itemIds));
 
   const tvaStats = new Map<
     string,
-    { count: number; total: number; type: PaymentMethod }
+    { count: number; total: number; type: PaymentType | null }
   >();
   const paymentStats = new Map<
-    PaymentMethod,
+    PaymentType | "unknown",
     { count: number; total: number }
   >();
   let salesCount = 0;
@@ -84,28 +75,25 @@ export const getSalesByDay = async (date: string) => {
   let total = 0;
 
   const carts: { sales: Sale[] }[] = [];
-  let sales: Sale[] = [];
+  let salesList: Sale[] = [];
   for (const sale of dbSales) {
-    if (lastCartId && sale.cartId && !sale.cartId.equals(lastCartId)) {
-      carts.push({ sales });
-      sales = [];
+    if (lastCartId && sale.cartId && sale.cartId !== lastCartId) {
+      carts.push({ sales: salesList });
+      salesList = [];
     }
     lastCartId = sale.cartId;
 
-    const type =
-      sale.type && isIn(PAYMENT_METHODS, sale.type)
-        ? PAYMENT_METHODS[sale.type]
-        : "Inconnu";
-    const key = [sale.tva || "Inconnu", type].join();
+    const paymentType = sale.paymentType;
+    const key = [sale.tva || "Inconnu", paymentType].join();
     let tvaStat = tvaStats.get(key);
     if (!tvaStat) {
-      tvaStat = { count: 0, total: 0, type };
+      tvaStat = { count: 0, total: 0, type: paymentType };
       tvaStats.set(key, tvaStat);
     }
-    let paymentStat = paymentStats.get(type);
+    let paymentStat = paymentStats.get(paymentType ?? "unknown");
     if (!paymentStat) {
       paymentStat = { count: 0, total: 0 };
-      paymentStats.set(type, paymentStat);
+      paymentStats.set(paymentType ?? "unknown", paymentStat);
     }
 
     if (!sale.deleted) {
@@ -118,58 +106,60 @@ export const getSalesByDay = async (date: string) => {
     }
 
     const deleted = Boolean(sale.deleted);
-    if (sale.id) {
+    if (sale.itemId) {
       let i = 0;
-      while (i < items.length && !items[i]._id.equals(sale.id)) {
+      while (i < itemList.length && itemList[i].id !== sale.itemId) {
         i++;
       }
-      if (i === items.length) {
-        throw new Error(`Item ${sale.id.toString()} not found`);
+      if (i === itemList.length) {
+        throw new Error(`Item ${sale.itemId} not found`);
       }
-      sales.push({
-        ...items[i],
-        itemId: sale.id.toString(),
+      salesList.push({
+        ...itemList[i],
+        itemId: sale.itemId,
         price: sale.price,
-        type,
+        paymentType,
         quantity: sale.quantity,
         deleted,
-        _id: sale._id.toString(),
+        id: sale.id,
         linkedToCustomer: sale.linkedToCustomer,
       });
     } else {
-      sales.push({
+      salesList.push({
         ...sale,
-        type,
+        paymentType,
         itemId: null,
         deleted,
-        _id: sale._id.toString(),
-        cartId: sale.cartId?.toString(),
+        id: sale.id,
+        cartId: sale.cartId,
       });
     }
   }
-  if (sales.length > 0) {
-    carts.push({ sales });
+  if (salesList.length > 0) {
+    carts.push({ sales: salesList });
   }
 
   const stats = [...tvaStats.entries()]
     .map(([key, tvaStat]) => {
       const [tva] = key.split(",");
       return {
-        tva,
-        type: tvaStat.type,
+        tva: tva as TVA,
+        paymentType: tvaStat.type,
         nb: tvaStat.count,
-        totalPrice: tvaStat.total.toFixed(2),
+        total: tvaStat.total.toFixed(2),
       };
     })
     .sort(
-      (a, b) => Number(b.tva) - Number(a.tva) || a.type.localeCompare(b.type),
+      (a, b) =>
+        Number(b.tva) - Number(a.tva) ||
+        (a.paymentType ?? "unknown").localeCompare(b.paymentType ?? "unknown"),
     );
 
   const paymentMethods = [...paymentStats.entries()]
     .map(([type, data]) => ({
       type,
       nb: data.count,
-      totalPrice: data.total.toFixed(2),
+      total: data.total.toFixed(2),
     }))
     .sort((a, b) => b.nb - a.nb);
 
@@ -182,18 +172,17 @@ export const getSalesByDay = async (date: string) => {
   };
 };
 
-export const deleteSale = async (saleId: string, itemId?: string | null) => {
-  const db = await getDb();
+export const deleteSale = async (saleId: number, itemId?: number | null) => {
   const item = await db
-    .collection<DBSale>("sales")
-    .findOneAndUpdate(
-      { _id: new ObjectId(saleId) },
-      { $set: { deleted: true } },
-    );
-  if (itemId && item) {
-    const amount = item.quantity || 1;
+    .update(sales)
+    .set({ deleted: true })
+    .where(eq(sales.id, saleId))
+    .returning();
+  if (itemId && item.length > 0) {
+    const amount = item[0].quantity || 1;
     await db
-      .collection<DBItem>("books")
-      .findOneAndUpdate({ _id: new ObjectId(itemId) }, { $inc: { amount } });
+      .update(items)
+      .set({ amount: sql`${items.amount} + ${amount}` })
+      .where(eq(items.id, itemId));
   }
 };

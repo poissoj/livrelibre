@@ -1,30 +1,30 @@
-import type { ObjectId } from "mongodb";
+import { desc, eq, sum } from "drizzle-orm";
 
-import { getDb } from "@/server/database";
-import type { DBItem } from "@/utils/item";
+import { db } from "@/db/database";
+import { items, sales } from "@/db/schema";
 
-export const getBestSales = async () => {
-  const db = await getDb();
-  const sales = await db
-    .collection("sales")
-    .aggregate<{ _id: ObjectId; count: number }>([
-      { $match: { deleted: { $exists: false }, id: { $ne: null } } },
-      { $group: { _id: "$id", count: { $sum: "$quantity" } } },
-      { $sort: { count: -1 } },
-      { $limit: 100 },
-    ])
-    .toArray();
-  const items = await db
-    .collection<DBItem>("books")
-    .find({ _id: { $in: sales.map((sale) => sale._id) } })
-    .toArray();
-  const bestSales = items.map((item) => {
-    let i = 0;
-    while (!sales[i]._id.equals(item._id)) {
-      i++;
-    }
-    return { ...item, count: sales[i].count, _id: item._id.toString() };
-  });
-  bestSales.sort((i1, i2) => i2.count - i1.count);
+export type BestSale = {
+  id: number;
+  title: string | null;
+  author: string;
+  amount: number;
+  count: string | null;
+};
+
+export const getBestSales = async (): Promise<BestSale[]> => {
+  const bestSales = await db
+    .select({
+      id: items.id,
+      title: items.title,
+      author: items.author,
+      amount: items.amount,
+      count: sum(sales.quantity),
+    })
+    .from(sales)
+    .innerJoin(items, eq(sales.itemId, items.id))
+    .where(eq(sales.deleted, false))
+    .groupBy(items.id, items.title, items.author, items.amount)
+    .orderBy(({ count }) => [desc(count), items.title])
+    .limit(100);
   return bestSales;
 };

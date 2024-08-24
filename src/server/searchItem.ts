@@ -1,46 +1,42 @@
-import { type Filter, ObjectId } from "mongodb";
+import { SQL, and, count, eq, gt, or, sql, sum } from "drizzle-orm";
 
-import type { DBItem, ItemWithCount } from "@/utils/item";
+import { db } from "@/db/database";
+import { type Item, items, sales } from "@/db/schema";
+import { type ItemWithCount } from "@/utils/item";
 import { logger } from "@/utils/logger";
 import { ITEMS_PER_PAGE } from "@/utils/pagination";
 import { norm, sanitize } from "@/utils/utils";
 
-import { getDb } from "./database";
-
-export const getItem = async (id: string): Promise<ItemWithCount | null> => {
-  if (!/^[a-f\d]{24}$/i.test(id)) {
-    throw new Error("Invalid id");
-  }
-  const _id = new ObjectId(id);
-  const db = await getDb();
-  const item = await db.collection<DBItem>("books").findOne({ _id });
+export const getItem = async (id: number): Promise<ItemWithCount | null> => {
+  const item = await db.query.items.findFirst({ where: eq(items.id, id) });
   const salesCount = await db
-    .collection("sales")
-    .aggregate<{ total: number }>([
-      { $match: { id: _id, deleted: { $exists: false } } },
-      { $group: { _id: null, total: { $sum: "$quantity" } } },
-    ])
-    .toArray();
-  const count = salesCount.length > 0 ? salesCount[0].total : 0;
-  return item ? { ...item, _id: _id.toString(), count } : null;
+    .select({
+      total: sum(sales.quantity),
+    })
+    .from(sales)
+    .where(and(eq(sales.itemId, id), eq(sales.deleted, false)));
+  const count = salesCount.length > 0 ? Number(salesCount[0].total) : 0;
+  return item ? { ...item, count } : null;
 };
 
 const generateQuickSearchCriteria = (search: string, inStock: boolean) => {
-  let criteria: Filter<DBItem>;
+  let criteria: SQL | undefined;
   if (/^\d{13,}$/.test(search)) {
-    criteria = { isbn: search.slice(0, 13) };
+    criteria = eq(items.isbn, search.slice(0, 13));
   } else if (/\s/.test(search)) {
-    const titleCriteria = search
-      .split(/\s+/)
-      .map((str) => ({ nmTitle: new RegExp(sanitize(norm(str)), "i") }));
-    const authorCriteria = titleCriteria.map((o) => ({ nmAuthor: o.nmTitle }));
-    criteria = { $or: [{ $and: titleCriteria }, { $and: authorCriteria }] };
+    const tokens = search.split(/\s+/).map((str) => sanitize(norm(str)));
+    const titleCriteria = tokens.map((t) => sql`${items.nmTitle} ~* ${t}`);
+    const authorCriteria = tokens.map((t) => sql`${items.nmAuthor} ~* ${t}`);
+    criteria = or(and(...titleCriteria), and(...authorCriteria));
   } else {
-    const crit = new RegExp(sanitize(norm(search)), "i");
-    criteria = { $or: [{ nmTitle: crit }, { nmAuthor: crit }] };
+    const crit = sanitize(norm(search));
+    criteria = or(
+      sql`${items.nmTitle} ~* ${crit}`,
+      sql`${items.nmAuthor} ~* ${crit}`,
+    );
   }
   if (inStock) {
-    criteria = { $and: [criteria, { amount: { $gt: 0 } }] };
+    criteria = and(criteria, gt(items.amount, 0));
   }
   return criteria;
 };
@@ -59,44 +55,41 @@ const capitalize = (txt: string) =>
   txt ? `${txt[0].toUpperCase()}${txt.slice(1)}` : "";
 
 const generateSearchCriteria = (query: Record<string, string>) => {
-  const criteria: Record<string, unknown>[] = [];
+  const criteria: SQL[] = [];
   for (const field in query) {
-    let key = field;
+    let key = field as keyof Item | "inStock";
     let value: string | RegExp | number = query[field];
     if (value === "" || key === "inStock") continue;
+    let clause = eq(items[key], value);
     if (NORMALIZED_FIELDS.includes(field)) {
-      key = `nm${capitalize(field)}`;
-      value = norm(value);
+      key = `nm${capitalize(field)}` as keyof Item;
+      clause = sql`${items[key]} = ${norm(value)}`;
     }
     if (IGNORECASE_FIELDS.includes(field)) {
-      value = new RegExp(sanitize(value), "i");
+      value = sanitize(norm(value));
+      clause = sql`${items[key]} ~* ${value}`;
     }
     if (field === "amount") {
-      value = Number(value);
+      clause = eq(items.amount, Number(value));
     }
-    criteria.push({ [key]: value });
-  }
-  if (criteria.length === 0) {
-    criteria.push({});
+    criteria.push(clause);
   }
   if (query.inStock) {
-    criteria.push({ amount: { $gt: 0 } });
+    criteria.push(gt(items.amount, 0));
   }
-  return { $and: criteria };
+  return and(...criteria);
 };
 
-const doSearch = async (criteria: Filter<DBItem>, pageNumber: number) => {
-  const db = await getDb();
-  const count = await db.collection<DBItem>("books").countDocuments(criteria);
+const doSearch = async (criteria: SQL | undefined, pageNumber: number) => {
+  const qty = await db.select({ count: count() }).from(items).where(criteria);
   const dbItems = await db
-    .collection<DBItem>("books")
-    .find(criteria)
-    .sort({ title: 1 })
-    .skip((pageNumber - 1) * ITEMS_PER_PAGE)
+    .select()
+    .from(items)
+    .where(criteria)
+    .orderBy(items.title)
     .limit(ITEMS_PER_PAGE)
-    .toArray();
-  const items = dbItems.map((item) => ({ ...item, _id: item._id.toString() }));
-  return { items, count };
+    .offset((pageNumber - 1) * ITEMS_PER_PAGE);
+  return { items: dbItems, count: qty[0].count };
 };
 
 export const searchItems = async ({
@@ -121,4 +114,10 @@ export const advancedSearch = async (
   logger.info("Advanced search", { query, pageNumber });
   const criteria = generateSearchCriteria(query);
   return await doSearch(criteria, pageNumber);
+};
+
+export const getItems = async ({ pageNumber = 1 }: { pageNumber?: number }) => {
+  const data = await doSearch(undefined, pageNumber);
+  const pageCount = Math.ceil(data.count / ITEMS_PER_PAGE);
+  return { ...data, pageCount };
 };

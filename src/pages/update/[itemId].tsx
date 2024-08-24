@@ -35,15 +35,15 @@ const ItemFormSkeleton = (): JSX.Element => (
   </ContentLoader>
 );
 
-const ItemLoader = ({ id }: { id: string }) => {
+const ItemLoader = ({ id }: { id: number }) => {
   const result = trpc.searchItem.useQuery(id);
   const mutation = trpc.updateItem.useMutation();
   const router = useRouter();
 
   const submit = async (data: FormFields) => {
     const datebought = data.datebought.split("-").reverse().join("/");
-    const item = { ...data, amount: Number(data.amount), datebought, id };
-    return await mutation.mutateAsync(item);
+    const item = { ...data, amount: Number(data.amount), datebought };
+    return await mutation.mutateAsync({ item, id });
   };
 
   const onSuccess = () => {
@@ -109,7 +109,7 @@ const UpdateItem = () => {
   return (
     <div className="2xl:([margin-left:10%] [margin-right:10%]) flex-1">
       <Title>Modifier un article</Title>
-      <ItemLoader id={itemId} />
+      <ItemLoader id={Number(itemId)} />
     </div>
   );
 };

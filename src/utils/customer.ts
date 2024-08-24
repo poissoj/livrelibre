@@ -1,16 +1,14 @@
+import type { customers } from "@/db/schema";
+
 type Purchase = {
   date: string;
   amount: number;
 };
 
-export type DBCustomer = {
-  fullname: string;
-  nmFullname: string;
-  contact: string;
-  phone?: string | undefined;
-  email?: string | undefined;
+export type Customer = typeof customers.$inferSelect;
+
+export type CustomerWithPurchase = Customer & {
   purchases: Purchase[];
-  comment: string;
 };
 
-export type Customer = DBCustomer & { _id: string };
+export type CustomerWithTotal = Customer & { total: string | null };

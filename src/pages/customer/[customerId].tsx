@@ -19,7 +19,7 @@ import {
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { StatusCircle } from "@/components/StatusCircle";
 import { Title } from "@/components/Title";
-import type { Customer } from "@/utils/customer";
+import type { CustomerWithPurchase } from "@/utils/customer";
 import { formatPrice } from "@/utils/format";
 import { trpc } from "@/utils/trpc";
 
@@ -42,7 +42,7 @@ const CustomerFormSkeleton = (): JSX.Element => (
   </ContentLoader>
 );
 
-const OrdersContent = ({ customerId }: { customerId: string }) => {
+const OrdersContent = ({ customerId }: { customerId: number }) => {
   const [orders] = trpc.customerOrders.useSuspenseQuery(customerId);
   return (
     <>
@@ -53,9 +53,9 @@ const OrdersContent = ({ customerId }: { customerId: string }) => {
         ) : (
           <ul>
             {orders.map((order) => (
-              <li key={order._id} className="mb-1">
+              <li key={order.id} className="mb-1">
                 <Link
-                  href={`/order/${order._id}`}
+                  href={`/order/${order.id}`}
                   className="flex gap-2 items-center"
                 >
                   <StatusCircle status={order.ordered} />
@@ -70,7 +70,7 @@ const OrdersContent = ({ customerId }: { customerId: string }) => {
   );
 };
 
-const Orders = ({ customerId }: { customerId: string }) => {
+const Orders = ({ customerId }: { customerId: number }) => {
   return (
     <Card className="flex-1">
       <React.Suspense fallback={<CardBody>Chargement…</CardBody>}>
@@ -80,7 +80,7 @@ const Orders = ({ customerId }: { customerId: string }) => {
   );
 };
 
-const Purchases = ({ purchases }: Pick<Customer, "purchases">) => {
+const Purchases = ({ purchases }: Pick<CustomerWithPurchase, "purchases">) => {
   const total = purchases.reduce((s, p) => s + p.amount, 0);
   return (
     <Card className="flex-1">
@@ -119,7 +119,7 @@ const Purchases = ({ purchases }: Pick<Customer, "purchases">) => {
   );
 };
 
-const DeleteCustomerButton = ({ id }: { id: string }) => {
+const DeleteCustomerButton = ({ id }: { id: number }) => {
   const deleteMutation = trpc.deleteCustomer.useMutation();
   const router = useRouter();
   const deleteCustomer = async () => {
@@ -141,7 +141,7 @@ const DeleteCustomerButton = ({ id }: { id: string }) => {
   );
 };
 
-const CustomerLoader = ({ id }: { id: string }) => {
+const CustomerLoader = ({ id }: { id: number }) => {
   const result = trpc.customer.useQuery(id);
   const utils = trpc.useUtils();
   const mutation = trpc.updateCustomer.useMutation({
@@ -218,7 +218,7 @@ const UpdateCustomer = () => {
   return (
     <div className="2xl:([margin-left:10%] [margin-right:10%]) flex-1">
       <Title>Modifier un client</Title>
-      <CustomerLoader id={customerId} />
+      <CustomerLoader id={Number(customerId)} />
     </div>
   );
 };

@@ -10,10 +10,10 @@ import { clsx } from "clsx";
 import { Fragment, type HTMLProps, useState } from "react";
 
 import { COMMON_STYLES } from "@/components/FormControls";
-import type { Customer, DBCustomer } from "@/utils/customer";
+import type { Customer } from "@/utils/customer";
 import { trpc } from "@/utils/trpc";
 
-const getLabel = (customer: DBCustomer | null) =>
+const getLabel = (customer: Customer | null) =>
   customer ? customer.fullname : "";
 
 type Props = {
@@ -39,7 +39,7 @@ export function SelectCustomer({
     : COMMON_STYLES.replace("w-full", "w-fit");
 
   return (
-    <Combobox value={customer} by="_id" onChange={setCustomer}>
+    <Combobox value={customer} by="id" onChange={setCustomer}>
       <div className={clsx("relative", fullWidth ? "w-full" : "w-fit")}>
         <ComboboxInput
           className={clsx(inputStyles, inputClass)}
@@ -51,7 +51,7 @@ export function SelectCustomer({
         />
         <ComboboxOptions className="absolute z-10 w-full max-h-40 overflow-auto rounded-md p-1 shadow-lg ring-1 ring-black/5 bg-gray-light">
           {filteredCustomers.map((customer) => (
-            <ComboboxOption key={customer._id} value={customer} as={Fragment}>
+            <ComboboxOption key={customer.id} value={customer} as={Fragment}>
               {({ focus, selected }) => (
                 <li
                   className={clsx(

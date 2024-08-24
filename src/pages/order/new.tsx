@@ -8,14 +8,14 @@ import { Button } from "@/components/Button";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { OrderForm } from "@/components/OrderForm";
 import { Title } from "@/components/Title";
-import type { Order } from "@/utils/order";
+import type { RawOrder } from "@/utils/order";
 import { trpc } from "@/utils/trpc";
 
 const OrderBody = () => {
   const router = useRouter();
   const rawId = router.query.item;
   const id = typeof rawId === "string" ? rawId : "";
-  const result = trpc.searchItem.useQuery(id, { enabled: id !== "" });
+  const result = trpc.searchItem.useQuery(Number(id), { enabled: id !== "" });
   const mutation = trpc.newOrder.useMutation({
     onSuccess(data) {
       if (data.type === "success") {
@@ -30,8 +30,7 @@ const OrderBody = () => {
     },
   });
 
-  const submit = async (data: Order) => {
-    const order = { ...data, date: data.date.toISOString() };
+  const submit = async (order: RawOrder) => {
     return await mutation.mutateAsync(order);
   };
   if (result.status === "error") {
@@ -43,7 +42,7 @@ const OrderBody = () => {
   const data: React.ComponentProps<typeof OrderForm>["data"] = {
     item: result.data || null,
     nb: 1,
-    date: new Date(),
+    created: new Date(),
   };
   return (
     <OrderForm title="Nouvelle commande" onSubmit={submit} data={data}>

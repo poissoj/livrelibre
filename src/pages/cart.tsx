@@ -23,7 +23,7 @@ import { Input, Select } from "@/components/FormControls";
 import { SelectCustomer } from "@/components/SelectCustomer";
 import { Title } from "@/components/Title";
 import type { PaymentFormData } from "@/server/cart";
-import type { Customer } from "@/utils/customer";
+import type { Customer, CustomerWithPurchase } from "@/utils/customer";
 import { formatDate } from "@/utils/date";
 import { CART_ERRORS } from "@/utils/errors";
 import { formatNumber, formatPrice } from "@/utils/format";
@@ -33,7 +33,7 @@ import type { RouterOutput } from "@/utils/trpc";
 
 const TH_STYLES = "sticky top-0 bg-white";
 
-const RemoveFromCartButton = ({ id }: { id: string }) => {
+const RemoveFromCartButton = ({ id }: { id: number }) => {
   const utils = trpc.useUtils();
   const { mutate, isLoading } = trpc.removeFromCart.useMutation({
     async onSuccess() {
@@ -99,7 +99,7 @@ const CartTable = ({ items }: { items: CartItems }) => (
             {formatPrice(Number(item.price) * item.quantity)}
           </td>
           <td className="text-center">
-            <RemoveFromCartButton id={item._id} />
+            <RemoveFromCartButton id={item.id} />
           </td>
         </tr>
       ))}
@@ -251,7 +251,7 @@ type ISBNError = {
   message: CART_ERRORS;
   isbn: string;
   title?: string | undefined;
-  id?: string | undefined;
+  id?: number | undefined;
 };
 
 const ErrorList = ({
@@ -409,7 +409,7 @@ const AsideCartLoader = () => {
   );
 };
 
-const CustomerInfos = ({ customer }: { customer: Customer }) => {
+const CustomerInfos = ({ customer }: { customer: CustomerWithPurchase }) => {
   const amount = customer.purchases.reduce((s, p) => s + p.amount, 0);
   const [discount, setDiscount] = useState(Math.round(amount * 3) / 100);
   const [applied, setApplied] = useState<number>();
@@ -480,7 +480,7 @@ const CustomerSelector = () => {
   const onSelect = (selectedCustomer: Customer | null) => {
     void mutateAsync({
       asideCart: false,
-      customerId: selectedCustomer?._id ?? null,
+      customerId: selectedCustomer?.id ?? null,
     });
   };
 
@@ -500,7 +500,7 @@ const CustomerSelector = () => {
         />
         {customer && (
           <>
-            <LinkButton href={`/customer/${customer._id}`} title="Modifier">
+            <LinkButton href={`/customer/${customer.id}`} title="Modifier">
               <FontAwesomeIcon icon={faEdit} />
             </LinkButton>
             <Button

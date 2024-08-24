@@ -7,7 +7,7 @@ import { type SessionData, type User, sessionOptions } from "@/lib/session";
 export const createContext = async (opts?: CreateNextContextOptions) => {
   const getUser = async (): Promise<User> => {
     if (!opts) {
-      return { name: "", role: "ssg" };
+      return { name: "", role: "ssg", id: 0 };
     }
     const session = await getIronSession<SessionData>(
       opts.req,
@@ -17,7 +17,7 @@ export const createContext = async (opts?: CreateNextContextOptions) => {
     if (session.user) {
       return session.user;
     }
-    return { name: "", role: "anonymous" };
+    return { name: "", role: "anonymous", id: 0 };
   };
 
   const user = await getUser();

@@ -8,6 +8,7 @@ import { StatsByTVA } from "@/components/TVAStats/StatsByTVA";
 import { TVASkeleton } from "@/components/TVAStats/TVASkeleton";
 import { Title } from "@/components/Title";
 import { formatPrice } from "@/utils/format";
+import { PAYMENT_METHODS } from "@/utils/sale";
 import { useScrollRestoration } from "@/utils/scroll";
 import { trpc } from "@/utils/trpc";
 
@@ -33,9 +34,13 @@ const CategoriesLoader = ({ date }: { date: string }) => {
   if (result.isLoading) {
     return <CategorySkeleton />;
   }
+  const categories = result.data.paymentMethods.map((m) => ({
+    ...m,
+    label: m.type === "unknown" ? "Inconnu" : PAYMENT_METHODS[m.type],
+  }));
   return (
     <div className="flex flex-1 flex-col gap-3">
-      <CategoriesTable categories={result.data.paymentMethods} />
+      <CategoriesTable categories={categories} />
       <p className="self-end">
         <strong>Total&nbsp;: </strong>
         <span className="font-number">{formatPrice(result.data.total)}</span>

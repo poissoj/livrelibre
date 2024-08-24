@@ -1,22 +1,30 @@
-import { getDb } from "@/server/database";
+import { count, eq, sql } from "drizzle-orm";
+
+import { db } from "@/db/database";
+import { sales } from "@/db/schema";
 
 export const getStats = async (): Promise<{
-  hours: Record<number, number>;
-  days: Record<number, number>;
+  hours: { hour: number; count: number }[];
+  days: { day: number; count: number }[];
 }> => {
-  const db = await getDb();
-  const sales = await db
-    .collection("sales")
-    .find({ deleted: { $exists: false } }, { projection: { _id: 1 } })
-    .toArray();
-  const hours: Record<number, number> = {};
-  const days: Record<number, number> = {};
-  for (const sale of sales) {
-    const timestamp = sale._id.getTimestamp();
-    const hour = timestamp.getHours();
-    const day = timestamp.getDay();
-    hours[hour] = (hours[hour] || 0) + 1;
-    days[day] = (days[day] || 0) + 1;
-  }
+  const hours = await db
+    .select({
+      hour: sql`extract(hour from ${sales.created})`.mapWith(Number),
+      count: count(),
+    })
+    .from(sales)
+    .where(eq(sales.deleted, false))
+    .groupBy(({ hour }) => hour)
+    .having(sql`extract(hour from ${sales.created}) between 8 and 21`)
+    .orderBy(({ hour }) => hour);
+  const days = await db
+    .select({
+      day: sql`extract(dow from ${sales.created})`.mapWith(Number),
+      count: count(),
+    })
+    .from(sales)
+    .where(eq(sales.deleted, false))
+    .groupBy(({ day }) => day)
+    .orderBy(({ day }) => day);
   return { hours, days };
 };

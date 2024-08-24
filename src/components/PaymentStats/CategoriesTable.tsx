@@ -2,15 +2,11 @@ import { clsx } from "clsx";
 
 import { formatNumber, formatPrice } from "@/utils/format";
 
-type TCategories = { type: string; nb: number; totalPrice: string }[];
+type Category = { label: string; nb: number; total: string | null };
 
 const COMMON_TH_STYLES = "sticky top-0 bg-white";
 
-export const CategoriesTable = ({
-  categories,
-}: {
-  categories: TCategories;
-}) => (
+export const CategoriesTable = ({ categories }: { categories: Category[] }) => (
   <table className="flex-1">
     <thead>
       <tr>
@@ -22,12 +18,12 @@ export const CategoriesTable = ({
     <tbody className="[line-height:1.9rem]">
       {categories.map((category, i) => (
         <tr key={i}>
-          <td>{category.type}</td>
+          <td>{category.label}</td>
           <td className="text-right font-number">
             {formatNumber(category.nb)}
           </td>
           <td className="text-right font-number">
-            {formatPrice(Number(category.totalPrice))}
+            {formatPrice(Number(category.total))}
           </td>
         </tr>
       ))}

@@ -15,7 +15,7 @@ export type PaymentType = keyof typeof PAYMENT_METHODS;
 export type DBSale = {
   cartId?: ObjectId;
   date: string;
-  id: ObjectId | undefined;
+  id: string | undefined;
   itemType: ItemType;
   price: number;
   quantity: number;

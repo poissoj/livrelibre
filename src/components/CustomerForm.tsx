@@ -23,7 +23,7 @@ export const CustomerForm = ({
 }: {
   title: string;
   onSubmit: (
-    data?: CustomerFormFields,
+    data: CustomerFormFields,
   ) => Promise<{ type: "error" | "success"; msg: string }>;
   data?: CustomerFormFields;
   onSuccess?: () => void;

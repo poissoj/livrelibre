@@ -19,11 +19,11 @@ const BookmarksContent = ({
     <ul className="flex-1">
       {bookmarks.map((bookmark) => (
         <li
-          key={bookmark._id}
+          key={bookmark.id}
           className="flex text-primary-dark hover:bg-gray-light pl-sm pr-xs"
         >
           <span className="flex flex-1 items-center text-primary-darkest">
-            <Link href={`/item/${bookmark._id}`}>{bookmark.title}</Link>
+            <Link href={`/item/${bookmark.id}`}>{bookmark.title}</Link>
           </span>
           <AddToCartButton item={bookmark} />
         </li>

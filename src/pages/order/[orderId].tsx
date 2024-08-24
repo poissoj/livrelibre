@@ -14,7 +14,7 @@ import { ConfirmationDialog } from "@/components/ConfirmationDialog";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { OrderForm } from "@/components/OrderForm";
 import { Title } from "@/components/Title";
-import { type Order, deserializeOrder } from "@/utils/order";
+import { type RawOrder, deserializeOrder } from "@/utils/order";
 import { trpc } from "@/utils/trpc";
 
 const CARD_TITLE = "Modifier une commande";
@@ -42,7 +42,7 @@ const getOrdersURL = (router: NextRouter) => {
   return { pathname: "/orders", query };
 };
 
-const DeleteOrder = ({ id }: { id: string }) => {
+const DeleteOrder = ({ id }: { id: number }) => {
   const router = useRouter();
   const deleteMutation = trpc.deleteOrder.useMutation();
   const deleteOrder = async () => {
@@ -64,7 +64,7 @@ const DeleteOrder = ({ id }: { id: string }) => {
   );
 };
 
-const OrderLoader = ({ id }: { id: string }) => {
+const OrderLoader = ({ id }: { id: number }) => {
   const result = trpc.order.useQuery(id);
   const utils = trpc.useUtils();
   const router = useRouter();
@@ -80,8 +80,7 @@ const OrderLoader = ({ id }: { id: string }) => {
     },
   });
 
-  const submit = async (data: Order) => {
-    const order = { ...data, date: data.date.toISOString() };
+  const submit = async (order: RawOrder) => {
     return await mutation.mutateAsync({ order, id });
   };
 
@@ -112,7 +111,9 @@ const OrderLoader = ({ id }: { id: string }) => {
       <OrderForm
         title={CARD_TITLE}
         onSubmit={submit}
-        data={deserializeOrder(result.data)}
+        data={{
+          ...deserializeOrder(result.data),
+        }}
       >
         <DeleteOrder id={id} />
         <LinkButton
@@ -140,7 +141,7 @@ const UpdateOrder = () => {
   return (
     <div className="flex-1 max-w-6xl mx-auto">
       <Title>Modifier une commande</Title>
-      <OrderLoader id={orderId} />
+      <OrderLoader id={Number(orderId)} />
     </div>
   );
 };

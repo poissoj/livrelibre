@@ -3,19 +3,18 @@
  */
 import { Client } from "basic-ftp";
 import { config } from "dotenv";
+import { and, sql } from "drizzle-orm";
 import fs from "fs/promises";
-import { MongoClient } from "mongodb";
+
+import { db } from "@/db/database";
+import { items as itemsTable } from "@/db/schema";
 
 config({ path: ".env.local" });
 
-const { MONGODB_URI, SHOP_ID } = process.env;
+const { SHOP_ID } = process.env;
 
 if (!SHOP_ID) {
   console.error("Please provide SHOP_ID env var");
-  process.exit(1);
-}
-if (!MONGODB_URI) {
-  console.error("Please provide MONGODB_URI env var");
   process.exit(1);
 }
 
@@ -61,23 +60,27 @@ const sendToFtp = async () => {
 };
 
 const main = async () => {
-  const client = new MongoClient(MONGODB_URI);
   try {
-    const mongoClient = await client.connect();
-    const db = mongoClient.db();
-    const items = await db
-      .collection<DBItem>("books")
-      .find({ amount: { $gt: 0 }, isbn: /^\d{10,13}$/ })
-      .toArray();
+    const items = await db.query.items.findMany({
+      columns: {
+        amount: true,
+        isbn: true,
+        price: true,
+      },
+      where: and(
+        sql`${itemsTable.amount} > 0`,
+        sql`${itemsTable.isbn} ~ '^\\d{10,13}$'`,
+      ),
+      orderBy: itemsTable.id, // TODO: remove
+    });
     const fileContent = [header, ...items.map(formatItem)].join("\r\n");
     await fs.writeFile(FILENAME, fileContent);
     console.log(`Exported ${items.length} items successfully.`);
     await sendToFtp();
+    process.exit(0);
   } catch (error) {
     console.log(error);
     process.exit(1);
-  } finally {
-    void client.close();
   }
 };
 

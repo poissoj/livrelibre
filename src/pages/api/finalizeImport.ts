@@ -1,13 +1,13 @@
+import { eq, sql } from "drizzle-orm";
 import { getIronSession } from "iron-session";
-import { ObjectId } from "mongodb";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { createRouter } from "next-connect";
 
+import { db } from "@/db/database";
+import { items } from "@/db/schema";
 import { type SessionData, sessionOptions } from "@/lib/session";
-import { getDb } from "@/server/database";
 import { formatDate } from "@/utils/date";
 import type { DilicomRowWithId } from "@/utils/dilicomItem";
-import type { DBItem } from "@/utils/item";
 import { logger } from "@/utils/logger";
 import { norm } from "@/utils/utils";
 
@@ -42,20 +42,17 @@ router.post(async (req, res) => {
     books,
   });
   const today = formatDate(new Date()).split("-").reverse().join("/");
-  const booksToAdd: DBItem[] = [];
-  const db = await getDb();
+  const booksToAdd: (typeof items.$inferInsert)[] = [];
   for (const row of data) {
     const price = String(row.PRIX);
     if (row.id) {
-      void db
-        .collection("books")
-        .updateOne(
-          { _id: new ObjectId(row.id) },
-          { $inc: { amount: row.QTE }, $set: { price } },
-        );
+      await db
+        .update(items)
+        .set({ amount: sql`${items.amount} + ${row.QTE}`, price })
+        .where(eq(items.id, row.id));
       continue;
     }
-    const book: DBItem = {
+    const book: typeof items.$inferInsert = {
       amount: row.QTE,
       datebought: today,
       isbn: row.EAN,
@@ -73,11 +70,12 @@ router.post(async (req, res) => {
       starred: false,
       keywords: "",
       comments: "",
+      _id: "",
     };
     booksToAdd.push(book);
   }
   if (booksToAdd.length > 0) {
-    await db.collection("books").insertMany(booksToAdd);
+    await db.insert(items).values(booksToAdd);
     logger.info(`Added ${booksToAdd.length} new books`, {
       user,
       isbns: booksToAdd.map((book) => book.isbn),

@@ -1,18 +1,18 @@
 import bcrypt from "bcrypt";
+import { eq } from "drizzle-orm";
 import { getIronSession } from "iron-session";
 import type { NextApiHandler } from "next";
 import { z } from "zod";
 
+import { db } from "@/db/database";
+import { users } from "@/db/schema";
 import { type SessionData, sessionOptions } from "@/lib/session";
-import { getDb } from "@/server/database";
 import { logger } from "@/utils/logger";
 
 const credentialsSchema = z.object({
   username: z.string(),
   password: z.string(),
 });
-
-type DBUser = { name: string; hash: string; role: "admin" | "guest" };
 
 const loginRoute: NextApiHandler = async (req, res) => {
   try {
@@ -22,10 +22,9 @@ const loginRoute: NextApiHandler = async (req, res) => {
       res.status(400).json({ error: "Empty username" });
       return;
     }
-    const db = await getDb();
-    const dbUser = await db
-      .collection<DBUser>("users")
-      .findOne({ name: username });
+    const dbUser = await db.query.users.findFirst({
+      where: eq(users.name, username),
+    });
     if (!dbUser) {
       logger.info("User not found", { username });
       res.status(401).json({ error: "Invalid credentials" });
@@ -34,7 +33,7 @@ const loginRoute: NextApiHandler = async (req, res) => {
     const passwordMatches = await bcrypt.compare(password, dbUser.hash);
 
     if (passwordMatches) {
-      const user = { name: dbUser.name, role: dbUser.role };
+      const user = { name: dbUser.name, role: dbUser.role, id: dbUser.id };
       const session = await getIronSession<SessionData>(
         req,
         res,

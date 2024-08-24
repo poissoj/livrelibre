@@ -11,6 +11,7 @@ export const sessionOptions: SessionOptions = {
 
 export type User = {
   name: string;
+  id: number;
   role: "admin" | "guest" | "anonymous" | "ssg";
 };
 

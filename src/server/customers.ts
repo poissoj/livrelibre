@@ -1,47 +1,56 @@
-import { type Filter, ObjectId, type Sort } from "mongodb";
+import {
+  and,
+  countDistinct,
+  eq,
+  getTableColumns,
+  isNotNull,
+  sql,
+  sum,
+} from "drizzle-orm";
 
-import type { DBCustomer } from "@/utils/customer";
+import { db } from "@/db/database";
+import { customers, purchases, selectedCustomer } from "@/db/schema";
+import type { CustomerWithPurchase } from "@/utils/customer";
 import { formatDate } from "@/utils/date";
 import { logger } from "@/utils/logger";
 import { ITEMS_PER_PAGE } from "@/utils/pagination";
 import { norm, sanitize } from "@/utils/utils";
 
-import { getDb } from "./database";
-
 export const getCustomers = async ({
-  sortParams = { fullname: 1 },
   pageNumber = 1,
   fullname,
   withPurchases = false,
 }: {
-  sortParams?: Sort;
   pageNumber?: number;
   fullname?: string | undefined;
   withPurchases?: boolean;
 }) => {
-  const query: Filter<DBCustomer> = {};
-  if (fullname) {
-    query.nmFullname = new RegExp(sanitize(norm(fullname)), "i");
-  }
+  let clause = fullname
+    ? sql`${customers.nmFullname} ~* ${sanitize(norm(fullname))}`
+    : undefined;
   if (withPurchases) {
-    query.purchases = { $not: { $size: 0 } };
+    clause = and(clause, isNotNull(purchases.amount));
   }
-  const db = await getDb();
-  const customersCollection = db.collection<DBCustomer>("customers");
-  const countPromise = customersCollection.countDocuments(query);
-  const itemsPromise = customersCollection
-    .find(query)
-    .sort(sortParams)
-    .skip((pageNumber - 1) * ITEMS_PER_PAGE)
+  const countPromise = db
+    .select({ count: countDistinct(customers.id) })
+    .from(customers)
+    .leftJoin(purchases, eq(customers.id, purchases.customerId))
+    .where(clause);
+  const itemsPromise = db
+    .select({
+      ...getTableColumns(customers),
+      total: sum(purchases.amount),
+    })
+    .from(customers)
+    .leftJoin(purchases, eq(customers.id, purchases.customerId))
+    .where(clause)
+    .groupBy(customers.id)
+    .orderBy(customers.fullname)
     .limit(ITEMS_PER_PAGE)
-    .toArray();
-  const [count, dbItems] = await Promise.all([countPromise, itemsPromise]);
+    .offset((pageNumber - 1) * ITEMS_PER_PAGE);
+  const [countResult, items] = await Promise.all([countPromise, itemsPromise]);
+  const count = countResult[0].count;
   const pageCount = Math.ceil(count / ITEMS_PER_PAGE);
-  const items = dbItems.map((item) => ({
-    ...item,
-    _id: item._id.toString(),
-  }));
-
   return { count, pageCount, items };
 };
 
@@ -50,70 +59,72 @@ export const searchCustomers = async (search: string) => {
   if (search.length < 2) {
     return [];
   }
-  const searchReg = new RegExp(sanitize(norm(search)), "i");
-  const db = await getDb();
+  const searchValue = sanitize(norm(search));
   return await db
-    .collection<DBCustomer>("customers")
-    .find({ nmFullname: searchReg })
-    .sort({ fullname: 1 })
-    .limit(MAX_CUSTOMERS_TO_DISPLAY)
-    .toArray();
+    .select()
+    .from(customers)
+    .where(sql`${customers.nmFullname} ~* ${searchValue}`)
+    .orderBy(customers.fullname)
+    .limit(MAX_CUSTOMERS_TO_DISPLAY);
 };
 
-export const resetCustomer = async (id: string) => {
-  const db = await getDb();
-  return await db
-    .collection<DBCustomer>("customers")
-    .updateOne({ _id: new ObjectId(id) }, { $set: { purchases: [] } });
+export const resetCustomer = async (id: number) => {
+  return await db.delete(purchases).where(eq(purchases.customerId, id));
 };
 
-export const addPurchase = async (customerId: string, amount: number) => {
+export const addPurchase = async (customerId: number, amount: number) => {
   const date = formatDate(new Date()).split("-").reverse().join("/");
-  const db = await getDb();
   return await db
-    .collection<DBCustomer>("customers")
-    .updateOne(
-      { _id: new ObjectId(customerId) },
-      { $push: { purchases: { amount, date } } },
-    );
+    .insert(purchases)
+    .values({ amount: String(amount), date, customerId });
 };
 
-export type SelectedCustomer = {
-  customerId: string | null;
-  username: string;
-  asideCart: boolean;
-};
+export type SelectedCustomer = typeof selectedCustomer.$inferSelect;
 
 export const getSelectedCustomer = async (
-  username: string,
+  userId: number,
   asideCart: boolean,
 ) => {
-  const db = await getDb();
-  return await db
-    .collection<SelectedCustomer>("selectedCustomer")
-    .findOne({ username, asideCart });
+  const rows = await db
+    .select()
+    .from(selectedCustomer)
+    .where(
+      and(
+        eq(selectedCustomer.userId, userId),
+        eq(selectedCustomer.asideCart, asideCart),
+      ),
+    );
+  return rows.length > 0 ? rows[0] : null;
 };
 
 export const setSelectedCustomer = async (customer: SelectedCustomer) => {
-  const db = await getDb();
   return await db
-    .collection<SelectedCustomer>("selectedCustomer")
-    .replaceOne({ username: customer.username }, customer, { upsert: true });
+    .insert(selectedCustomer)
+    .values(customer)
+    .onConflictDoUpdate({ target: selectedCustomer.userId, set: customer });
 };
 
-export const getCustomer = async (id: string) => {
-  const db = await getDb();
-  return await db
-    .collection<DBCustomer>("customers")
-    .findOne({ _id: new ObjectId(id) });
+export const getCustomer = async (
+  id: number,
+): Promise<CustomerWithPurchase | null> => {
+  const rows = await db.select().from(customers).where(eq(customers.id, id));
+  if (rows.length === 0) {
+    return null;
+  }
+  const purchaseList = await db
+    .select()
+    .from(purchases)
+    .where(eq(purchases.customerId, id));
+  return {
+    ...rows[0],
+    purchases: purchaseList.map((p) => ({ ...p, amount: Number(p.amount) })),
+  };
 };
 
-export const deleteCustomer = async (customerId: string) => {
+export const deleteCustomer = async (customerId: number) => {
   try {
-    const db = await getDb();
-    await db
-      .collection<DBCustomer>("customers")
-      .deleteOne({ _id: new ObjectId(customerId) });
+    await db.delete(purchases).where(eq(purchases.customerId, customerId));
+    await db.delete(customers).where(eq(customers.id, customerId));
     return { type: "success" as const, msg: "Le client a été supprimé" };
   } catch (error) {
     logger.error(error);
@@ -122,14 +133,11 @@ export const deleteCustomer = async (customerId: string) => {
 };
 
 export const setCustomer = async (
-  customer: Omit<DBCustomer, "purchases">,
-  id: string,
+  customer: typeof customers.$inferInsert,
+  id: number,
 ) => {
-  const db = await getDb();
   try {
-    await db
-      .collection<DBCustomer>("customers")
-      .findOneAndUpdate({ _id: new ObjectId(id) }, { $set: customer });
+    await db.update(customers).set(customer).where(eq(customers.id, id));
     return { type: "success" as const, msg: "Le client a été modifié" };
   } catch (error) {
     logger.error(error);
@@ -137,16 +145,9 @@ export const setCustomer = async (
   }
 };
 
-export const newCustomer = async (
-  customerData: Omit<DBCustomer, "purchases">,
-) => {
-  const db = await getDb();
-  const customer: DBCustomer = {
-    ...customerData,
-    purchases: [],
-  };
+export const newCustomer = async (customer: typeof customers.$inferInsert) => {
   try {
-    await db.collection<DBCustomer>("customers").insertOne(customer);
+    await db.insert(customers).values(customer);
     return { type: "success" as const, msg: "Le client a été ajouté" };
   } catch (error) {
     logger.error(error);

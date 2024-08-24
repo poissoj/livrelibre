@@ -1,7 +1,6 @@
 import { z } from "zod";
 
-import type { Customer } from "@/utils/customer";
-import type { Item } from "@/utils/item";
+import type { orders } from "@/db/schema";
 
 export const dbIdSchema = z.string().length(24);
 
@@ -20,9 +19,9 @@ export const zOrderStatus = z.enum(ORDER_STATUS);
 export const zOrderStatusArray = z.array(zOrderStatus);
 
 export const zOrder = z.object({
-  date: z.string(),
-  customerId: dbIdSchema,
-  itemId: dbIdSchema.optional(),
+  created: z.string(),
+  customerId: z.number().nullable(),
+  itemId: z.number().nullable(),
   itemTitle: z.string(),
   ordered: zOrderStatus,
   customerNotified: z.boolean(),
@@ -37,15 +36,15 @@ export type DBOrder = Omit<RawOrder, "date"> & {
   date: Date;
 };
 
-export type Order = DBOrder & {
-  _id: string;
-  customer: Customer;
-  item: Item | null;
+export type OrderRow = typeof orders.$inferSelect & {
+  customerName: string;
+  isbn: string | null;
+  distributor: string | null;
 };
 
-export const deserializeOrder = <T extends { date: string }>(order: T) => ({
+export const deserializeOrder = <T extends { created: string }>(order: T) => ({
   ...order,
-  date: new Date(order.date),
+  created: new Date(order.created),
 });
 
 export const STATUS_LABEL: Record<OrderStatus, string> = {

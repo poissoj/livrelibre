@@ -5,13 +5,13 @@ import ContentLoader from "react-content-loader";
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Title } from "@/components/Title";
+import type { BestSale } from "@/server/bestSales";
 import { formatNumber } from "@/utils/format";
-import type { ItemWithCount } from "@/utils/item";
 import { trpc } from "@/utils/trpc";
 
 const TH_STYLES = "sticky top-0 bg-white";
 
-const ItemsTable = ({ items }: { items: ItemWithCount[] }) => (
+const ItemsTable = ({ items }: { items: BestSale[] }) => (
   <table className="flex-1 [border-collapse:separate] [border-spacing:2px_0.5rem]">
     <thead>
       <tr>
@@ -31,11 +31,13 @@ const ItemsTable = ({ items }: { items: ItemWithCount[] }) => (
           <td>{i + 1}</td>
           <td>
             <span className="text-primary-darkest">
-              <Link href={`/item/${item._id}`}>{item.title}</Link>
+              <Link href={`/item/${item.id}`}>{item.title}</Link>
             </span>
           </td>
           <td>{item.author}</td>
-          <td className="text-right font-number">{formatNumber(item.count)}</td>
+          <td className="text-right font-number">
+            {formatNumber(Number(item.count))}
+          </td>
           <td className="pr-3 text-right font-number">
             {formatNumber(item.amount)}
           </td>

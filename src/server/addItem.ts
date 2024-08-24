@@ -1,31 +1,34 @@
-import type { BaseItem, DBItem } from "@/utils/item";
+import { eq } from "drizzle-orm";
+
+import { db } from "@/db/database";
+import { items as itemsTable } from "@/db/schema";
+import type { BaseItem } from "@/utils/item";
 import { logger } from "@/utils/logger";
 import { norm } from "@/utils/utils";
-
-import { getDb } from "./database";
 
 export const addItem = async (
   item: BaseItem,
 ): Promise<{ type: "success" | "warning" | "error"; msg: string }> => {
-  const db = await getDb();
-  const existingItem = await db
-    .collection<DBItem>("books")
-    .findOne({ isbn: item.isbn });
+  const existingItem = await db.query.items.findFirst({
+    where: eq(itemsTable.isbn, item.isbn),
+  });
   if (existingItem && existingItem.isbn !== "") {
     return { type: "warning", msg: "Un article avec cet ISBN existe déjà." };
   }
-  const newItem: Omit<DBItem, "starred"> = {
+  const newItem: typeof itemsTable.$inferInsert = {
     ...item,
+    starred: false,
     amount: Number(item.amount),
     price: item.price.replace(",", "."),
     nmAuthor: norm(item.author),
     nmTitle: norm(item.title),
     nmPublisher: norm(item.publisher),
     nmDistributor: norm(item.distributor),
+    _id: "",
   };
 
   try {
-    await db.collection<typeof newItem>("books").insertOne(newItem);
+    await db.insert(itemsTable).values(newItem);
   } catch (error) {
     logger.error("Add new item", error);
     return { type: "error", msg: "Impossible d'ajouter cet article." };

@@ -13,10 +13,15 @@ import { type NewItem, SelectItem } from "@/components/SelectItem";
 import type { Customer } from "@/utils/customer";
 import { toInputDate } from "@/utils/date";
 import type { Item } from "@/utils/item";
-import { type Order, STATUS_LABEL } from "@/utils/order";
+import { type RawOrder, STATUS_LABEL } from "@/utils/order";
 import { trpc } from "@/utils/trpc";
 
-type InputOrder = Omit<Order, "date"> & { date: string };
+type InputOrder = RawOrder & { isbn: string | undefined };
+type OrderData = Partial<Omit<RawOrder, "created">> & {
+  created: Date;
+  customer?: Customer;
+  item?: Item | null;
+};
 
 export const OrderForm = ({
   title,
@@ -26,12 +31,16 @@ export const OrderForm = ({
 }: {
   title: string;
   onSubmit: (
-    data?: Order,
+    data: RawOrder,
   ) => Promise<{ type: "error" | "success"; msg: string }>;
-  data: Partial<Order> & { date: Order["date"] };
+  data: OrderData;
   children: React.ReactNode;
 }): JSX.Element => {
-  const defaultValues = { ...data, date: toInputDate(data.date) };
+  const defaultValues = {
+    ...data,
+    created: toInputDate(data.created),
+    isbn: data.item?.isbn,
+  };
   const { register, handleSubmit, reset, setValue } = useForm<InputOrder>({
     defaultValues,
     shouldUseNativeValidation: true,
@@ -40,18 +49,13 @@ export const OrderForm = ({
     data.customer ?? null,
   );
   const [item, setItem] = React.useState<Item | NewItem | null>(
-    data.item ?? { _id: null, title: data.itemTitle ?? "" },
+    data.item ?? { id: null, title: data.itemTitle ?? "" },
   );
   const utils = trpc.useUtils();
 
-  const submit = async (data: InputOrder) => {
-    const order = {
-      ...data,
-      itemId: data.itemId || undefined,
-      date: new Date(data.date),
-    };
-    if (order.item?.isbn && !order.itemId) {
-      const result = await utils.isbnSearch.fetch(order.item.isbn);
+  const submit = async (order: InputOrder) => {
+    if (order.isbn && !order.itemId) {
+      const result = await utils.isbnSearch.fetch(order.isbn);
       if (result.count === 0) {
         toast.info("Aucun article trouvé pour cet ISBN");
       }
@@ -70,12 +74,12 @@ export const OrderForm = ({
 
   const updateCustomer = (customer: Customer | null) => {
     setCustomer(customer);
-    setValue("customerId", customer?._id ?? "");
+    setValue("customerId", customer?.id ?? null);
   };
 
   const updateItem = (item: Item | NewItem | null) => {
     setItem(item);
-    setValue("itemId", item?._id ?? "");
+    setValue("itemId", item?.id ?? null);
     setValue("itemTitle", item?.title ?? "");
   };
 
@@ -104,12 +108,12 @@ export const OrderForm = ({
               </LinkButton>
             </FormRow>
             <FormRow label="Date">
-              <Input type="datetime-local" {...register("date")} />
+              <Input type="datetime-local" {...register("created")} />
             </FormRow>
             <FormRow label="ISBN">
               <Input
-                {...register("item.isbn", {
-                  validate: (isbn: string | null) =>
+                {...register("isbn", {
+                  validate: (isbn: string | undefined) =>
                     !isbn || /^\d{10,13}$/.test(isbn) || "ISBN invalide",
                 })}
               />

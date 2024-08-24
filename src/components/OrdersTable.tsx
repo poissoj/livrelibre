@@ -10,7 +10,7 @@ import { useRouter } from "next/router";
 import React from "react";
 
 import { formatDateFR } from "@/utils/date";
-import { type Order, STATUS_LABEL } from "@/utils/order";
+import { type OrderRow, STATUS_LABEL } from "@/utils/order";
 
 import { StatusCircle } from "./StatusCircle";
 
@@ -46,33 +46,35 @@ const SortButton = ({ label, by: sortBy }: { label: string; by: string }) => {
 const sortOrders = (sortBy: string) => {
   switch (sortBy) {
     case "distributor":
-      return (a: Order, b: Order) =>
-        (a.item?.distributor || "").localeCompare(b.item?.distributor || "");
+      return (a: OrderRow, b: OrderRow) =>
+        (a.distributor || "").localeCompare(b.distributor || "");
     case "distributorDesc":
-      return (a: Order, b: Order) =>
-        (b.item?.distributor || "").localeCompare(a.item?.distributor || "");
+      return (a: OrderRow, b: OrderRow) =>
+        (b.distributor || "").localeCompare(a.distributor || "");
     case "status":
-      return (a: Order, b: Order) =>
+      return (a: OrderRow, b: OrderRow) =>
         STATUS_LABEL[a.ordered].localeCompare(STATUS_LABEL[b.ordered]);
     case "statusDesc":
-      return (a: Order, b: Order) =>
+      return (a: OrderRow, b: OrderRow) =>
         STATUS_LABEL[b.ordered].localeCompare(STATUS_LABEL[a.ordered]);
     case "name":
-      return (a: Order, b: Order) =>
-        a.customer.fullname.localeCompare(b.customer.fullname);
+      return (a: OrderRow, b: OrderRow) =>
+        a.customerName.localeCompare(b.customerName);
     case "nameDesc":
-      return (a: Order, b: Order) =>
-        b.customer.fullname.localeCompare(a.customer.fullname);
+      return (a: OrderRow, b: OrderRow) =>
+        b.customerName.localeCompare(a.customerName);
     case "date":
-      return (a: Order, b: Order) => a.date.getTime() - b.date.getTime();
+      return (a: OrderRow, b: OrderRow) =>
+        a.created.getTime() - b.created.getTime();
     case "dateDesc":
-      return (a: Order, b: Order) => b.date.getTime() - a.date.getTime();
+      return (a: OrderRow, b: OrderRow) =>
+        b.created.getTime() - a.created.getTime();
     default:
       return () => 0;
   }
 };
 
-export const OrdersTable = ({ items }: { items: Order[] }) => {
+export const OrdersTable = ({ items }: { items: OrderRow[] }) => {
   const router = useRouter();
   const sortBy =
     typeof router.query.sortBy === "string"
@@ -110,13 +112,13 @@ export const OrdersTable = ({ items }: { items: Order[] }) => {
             className="cursor-pointer even:bg-gray-light"
             onClick={() =>
               router.push({
-                pathname: `/order/${item._id}`,
+                pathname: `/order/${item.id}`,
                 query: router.query,
               })
             }
           >
-            <td className="pl-2 py-1">{formatDateFR(item.date)}</td>
-            <td className="p-1">{item.customer.fullname}</td>
+            <td className="pl-2 py-1">{formatDateFR(item.created)}</td>
+            <td className="p-1">{item.customerName}</td>
             <td
               className={clsx("w-2", { "bg-[rgba(245,0,0,0.5)]": item.paid })}
             ></td>
@@ -127,9 +129,9 @@ export const OrdersTable = ({ items }: { items: Order[] }) => {
                   <span className="font-bold ml-2">({item.nb} ex)</span>
                 )}
               </div>
-              <div className="italic font-number">{item.item?.isbn}</div>
+              <div className="italic font-number">{item.isbn}</div>
             </td>
-            <td className="p-1">{item.item?.distributor}</td>
+            <td className="p-1">{item.distributor}</td>
             <td className="p-1">
               <StatusCircle status={item.ordered} className="mx-auto" />
             </td>

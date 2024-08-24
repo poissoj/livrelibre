@@ -1,13 +1,10 @@
 import { useRouter } from "next/router";
 import React from "react";
 
-import type { Customer } from "@/utils/customer";
+import type { CustomerWithTotal } from "@/utils/customer";
 import { formatPrice } from "@/utils/format";
 
-const getTotal = (customer: Customer) =>
-  customer.purchases.reduce((s, p) => s + p.amount, 0);
-
-export const CustomersTable = ({ items }: { items: Customer[] }) => {
+export const CustomersTable = ({ items }: { items: CustomerWithTotal[] }) => {
   const router = useRouter();
   return (
     <table className="flex-1">
@@ -27,7 +24,7 @@ export const CustomersTable = ({ items }: { items: Customer[] }) => {
           <tr
             key={i}
             className="cursor-pointer hover:bg-gray-light"
-            onClick={() => router.push(`/customer/${item._id}`)}
+            onClick={() => router.push(`/customer/${item.id}`)}
           >
             <td>{item.fullname}</td>
             <td>{item.phone}</td>
@@ -35,10 +32,10 @@ export const CustomersTable = ({ items }: { items: Customer[] }) => {
             <td>{item.contact}</td>
             <td>{item.comment}</td>
             <td className="text-right font-number pr-2">
-              {formatPrice(Math.round(getTotal(item) * 3) / 100)}
+              {formatPrice(Math.round(Number(item.total) * 3) / 100)}
             </td>
             <td className="text-right font-number pr-2">
-              {formatPrice(getTotal(item))}
+              {formatPrice(Number(item.total))}
             </td>
           </tr>
         ))}

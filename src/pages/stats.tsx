@@ -76,17 +76,11 @@ const StatsLoader = () => {
     daySales = <SalesByDaySkeleton />;
   }
   if (result.status === "success") {
-    const hours = Object.entries(result.data.hours)
-      .filter((line) => Number(line[0]) >= 8 && Number(line[0]) <= 21)
-      .map(([hour, count]) => ({
-        hour: Number(hour),
-        count,
-      }));
-    const days = Object.entries(result.data.days).map(([day, count]) => ({
-      name: DAYS[Number(day)],
+    const days = result.data.days.map(({ day, count }) => ({
+      name: DAYS[day],
       count,
     }));
-    hourSales = <SalesByHour hours={hours} />;
+    hourSales = <SalesByHour hours={result.data.hours} />;
     daySales = <SalesByDay days={days} />;
   }
   return (

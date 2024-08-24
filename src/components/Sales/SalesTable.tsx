@@ -12,8 +12,8 @@ const DeleteSale = ({
   saleId,
   itemId,
 }: {
-  saleId: string;
-  itemId: string | null;
+  saleId: number;
+  itemId: number | null;
 }) => {
   const utils = trpc.useUtils();
   const { mutate, isLoading } = trpc.deleteSale.useMutation({
@@ -81,7 +81,7 @@ export const SalesTable = ({ carts }: { carts: Carts }) => {
       {carts.map((cart, i) => (
         <tbody className="odd:bg-gray-light" key={i}>
           {cart.sales.map((sale, index) => (
-            <SalesRow key={sale._id} deleted={sale.deleted}>
+            <SalesRow key={sale.id} deleted={sale.deleted}>
               <Cell className="text-right font-number">
                 {"amount" in sale ? formatNumber(sale.amount) : ""}
               </Cell>
@@ -105,10 +105,10 @@ export const SalesTable = ({ carts }: { carts: Carts }) => {
               <Cell className="text-right font-number">
                 {formatTVA(sale.tva)}
               </Cell>
-              <Cell className="whitespace-nowrap">{sale.type}</Cell>
+              <Cell className="whitespace-nowrap">{sale.paymentType}</Cell>
               <Cell className="pr-3">
                 {sale.deleted ? null : (
-                  <DeleteSale saleId={sale._id} itemId={sale.itemId} />
+                  <DeleteSale saleId={sale.id} itemId={sale.itemId} />
                 )}
               </Cell>
               {index === 0 && (

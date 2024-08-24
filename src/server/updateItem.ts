@@ -1,18 +1,16 @@
-import { ObjectId } from "mongodb";
+import { eq } from "drizzle-orm";
 
-import type { BaseItem, DBItem } from "@/utils/item";
+import { db } from "@/db/database";
+import { items } from "@/db/schema";
+import type { BaseItem } from "@/utils/item";
 import { logger } from "@/utils/logger";
 import { norm } from "@/utils/utils";
 
-import { getDb } from "./database";
-
-type FormItem = BaseItem & { id: string };
-
 export const updateItem = async (
-  item: FormItem,
+  item: BaseItem,
+  id: number,
 ): Promise<{ type: "success" | "error"; msg: string }> => {
-  const db = await getDb();
-  const newItem: Omit<DBItem, "starred"> = {
+  const newItem: Partial<typeof items.$inferInsert> = {
     ...item,
     price: item.price.replace(",", "."),
     nmAuthor: norm(item.author),
@@ -21,9 +19,7 @@ export const updateItem = async (
     nmDistributor: norm(item.distributor),
   };
   try {
-    await db
-      .collection("books")
-      .updateOne({ _id: new ObjectId(item.id) }, { $set: newItem });
+    await db.update(items).set(newItem).where(eq(items.id, id));
     return { type: "success", msg: "L'article a été modifié" };
   } catch (error) {
     logger.error(error);

@@ -23,7 +23,7 @@ import { StatusCircle } from "@/components/StatusCircle";
 import { Title } from "@/components/Title";
 import { formatNumber, formatPrice, formatTVA } from "@/utils/format";
 import { ITEM_TYPES, type ItemWithCount } from "@/utils/item";
-import { type DBOrder } from "@/utils/order";
+import { type OrderStatus } from "@/utils/order";
 import { trpc, useBookmark } from "@/utils/trpc";
 import { useAddToCart } from "@/utils/useAddToCart";
 
@@ -45,7 +45,7 @@ const DD = ({
 const formatStringPrice = (price: string) =>
   price ? formatPrice(Number(price)) : "";
 
-type ItemOrder = { _id: DBOrder["ordered"]; count: number };
+type ItemOrder = { status: OrderStatus; count: number };
 
 const OrderStatus = ({ orders }: { orders: ItemOrder[] }) => {
   if (orders.length === 0) {
@@ -54,8 +54,8 @@ const OrderStatus = ({ orders }: { orders: ItemOrder[] }) => {
   return (
     <div className="flex gap-2">
       {orders.map((order) => (
-        <div key={order._id} className="flex">
-          <StatusCircle status={order._id} className="mr-1" />: {order.count}
+        <div key={order.status} className="flex">
+          <StatusCircle status={order.status} className="mr-1" />: {order.count}
         </div>
       ))}
     </div>
@@ -127,14 +127,14 @@ const ItemSkeleton = () => (
 const TitleWithButtons = ({ item }: { item: ItemWithCount }) => {
   const { star, mutation } = useBookmark();
   const handleClick = () => {
-    star(item._id, !item.starred);
+    star(item.id, !item.starred);
   };
 
   return (
     <div className="flex items-center">
       <CardTitle className="mr-auto">{item.title}</CardTitle>
       <LinkButton
-        href={`/order/new?item=${item._id}`}
+        href={`/order/new?item=${item.id}`}
         title="Commander"
         className="rounded-r-none px-md"
       >
@@ -154,7 +154,7 @@ const TitleWithButtons = ({ item }: { item: ItemWithCount }) => {
         />
       </Button>
       <LinkButton
-        href={`/update/${item._id}`}
+        href={`/update/${item.id}`}
         title="Modifier"
         className="rounded-l-none px-md"
       >
@@ -164,7 +164,7 @@ const TitleWithButtons = ({ item }: { item: ItemWithCount }) => {
   );
 };
 
-const AddToCartFooter = ({ id, stock }: { id: string; stock: number }) => {
+const AddToCartFooter = ({ id, stock }: { id: number; stock: number }) => {
   type FormFields = { quantity: string };
   const { register, handleSubmit } = useForm<FormFields>();
   const { mutate, isLoading } = useAddToCart();
@@ -218,7 +218,7 @@ const StatusMessage = ({ itemTitle }: { itemTitle: string }) => {
   return null;
 };
 
-const ItemLoader = ({ id }: { id: string }) => {
+const ItemLoader = ({ id }: { id: number }) => {
   const result = trpc.searchItem.useQuery(id);
   const orders = trpc.itemOrders.useQuery(id);
 
@@ -270,7 +270,7 @@ const ItemCard = () => {
   if (typeof id !== "string") {
     return null;
   }
-  if (!/^[a-f\d]{24}$/i.test(id)) {
+  if (!/^\d+$/i.test(id)) {
     return (
       <Card className="flex-1">
         <CardTitle>Article introuvable</CardTitle>
@@ -280,7 +280,7 @@ const ItemCard = () => {
       </Card>
     );
   }
-  return <ItemLoader id={id} />;
+  return <ItemLoader id={Number(id)} />;
 };
 
 const SalesSkeleton = () => (
@@ -296,7 +296,7 @@ const SalesSkeleton = () => (
   </ContentLoader>
 );
 
-const Sales = ({ id }: { id: string }) => {
+const Sales = ({ id }: { id: number }) => {
   const result = trpc.lastSales.useQuery(id);
   if (result.status === "error") {
     return <ErrorMessage />;
@@ -310,14 +310,14 @@ const Sales = ({ id }: { id: string }) => {
 const SalesCard = () => {
   const router = useRouter();
   const { id } = router.query;
-  if (typeof id !== "string" || !/^[a-f\d]{24}$/i.test(id)) {
+  if (typeof id !== "string" || !/^\d+$/.test(id)) {
     return null;
   }
   return (
     <Card className="mb-lg">
       <CardTitle>Ventes des 2 dernières années</CardTitle>
       <CardBody>
-        <Sales id={id} />
+        <Sales id={Number(id)} />
       </CardBody>
     </Card>
   );

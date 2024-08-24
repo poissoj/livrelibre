@@ -15,6 +15,7 @@ module.exports = {
     "*.config.js",
     "validate_env.js",
     "*.spec.ts",
+    "drizzle.config.ts",
   ],
   rules: {
     "@typescript-eslint/no-misused-promises": [

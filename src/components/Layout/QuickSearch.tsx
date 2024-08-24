@@ -33,7 +33,7 @@ export const QuickSearch = ({
         toast.info("Aucun article trouvé pour cet ISBN");
         return;
       }
-      const pathname = `/item/${result.items[0]._id}`;
+      const pathname = `/item/${result.items[0].id}`;
       void router.push({ pathname });
       return;
     }

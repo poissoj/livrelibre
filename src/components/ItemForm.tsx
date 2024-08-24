@@ -60,7 +60,7 @@ export const ItemForm = ({
 }: {
   title: string;
   onSubmit: (
-    data?: FormFields,
+    data: FormFields,
   ) => Promise<{ type: "error" | "success" | "warning"; msg: string }>;
   data?: FormFields;
   onSuccess?: () => void;

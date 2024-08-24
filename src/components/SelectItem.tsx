@@ -14,7 +14,7 @@ import { formatPrice } from "@/utils/format";
 import type { Item } from "@/utils/item";
 import { trpc } from "@/utils/trpc";
 
-export type NewItem = { _id: null; title: string };
+export type NewItem = { id: null; title: string };
 
 type ItemValue = Item | NewItem | null;
 
@@ -43,7 +43,7 @@ export function SelectItem({
     : COMMON_STYLES.replace("w-full", "w-fit");
 
   return (
-    <Combobox value={item as Item} by="_id" onChange={setItem}>
+    <Combobox value={item as Item} by="id" onChange={setItem}>
       <div className={clsx("relative", fullWidth ? "w-full" : "w-fit")}>
         <ComboboxInput
           className={clsx(inputStyles, inputClass)}
@@ -63,7 +63,7 @@ export function SelectItem({
             </ComboboxOption>
           )}
           {filteredItems.map((item) => (
-            <ComboboxOption key={item._id} value={item} as={Fragment}>
+            <ComboboxOption key={item.id} value={item} as={Fragment}>
               {({ focus, selected }) => (
                 <li
                   className={clsx(

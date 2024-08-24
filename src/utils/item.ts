@@ -31,9 +31,9 @@ export type BaseItem = {
   title: string;
   publisher: string;
   distributor: string;
-  keywords: string;
+  keywords: string | null;
   datebought: string;
-  comments: string;
+  comments: string | null;
   price: string;
   amount: number;
   tva: TVA;
@@ -47,6 +47,6 @@ export type DBItem = BaseItem & {
   nmDistributor: string;
 };
 
-export type Item = DBItem & { _id: string };
+export type Item = DBItem & { id: number };
 
 export type ItemWithCount = Item & { count: number };

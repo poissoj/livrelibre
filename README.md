@@ -13,7 +13,7 @@ Pour se connecter, utiliser les identifiants `admin/admin`
 
 ## Prérequis
 
-Livre Libre nécessite [Node.js](https://nodejs.org) et [MongoDB](https://www.mongodb.com/) pour fonctionner.
+Livre Libre nécessite [Node.js](https://nodejs.org) et [PostgreSQL](https://www.postgresql.org/) pour fonctionner.
 
 ## Installation
 
@@ -29,7 +29,7 @@ Générez un mot de passe pour COOKIE_PASSWORD.
 Créez le fichier `.env.local` avec les infos suivantes:
 
 ```
-MONGODB_URI=mongodb://localhost:27017/tsavant
+POSTGRES_URI=postgres://user:password@localhost:5432/livrelibre
 COOKIE_PASSWORD=pN2MLv2tEvY4wDeH3fKWh9Hwm1piff2T3m
 ```
 

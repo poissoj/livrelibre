@@ -31,7 +31,7 @@ export const AddToCartButton = ({
       title="Ajouter au panier"
       type="button"
       onClick={() => {
-        mutate({ id: item._id });
+        mutate({ id: item.id });
       }}
       disabled={item.amount === 0}
     >

@@ -1,10 +1,10 @@
 import clsx from "clsx";
 import React from "react";
 
-import { type Order, STATUS_COLOR, STATUS_LABEL } from "@/utils/order";
+import { type OrderStatus, STATUS_COLOR, STATUS_LABEL } from "@/utils/order";
 
 export const StatusCircle = (props: {
-  status: Order["ordered"];
+  status: OrderStatus;
   className?: string;
 }) => {
   const className = clsx(

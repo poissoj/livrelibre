@@ -8,7 +8,7 @@ const logoutRoute: NextApiHandler = async (req, res) => {
   const session = await getIronSession<SessionData>(req, res, sessionOptions);
   logger.info("Logout", { user: session.user });
   session.destroy();
-  const user: User = { name: "", role: "anonymous" };
+  const user: User = { name: "", role: "anonymous", id: 0 };
   res.json(user);
 };
 
