@@ -25,7 +25,7 @@ const SkeletonRow = ({ n }: { n: number }) => (
   </>
 );
 
-const ItemFormSkeleton = (): JSX.Element => (
+const ItemFormSkeleton = (): React.ReactElement => (
   <ContentLoader height={410} width="100%">
     {Array(7)
       .fill(0)

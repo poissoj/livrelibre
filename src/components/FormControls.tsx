@@ -9,7 +9,7 @@ export const COMMON_STYLES = clsx(COMMON_STYLES_BASE, "w-full");
 
 export const Input = React.forwardRef<
   HTMLInputElement,
-  React.PropsWithChildren<JSX.IntrinsicElements["input"]>
+  React.PropsWithChildren<React.JSX.IntrinsicElements["input"]>
 >(function Input(props, ref) {
   const { children, className, ...rest } = props;
   return (
@@ -21,7 +21,7 @@ export const Input = React.forwardRef<
 
 export const InputWithButton = React.forwardRef<
   HTMLInputElement,
-  React.PropsWithChildren<JSX.IntrinsicElements["input"]>
+  React.PropsWithChildren<React.JSX.IntrinsicElements["input"]>
 >(function InputWithButton(props, ref) {
   const { children, className, ...rest } = props;
   return (
@@ -37,7 +37,7 @@ export const InputWithButton = React.forwardRef<
 
 export const Select = React.forwardRef<
   HTMLSelectElement,
-  React.PropsWithChildren<JSX.IntrinsicElements["select"]>
+  React.PropsWithChildren<React.JSX.IntrinsicElements["select"]>
 >(function Select(props, ref) {
   const { children, className, ...rest } = props;
   return (
@@ -49,7 +49,7 @@ export const Select = React.forwardRef<
 
 export const Textarea = React.forwardRef<
   HTMLTextAreaElement,
-  React.PropsWithChildren<JSX.IntrinsicElements["textarea"]>
+  React.PropsWithChildren<React.JSX.IntrinsicElements["textarea"]>
 >(function Textarea(props, ref) {
   const { children, ...rest } = props;
   return (

@@ -26,7 +26,7 @@ const SkeletonRow = ({ n }: { n: number }) => (
   </>
 );
 
-const OrderFormSkeleton = (): JSX.Element => (
+const OrderFormSkeleton = (): React.ReactElement => (
   <ContentLoader height={300} width="100%">
     {Array(4)
       .fill(0)
@@ -38,7 +38,6 @@ const OrderFormSkeleton = (): JSX.Element => (
 
 const getOrdersURL = (router: NextRouter) => {
   const { orderId, ...query } = router.query;
-  orderId; // Remove ignoreId (dynamic param) from the query params
   return { pathname: "/orders", query };
 };
 

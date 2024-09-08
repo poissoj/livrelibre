@@ -1,6 +1,7 @@
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
+import type { ReactElement } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/Button";
@@ -15,7 +16,7 @@ const Column = ({ children }: React.PropsWithChildren) => (
   <div className="flex-1 [min-width:20rem] ml-md">{children}</div>
 );
 
-const Search = (): JSX.Element => {
+const Search = (): ReactElement => {
   const { register, handleSubmit } = useForm();
   const router = useRouter();
   const onSubmit = (data: Record<string, string>) => {

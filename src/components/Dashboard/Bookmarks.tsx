@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactElement } from "react";
 
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { Card, CardBody, CardTitle } from "@/components/Card";
@@ -14,7 +15,7 @@ type BookmarksContentProps = {
 
 const BookmarksContent = ({
   bookmarks,
-}: BookmarksContentProps): JSX.Element => {
+}: BookmarksContentProps): ReactElement => {
   return (
     <ul className="flex-1">
       {bookmarks.map((bookmark) => (
@@ -32,7 +33,7 @@ const BookmarksContent = ({
   );
 };
 
-const BookmarksLoader = (): JSX.Element | null => {
+const BookmarksLoader = (): ReactElement | null => {
   const result = trpc.bookmarks.useQuery();
   if (result.status === "error") {
     return <ErrorMessage />;
@@ -43,7 +44,7 @@ const BookmarksLoader = (): JSX.Element | null => {
   return <BookmarksContent bookmarks={result.data} />;
 };
 
-export const Bookmarks = (): JSX.Element => (
+export const Bookmarks = (): ReactElement => (
   <Card className="flex-1 max-h-full overflow-hidden flex flex-col [min-width:24rem]">
     <CardTitle>Favoris</CardTitle>
     <CardBody>

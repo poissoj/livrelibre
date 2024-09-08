@@ -27,9 +27,8 @@ export function useScrollRestoration(ref: RefObject<HTMLElement>) {
     window.history.scrollRestoration = "manual";
     restoreScrollPos(router.asPath, ref.current);
 
-    const onBeforeUnload = (event: BeforeUnloadEvent) => {
+    const onBeforeUnload = () => {
       saveScrollPos(router.asPath, ref.current);
-      delete event.returnValue;
     };
 
     const onRouteChangeStart = () => {

@@ -1,3 +1,4 @@
+import type { ReactElement } from "react";
 import ContentLoader from "react-content-loader";
 
 const TVASkeletonRow = ({ n }: { n: number }) => (
@@ -9,7 +10,7 @@ const TVASkeletonRow = ({ n }: { n: number }) => (
   </>
 );
 
-export const TVASkeleton = (): JSX.Element => (
+export const TVASkeleton = (): ReactElement => (
   <ContentLoader height={300} width="100%">
     {Array(9)
       .fill(0)

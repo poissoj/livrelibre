@@ -9,7 +9,7 @@ import {
 } from "@headlessui/react";
 import clsx from "clsx";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { type ReactElement } from "react";
 
 import { LinkButton } from "@/components/Button";
 import { Card, CardBody, CardTitle } from "@/components/Card";
@@ -157,7 +157,7 @@ const OrdersBody = ({
   );
 };
 
-const Orders = (): JSX.Element => {
+const Orders = (): ReactElement => {
   return (
     <div className="flex flex-1 flex-col gap-lg">
       <Title>Liste des commandes</Title>

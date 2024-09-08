@@ -7,7 +7,7 @@ import { type FormFields, ItemForm } from "@/components/ItemForm";
 import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
 
-const Add = (): JSX.Element => {
+const Add = (): React.ReactElement => {
   const mutation = trpc.addItem.useMutation();
   const submit = async (data: FormFields) => {
     const datebought = data.datebought.split("-").reverse().join("/");

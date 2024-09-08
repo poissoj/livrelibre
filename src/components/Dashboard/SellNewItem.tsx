@@ -18,7 +18,7 @@ type TAlert = {
   message: string;
 };
 
-export const SellNewItem = (): JSX.Element => {
+export const SellNewItem = (): React.ReactElement => {
   const { register, handleSubmit, reset } = useForm<NewCartItem>();
   const utils = trpc.useUtils();
   const [alert, setAlert] = React.useState<TAlert | null>(null);

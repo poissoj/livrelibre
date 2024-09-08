@@ -10,7 +10,7 @@ import {
 import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
 
-const NewCustomer = (): JSX.Element => {
+const NewCustomer = (): React.ReactElement => {
   const mutation = trpc.updateCustomer.useMutation();
   const submit = async (customer: CustomerFormFields) => {
     return await mutation.mutateAsync({ customer });

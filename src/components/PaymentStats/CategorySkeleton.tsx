@@ -1,3 +1,4 @@
+import type { ReactElement } from "react";
 import ContentLoader from "react-content-loader";
 
 const CategorySkeletonRow = ({ n }: { n: number }) => (
@@ -8,7 +9,7 @@ const CategorySkeletonRow = ({ n }: { n: number }) => (
   </>
 );
 
-export const CategorySkeleton = (): JSX.Element => (
+export const CategorySkeleton = (): ReactElement => (
   <ContentLoader height={150} width="100%">
     {Array(5)
       .fill(0)

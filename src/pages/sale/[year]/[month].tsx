@@ -1,6 +1,7 @@
 import { clsx } from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import type { ReactElement } from "react";
 import ContentLoader from "react-content-loader";
 
 import { Card, CardBody, CardTitle } from "@/components/Card";
@@ -63,7 +64,7 @@ const SalesSkeletonRow = ({ n }: { n: number }) => (
   </>
 );
 
-const SalesSkeleton = (): JSX.Element => (
+const SalesSkeleton = (): ReactElement => (
   <ContentLoader height={600} width="100%">
     {Array(20)
       .fill(0)
@@ -168,7 +169,7 @@ const CategoriesCard = () => {
   );
 };
 
-const SalesByMonth = (): JSX.Element => {
+const SalesByMonth = (): ReactElement => {
   return (
     <Restricted role="admin">
       <div className="flex items-start gap-lg flex-1 flex-wrap">

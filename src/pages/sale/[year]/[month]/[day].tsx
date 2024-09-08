@@ -1,9 +1,10 @@
 import { useRouter } from "next/router";
+import type { ReactElement } from "react";
 
 import { Restricted } from "@/components/Restricted";
 import { SalesByDay } from "@/components/Sales/SalesByDay";
 
-const SalesByDayPage = (): JSX.Element | null => {
+const SalesByDayPage = (): ReactElement | null => {
   const router = useRouter();
   const { day, month, year } = router.query;
   if (

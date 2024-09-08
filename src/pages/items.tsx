@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import React from "react";
+import React, { type ReactElement } from "react";
 import ContentLoader from "react-content-loader";
 
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
@@ -20,7 +20,7 @@ const SkeletonRow = ({ n }: { n: number }) => (
   </>
 );
 
-const ItemsSkeleton = (): JSX.Element => (
+const ItemsSkeleton = (): ReactElement => (
   <ContentLoader height={300} width="100%">
     {Array(10)
       .fill(0)
@@ -75,7 +75,7 @@ const ItemsLoader = ({ page }: { page: number }) => {
   );
 };
 
-const Items = (): JSX.Element => {
+const Items = (): ReactElement => {
   const router = useRouter();
   const { page: queryPage } = router.query;
   const page = typeof queryPage === "string" ? Number(queryPage) : 1;

@@ -1,5 +1,6 @@
 import { clsx } from "clsx";
 import Link from "next/link";
+import type { ReactElement } from "react";
 import ContentLoader from "react-content-loader";
 
 import { Card, CardBody, CardTitle } from "@/components/Card";
@@ -79,7 +80,7 @@ const BestSalesLoader = () => {
   return <ItemsTable items={result.data} />;
 };
 
-const BestSales = (): JSX.Element => (
+const BestSales = (): ReactElement => (
   <div className="[margin-left:10%] [margin-right:10%] flex flex-1 flex-col gap-lg">
     <Title>Meilleurs ventes</Title>
     <Card className="max-h-full overflow-hidden flex flex-col">

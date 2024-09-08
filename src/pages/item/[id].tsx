@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { clsx } from "clsx";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
+import type { ReactElement } from "react";
 import ContentLoader from "react-content-loader";
 import { useForm } from "react-hook-form";
 
@@ -323,7 +324,7 @@ const SalesCard = () => {
   );
 };
 
-const ItemPage = (): JSX.Element => {
+const ItemPage = (): ReactElement => {
   return (
     <div className="flex items-start gap-lg flex-1 flex-wrap">
       <Title>Voir un article</Title>

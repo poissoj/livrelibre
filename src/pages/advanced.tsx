@@ -6,7 +6,7 @@ import {
   faUpload,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { createContext, useState } from "react";
+import React, { type ReactElement, createContext, useState } from "react";
 import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -241,7 +241,7 @@ const DilicomPage = () => {
   );
 };
 
-const Advanced = (): JSX.Element => {
+const Advanced = (): ReactElement => {
   const [file] = useFileContext();
 
   if (file) {

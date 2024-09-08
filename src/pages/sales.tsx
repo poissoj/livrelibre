@@ -1,6 +1,7 @@
 import { clsx } from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import type { ReactElement } from "react";
 import ContentLoader from "react-content-loader";
 
 import { Card, CardBody, CardTitle } from "@/components/Card";
@@ -23,7 +24,7 @@ const SkeletonRow = ({ n }: { n: number }) => (
   </>
 );
 
-const SalesSkeleton = (): JSX.Element => (
+const SalesSkeleton = (): ReactElement => (
   <ContentLoader height={380} width="100%">
     {Array(12)
       .fill(0)
@@ -33,7 +34,7 @@ const SalesSkeleton = (): JSX.Element => (
   </ContentLoader>
 );
 
-const SalesLoader = (): JSX.Element | null => {
+const SalesLoader = (): ReactElement | null => {
   const result = trpc.sales.useQuery();
   if (result.status === "error") {
     return <ErrorMessage />;
@@ -47,7 +48,7 @@ const SalesLoader = (): JSX.Element | null => {
 const makeSaleURL = (sale: Sale) =>
   `/sale/${sale.month.split("/").reverse().join("/")}`;
 
-const SalesTable = ({ sales }: { sales: Sale[] }): JSX.Element => {
+const SalesTable = ({ sales }: { sales: Sale[] }): ReactElement => {
   const router = useRouter();
   return (
     <table className="flex-1">
@@ -89,7 +90,7 @@ const SalesTable = ({ sales }: { sales: Sale[] }): JSX.Element => {
   );
 };
 
-const Sales = (): JSX.Element => (
+const Sales = (): ReactElement => (
   <Restricted role="admin">
     <div className="[margin-left:10%] [margin-right:10%] flex-1">
       <Title>Liste des ventes par mois</Title>

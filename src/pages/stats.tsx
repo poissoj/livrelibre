@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import type { ReactElement } from "react";
 import ContentLoader from "react-content-loader";
 
 import { Card, CardBody, CardTitle } from "@/components/Card";
@@ -65,8 +66,8 @@ const Spacer = () => <div className="w-1 h-1 flex-shrink-0" />;
 
 const StatsLoader = () => {
   const result = trpc.stats.useQuery();
-  let hourSales: JSX.Element | null = null;
-  let daySales: JSX.Element | null = null;
+  let hourSales: ReactElement | null = null;
+  let daySales: ReactElement | null = null;
   if (result.status === "error") {
     hourSales = <ErrorMessage />;
     daySales = hourSales;
@@ -98,7 +99,7 @@ const StatsLoader = () => {
   );
 };
 
-const Stats = (): JSX.Element => (
+const Stats = (): ReactElement => (
   <div className="flex flex-1 flex-col gap-lg items-center">
     <Title>Statistiques</Title>
     <StatsLoader />

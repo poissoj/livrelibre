@@ -10,7 +10,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { clsx } from "clsx";
 import Link from "next/link";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, type ReactElement, useState } from "react";
 import ContentLoader from "react-content-loader";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -116,7 +116,7 @@ const SkeletonRow = ({ n }: { n: number }) => (
   </>
 );
 
-const ItemsSkeleton = (): JSX.Element => (
+const ItemsSkeleton = (): ReactElement => (
   <ContentLoader height={150} width="100%">
     {Array(5)
       .fill(0)

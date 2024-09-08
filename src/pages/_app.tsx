@@ -2,7 +2,7 @@ import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import type { AppProps } from "next/dist/shared/lib/router/router";
 import Head from "next/head";
-import React from "react";
+import React, { type ReactElement } from "react";
 import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -14,7 +14,7 @@ import { trpc } from "@/utils/trpc";
 
 config.autoAddCss = false;
 
-function MyApp({ Component, pageProps }: AppProps): JSX.Element {
+function MyApp({ Component, pageProps }: AppProps): ReactElement {
   const { isLoggedIn } = useUser({ redirectTo: "/login" });
   const PageLayout =
     "isPublic" in Component || !isLoggedIn ? React.Fragment : Layout;

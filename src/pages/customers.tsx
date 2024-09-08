@@ -1,7 +1,7 @@
 import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
-import React, { useReducer, useState } from "react";
+import React, { type ReactElement, useReducer, useState } from "react";
 import ContentLoader from "react-content-loader";
 
 import { LinkButton } from "@/components/Button";
@@ -24,7 +24,7 @@ const SkeletonRow = ({ n }: { n: number }) => (
   </>
 );
 
-const ItemsSkeleton = (): JSX.Element => (
+const ItemsSkeleton = (): ReactElement => (
   <ContentLoader height={300} width="100%">
     {Array(10)
       .fill(0)
@@ -105,7 +105,7 @@ const CustomersLoader = ({ page }: { page: number }) => {
   );
 };
 
-const Customers = (): JSX.Element => {
+const Customers = (): ReactElement => {
   const router = useRouter();
   const { page: queryPage } = router.query;
   const page = typeof queryPage === "string" ? Number(queryPage) : 1;

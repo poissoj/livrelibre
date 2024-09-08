@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { clsx } from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import type { ReactElement } from "react";
 
 import { APP_NAME } from "@/lib/config";
 import useUser from "@/lib/useUser";
@@ -63,7 +64,7 @@ const CartButton = () => (
   </Link>
 );
 
-export const Header = (): JSX.Element => {
+export const Header = (): ReactElement => {
   return (
     <header className="bg-primary-dark text-gray-darker flex items-center pr-lg">
       <Link

@@ -38,7 +38,7 @@ export const Alert = ({
   children: React.ReactNode;
   className?: string;
   onDismiss?: () => void;
-}): JSX.Element | null => {
+}): React.ReactElement | null => {
   const style = clsx(ALERT_STYLES[type], className);
   const icon = {
     success: faCheckCircle,

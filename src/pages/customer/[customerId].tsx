@@ -32,7 +32,7 @@ const SkeletonRow = ({ n }: { n: number }) => (
   </>
 );
 
-const CustomerFormSkeleton = (): JSX.Element => (
+const CustomerFormSkeleton = (): React.ReactElement => (
   <ContentLoader height={300} width="100%">
     {Array(4)
       .fill(0)

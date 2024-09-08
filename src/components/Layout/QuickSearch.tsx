@@ -2,7 +2,7 @@ import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { clsx } from "clsx";
 import { useRouter } from "next/router";
-import { type DOMAttributes, useState } from "react";
+import { type DOMAttributes, type ReactElement, useState } from "react";
 import { toast } from "react-toastify";
 
 import { trpc } from "@/utils/trpc";
@@ -11,7 +11,7 @@ export const QuickSearch = ({
   className,
 }: {
   className?: string;
-}): JSX.Element => {
+}): ReactElement => {
   const router = useRouter();
   const utils = trpc.useUtils();
   const [isLoading, setLoading] = useState(false);

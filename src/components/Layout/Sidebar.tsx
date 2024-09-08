@@ -17,6 +17,7 @@ import {
 import { clsx } from "clsx";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import type { ReactElement } from "react";
 
 import useUser from "@/lib/useUser";
 
@@ -45,7 +46,7 @@ const NavLink = ({ href, icon, children }: NavLinkProps) => {
   );
 };
 
-export const Sidebar = (): JSX.Element => {
+export const Sidebar = (): ReactElement => {
   const { user } = useUser();
   const salesPage = user?.role === "admin" ? "/sales" : "/todaySales";
   return (

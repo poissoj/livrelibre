@@ -35,7 +35,7 @@ export const OrderForm = ({
   ) => Promise<{ type: "error" | "success"; msg: string }>;
   data: OrderData;
   children: React.ReactNode;
-}): JSX.Element => {
+}): React.ReactElement => {
   const defaultValues = {
     ...data,
     created: toInputDate(data.created),

@@ -65,7 +65,7 @@ export const ItemForm = ({
   data?: FormFields;
   onSuccess?: () => void;
   children: React.ReactNode;
-}): JSX.Element => {
+}): React.ReactElement => {
   const { register, handleSubmit, reset, getValues, setValue } =
     useForm<FormFields>({
       defaultValues: data || {},
@@ -77,7 +77,11 @@ export const ItemForm = ({
     const { type, msg: message } = await onSubmit(data);
     setAlert({ type, message });
     if (type === "success") {
-      onSuccess ? onSuccess() : reset();
+      if (onSuccess) {
+        onSuccess();
+      } else {
+        reset();
+      }
     }
   };
 

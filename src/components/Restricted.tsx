@@ -1,3 +1,5 @@
+import type { ReactElement } from "react";
+
 import useUser from "@/lib/useUser";
 
 import { Alert } from "./Alert";
@@ -7,7 +9,7 @@ export const Restricted = ({
   children,
 }: {
   role: string;
-  children: JSX.Element;
+  children: ReactElement;
 }) => {
   const { user } = useUser();
   if (user?.role !== role) {

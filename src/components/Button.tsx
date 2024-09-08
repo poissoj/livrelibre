@@ -1,5 +1,6 @@
 import { clsx } from "clsx";
 import Link from "next/link";
+import type React from "react";
 
 const COMMON_STYLES =
   "bg-primary-dark text-white rounded p-sm uppercase tracking-wide font-medium " +
@@ -14,7 +15,7 @@ export const Button = ({
   ...props
 }: {
   children?: React.ReactNode;
-} & JSX.IntrinsicElements["button"]) => (
+} & React.JSX.IntrinsicElements["button"]) => (
   <button
     className={clsx(COMMON_STYLES, !props.disabled && HOVER_STYLES, className)}
     {...props}
@@ -29,7 +30,7 @@ export const ButtonAnchor = ({
   ...props
 }: {
   children?: React.ReactNode;
-} & JSX.IntrinsicElements["a"]) => (
+} & React.JSX.IntrinsicElements["a"]) => (
   <a className={clsx(COMMON_STYLES, HOVER_STYLES, className)} {...props}>
     {children}
   </a>
@@ -51,7 +52,7 @@ export const ButtonWithInput = ({
   ...props
 }: {
   children?: React.ReactNode;
-} & JSX.IntrinsicElements["button"]) => (
+} & React.JSX.IntrinsicElements["button"]) => (
   <Button className={clsx("rounded-l-none -m[1px]", className)} {...props}>
     {children}
   </Button>

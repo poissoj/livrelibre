@@ -104,7 +104,7 @@ const SearchLoader = ({
   );
 };
 
-const QuickSearchPage = (): JSX.Element => {
+const QuickSearchPage = (): React.ReactElement => {
   const { search, page, inStock } = useSearchParams();
   const title = `Recherche de "${search}"`;
   return (

@@ -63,7 +63,6 @@ const migrateItems = async (mDB: Db) => {
   for (let i = 0; i < items.length; i += SLICE_SIZE) {
     console.log(i, i + SLICE_SIZE);
     const pgItems = items.slice(i, i + SLICE_SIZE).map((item) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { id, starred, ...pgItem } = item;
       return {
         ...pgItem,
@@ -87,7 +86,6 @@ const migrateSales = async (mDB: Db) => {
   for (let i = 0; i < sales.length; i += SLICE_SIZE) {
     console.log(i, i + SLICE_SIZE);
     const pgSales = sales.slice(i, i + SLICE_SIZE).map((sale) => {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const { _id, id, date, price, cartId, ...pgSale } = sale;
       const created = _id.getTimestamp();
       if (_id.getTimestamp().toLocaleDateString("fr") !== date) {

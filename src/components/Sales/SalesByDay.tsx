@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { type ReactElement, useRef } from "react";
 
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
@@ -74,7 +74,7 @@ const SalesLoader = ({ date }: { date: string }) => {
   );
 };
 
-export const SalesByDay = ({ date }: { date: string }): JSX.Element | null => {
+export const SalesByDay = ({ date }: { date: string }): ReactElement | null => {
   const ref = useRef<HTMLDivElement>(null);
   useScrollRestoration(ref);
 

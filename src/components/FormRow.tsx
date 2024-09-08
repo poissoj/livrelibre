@@ -1,8 +1,10 @@
+import type { ReactElement } from "react";
+
 type FormRowProps = {
   label: string;
   children: React.ReactNode;
 };
-export const FormRow = ({ label, children }: FormRowProps): JSX.Element => (
+export const FormRow = ({ label, children }: FormRowProps): ReactElement => (
   <label className="flex cursor-pointer mb-md items-center">
     <span className="text-right mr-lg font-medium w-1/4 flex-shrink-0 whitespace-nowrap">
       {label}

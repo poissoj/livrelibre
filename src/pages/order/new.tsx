@@ -54,7 +54,7 @@ const OrderBody = () => {
   );
 };
 
-const NewOrder = (): JSX.Element => {
+const NewOrder = (): React.ReactElement => {
   return (
     <div className="flex-1 max-w-6xl mx-auto">
       <Title>Nouvelle commande</Title>

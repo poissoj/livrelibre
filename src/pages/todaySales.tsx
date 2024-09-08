@@ -1,3 +1,5 @@
+import type { ReactElement } from "react";
+
 import { SalesByDay } from "@/components/Sales/SalesByDay";
 
 const getToday = () => {
@@ -5,7 +7,7 @@ const getToday = () => {
   return new Date().toLocaleDateString("fr");
 };
 
-const SalesByDayPage = (): JSX.Element | null => {
+const SalesByDayPage = (): ReactElement | null => {
   const date = getToday();
   return <SalesByDay date={date} />;
 };

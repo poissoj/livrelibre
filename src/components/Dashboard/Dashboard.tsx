@@ -1,9 +1,11 @@
+import type { ReactElement } from "react";
+
 import { Title } from "@/components/Title";
 
 import { Bookmarks } from "./Bookmarks";
 import { SellNewItem } from "./SellNewItem";
 
-export const Dashboard = (): JSX.Element => {
+export const Dashboard = (): ReactElement => {
   return (
     <div className="flex items-start gap-lg flex-1 flex-wrap">
       <Title>Tableau de bord</Title>
