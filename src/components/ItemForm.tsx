@@ -181,7 +181,7 @@ export const ItemForm = ({
                   type="number"
                   {...register("amount")}
                   min={0}
-                  defaultValue={1}
+                  defaultValue={0}
                   className="font-number"
                 />
               </FormRow>
