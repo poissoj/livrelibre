@@ -1,5 +1,8 @@
 import {
+  faAt,
   faInfoCircle,
+  faPersonWalking,
+  faPhone,
   faSort,
   faSortAsc,
   faSortDesc,
@@ -112,6 +115,34 @@ const stopPropagation = (e: React.MouseEvent) => {
   e.stopPropagation();
 };
 
+const Contact = ({ order }: { order: OrderRow }) => {
+  switch (order.contact) {
+    case "unknown":
+      return null;
+    case "phone":
+      return (
+        <>
+          <FontAwesomeIcon icon={faPhone} className="mr-1" />
+          {order.phone}
+        </>
+      );
+    case "mail":
+      return (
+        <>
+          <FontAwesomeIcon icon={faAt} className="mr-1" />
+          {order.email}
+        </>
+      );
+    case "in person":
+      return (
+        <>
+          <FontAwesomeIcon icon={faPersonWalking} className="mr-1" />
+          Passera
+        </>
+      );
+  }
+};
+
 export const OrdersTable = ({ items }: { items: OrderRow[] }) => {
   const router = useRouter();
   const sortBy =
@@ -156,18 +187,23 @@ export const OrdersTable = ({ items }: { items: OrderRow[] }) => {
             }
           >
             <td className="pl-2 py-1">{formatDateFR(item.created)}</td>
-            <td className="p-1">{item.customerName}</td>
+            <td className="p-1">
+              <div className="leading-4">{item.customerName}</div>
+              <div className="leading-5 italic pl-2">
+                <Contact order={item} />
+              </div>
+            </td>
             <td
               className={clsx("w-2", { "bg-[rgba(245,0,0,0.5)]": item.paid })}
             ></td>
-            <td className="p-1">
+            <td className="p-2">
               <div className="leading-4">
                 {item.itemTitle}
                 {item.nb > 1 && (
                   <span className="font-bold ml-2">({item.nb} ex)</span>
                 )}
               </div>
-              <div className="italic font-number">{item.isbn}</div>
+              <div className="italic font-number leading-5">{item.isbn}</div>
             </td>
             <td className="p-1">{item.distributor}</td>
             <td className="p-1">

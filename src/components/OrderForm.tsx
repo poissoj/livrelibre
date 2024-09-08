@@ -13,7 +13,7 @@ import { type NewItem, SelectItem } from "@/components/SelectItem";
 import type { Customer } from "@/utils/customer";
 import { toInputDate } from "@/utils/date";
 import type { Item } from "@/utils/item";
-import { type RawOrder, STATUS_LABEL } from "@/utils/order";
+import { CONTACT_LABEL, type RawOrder, STATUS_LABEL } from "@/utils/order";
 import { trpc } from "@/utils/trpc";
 
 type InputOrder = RawOrder & { isbn: string | undefined };
@@ -134,6 +134,15 @@ export const OrderForm = ({
             <FormRow label="État">
               <Select {...register("ordered")} defaultValue="new">
                 {Object.entries(STATUS_LABEL).map(([key, label]) => (
+                  <option value={key} key={key}>
+                    {label}
+                  </option>
+                ))}
+              </Select>
+            </FormRow>
+            <FormRow label="Contacter par">
+              <Select {...register("contact")} defaultValue="unknown">
+                {Object.entries(CONTACT_LABEL).map(([key, label]) => (
                   <option value={key} key={key}>
                     {label}
                   </option>

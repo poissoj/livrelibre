@@ -18,6 +18,10 @@ export type OrderStatus = (typeof ORDER_STATUS)[number];
 export const zOrderStatus = z.enum(ORDER_STATUS);
 export const zOrderStatusArray = z.array(zOrderStatus);
 
+export const CONTACT_MEAN = ["mail", "phone", "in person", "unknown"] as const;
+export type ContactMean = (typeof CONTACT_MEAN)[number];
+export const zContactMean = z.enum(CONTACT_MEAN);
+
 export const zOrder = z.object({
   created: z.string(),
   customerId: z.number().nullable(),
@@ -28,6 +32,7 @@ export const zOrder = z.object({
   paid: z.boolean(),
   comment: z.string(),
   nb: z.number().positive(),
+  contact: zContactMean,
 });
 
 export type RawOrder = z.infer<typeof zOrder>;
@@ -40,6 +45,8 @@ export type OrderRow = typeof orders.$inferSelect & {
   customerName: string;
   isbn: string | null;
   distributor: string | null;
+  phone: string | null;
+  email: string | null;
 };
 
 export const deserializeOrder = <T extends { created: string }>(order: T) => ({
@@ -64,3 +71,10 @@ export const STATUS_COLOR = {
   other: "bg-purple",
   done: "bg-white",
 } as const satisfies Record<OrderStatus, string>;
+
+export const CONTACT_LABEL: Record<ContactMean, string> = {
+  unknown: "Non renseigné",
+  mail: "Email",
+  phone: "Téléphone",
+  "in person": "Passera",
+};

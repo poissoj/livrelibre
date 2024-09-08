@@ -10,7 +10,7 @@ import {
 } from "drizzle-orm/pg-core";
 
 import { ItemTypes, TVAValues } from "@/utils/item";
-import { ORDER_STATUS } from "@/utils/order";
+import { CONTACT_MEAN, ORDER_STATUS } from "@/utils/order";
 
 export const roleEnum = pgEnum("role", ["admin", "guest"]);
 
@@ -130,6 +130,8 @@ export const selectedCustomer = pgTable("selectedCustomer", {
 
 export const orderStatusEnum = pgEnum("orderStatus", ORDER_STATUS);
 
+export const contactMeanEnum = pgEnum("contactMean", CONTACT_MEAN);
+
 export const orders = pgTable("orders", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   created: timestamp("created", { withTimezone: true }).notNull().defaultNow(),
@@ -145,4 +147,5 @@ export const orders = pgTable("orders", {
   paid: boolean("paid").notNull(),
   comment: varchar("comment").notNull(),
   nb: integer("nb").notNull(),
+  contact: contactMeanEnum("contact").notNull().default("unknown"),
 });

@@ -45,6 +45,8 @@ export const getOrders = async (status: OrderStatus[]): Promise<OrderRow[]> => {
     .select({
       ...getTableColumns(orders),
       customerName: customers.fullname,
+      phone: customers.phone,
+      email: customers.email,
       isbn: items.isbn,
       distributor: items.distributor,
     })
