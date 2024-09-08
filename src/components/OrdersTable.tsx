@@ -8,9 +8,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import React from "react";
+import { toast } from "react-toastify";
 
 import { formatDateFR } from "@/utils/date";
 import { type OrderRow, STATUS_LABEL } from "@/utils/order";
+import { trpc } from "@/utils/trpc";
 
 import { StatusCircle } from "./StatusCircle";
 
@@ -74,6 +76,42 @@ const sortOrders = (sortBy: string) => {
   }
 };
 
+const NotifiedCheckbox = ({ item }: { item: OrderRow }) => {
+  const utils = trpc.useUtils();
+  const mutation = trpc.updateOrder.useMutation({
+    async onSuccess(data) {
+      if (data.type === "success") {
+        toast.success(
+          `La commande de "${item.itemTitle}" a été marquée comme ${item.customerNotified ? "non " : ""}prévenue.`,
+        );
+        await utils.orders.invalidate();
+      } else {
+        toast.error(data.msg);
+      }
+    },
+  });
+  const toggle = async () => {
+    const order = {
+      ...item,
+      customerNotified: !item.customerNotified,
+      created: item.created.toISOString(),
+    };
+    await mutation.mutateAsync({ order, id: item.id });
+  };
+  return (
+    <input
+      type="checkbox"
+      defaultChecked={item.customerNotified}
+      disabled={mutation.isLoading}
+      onChange={toggle}
+    />
+  );
+};
+
+const stopPropagation = (e: React.MouseEvent) => {
+  e.stopPropagation();
+};
+
 export const OrdersTable = ({ items }: { items: OrderRow[] }) => {
   const router = useRouter();
   const sortBy =
@@ -135,8 +173,8 @@ export const OrdersTable = ({ items }: { items: OrderRow[] }) => {
             <td className="p-1">
               <StatusCircle status={item.ordered} className="mx-auto" />
             </td>
-            <td className="p-1 text-center">
-              <input type="checkbox" disabled checked={item.customerNotified} />
+            <td className="p-1 text-center" onClick={stopPropagation}>
+              <NotifiedCheckbox item={item} />
             </td>
             <td className="p-1 text-center">
               <input type="checkbox" disabled checked={item.paid} />
