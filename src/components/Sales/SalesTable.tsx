@@ -6,6 +6,7 @@ import Link from "next/link";
 
 import { Button } from "@/components/Button";
 import { formatNumber, formatPrice, formatTVA } from "@/utils/format";
+import { PAYMENT_METHODS } from "@/utils/sale";
 import { type RouterOutput, trpc } from "@/utils/trpc";
 
 const DeleteSale = ({
@@ -105,7 +106,11 @@ export const SalesTable = ({ carts }: { carts: Carts }) => {
               <Cell className="text-right font-number">
                 {formatTVA(sale.tva)}
               </Cell>
-              <Cell className="whitespace-nowrap">{sale.paymentType}</Cell>
+              <Cell className="whitespace-nowrap">
+                {sale.paymentType
+                  ? PAYMENT_METHODS[sale.paymentType]
+                  : "Inconnu"}
+              </Cell>
               <Cell className="pr-3">
                 {sale.deleted ? null : (
                   <DeleteSale saleId={sale.id} itemId={sale.itemId} />
