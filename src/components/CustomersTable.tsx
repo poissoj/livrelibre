@@ -20,9 +20,9 @@ export const CustomersTable = ({ items }: { items: CustomerWithTotal[] }) => {
         </tr>
       </thead>
       <tbody className="leading-7">
-        {items.map((item, i) => (
+        {items.map((item) => (
           <tr
-            key={i}
+            key={item.id}
             className="cursor-pointer hover:bg-gray-light"
             onClick={() => router.push(`/customer/${item.id}`)}
           >

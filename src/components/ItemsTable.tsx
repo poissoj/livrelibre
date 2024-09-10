@@ -18,8 +18,8 @@ export const ItemsTable = ({ items }: { items: Item[] }) => (
       </tr>
     </thead>
     <tbody>
-      {items.map((item, i) => (
-        <tr key={i}>
+      {items.map((item) => (
+        <tr key={item.id}>
           <td>{item.distributor}</td>
           <td>
             <span className="text-primary-darkest">

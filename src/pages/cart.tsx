@@ -84,8 +84,8 @@ const CartTable = ({ items }: { items: CartItems }) => (
       </tr>
     </thead>
     <tbody>
-      {items.map((item, i) => (
-        <tr key={i}>
+      {items.map((item) => (
+        <tr key={item.id}>
           <td>
             <ItemTitle item={item} />
           </td>

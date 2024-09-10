@@ -28,7 +28,7 @@ const ItemsTable = ({ items }: { items: BestSale[] }) => (
     </thead>
     <tbody>
       {items.map((item, i) => (
-        <tr key={i}>
+        <tr key={item.id}>
           <td>{i + 1}</td>
           <td>
             <span className="text-primary-darkest">

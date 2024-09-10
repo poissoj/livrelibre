@@ -175,9 +175,9 @@ export const OrdersTable = ({ items }: { items: OrderRow[] }) => {
         </tr>
       </thead>
       <tbody className="leading-7">
-        {sortedItems.map((item, i) => (
+        {sortedItems.map((item) => (
           <tr
-            key={i}
+            key={item.id}
             className="cursor-pointer even:bg-gray-light"
             onClick={() =>
               router.push({

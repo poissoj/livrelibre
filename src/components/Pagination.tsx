@@ -78,8 +78,8 @@ export const Pagination = ({ count }: PaginationProps) => {
           <FontAwesomeIcon icon={faChevronLeft} />
         </ConditionalLink>
       </li>
-      {pageList.map((n, i) => (
-        <li key={i}>
+      {pageList.map((n) => (
+        <li key={n}>
           {n === page ? (
             <span
               className={

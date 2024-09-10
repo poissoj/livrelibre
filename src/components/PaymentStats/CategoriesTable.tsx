@@ -16,8 +16,8 @@ export const CategoriesTable = ({ categories }: { categories: Category[] }) => (
       </tr>
     </thead>
     <tbody className="[line-height:1.9rem]">
-      {categories.map((category, i) => (
-        <tr key={i}>
+      {categories.map((category) => (
+        <tr key={category.label}>
           <td>{category.label}</td>
           <td className="text-right font-number">
             {formatNumber(category.nb)}
