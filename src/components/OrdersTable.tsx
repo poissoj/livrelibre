@@ -87,6 +87,7 @@ const NotifiedCheckbox = ({ item }: { item: OrderRow }) => {
         toast.success(
           `La commande de "${item.itemTitle}" a été marquée comme ${item.customerNotified ? "non " : ""}prévenue.`,
         );
+        await utils.order.invalidate(item.id);
         await utils.orders.invalidate();
       } else {
         toast.error(data.msg);
@@ -104,7 +105,7 @@ const NotifiedCheckbox = ({ item }: { item: OrderRow }) => {
   return (
     <input
       type="checkbox"
-      defaultChecked={item.customerNotified}
+      checked={item.customerNotified}
       disabled={mutation.isLoading}
       onChange={toggle}
     />
