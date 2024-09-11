@@ -88,6 +88,10 @@ const NotifiedCheckbox = ({ item }: { item: OrderRow }) => {
           `La commande de "${item.itemTitle}" a été marquée comme ${item.customerNotified ? "non " : ""}prévenue.`,
         );
         await utils.order.invalidate(item.id);
+        utils.order.setData(item.id, (oldData) => {
+          if (!oldData) return undefined;
+          return { ...oldData, customerNotified: !oldData.customerNotified };
+        });
         await utils.orders.invalidate();
       } else {
         toast.error(data.msg);
