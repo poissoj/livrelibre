@@ -66,6 +66,8 @@ export const OrderForm = ({
       toast.info("Merci de renseigner le titre ou l'ISBN de l'article");
       return;
     }
+    // Convert timezoned date to UTC date to avoid mismatch with server time
+    order.created = new Date(order.created).toISOString();
     const { type } = await onSubmit(order);
     if (type !== "success") {
       reset();
