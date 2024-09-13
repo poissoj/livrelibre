@@ -106,28 +106,26 @@ const OrderLoader = ({ id }: { id: number }) => {
   }
 
   return (
-    <div className="flex flex-col gap-4">
-      <OrderForm
-        title={CARD_TITLE}
-        onSubmit={submit}
-        data={{
-          ...deserializeOrder(result.data),
-        }}
+    <OrderForm
+      title={CARD_TITLE}
+      onSubmit={submit}
+      data={{
+        ...deserializeOrder(result.data),
+      }}
+    >
+      <DeleteOrder id={id} />
+      <LinkButton
+        href={getOrdersURL(router)}
+        className="mr-2 px-md [background-color:#6E6E6E]"
       >
-        <DeleteOrder id={id} />
-        <LinkButton
-          href={getOrdersURL(router)}
-          className="mr-2 px-md [background-color:#6E6E6E]"
-        >
-          <FontAwesomeIcon icon={faTimesCircle} className="mr-sm" />
-          Annuler
-        </LinkButton>
-        <Button type="submit" className="px-md">
-          <FontAwesomeIcon icon={faCheckCircle} className="mr-sm" />
-          Modifier
-        </Button>
-      </OrderForm>
-    </div>
+        <FontAwesomeIcon icon={faTimesCircle} className="mr-sm" />
+        Annuler
+      </LinkButton>
+      <Button type="submit" className="px-md">
+        <FontAwesomeIcon icon={faCheckCircle} className="mr-sm" />
+        Modifier
+      </Button>
+    </OrderForm>
   );
 };
 

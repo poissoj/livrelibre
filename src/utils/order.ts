@@ -18,7 +18,7 @@ export type OrderStatus = (typeof ORDER_STATUS)[number];
 export const zOrderStatus = z.enum(ORDER_STATUS);
 export const zOrderStatusArray = z.array(zOrderStatus);
 
-export const CONTACT_MEAN = ["mail", "phone", "in person", "unknown"] as const;
+export const CONTACT_MEAN = ["unknown", "in person", "phone", "mail"] as const;
 export type ContactMean = (typeof CONTACT_MEAN)[number];
 export const zContactMean = z.enum(CONTACT_MEAN);
 
@@ -71,10 +71,3 @@ export const STATUS_COLOR = {
   other: "bg-purple",
   done: "bg-white",
 } as const satisfies Record<OrderStatus, string>;
-
-export const CONTACT_LABEL: Record<ContactMean, string> = {
-  unknown: "Non renseigné",
-  mail: "Email",
-  phone: "Téléphone",
-  "in person": "Passera",
-};

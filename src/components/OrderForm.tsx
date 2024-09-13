@@ -1,6 +1,12 @@
 import * as React from "react";
-import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAt,
+  faPhone,
+  faUserPlus,
+  faWalking,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import clsx from "clsx";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
@@ -13,8 +19,44 @@ import { type NewItem, SelectItem } from "@/components/SelectItem";
 import type { Customer } from "@/utils/customer";
 import { toInputDate } from "@/utils/date";
 import type { Item } from "@/utils/item";
-import { CONTACT_LABEL, type RawOrder, STATUS_LABEL } from "@/utils/order";
+import { type ContactMean, type RawOrder, STATUS_LABEL } from "@/utils/order";
 import { trpc } from "@/utils/trpc";
+
+const ContactMean = React.forwardRef<
+  HTMLInputElement,
+  React.PropsWithChildren<
+    React.JSX.IntrinsicElements["input"] & {
+      mean: ContactMean;
+      isActive: boolean;
+    }
+  >
+>(function ContactMean(props, ref) {
+  const { mean, isActive, children, ...rest } = props;
+  return (
+    <>
+      <input
+        id={"radio-" + mean}
+        type="radio"
+        ref={ref}
+        {...rest}
+        value={mean}
+        className="hidden"
+      />
+      <label
+        htmlFor={"radio-" + mean}
+        className={clsx(
+          "rounded px-3 py-2 fault focus:outline-none border-2 cursor-pointer",
+          "[transition:border-color_ease-in-out_0.15s]",
+          { grow: mean === "mail" },
+          { "basis-40": mean === "phone" },
+          isActive ? "border-primary-default" : "[border-color:#ccc]",
+        )}
+      >
+        {children}
+      </label>
+    </>
+  );
+});
 
 type InputOrder = RawOrder & { isbn: string | undefined };
 type OrderData = Partial<Omit<RawOrder, "created">> & {
@@ -40,11 +82,13 @@ export const OrderForm = ({
     ...data,
     created: toInputDate(data.created),
     isbn: data.item?.isbn,
+    contact: data.contact ?? "unknown",
   };
-  const { register, handleSubmit, reset, setValue } = useForm<InputOrder>({
-    defaultValues,
-    shouldUseNativeValidation: true,
-  });
+  const { register, handleSubmit, reset, setValue, watch } =
+    useForm<InputOrder>({
+      defaultValues,
+      shouldUseNativeValidation: true,
+    });
   const [customer, setCustomer] = React.useState<Customer | null>(
     data.customer ?? null,
   );
@@ -52,6 +96,7 @@ export const OrderForm = ({
     data.item ?? { id: null, title: data.itemTitle ?? "" },
   );
   const utils = trpc.useUtils();
+  const contact = watch("contact");
 
   const submit = async (order: InputOrder) => {
     if (order.isbn && !order.itemId) {
@@ -93,7 +138,7 @@ export const OrderForm = ({
         onSubmit={handleSubmit(submit)}
       >
         <CardBody className="flex-col gap-5">
-          <div className="flex flex-wrap flex-col">
+          <div className="flex flex-col">
             <FormRow label="Client⋅e">
               <SelectCustomer
                 customer={customer}
@@ -108,6 +153,39 @@ export const OrderForm = ({
               >
                 <FontAwesomeIcon icon={faUserPlus} />
               </LinkButton>
+            </FormRow>
+            <FormRow label="Contacter par" fieldClass="gap-2">
+              <ContactMean
+                mean="unknown"
+                isActive={contact === "unknown"}
+                {...register("contact")}
+              >
+                Non renseigné
+              </ContactMean>
+              <ContactMean
+                mean="in person"
+                isActive={contact === "in person"}
+                {...register("contact")}
+              >
+                <FontAwesomeIcon icon={faWalking} className="mr-1" />
+                Passera
+              </ContactMean>
+              <ContactMean
+                mean="phone"
+                isActive={contact === "phone"}
+                {...register("contact")}
+              >
+                <FontAwesomeIcon icon={faPhone} className="mr-1" />
+                <em>{customer?.phone}</em>
+              </ContactMean>
+              <ContactMean
+                mean="mail"
+                isActive={contact === "mail"}
+                {...register("contact")}
+              >
+                <FontAwesomeIcon icon={faAt} className="mr-1" />
+                <em>{customer?.email}</em>
+              </ContactMean>
             </FormRow>
             <FormRow label="Date">
               <Input type="datetime-local" {...register("created")} />
@@ -136,15 +214,6 @@ export const OrderForm = ({
             <FormRow label="État">
               <Select {...register("ordered")} defaultValue="new">
                 {Object.entries(STATUS_LABEL).map(([key, label]) => (
-                  <option value={key} key={key}>
-                    {label}
-                  </option>
-                ))}
-              </Select>
-            </FormRow>
-            <FormRow label="Contacter par">
-              <Select {...register("contact")} defaultValue="unknown">
-                {Object.entries(CONTACT_LABEL).map(([key, label]) => (
                   <option value={key} key={key}>
                     {label}
                   </option>
