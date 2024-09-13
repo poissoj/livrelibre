@@ -128,6 +128,7 @@ export const OrderForm = ({
     setItem(item);
     setValue("itemId", item?.id ?? null);
     setValue("itemTitle", item?.title ?? "");
+    setValue("isbn", item && "isbn" in item ? item.isbn : "");
   };
 
   return (
