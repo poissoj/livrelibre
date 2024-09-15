@@ -312,7 +312,8 @@ export type AppRouter = typeof appRouter;
 export default trpcNext.createNextApiHandler({
   router: appRouter,
   createContext,
-  onError({ error }) {
+  onError({ error, path, input, type, ctx }) {
+    logger.error(`Error in ${type} ${path}`, { input, userId: ctx?.user.id });
     logger.error(error);
   },
 });
