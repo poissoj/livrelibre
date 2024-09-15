@@ -45,8 +45,13 @@ const OrderBody = () => {
     created: new Date(),
   };
   return (
-    <OrderForm title="Nouvelle commande" onSubmit={submit} data={data}>
-      <Button type="submit" className="px-md">
+    <OrderForm
+      title="Nouvelle commande"
+      onSubmit={submit}
+      data={data}
+      formId="newOrder"
+    >
+      <Button type="submit" className="px-md" form="newOrder">
         <FontAwesomeIcon icon={faPlus} className="mr-sm" />
         Ajouter
       </Button>

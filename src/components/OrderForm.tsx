@@ -70,12 +70,14 @@ export const OrderForm = ({
   onSubmit,
   data,
   children,
+  formId,
 }: {
   title: string;
   onSubmit: (
     data: RawOrder,
   ) => Promise<{ type: "error" | "success"; msg: string }>;
   data: OrderData;
+  formId: string;
   children: React.ReactNode;
 }): React.ReactElement => {
   const defaultValues = {
@@ -134,105 +136,101 @@ export const OrderForm = ({
   return (
     <Card className="max-h-full flex flex-col">
       <CardTitle>{title}</CardTitle>
-      <form
-        className="flex-1 flex flex-col h-0"
-        onSubmit={handleSubmit(submit)}
-      >
-        <CardBody className="flex-col gap-5">
-          <div className="flex flex-col">
-            <FormRow label="Client⋅e">
-              <SelectCustomer
-                customer={customer}
-                setCustomer={updateCustomer}
-                fullWidth
-                required
-              />
-              <LinkButton
-                href="/customer/new"
-                className="ml-sm self-center"
-                title="Nouveau client"
-              >
-                <FontAwesomeIcon icon={faUserPlus} />
-              </LinkButton>
-            </FormRow>
-            <FormRow label="Contacter par" fieldClass="gap-2">
-              <ContactMean
-                mean="unknown"
-                isActive={contact === "unknown"}
-                {...register("contact")}
-              >
-                Non renseigné
-              </ContactMean>
-              <ContactMean
-                mean="in person"
-                isActive={contact === "in person"}
-                {...register("contact")}
-              >
-                <FontAwesomeIcon icon={faWalking} className="mr-1" />
-                Passera
-              </ContactMean>
-              <ContactMean
-                mean="phone"
-                isActive={contact === "phone"}
-                {...register("contact")}
-              >
-                <FontAwesomeIcon icon={faPhone} className="mr-1" />
-                <em>{customer?.phone}</em>
-              </ContactMean>
-              <ContactMean
-                mean="mail"
-                isActive={contact === "mail"}
-                {...register("contact")}
-              >
-                <FontAwesomeIcon icon={faAt} className="mr-1" />
-                <em>{customer?.email}</em>
-              </ContactMean>
-            </FormRow>
-            <FormRow label="Date">
-              <Input type="datetime-local" {...register("created")} />
-            </FormRow>
-            <FormRow label="ISBN">
-              <Input
-                {...register("isbn", {
-                  validate: (isbn: string | undefined) =>
-                    !isbn || /^\d{10,13}$/.test(isbn) || "ISBN invalide",
-                })}
-              />
-            </FormRow>
-            <FormRow label="Titre">
-              <SelectItem item={item} setItem={updateItem} fullWidth />
-            </FormRow>
-            <FormRow label="Commentaires">
-              <Textarea {...register("comment")} />
-            </FormRow>
-            <FormRow label="Nb d'exemplaires">
-              <Input
-                type="number"
-                min="1"
-                {...register("nb", { valueAsNumber: true })}
-              />
-            </FormRow>
-            <FormRow label="État">
-              <Select {...register("ordered")} defaultValue="new">
-                {Object.entries(STATUS_LABEL).map(([key, label]) => (
-                  <option value={key} key={key}>
-                    {label}
-                  </option>
-                ))}
-              </Select>
-            </FormRow>
-            <FormRow label="Payé">
-              <input type="checkbox" {...register("paid")} />
-            </FormRow>
-            <FormRow label="Client⋅e informé⋅e">
-              <input type="checkbox" {...register("customerNotified")} />
-            </FormRow>
-          </div>
-        </CardBody>
-        <CardFooter>
-          <div className="flex justify-end mb-sm">{children}</div>
-        </CardFooter>
-      </form>
+      <form id={formId} onSubmit={handleSubmit(submit)} />
+      <CardBody className="flex-col gap-5">
+        <div className="flex flex-col">
+          <FormRow label="Client⋅e">
+            <SelectCustomer
+              customer={customer}
+              setCustomer={updateCustomer}
+              fullWidth
+              required
+            />
+            <LinkButton
+              href="/customer/new"
+              className="ml-sm self-center"
+              title="Nouveau client"
+            >
+              <FontAwesomeIcon icon={faUserPlus} />
+            </LinkButton>
+          </FormRow>
+          <FormRow label="Contacter par" fieldClass="gap-2">
+            <ContactMean
+              mean="unknown"
+              isActive={contact === "unknown"}
+              {...register("contact")}
+            >
+              Non renseigné
+            </ContactMean>
+            <ContactMean
+              mean="in person"
+              isActive={contact === "in person"}
+              {...register("contact")}
+            >
+              <FontAwesomeIcon icon={faWalking} className="mr-1" />
+              Passera
+            </ContactMean>
+            <ContactMean
+              mean="phone"
+              isActive={contact === "phone"}
+              {...register("contact")}
+            >
+              <FontAwesomeIcon icon={faPhone} className="mr-1" />
+              <em>{customer?.phone}</em>
+            </ContactMean>
+            <ContactMean
+              mean="mail"
+              isActive={contact === "mail"}
+              {...register("contact")}
+            >
+              <FontAwesomeIcon icon={faAt} className="mr-1" />
+              <em>{customer?.email}</em>
+            </ContactMean>
+          </FormRow>
+          <FormRow label="Date">
+            <Input type="datetime-local" {...register("created")} />
+          </FormRow>
+          <FormRow label="ISBN">
+            <Input
+              {...register("isbn", {
+                validate: (isbn: string | undefined) =>
+                  !isbn || /^\d{10,13}$/.test(isbn) || "ISBN invalide",
+              })}
+            />
+          </FormRow>
+          <FormRow label="Titre">
+            <SelectItem item={item} setItem={updateItem} fullWidth />
+          </FormRow>
+          <FormRow label="Commentaires">
+            <Textarea {...register("comment")} />
+          </FormRow>
+          <FormRow label="Nb d'exemplaires">
+            <Input
+              type="number"
+              min="1"
+              {...register("nb", { valueAsNumber: true })}
+            />
+          </FormRow>
+          <FormRow label="État">
+            <Select {...register("ordered")} defaultValue="new">
+              {Object.entries(STATUS_LABEL).map(([key, label]) => (
+                <option value={key} key={key}>
+                  {label}
+                </option>
+              ))}
+            </Select>
+          </FormRow>
+          <FormRow label="Payé">
+            <input type="checkbox" {...register("paid")} />
+          </FormRow>
+          <FormRow label="Client⋅e informé⋅e">
+            <input type="checkbox" {...register("customerNotified")} />
+          </FormRow>
+        </div>
+      </CardBody>
+      <CardFooter>
+        <div className="flex justify-end mb-sm">{children}</div>
+      </CardFooter>
     </Card>
   );
 };

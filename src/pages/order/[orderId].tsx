@@ -112,6 +112,7 @@ const OrderLoader = ({ id }: { id: number }) => {
       data={{
         ...deserializeOrder(result.data),
       }}
+      formId="orderForm"
     >
       <DeleteOrder id={id} />
       <LinkButton
@@ -121,7 +122,7 @@ const OrderLoader = ({ id }: { id: number }) => {
         <FontAwesomeIcon icon={faTimesCircle} className="mr-sm" />
         Annuler
       </LinkButton>
-      <Button type="submit" className="px-md">
+      <Button type="submit" className="px-md" form="orderForm">
         <FontAwesomeIcon icon={faCheckCircle} className="mr-sm" />
         Modifier
       </Button>
