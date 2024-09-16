@@ -56,7 +56,7 @@ export const CustomerForm = ({
         <CardBody className="flex-col gap-5">
           <div className="flex flex-wrap flex-col">
             <FormRow label="Nom complet">
-              <Input type="text" {...register("fullname")} />
+              <Input type="text" {...register("fullname")} required />
             </FormRow>
             <FormRow label="Téléphone">
               <Input type="tel" {...register("phone")} />

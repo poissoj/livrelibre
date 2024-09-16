@@ -1,7 +1,9 @@
 import * as React from "react";
 import {
   faAt,
+  faCheckCircle,
   faPhone,
+  faTimesCircle,
   faUserPlus,
   faWalking,
 } from "@fortawesome/free-solid-svg-icons";
@@ -10,8 +12,9 @@ import clsx from "clsx";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
-import { LinkButton } from "@/components/Button";
+import { Button } from "@/components/Button";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
+import type { CustomerFormFields } from "@/components/CustomerForm";
 import { Input, Select, Textarea } from "@/components/FormControls";
 import { FormRow } from "@/components/FormRow";
 import { SelectCustomer } from "@/components/SelectCustomer";
@@ -58,6 +61,64 @@ const ContactMean = React.forwardRef<
   );
 });
 
+const CustomerFormBody = (props: {
+  hide: () => void;
+  onAdd: (customer: Customer) => void;
+  className?: string;
+}) => {
+  const { register, handleSubmit } = useForm<CustomerFormFields>();
+  const mutation = trpc.updateCustomer.useMutation();
+  const submit = async (customer: CustomerFormFields) => {
+    const resp = await mutation.mutateAsync({ customer });
+    if (resp.type === "success") {
+      toast.success(resp.msg);
+      props.onAdd({ ...customer, id: resp.id });
+      props.hide();
+    } else {
+      toast.error(resp.msg);
+    }
+  };
+  return (
+    <form
+      onSubmit={handleSubmit(submit)}
+      className={clsx(
+        "transition-maxHeight duration-200 overflow-hidden",
+        props.className,
+      )}
+    >
+      <FormRow label="Nom complet">
+        <Input type="text" {...register("fullname")} required />
+      </FormRow>
+      <FormRow label="Téléphone">
+        <Input type="tel" {...register("phone")} />
+      </FormRow>
+      <FormRow label="Email">
+        <Input type="email" {...register("email")} />
+      </FormRow>
+      <FormRow label="Remarque contact">
+        <Input type="text" {...register("contact")} />
+      </FormRow>
+      <FormRow label="Commentaires">
+        <Textarea {...register("comment")} />
+      </FormRow>
+      <div className="flex justify-end mb-4 mr-20">
+        <Button
+          type="button"
+          className="px-md mr-4 [background-color:#6E6E6E]"
+          onClick={props.hide}
+        >
+          <FontAwesomeIcon icon={faTimesCircle} className="mr-sm" />
+          Annuler
+        </Button>
+        <Button type="submit" className="px-md">
+          <FontAwesomeIcon icon={faCheckCircle} className="mr-sm" />
+          Ajouter
+        </Button>
+      </div>
+    </form>
+  );
+};
+
 type InputOrder = RawOrder & { isbn: string | undefined };
 type OrderData = Partial<Omit<RawOrder, "created">> & {
   created: Date;
@@ -97,8 +158,13 @@ export const OrderForm = ({
   const [item, setItem] = React.useState<Item | NewItem | null>(
     data.item ?? { id: null, title: data.itemTitle ?? "" },
   );
+  const [showCustomerForm, setShowCustomerForm] = React.useState(false);
   const utils = trpc.useUtils();
   const contact = watch("contact");
+
+  const toggleCustomerForm = () => {
+    setShowCustomerForm((show) => !show);
+  };
 
   const submit = async (order: InputOrder) => {
     if (order.isbn && !order.itemId) {
@@ -140,20 +206,35 @@ export const OrderForm = ({
       <CardBody className="flex-col gap-5">
         <div className="flex flex-col">
           <FormRow label="Client⋅e">
-            <SelectCustomer
-              customer={customer}
-              setCustomer={updateCustomer}
-              fullWidth
-              required
-            />
-            <LinkButton
-              href="/customer/new"
+            {showCustomerForm ? (
+              <Input
+                type="text"
+                className="w-full bg-[#ccc] cursor-not-allowed"
+                disabled
+                value="Nouveau client"
+              />
+            ) : (
+              <SelectCustomer
+                customer={customer}
+                setCustomer={updateCustomer}
+                fullWidth
+                required
+              />
+            )}
+            <Button
               className="ml-sm self-center"
               title="Nouveau client"
+              type="button"
+              onClick={toggleCustomerForm}
             >
               <FontAwesomeIcon icon={faUserPlus} />
-            </LinkButton>
+            </Button>
           </FormRow>
+          <CustomerFormBody
+            hide={toggleCustomerForm}
+            onAdd={updateCustomer}
+            className={showCustomerForm ? "max-h-[500px]" : "max-h-0"}
+          />
           <FormRow label="Contacter par" fieldClass="gap-2">
             <ContactMean
               mean="unknown"

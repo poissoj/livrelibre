@@ -138,7 +138,7 @@ export const setCustomer = async (
 ) => {
   try {
     await db.update(customers).set(customer).where(eq(customers.id, id));
-    return { type: "success" as const, msg: "Le client a été modifié" };
+    return { type: "success" as const, msg: "Le client a été modifié", id };
   } catch (error) {
     logger.error(error);
     return { type: "error" as const, msg: "Impossible de modifier le client" };
@@ -147,8 +147,15 @@ export const setCustomer = async (
 
 export const newCustomer = async (customer: typeof customers.$inferInsert) => {
   try {
-    await db.insert(customers).values(customer);
-    return { type: "success" as const, msg: "Le client a été ajouté" };
+    const rows = await db
+      .insert(customers)
+      .values(customer)
+      .returning({ id: customers.id });
+    return {
+      type: "success" as const,
+      msg: "Le client a été ajouté",
+      id: rows[0].id,
+    };
   } catch (error) {
     logger.error(error);
     return { type: "error" as const, msg: "Impossible d'ajouter le client" };

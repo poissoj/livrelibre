@@ -24,7 +24,7 @@ module.exports = {
       yellow: "rgb(250 204 21)",
       red: "rgb(220 38 38)",
       blue: "rgb(37 99 235)",
-      purple: "rgb(107 33 168)"
+      purple: "rgb(107 33 168)",
     },
     extend: {
       boxShadow: {
@@ -38,6 +38,9 @@ module.exports = {
       },
       fontFamily: {
         number: ["Roboto Mono"],
+      },
+      transitionProperty: {
+        maxHeight: "max-height",
       },
     },
   },
