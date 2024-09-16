@@ -15,6 +15,7 @@ import {
   resetCustomer,
   setSelectedCustomer,
 } from "@/server/customers";
+import { formatDate } from "@/utils/date";
 import { CART_ERRORS } from "@/utils/errors";
 import type { ItemType, TVA } from "@/utils/item";
 import { logger } from "@/utils/logger";
@@ -62,9 +63,13 @@ export const payCart = async (userId: number, data: PaymentFormData) => {
   }
   const cartId = cartItems[0].id;
   const customer = await getSelectedCustomer(userId, false);
+  const now = new Date();
+  // If the date is today, we want to save the time too
+  const created =
+    formatDate(now) === data.paymentDate ? now : new Date(data.paymentDate);
   const salesList: (typeof sales.$inferInsert)[] = cartItems.map((item) => ({
     cartId,
-    created: new Date(data.paymentDate),
+    created,
     itemId: item.itemId,
     itemType: item.type,
     price: String(Math.round(Number(item.price) * item.quantity * 100) / 100),
