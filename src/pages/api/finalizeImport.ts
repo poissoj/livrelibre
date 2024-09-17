@@ -70,7 +70,6 @@ router.post(async (req, res) => {
       starred: false,
       keywords: "",
       comments: "",
-      _id: "",
     };
     booksToAdd.push(book);
   }

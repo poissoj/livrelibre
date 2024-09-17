@@ -226,7 +226,6 @@ export const appRouter = router({
         phone: input.customer.phone ?? null,
         email: input.customer.email ?? null,
         nmFullname: norm(input.customer.fullname),
-        _id: "",
       };
       if (input.customerId) {
         logger.info("Update customer", input.customerId);

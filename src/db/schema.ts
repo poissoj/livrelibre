@@ -29,7 +29,6 @@ export const tvaEnum = pgEnum("tva", TVAValues);
 
 export const items = pgTable("items", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-  _id: varchar("_id").notNull(), // Temporary for import
   type: itemTypeEnum("type").notNull(),
   isbn: varchar("isbn", { length: 13 }).notNull(),
   author: varchar("author").notNull(),
@@ -93,7 +92,6 @@ export const sales = pgTable("sales", {
   created: timestamp("created", { withTimezone: true }).notNull().defaultNow(),
   tva: tvaEnum("tva"),
   linkedToCustomer: boolean("linkedToCustomer").notNull(),
-  itemObjectId: varchar("itemObjectId"), // Temporary for import
   itemId: integer("itemId").references(() => items.id),
   cartId: integer("cartId"), // No reference because cart rows will be deleted
   deleted: boolean("deleted").notNull(),
@@ -102,7 +100,6 @@ export const sales = pgTable("sales", {
 
 export const customers = pgTable("customers", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-  _id: varchar("_id").notNull(), // Temporary for import
   fullname: varchar("fullname").notNull(),
   nmFullname: varchar("nmFullname").notNull(),
   contact: varchar("contact").notNull(),
@@ -138,9 +135,7 @@ export const orders = pgTable("orders", {
   customerId: integer("customerId")
     // .notNull()
     .references(() => customers.id),
-  customerObjectId: varchar("customerObjectId"), // Temporary for import
   itemId: integer("itemId").references(() => items.id),
-  itemObjectId: varchar("itemObjectId"), // Temporary for import
   itemTitle: varchar("itemTitle").notNull(),
   ordered: orderStatusEnum("ordered").notNull(),
   customerNotified: boolean("customerNotified").notNull(),

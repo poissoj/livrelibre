@@ -24,7 +24,6 @@ export const addItem = async (
     nmTitle: norm(item.title),
     nmPublisher: norm(item.publisher),
     nmDistributor: norm(item.distributor),
-    _id: "",
   };
 
   try {

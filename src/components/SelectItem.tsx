@@ -43,7 +43,7 @@ export function SelectItem({
     : COMMON_STYLES.replace("w-full", "w-fit");
 
   return (
-    <Combobox value={item as Item} by="id" onChange={setItem}>
+    <Combobox value={item} by="id" onChange={setItem}>
       <div className={clsx("relative", fullWidth ? "w-full" : "w-fit")}>
         <ComboboxInput
           className={clsx(inputStyles, inputClass)}
@@ -58,7 +58,7 @@ export function SelectItem({
           as="ul"
         >
           {search.length > 0 && (
-            <ComboboxOption value={{ _id: null, title: search }}>
+            <ComboboxOption value={{ id: null, title: search }}>
               {search}
             </ComboboxOption>
           )}
