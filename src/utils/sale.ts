@@ -1,5 +1,3 @@
-import type { ObjectId } from "mongodb";
-
 import type { ItemType, TVA } from "@/utils/item";
 
 export const PAYMENT_METHODS = {
@@ -13,7 +11,6 @@ export const PAYMENT_METHODS = {
 export type PaymentType = keyof typeof PAYMENT_METHODS;
 
 export type DBSale = {
-  cartId?: ObjectId;
   date: string;
   id: string | undefined;
   itemType: ItemType;
