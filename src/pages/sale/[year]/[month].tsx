@@ -21,7 +21,7 @@ const TH_STYLES = "sticky top-0 bg-white";
 type TSalesByDay = RouterOutput["salesByMonth"]["salesByDay"];
 
 const formatDate = (date: string) => date.split("-").reverse().join("/");
-const makeSaleURL = (date: string) => `/sale/${formatDate(date)}`;
+const makeSaleURL = (date: string) => `/sale/${date.split("-").join("/")}`;
 
 const SalesTable = ({ sales }: { sales: TSalesByDay }) => {
   const router = useRouter();

@@ -15,6 +15,8 @@ import { trpc } from "@/utils/trpc";
 import { SalesSkeleton } from "./SalesSkeleton";
 import { SalesTable } from "./SalesTable";
 
+const formatDate = (date: string) => date.split("-").reverse().join("/");
+
 const TVALoader = ({ date }: { date: string }) => {
   const result = trpc.salesByDay.useQuery(date);
   if (result.isError) {
@@ -66,7 +68,7 @@ const SalesLoader = ({ date }: { date: string }) => {
   }
   return (
     <Card className="flex flex-col">
-      <CardTitle>{`Ventes du ${date} (${result.data.salesCount})`}</CardTitle>
+      <CardTitle>{`Ventes du ${formatDate(date)} (${result.data.salesCount})`}</CardTitle>
       <CardBody>
         <SalesTable carts={result.data.carts} />
       </CardBody>
@@ -78,7 +80,7 @@ export const SalesByDay = ({ date }: { date: string }): ReactElement | null => {
   const ref = useRef<HTMLDivElement>(null);
   useScrollRestoration(ref);
 
-  const title = `Liste des ventes du ${date}`;
+  const title = `Liste des ventes du ${formatDate(date)}`;
   return (
     // padding is needed for shadow to be visible despite the overflow-auto
     <div

@@ -143,7 +143,7 @@ export const appRouter = router({
     .query(async ({ input }) => await searchItems(input)),
   sales: authProcedure.query(getSales),
   salesByDay: authProcedure
-    .input(z.string())
+    .input(z.string().regex(/^\d{4}-\d\d-\d\d$/))
     .query(async ({ input }) => getSalesByDay(input)),
   salesByMonth: authProcedure
     .input(

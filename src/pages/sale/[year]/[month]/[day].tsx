@@ -14,7 +14,7 @@ const SalesByDayPage = (): ReactElement | null => {
   ) {
     return null;
   }
-  const date = `${day}/${month}/${year}`;
+  const date = `${year}-${month}-${day}`;
   return (
     <Restricted role="admin">
       <SalesByDay date={date} />
