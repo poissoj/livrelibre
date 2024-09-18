@@ -228,7 +228,7 @@ export const appRouter = router({
         nmFullname: norm(input.customer.fullname),
       };
       if (input.customerId) {
-        logger.info("Update customer", input.customerId);
+        logger.info("Update customer", input);
         return await setCustomer(customer, input.customerId);
       } else {
         logger.info("New customer", input.customer);
