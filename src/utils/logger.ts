@@ -7,10 +7,6 @@ const consoleTransport = new transports.Console({
 
 export const logger = createLogger({
   level: "info",
-  format: format.combine(
-    format.timestamp(),
-    format.errors({ stack: true }),
-    format.json(),
-  ),
+  format: format.combine(format.timestamp(), format.errors(), format.json()),
   transports: [consoleTransport],
 });
