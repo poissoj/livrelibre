@@ -33,12 +33,22 @@ POSTGRES_URI=postgres://user:password@localhost:5432/livrelibre
 COOKIE_PASSWORD=pN2MLv2tEvY4wDeH3fKWh9Hwm1piff2T3m
 ```
 
+## Base de données
+
+Lancez `pnpm generate:db` pour générer le script sql qui va créer les tables. Exécutez le avec `psql`.
+
+## Utilisateur
+
+Installez [bun](https://bun.sh/) pour pouvoir exécuter le fichier .ts.
+
+Lancez `bun src/cli/createUser.ts` pour créer un premier utilisateur.
+
 ## Build
 
 ```
-npm run build
+pnpm build
 ```
 
 ## Lancement
 
-Lancez la commande `npm start` pour lancer l'application. Par défaut, elle est accessible par navigateur sur http://localhost:3000.
+Lancez la commande `pnpm start` pour lancer l'application. Par défaut, elle est accessible par navigateur sur http://localhost:3000.
