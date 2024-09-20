@@ -1,3 +1,4 @@
+import { HTTPError } from "got";
 import { getIronSession } from "iron-session";
 import type { NextApiHandler } from "next";
 
@@ -24,6 +25,13 @@ const getBookDataRoute: NextApiHandler = async (req, res) => {
     res.json(data);
   } catch (error) {
     logger.error(error);
+    if (
+      error instanceof HTTPError &&
+      error.code === "ERR_NON_2XX_3XX_RESPONSE"
+    ) {
+      res.status(404).json({ error: "No result" });
+      return;
+    }
     res.status(500).json({ error: "Unable to get book data" });
   }
 };

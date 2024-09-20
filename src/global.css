@@ -25,4 +25,5 @@ body,
 
 .Toastify {
   --toastify-color-success: #008073;
+  --toastify-color-warning: rgb(143, 115, 0);
 }

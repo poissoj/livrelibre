@@ -3,7 +3,7 @@ import { got } from "got";
 
 export type BookData = { title: string; author: string; publisher: string };
 
-export const getBookData = async (isbn: string): Promise<BookData> => {
+export const getBookData = async (isbn: string): Promise<BookData | null> => {
   if (!process.env.ISBN_SEARCH_URL) {
     throw new Error("ISBN_SEARCH_URL is not set");
   }
@@ -17,7 +17,6 @@ export const getBookData = async (isbn: string): Promise<BookData> => {
     const author = $(".main-infos [itemprop=author]").eq(0).text().trim();
     const publisher = $(".main-infos > h3 > a").text().trim();
     return { title, author, publisher };
-  } else {
-    return { title: "", author: "", publisher: "" };
   }
+  return null;
 };

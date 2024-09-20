@@ -2,6 +2,7 @@ import * as React from "react";
 import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 
 import { Alert } from "@/components/Alert";
 import { ButtonWithInput } from "@/components/Button";
@@ -89,24 +90,36 @@ export const ItemForm = ({
     const isbn = getValues("isbn");
     if (!isbn || !/^\d{10,13}$/.test(isbn)) return;
     const response = await fetch(`/api/book/${isbn}`);
-    if (!response.ok) return;
+    if (!response.ok) {
+      throw new Error(String(response.status));
+    }
     const data = (await response.json()) as BookData;
     setValue("title", data.title);
     setValue("author", data.author);
     setValue("publisher", data.publisher);
   };
 
-  const isbnHandler = async (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const isbnHandler = async () => {
+    setIsbnLoading(true);
+    try {
+      await isbnSearch();
+    } catch (error) {
+      if (error instanceof Error && error.message === "404") {
+        toast.warn("Aucun résultat pour cet ISBN");
+      } else {
+        toast.error("Impossible de récupérer les données");
+      }
+    } finally {
+      setIsbnLoading(false);
+    }
+  };
+
+  const onKeyDown = async (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key !== "Enter" || isbnLoading) {
       return;
     }
     event.preventDefault();
-    setIsbnLoading(true);
-    try {
-      await isbnSearch();
-    } finally {
-      setIsbnLoading(false);
-    }
+    await isbnHandler();
   };
 
   return (
@@ -132,11 +145,11 @@ export const ItemForm = ({
                 <InputWithButton
                   type="text"
                   maxLength={13}
-                  onKeyDown={isbnHandler}
+                  onKeyDown={onKeyDown}
                   {...register("isbn")}
                 />
                 <ISBNSearchButton
-                  clickHandler={isbnSearch}
+                  clickHandler={isbnHandler}
                   isLoading={isbnLoading}
                 />
               </FormRow>
