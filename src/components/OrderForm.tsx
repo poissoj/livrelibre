@@ -119,7 +119,10 @@ const CustomerFormBody = (props: {
   );
 };
 
-type InputOrder = RawOrder & { isbn: string | undefined };
+type InputOrder = Omit<RawOrder, "customerId"> & {
+  isbn: string | undefined;
+  customerId: number | null;
+};
 type OrderData = Partial<Omit<RawOrder, "created">> & {
   created: Date;
   customer?: Customer;
@@ -175,13 +178,17 @@ export const OrderForm = ({
       updateItem(result.items[0]);
       return;
     }
+    if (!order.customerId) {
+      toast.info("Merci de sélectionner un⋅e client⋅e");
+      return;
+    }
     if (!order.itemTitle) {
       toast.info("Merci de renseigner le titre ou l'ISBN de l'article");
       return;
     }
     // Convert timezoned date to UTC date to avoid mismatch with server time
     order.created = new Date(order.created).toISOString();
-    const { type } = await onSubmit(order);
+    const { type } = await onSubmit({ ...order, customerId: order.customerId });
     if (type !== "success") {
       reset();
     }

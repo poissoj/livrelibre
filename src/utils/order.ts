@@ -24,7 +24,7 @@ export const zContactMean = z.enum(CONTACT_MEAN);
 
 export const zOrder = z.object({
   created: z.string(),
-  customerId: z.number().nullable(),
+  customerId: z.number(),
   itemId: z.number().nullable(),
   itemTitle: z.string(),
   ordered: zOrderStatus,

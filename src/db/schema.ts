@@ -133,7 +133,7 @@ export const orders = pgTable("orders", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
   created: timestamp("created", { withTimezone: true }).notNull().defaultNow(),
   customerId: integer("customerId")
-    // .notNull()
+    .notNull()
     .references(() => customers.id),
   itemId: integer("itemId").references(() => items.id),
   itemTitle: varchar("itemTitle").notNull(),
