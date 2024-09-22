@@ -143,12 +143,14 @@ const usePayCart = () => {
 };
 
 const PaymentForm = ({ cb }: { cb: (amount: number | null) => void }) => {
-  const { register, handleSubmit, watch } = useForm<PaymentFormData>({
-    defaultValues: {
-      paymentDate: formatDate(new Date()),
-      paymentType: "cash",
+  const { register, handleSubmit, watch, formState } = useForm<PaymentFormData>(
+    {
+      defaultValues: {
+        paymentDate: formatDate(new Date()),
+        paymentType: "cash",
+      },
     },
-  });
+  );
   const mutation = usePayCart();
   const onSubmit = async (data: PaymentFormData) => {
     const res = await mutation.mutateAsync(data);
@@ -189,7 +191,11 @@ const PaymentForm = ({ cb }: { cb: (amount: number | null) => void }) => {
           hidden: paymentType !== "cash",
         })}
       />
-      <Button type="submit" className="[padding:10px_15px]">
+      <Button
+        type="submit"
+        className="[padding:10px_15px]"
+        disabled={formState.isSubmitting}
+      >
         <FontAwesomeIcon icon={faCheckCircle} />
         <span className="ml-sm">Payer</span>
       </Button>

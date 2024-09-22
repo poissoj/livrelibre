@@ -18,7 +18,7 @@ const Add = (): React.ReactElement => {
     <div className="[margin-left:10%] [margin-right:10%] flex-1">
       <Title>Ajouter un article</Title>
       <ItemForm title="Ajouter un article" onSubmit={submit}>
-        <Button type="submit" className="px-md">
+        <Button type="submit" className="px-md" disabled={mutation.isLoading}>
           <FontAwesomeIcon icon={faPlus} className="mr-sm" />
           Ajouter
         </Button>

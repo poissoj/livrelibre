@@ -26,7 +26,7 @@ const NewCustomer = (): React.ReactElement => {
           <FontAwesomeIcon icon={faTimesCircle} className="mr-sm" />
           Annuler
         </LinkButton>
-        <Button type="submit" className="px-md">
+        <Button type="submit" className="px-md" disabled={mutation.isLoading}>
           <FontAwesomeIcon icon={faPlus} className="mr-sm" />
           Ajouter
         </Button>

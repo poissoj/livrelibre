@@ -51,7 +51,12 @@ const OrderBody = () => {
       data={data}
       formId="newOrder"
     >
-      <Button type="submit" className="px-md" form="newOrder">
+      <Button
+        type="submit"
+        className="px-md"
+        form="newOrder"
+        disabled={mutation.isLoading}
+      >
         <FontAwesomeIcon icon={faPlus} className="mr-sm" />
         Ajouter
       </Button>

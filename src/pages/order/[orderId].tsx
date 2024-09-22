@@ -122,7 +122,12 @@ const OrderLoader = ({ id }: { id: number }) => {
         <FontAwesomeIcon icon={faTimesCircle} className="mr-sm" />
         Annuler
       </LinkButton>
-      <Button type="submit" className="px-md" form="orderForm">
+      <Button
+        type="submit"
+        className="px-md"
+        form="orderForm"
+        disabled={mutation.isLoading}
+      >
         <FontAwesomeIcon icon={faCheckCircle} className="mr-sm" />
         Modifier
       </Button>

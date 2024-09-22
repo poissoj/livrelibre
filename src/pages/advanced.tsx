@@ -182,12 +182,15 @@ const ImportBooks = ({
   children: React.ReactNode;
 }) => {
   const [, setFile] = useFileContext();
+  const [isLoading, setIsLoading] = useState(false);
   const submit: React.FormEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
+    setIsLoading(true);
     const response = await fetch("/api/finalizeImport", {
       method: "POST",
       body: JSON.stringify(books),
     });
+    setIsLoading(false);
     if (!response.ok) {
       toast.error("Erreur lors de l'import");
       return;
@@ -199,7 +202,15 @@ const ImportBooks = ({
     );
     setFile(null);
   };
-  return <form onSubmit={submit}>{children}</form>;
+  return (
+    <form onSubmit={submit}>
+      {children}
+      <Button type="submit" className="px-md" disabled={isLoading}>
+        <FontAwesomeIcon icon={faCheckCircle} className="mr-sm" />
+        Valider
+      </Button>
+    </form>
+  );
 };
 
 const DilicomPage = () => {
@@ -230,10 +241,6 @@ const DilicomPage = () => {
           >
             <FontAwesomeIcon icon={faTimesCircle} className="mr-sm" />
             Annuler
-          </Button>
-          <Button type="submit" className="px-md">
-            <FontAwesomeIcon icon={faCheckCircle} className="mr-sm" />
-            Valider
           </Button>
         </ImportBooks>
       </CardFooter>

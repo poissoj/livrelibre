@@ -66,7 +66,7 @@ const CustomerFormBody = (props: {
   onAdd: (customer: Customer) => void;
   className?: string;
 }) => {
-  const { register, handleSubmit } = useForm<CustomerFormFields>();
+  const { register, handleSubmit, formState } = useForm<CustomerFormFields>();
   const mutation = trpc.updateCustomer.useMutation();
   const submit = async (customer: CustomerFormFields) => {
     const resp = await mutation.mutateAsync({ customer });
@@ -110,7 +110,11 @@ const CustomerFormBody = (props: {
           <FontAwesomeIcon icon={faTimesCircle} className="mr-sm" />
           Annuler
         </Button>
-        <Button type="submit" className="px-md">
+        <Button
+          type="submit"
+          className="px-md"
+          disabled={formState.isSubmitting}
+        >
           <FontAwesomeIcon icon={faCheckCircle} className="mr-sm" />
           Ajouter
         </Button>
