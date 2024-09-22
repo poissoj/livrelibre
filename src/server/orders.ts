@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { and, count, eq, getTableColumns, inArray, ne } from "drizzle-orm";
 
 import { db } from "@/db/database";
@@ -115,6 +116,24 @@ export const setOrder = async (order: RawOrder, id: number) => {
       msg: "Impossible de modifier la commande",
     };
   }
+};
+
+export const setCustomerNotified = async (
+  orderId: number,
+  customerNotified: boolean,
+) => {
+  const rows = await db
+    .update(orders)
+    .set({ customerNotified })
+    .where(eq(orders.id, orderId))
+    .returning();
+  if (rows.length === 0) {
+    throw new TRPCError({
+      message: "La commande n'existe pas",
+      code: "BAD_REQUEST",
+    });
+  }
+  return { msg: "La commande a été modifiée" };
 };
 
 export const deleteOrder = async (orderId: number) => {

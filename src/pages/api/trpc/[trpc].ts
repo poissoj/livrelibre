@@ -35,6 +35,7 @@ import {
   getOrder,
   getOrders,
   newOrder,
+  setCustomerNotified,
   setOrder,
 } from "@/server/orders";
 import { getSales } from "@/server/sales";
@@ -296,6 +297,17 @@ export const appRouter = router({
         orderId: input.id,
       });
       return await setOrder(input.order, input.id);
+    }),
+  setCustomerNotified: authProcedure
+    .input(
+      z.object({
+        orderId: z.number(),
+        customerNotified: z.boolean(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      logger.info("Set customer notified", { user: ctx.user, ...input });
+      return await setCustomerNotified(input.orderId, input.customerNotified);
     }),
   deleteOrder: authProcedure
     .input(z.object({ id: z.number() }))

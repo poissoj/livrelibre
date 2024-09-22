@@ -79,37 +79,34 @@ const sortOrders = (sortBy: string) => {
   }
 };
 
-const NotifiedCheckbox = ({ item }: { item: OrderRow }) => {
+const NotifiedCheckbox = ({ order }: { order: OrderRow }) => {
   const utils = trpc.useUtils();
-  const mutation = trpc.updateOrder.useMutation({
-    async onSuccess(data) {
-      if (data.type === "success") {
-        toast.success(
-          `La commande de "${item.itemTitle}" a été marquée comme ${item.customerNotified ? "non " : ""}prévenue.`,
-        );
-        await utils.order.invalidate(item.id);
-        utils.order.setData(item.id, (oldData) => {
-          if (!oldData) return undefined;
-          return { ...oldData, customerNotified: !oldData.customerNotified };
-        });
-        await utils.orders.invalidate();
-      } else {
-        toast.error(data.msg);
-      }
+  const mutation = trpc.setCustomerNotified.useMutation({
+    async onSuccess() {
+      toast.success(
+        `La commande de "${order.itemTitle}" a été marquée comme ${order.customerNotified ? "non " : ""}prévenue.`,
+      );
+      await utils.order.invalidate(order.id);
+      utils.order.setData(order.id, (oldData) => {
+        if (!oldData) return undefined;
+        return { ...oldData, customerNotified: !oldData.customerNotified };
+      });
+      await utils.orders.invalidate();
+    },
+    onError(error) {
+      toast.error(error.message);
     },
   });
-  const toggle = async () => {
-    const order = {
-      ...item,
-      customerNotified: !item.customerNotified,
-      created: item.created.toISOString(),
-    };
-    await mutation.mutateAsync({ order, id: item.id });
+  const toggle = () => {
+    mutation.mutate({
+      orderId: order.id,
+      customerNotified: !order.customerNotified,
+    });
   };
   return (
     <input
       type="checkbox"
-      checked={item.customerNotified}
+      checked={order.customerNotified}
       disabled={mutation.isLoading}
       onChange={toggle}
     />
@@ -215,7 +212,7 @@ export const OrdersTable = ({ items }: { items: OrderRow[] }) => {
               <StatusCircle status={item.ordered} className="mx-auto" />
             </td>
             <td className="p-1 text-center" onClick={stopPropagation}>
-              <NotifiedCheckbox item={item} />
+              <NotifiedCheckbox order={item} />
             </td>
             <td className="p-1 text-center">
               <input type="checkbox" disabled checked={item.paid} />
