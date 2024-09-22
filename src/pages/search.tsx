@@ -69,15 +69,6 @@ const Search = (): ReactElement => {
                 <FormRow label="Commentaires">
                   <Textarea {...register("comments")} />
                 </FormRow>
-                <FormRow label="Prix d&rsquo;achat">
-                  <Input
-                    type="number"
-                    {...register("purchasePrice")}
-                    min={0}
-                    step={0.01}
-                    className="font-number"
-                  />
-                </FormRow>
                 <FormRow label="Prix de vente">
                   <Input
                     type="number"

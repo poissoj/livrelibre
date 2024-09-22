@@ -26,7 +26,6 @@ const FIELD_LABELS = {
   keywords: "Mots-clés",
   datebought: "Date d'achat",
   comments: "Commentaires",
-  purchasePrice: "Prix d'achat",
   price: "Prix de vente",
   amount: "Quantité",
   tva: "TVA",
