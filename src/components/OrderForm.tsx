@@ -300,6 +300,7 @@ export const OrderForm = ({
             <Input
               type="number"
               min="1"
+              required
               {...register("nb", { valueAsNumber: true })}
             />
           </FormRow>
