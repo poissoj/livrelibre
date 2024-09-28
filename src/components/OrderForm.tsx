@@ -168,6 +168,7 @@ export const OrderForm = ({
   const [showCustomerForm, setShowCustomerForm] = React.useState(false);
   const utils = trpc.useUtils();
   const contact = watch("contact");
+  const paid = watch("paid");
 
   const toggleCustomerForm = () => {
     setShowCustomerForm((show) => !show);
@@ -313,7 +314,14 @@ export const OrderForm = ({
               ))}
             </Select>
           </FormRow>
-          <FormRow label="Payé">
+          <FormRow
+            label="Payé"
+            fieldClass={
+              paid
+                ? "border-r-8 border-[rgba(245,0,0,0.5)] pr-2 min-h-6 w-fit"
+                : ""
+            }
+          >
             <input type="checkbox" {...register("paid")} />
           </FormRow>
           <FormRow label="Client⋅e informé⋅e">
