@@ -16,10 +16,11 @@ import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { COMMON_STYLES_BASE, Input } from "@/components/FormControls";
 import { ItemsCard } from "@/components/ItemsCard";
-import { OrdersTable } from "@/components/OrdersTable";
+import { OrdersTable, OrdersTableByCustomer } from "@/components/OrdersTable";
 import { StatusCircle } from "@/components/StatusCircle";
 import { Title } from "@/components/Title";
 import {
+  type CustomerOrders,
   ORDER_STATUS,
   type OrderRow,
   type OrderStatus,
@@ -60,13 +61,13 @@ const OrdersLoader = () => {
     );
   }
 
-  const items: OrderRow[] =
+  const orderRows: OrderRow[] =
     result.status === "loading" ? [] : result.data.map(deserializeOrder);
 
   const cardTitle =
     result.status === "loading"
       ? "Chargement"
-      : `${items.length} commande${items.length > 1 ? "s" : ""}`;
+      : `${orderRows.length} commande${orderRows.length > 1 ? "s" : ""}`;
 
   return (
     <Card className="max-h-full overflow-hidden flex flex-col relative">
@@ -79,7 +80,7 @@ const OrdersLoader = () => {
         </LinkButton>
       </CardTitle>
       <CardBody className="flex-col">
-        <OrdersBody orders={items}>
+        <OrdersBody orders={orderRows}>
           <Listbox multiple value={orderStatus} onChange={setOrderStatus}>
             <ListboxButton className={clsx(COMMON_STYLES_BASE, "relative")}>
               États
@@ -119,6 +120,72 @@ const OrdersLoader = () => {
   );
 };
 
+type Order = CustomerOrders["orders"][number];
+const compareOrders = (reverse: boolean) => (a: Order, b: Order) => {
+  const direction = reverse ? -1 : 1;
+  return direction * (b.created.getTime() - a.created.getTime() || b.id - a.id);
+};
+
+const groupOrdersByCustomer = (
+  orders: OrderRow[],
+  reverse: boolean,
+): CustomerOrders[] => {
+  const groups: Map<
+    number,
+    {
+      customer: CustomerOrders["customer"];
+      orders: Order[];
+      maxDate: Date;
+    }
+  > = new Map();
+  for (const order of orders) {
+    const group = groups.get(order.customerId);
+    if (!group) {
+      groups.set(order.customerId, {
+        customer: {
+          email: order.email,
+          phone: order.phone,
+          name: order.customerName,
+        },
+        orders: [order],
+        maxDate: order.created,
+      });
+      continue;
+    }
+    if (order.created > group.maxDate) {
+      group.maxDate = order.created;
+    }
+    group.orders.push(order);
+  }
+  return [...groups.values()].map((group) => {
+    group.orders.sort(compareOrders(reverse));
+    return group;
+  });
+};
+
+const filterGroups = (orders: CustomerOrders[], search: string) =>
+  search === ""
+    ? orders
+    : orders.filter(
+        (order) =>
+          norm(order.customer.name).toLowerCase().includes(norm(search)) ||
+          order.orders.some(
+            (o) =>
+              o.isbn?.includes(search) ||
+              norm(o.itemTitle.toLowerCase()).includes(norm(search)),
+          ),
+      );
+
+const filterOrders = (orders: OrderRow[], search: string) =>
+  search === ""
+    ? orders
+    : orders.filter(
+        (order) =>
+          norm(order.customerName).toLowerCase().includes(norm(search)) ||
+          order.isbn?.includes(search) ||
+          norm(order.itemTitle.toLowerCase()).includes(norm(search)),
+      );
+
 const OrdersBody = ({
   orders,
   children,
@@ -126,18 +193,17 @@ const OrdersBody = ({
   const router = useRouter();
   const search =
     typeof router.query.search === "string" ? router.query.search : "";
-  const filteredOrders =
-    search === ""
-      ? orders
-      : orders.filter(
-          (order) =>
-            norm(order.customerName).toLowerCase().includes(norm(search)) ||
-            order.isbn?.includes(search) ||
-            norm(order.itemTitle.toLowerCase()).includes(norm(search)),
-        );
+  const groupByCustomer = router.query.group !== "0";
+  const toggleGroup = () => {
+    const group = 1 - Number(groupByCustomer);
+    const query = { ...router.query, group };
+    void router.push({ query });
+  };
+  const invertInnerSort = router.query.sortBy === "date";
+
   return (
     <>
-      <div className="flex justify-between">
+      <div className="flex gap-2">
         <Input
           defaultValue={search}
           onChange={(e) => {
@@ -148,10 +214,30 @@ const OrdersBody = ({
           className="text-base mb-2 !w-[30rem] h-fit"
           placeholder="Nom, prénom, titre, ISBN"
         />
+        <div className="mr-auto self-center">
+          <label htmlFor="groupByCustomer" className="mr-2">
+            Grouper les commandes par client⋅e
+          </label>
+          <input
+            id="groupByCustomer"
+            type="checkbox"
+            checked={groupByCustomer}
+            onChange={toggleGroup}
+          />
+        </div>
         {children}
       </div>
       <div className="overflow-auto flex mt-2">
-        <OrdersTable items={filteredOrders} />
+        {groupByCustomer ? (
+          <OrdersTableByCustomer
+            items={filterGroups(
+              groupOrdersByCustomer(orders, invertInnerSort),
+              search,
+            )}
+          />
+        ) : (
+          <OrdersTable items={filterOrders(orders, search)} />
+        )}
       </div>
     </>
   );

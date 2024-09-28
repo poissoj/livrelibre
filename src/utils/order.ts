@@ -49,6 +49,21 @@ export type OrderRow = typeof orders.$inferSelect & {
   email: string | null;
 };
 
+export type CustomerOrders = {
+  customer: {
+    name: string;
+    phone: string | null;
+    email: string | null;
+  };
+  orders: Array<
+    typeof orders.$inferSelect & {
+      isbn: string | null;
+      distributor: string | null;
+    }
+  >;
+  maxDate: Date;
+};
+
 export const deserializeOrder = <T extends { created: string }>(order: T) => ({
   ...order,
   created: new Date(order.created),
