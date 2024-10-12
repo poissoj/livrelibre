@@ -9,8 +9,8 @@ export const ORDER_STATUS = [
   "received",
   "unavailable",
   "canceled",
-  "done",
   "other",
+  "done",
 ] as const;
 
 export type OrderStatus = (typeof ORDER_STATUS)[number];

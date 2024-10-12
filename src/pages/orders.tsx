@@ -1,12 +1,5 @@
-import { faCheck, faFilter, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  Listbox,
-  ListboxButton,
-  ListboxOption,
-  ListboxOptions,
-  Transition,
-} from "@headlessui/react";
 import clsx from "clsx";
 import { useRouter } from "next/router";
 import React, { type ReactElement } from "react";
@@ -14,7 +7,7 @@ import React, { type ReactElement } from "react";
 import { LinkButton } from "@/components/Button";
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
-import { COMMON_STYLES_BASE, Input } from "@/components/FormControls";
+import { Input } from "@/components/FormControls";
 import { ItemsCard } from "@/components/ItemsCard";
 import { OrdersTable, OrdersTableByCustomer } from "@/components/OrdersTable";
 import { StatusCircle } from "@/components/StatusCircle";
@@ -44,6 +37,45 @@ const getStatus = (query: string | string[] | undefined): OrderStatus[] => {
   return ["new", "received", "unavailable", "other", "canceled"];
 };
 
+const Tile = ({
+  status,
+  checked,
+  onChange,
+}: {
+  status: OrderStatus;
+  checked: boolean;
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
+}) => {
+  const id = `chk-${status}`;
+  return (
+    <div>
+      <input
+        type="checkbox"
+        name={status}
+        id={id}
+        checked={checked}
+        className="peer absolute w-0 h-0 overflow-hidden outline-none"
+        onChange={onChange}
+      />
+      <label
+        htmlFor={id}
+        className={clsx(
+          "flex flex-col items-center justify-center gap-2 shrink-0",
+          "p-1 border-2 w-20 h-16 rounded cursor-pointer",
+          "peer-focus-visible:ring peer-focus-visible:ring-primary-default/50",
+          "hover:ring-2 hover:ring-primary-default/50 ",
+          checked
+            ? "border-primary-default text-primary-darkest"
+            : "border-[#ccc] saturate-0 opacity-75",
+        )}
+      >
+        <StatusCircle status={status} className="scale-125" />
+        <span className="text-xs font-medium">{STATUS_LABEL[status]}</span>
+      </label>
+    </div>
+  );
+};
+
 const OrdersLoader = () => {
   const router = useRouter();
   const orderStatus = getStatus(router.query.status);
@@ -69,6 +101,13 @@ const OrdersLoader = () => {
       ? "Chargement"
       : `${orderRows.length} commande${orderRows.length > 1 ? "s" : ""}`;
 
+  const updateStatus = (status: OrderStatus) => () => {
+    const newStatus = orderStatus.includes(status)
+      ? orderStatus.filter((s) => s !== status)
+      : orderStatus.concat(status);
+    setOrderStatus(newStatus);
+  };
+
   return (
     <Card className="max-h-full overflow-hidden flex flex-col relative">
       <Title>{pageTitle}</Title>
@@ -81,39 +120,14 @@ const OrdersLoader = () => {
       </CardTitle>
       <CardBody className="flex-col">
         <OrdersBody orders={orderRows}>
-          <Listbox multiple value={orderStatus} onChange={setOrderStatus}>
-            <ListboxButton className={clsx(COMMON_STYLES_BASE, "relative")}>
-              États
-              <FontAwesomeIcon icon={faFilter} className="ml-2" />
-            </ListboxButton>
-            <Transition
-              leave="transition ease-out duration-100"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              <ListboxOptions
-                anchor="bottom end"
-                className="border border-[#ccc] rounded-xl bg-white p-2 focus:outline-none shadow-lg"
-              >
-                {ORDER_STATUS.map((status) => (
-                  <ListboxOption
-                    key={status}
-                    value={status}
-                    className="flex gap-2 items-center p-1 group data-[focus]:bg-gray-light"
-                  >
-                    <StatusCircle status={status} />
-                    <span className="opacity-80 group-data-[selected]:opacity-100">
-                      {STATUS_LABEL[status]}
-                    </span>
-                    <FontAwesomeIcon
-                      icon={faCheck}
-                      className="ml-auto invisible group-data-[selected]:visible"
-                    />
-                  </ListboxOption>
-                ))}
-              </ListboxOptions>
-            </Transition>
-          </Listbox>
+          {ORDER_STATUS.map((status) => (
+            <Tile
+              key={status}
+              status={status}
+              checked={orderStatus.includes(status)}
+              onChange={updateStatus(status)}
+            />
+          ))}
         </OrdersBody>
       </CardBody>
     </Card>
@@ -203,29 +217,34 @@ const OrdersBody = ({
 
   return (
     <>
-      <div className="flex gap-2">
-        <Input
-          defaultValue={search}
-          onChange={(e) => {
-            void router.push({
-              query: { ...router.query, search: e.target.value.toLowerCase() },
-            });
-          }}
-          className="text-base mb-2 !w-[30rem] h-fit"
-          placeholder="Nom, prénom, titre, ISBN"
-        />
-        <div className="mr-auto self-center">
-          <label htmlFor="groupByCustomer" className="mr-2">
-            Grouper les commandes par client⋅e
-          </label>
-          <input
-            id="groupByCustomer"
-            type="checkbox"
-            checked={groupByCustomer}
-            onChange={toggleGroup}
+      <div className="flex gap-2 items-center flex-wrap">
+        <div className="flex flex-col mb-2 mr-auto">
+          <Input
+            defaultValue={search}
+            onChange={(e) => {
+              void router.push({
+                query: {
+                  ...router.query,
+                  search: e.target.value.toLowerCase(),
+                },
+              });
+            }}
+            className="text-base mb-1 !w-[30rem]"
+            placeholder="Nom, prénom, titre, ISBN"
           />
+          <div>
+            <label htmlFor="groupByCustomer" className="mr-2 cursor-pointer">
+              Grouper les commandes par client⋅e
+            </label>
+            <input
+              id="groupByCustomer"
+              type="checkbox"
+              checked={groupByCustomer}
+              onChange={toggleGroup}
+            />
+          </div>
         </div>
-        {children}
+        <div className="flex gap-2 mr-1">{children}</div>
       </div>
       <div className="overflow-auto flex mt-2">
         {groupByCustomer ? (
