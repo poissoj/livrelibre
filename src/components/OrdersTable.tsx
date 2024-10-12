@@ -47,7 +47,7 @@ const SortButton = ({ label, by: sortBy }: { label: string; by: string }) => {
   return (
     <button
       type="button"
-      className="flex mx-2 gap-1 items-center"
+      className="flex gap-1 items-center"
       onClick={updateSort}
     >
       {label}
@@ -172,7 +172,7 @@ const Contact = ({ order }: { order: OrderRow }) => {
   }
 };
 
-const TableHead = () => (
+const TableHead = ({ group = false }: { group?: boolean }) => (
   <thead>
     <tr className="sticky top-0 bg-white shadow-b shadow-black">
       <th className="text-left pl-2">
@@ -183,13 +183,17 @@ const TableHead = () => (
       </th>
       <th></th>
       <th className="text-left pl-1">Article</th>
-      <th className="text-left pl-1">
-        <SortButton label="Distributeur" by="distributor" />
+      <th className="text-left px-1">
+        {group ? (
+          "Distributeur"
+        ) : (
+          <SortButton label="Distributeur" by="distributor" />
+        )}
       </th>
-      <th className="text-center">
-        <SortButton label="État" by="status" />
+      <th className="text-center px-1">
+        {group ? "État" : <SortButton label="État" by="status" />}
       </th>
-      <th className="text-center">Prévenu⋅e</th>
+      <th className="text-center px-1">Prévenu⋅e</th>
       <th className="text-center px-1">Payé</th>
       <th className="text-center"></th>
     </tr>
@@ -271,7 +275,7 @@ export const OrdersTableByCustomer = ({
 
   return (
     <table className="flex-1 text-sm">
-      <TableHead />
+      <TableHead group />
       {sortedItems.map((row) => (
         <tbody className="leading-7 odd:bg-gray-light" key={row.customer.name}>
           {row.orders.map((item) => (
