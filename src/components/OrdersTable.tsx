@@ -45,9 +45,13 @@ const SortButton = ({ label, by: sortBy }: { label: string; by: string }) => {
     void router.push({ query: { ...router.query, sortBy: by } });
   };
   return (
-    <button type="button" onClick={updateSort}>
+    <button
+      type="button"
+      className="flex mx-2 gap-1 items-center"
+      onClick={updateSort}
+    >
       {label}
-      <FontAwesomeIcon icon={icon} className="ml-2" />
+      <FontAwesomeIcon icon={icon} />
     </button>
   );
 };
