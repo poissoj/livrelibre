@@ -8,16 +8,15 @@ export const getSalesByMonth = async (month: string, year: string) => {
   const reqSales = db
     .select({
       date: sql<string>`to_char(${sales.created}, 'YYYY-MM-dd')`,
-      count: sum(sales.quantity).mapWith(Number),
-      total: sum(sales.price),
+      count: sum(
+        sql`CASE WHEN ${sales.deleted} THEN 0 ELSE ${sales.quantity} END`,
+      ).mapWith(Number),
+      total: sum(
+        sql`CASE WHEN ${sales.deleted} THEN 0 ELSE ${sales.price} END`,
+      ),
     })
     .from(sales)
-    .where(
-      and(
-        eq(sales.deleted, false),
-        sql`to_char(${sales.created}, 'YYYY-MM') = ${yearMonth}`,
-      ),
-    )
+    .where(sql`to_char(${sales.created}, 'YYYY-MM') = ${yearMonth}`)
     .groupBy(({ date }) => date)
     .orderBy(({ date }) => desc(date));
   const reqStats = db
