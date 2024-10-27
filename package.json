@@ -1,6 +1,6 @@
 {
-  "name": "livrelibre-next",
-  "version": "4.0.0",
+  "name": "livrelibre",
+  "version": "4.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev --turbo",
