@@ -8,15 +8,19 @@ export const getBookData = async (isbn: string): Promise<BookData | null> => {
     throw new Error("ISBN_SEARCH_URL is not set");
   }
   const url = process.env.ISBN_SEARCH_URL + isbn;
-  const body = await got(url).text();
-  const $ = cheerio.load(body);
-  const mainInfos = $(".main-infos [itemprop=name]");
-  if (mainInfos.length > 0) {
-    const title = mainInfos.text().trim();
-    // TODO: handle multiple authors
-    const author = $(".main-infos [itemprop=author]").eq(0).text().trim();
-    const publisher = $(".main-infos > h3 > a").text().trim();
-    return { title, author, publisher };
+  try {
+    const body = await got(url).text();
+    const $ = cheerio.load(body);
+    const details = $(".product-details");
+    if (details.length > 0) {
+      const title = details.find("[itemprop=name]").text().trim();
+      // TODO: handle multiple authors
+      const author = details.find("[itemprop=author]").eq(0).text().trim();
+      const publisher = details.find("[itemprop=publisher]").text().trim();
+      return { title, author, publisher };
+    }
+  } catch (error) {
+    console.error(error);
   }
   return null;
 };
