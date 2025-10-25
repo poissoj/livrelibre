@@ -4,7 +4,7 @@ import type { NextRequest } from "next/server";
 
 import { type SessionData, sessionOptions } from "@/lib/session";
 
-export const middleware = async (req: NextRequest) => {
+export const proxy = async (req: NextRequest) => {
   const res = NextResponse.next();
   const session = await getIronSession<SessionData>(req, res, sessionOptions);
 

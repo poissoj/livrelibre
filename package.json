@@ -3,7 +3,7 @@
   "version": "4.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbo",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -36,7 +36,7 @@
     "got": "14.6.1",
     "iron-session": "8.0.4",
     "multer": "2.0.2",
-    "next": "14.2.15",
+    "next": "16.0.0",
     "next-connect": "1.0.0",
     "postgres": "3.4.7",
     "react": "19.2.0",
