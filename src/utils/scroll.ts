@@ -19,7 +19,7 @@ const restoreScrollPos = (asPath: string, elt: HTMLElement | null) => {
   }
 };
 
-export function useScrollRestoration(ref: RefObject<HTMLElement>) {
+export function useScrollRestoration(ref: RefObject<HTMLElement | null>) {
   const router = useRouter();
   useEffect(() => {
     if (!("scrollRestoration" in window.history)) return;
