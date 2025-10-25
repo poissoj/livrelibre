@@ -4,7 +4,6 @@ import type { AppProps } from "next/dist/shared/lib/router/router";
 import Head from "next/head";
 import React, { type ReactElement } from "react";
 import { Slide, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 
 import Layout from "@/components/Layout/Layout";
 import "@/global.css";

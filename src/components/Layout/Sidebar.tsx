@@ -40,7 +40,7 @@ const NavLink = ({ href, icon, children }: NavLinkProps) => {
         ariaCurrent ? "border-primary-default" : "border-transparent",
       )}
     >
-      <FontAwesomeIcon icon={icon} className="mr-sm" fixedWidth />
+      <FontAwesomeIcon icon={icon} className="mr-sm" />
       {children}
     </Link>
   );
