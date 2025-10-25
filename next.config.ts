@@ -1,4 +1,6 @@
-require("./src/validate_env");
+import type { NextConfig } from "next";
+
+import { env } from "./src/validate_env";
 
 let DEFAULT_SRC = process.env.AUTHORIZED_DOMAINS
   ? `'self' ${process.env.AUTHORIZED_DOMAINS}`
@@ -12,8 +14,7 @@ const ContentSecurityPolicy = `
   frame-ancestors 'self';
 `;
 
-/** @type {{key: string; value: string }[]} */
-const securityHeaders = [
+const securityHeaders: { key: string; value: string }[] = [
   {
     key: "X-Content-Type-Options",
     value: "nosniff",
@@ -36,15 +37,15 @@ const securityHeaders = [
   },
 ];
 
-/** @type {import("next").NextConfig} */
-const nextConfig = {
+const nextConfig: NextConfig = {
+  env,
   i18n: {
     locales: ["fr"],
     defaultLocale: "fr",
   },
   reactStrictMode: true,
   poweredByHeader: false,
-  headers() {
+  async headers() {
     return [
       {
         source: "/:path*",
@@ -54,4 +55,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
