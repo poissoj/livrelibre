@@ -88,7 +88,9 @@ const authProcedure = procedure.use(checkAuth);
 export const appRouter = router({
   // Queries
   advancedSearch: authProcedure
-    .input(z.object({ search: z.record(z.string()), page: z.number() }))
+    .input(
+      z.object({ search: z.record(z.string(), z.string()), page: z.number() }),
+    )
     .query(async ({ input }) => await advancedSearch(input.search, input.page)),
   asideCart: authProcedure.query(
     async ({ ctx }) => await getAsideCart(ctx.user.id),

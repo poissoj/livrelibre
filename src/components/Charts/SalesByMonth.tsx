@@ -16,9 +16,12 @@ import type { RouterOutput } from "@/utils/trpc";
 type Sales = RouterOutput["lastSales"];
 
 /* Don't display 0 for empty columns, they appear on top of labels */
-const formatter = (n: number) => (n ? n : "");
+const formatter = (n: React.ReactNode) => (n ? n : "");
 
-const labelFormatter = (_label: string, payload: Payload<number, string>[]) => {
+const labelFormatter = (
+  _label: string,
+  payload: readonly Payload<number, string>[],
+) => {
   const sale = payload[0]?.payload as Sales[number] | undefined;
   return sale?.fullMonthLabel;
 };
