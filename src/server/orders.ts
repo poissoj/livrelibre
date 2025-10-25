@@ -70,7 +70,7 @@ export const newOrder = async (order: RawOrder) => {
     const customer = await db
       .select()
       .from(customers)
-      .where(eq(customers.id, Number(order.customerId)));
+      .where(eq(customers.id, order.customerId));
     if (customer.length === 0) {
       return { type: "error" as const, msg: "Client inconnu" };
     }

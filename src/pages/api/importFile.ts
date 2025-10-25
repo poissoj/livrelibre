@@ -59,7 +59,7 @@ const filterRows = (json: DilicomRow[]) => {
 };
 
 const updateFields = async (rows: DilicomRow[]) => {
-  const fileEANs = rows.map((row) => String(row.EAN));
+  const fileEANs = rows.map((row) => row.EAN);
   const dbItems = await db
     .select()
     .from(items)

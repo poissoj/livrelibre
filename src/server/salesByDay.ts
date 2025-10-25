@@ -105,7 +105,7 @@ export const getSalesByDay = async (date: string) => {
       total += sale.price;
     }
 
-    const deleted = Boolean(sale.deleted);
+    const deleted = sale.deleted;
     if (sale.itemId) {
       let i = 0;
       while (i < itemList.length && itemList[i].id !== sale.itemId) {

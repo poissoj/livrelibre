@@ -18,7 +18,7 @@ export const addItem = async (
   const newItem: typeof itemsTable.$inferInsert = {
     ...item,
     starred: false,
-    amount: Number(item.amount),
+    amount: item.amount,
     price: item.price.replace(",", "."),
     nmAuthor: norm(item.author),
     nmTitle: norm(item.title),
