@@ -63,9 +63,7 @@ const ItemTitle = ({ item }: { item: CartItems[number] }) => {
   if (item.itemId) {
     return (
       <span className="text-primary-darkest">
-        <Link href={`/item/${item.itemId}`} legacyBehavior>
-          {item.title}
-        </Link>
+        <Link href={`/item/${item.itemId}`}>{item.title}</Link>
       </span>
     );
   }
