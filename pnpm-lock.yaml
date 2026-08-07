@@ -44,9 +44,6 @@ importers:
       '@types/multer':
         specifier: 2.0.0
         version: 2.0.0
-      '@typescript-eslint/parser':
-        specifier: 8.46.2
-        version: 8.46.2(eslint@8.57.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
       basic-ftp:
         specifier: 5.0.5
         version: 5.0.5
@@ -132,6 +129,9 @@ importers:
       '@typescript-eslint/eslint-plugin':
         specifier: 8.46.2
         version: 8.46.2(@typescript-eslint/parser@8.46.2(eslint@8.57.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3))(eslint@8.57.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
+      '@typescript-eslint/parser':
+        specifier: 8.46.2
+        version: 8.46.2(eslint@8.57.0(supports-color@7.2.0))(supports-color@7.2.0)(typescript@5.9.3)
       autoprefixer:
         specifier: 10.4.21
         version: 10.4.21(postcss@8.5.6)

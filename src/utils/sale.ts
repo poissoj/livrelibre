@@ -1,5 +1,3 @@
-import type { ItemType, TVA } from "@/utils/item";
-
 export const PAYMENT_METHODS = {
   cash: "Espèces",
   card: "Carte bleue",
@@ -9,16 +7,3 @@ export const PAYMENT_METHODS = {
 } as const;
 
 export type PaymentType = keyof typeof PAYMENT_METHODS;
-
-export type DBSale = {
-  date: string;
-  id: string | undefined;
-  itemType: ItemType;
-  price: number;
-  quantity: number;
-  title?: string;
-  tva?: TVA;
-  type?: PaymentType;
-  deleted?: boolean;
-  linkedToCustomer?: boolean;
-};

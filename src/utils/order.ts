@@ -2,8 +2,6 @@ import { z } from "zod";
 
 import type { orders } from "@/db/schema";
 
-export const dbIdSchema = z.string().length(24);
-
 export const ORDER_STATUS = [
   "new",
   "received",
@@ -36,10 +34,6 @@ export const zOrder = z.object({
 });
 
 export type RawOrder = z.infer<typeof zOrder>;
-
-export type DBOrder = Omit<RawOrder, "date"> & {
-  date: Date;
-};
 
 export type OrderRow = typeof orders.$inferSelect & {
   customerName: string;
