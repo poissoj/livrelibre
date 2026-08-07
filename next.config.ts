@@ -45,7 +45,7 @@ const nextConfig: NextConfig = {
   },
   reactStrictMode: true,
   poweredByHeader: false,
-  async headers() {
+  headers() {
     return [
       {
         source: "/:path*",
