@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "format": "prettier --write src --cache",
     "generate:db": "drizzle-kit generate",
+    "migrate:db": "drizzle-kit migrate",
     "test": "pnpm exec playwright test",
     "test-ui": "pnpm exec playwright test --ui"
   },
