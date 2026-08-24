@@ -32,7 +32,8 @@
     "src/**/*.ts",
     "src/**/*.tsx",
     "tests*/**/*.ts",
-    "*.config.ts"
+    "*.config.ts",
+    "*.config.mts"
   ],
   "exclude": [
     "node_modules"

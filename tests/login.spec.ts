@@ -15,6 +15,10 @@ test("Identifiants invalides", async ({ page }) => {
 });
 
 test("Identifiants valides", async ({ page }) => {
+  if (!USER_NAME || !USER_PASSWORD) {
+    test.skip(true, "USER_NAME / USER_PASSWORD absents du .env.local");
+    return;
+  }
   await page.goto(`/login`);
   await page.getByLabel("Identifiant").click();
   await page.getByLabel("Identifiant").fill(USER_NAME);
