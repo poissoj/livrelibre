@@ -12,7 +12,7 @@ import { clsx } from "clsx";
 import Link from "next/link";
 import { type ReactElement, type SubmitEvent, useState } from "react";
 import ContentLoader from "react-content-loader";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 
 import { Alert } from "@/components/Alert";
@@ -141,20 +141,19 @@ const usePayCart = () => {
 };
 
 const PaymentForm = ({ cb }: { cb: (amount: number | null) => void }) => {
-  const { register, handleSubmit, watch, formState } = useForm<PaymentFormData>(
-    {
+  const { register, handleSubmit, control, formState } =
+    useForm<PaymentFormData>({
       defaultValues: {
         paymentDate: formatDate(new Date()),
         paymentType: "cash",
       },
-    },
-  );
+    });
   const mutation = usePayCart();
   const onSubmit = async (data: PaymentFormData) => {
     const res = await mutation.mutateAsync(data);
     cb(res.change);
   };
-  const paymentType = watch("paymentType");
+  const paymentType = useWatch({ control, name: "paymentType" });
   return (
     <form className="flex justify-end gap-sm" onSubmit={handleSubmit(onSubmit)}>
       <label htmlFor="paymentDate" className="self-center cursor-pointer">

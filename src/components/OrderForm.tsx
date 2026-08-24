@@ -9,7 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import clsx from "clsx";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 
 import { Button } from "@/components/Button";
@@ -154,7 +154,7 @@ export const OrderForm = ({
     isbn: data.item?.isbn,
     contact: data.contact ?? "unknown",
   };
-  const { register, handleSubmit, reset, setValue, watch } =
+  const { register, handleSubmit, reset, setValue, control } =
     useForm<InputOrder>({
       defaultValues,
       shouldUseNativeValidation: true,
@@ -167,8 +167,8 @@ export const OrderForm = ({
   );
   const [showCustomerForm, setShowCustomerForm] = React.useState(false);
   const utils = trpc.useUtils();
-  const contact = watch("contact");
-  const paid = watch("paid");
+  const contact = useWatch({ control, name: "contact" });
+  const paid = useWatch({ control, name: "paid" });
 
   const toggleCustomerForm = () => {
     setShowCustomerForm((show) => !show);

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useForm } from "react-hook-form";
+import { type SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 import { Alert } from "@/components/Alert";
@@ -73,11 +73,15 @@ export const ItemForm = ({
     });
   const [alert, setAlert] = React.useState<TAlert | null>(null);
   const [isbnLoading, setIsbnLoading] = React.useState(false);
-  const form = React.useRef<HTMLFormElement>(null);
 
-  const submit = async () => {
+  const submit: SubmitHandler<FormFields> = async (_data, event) => {
+    const formElement = event?.currentTarget as
+      HTMLFormElement | null | undefined;
+    if (!(formElement instanceof HTMLFormElement)) {
+      return;
+    }
     const data = Object.fromEntries(
-      new FormData(form.current ?? undefined).entries(),
+      new FormData(formElement).entries(),
     ) as FormFields;
     const { type, msg: message } = await onSubmit(data);
     setAlert({ type, message });
@@ -132,7 +136,6 @@ export const ItemForm = ({
       <form
         className="flex-1 flex flex-col h-0"
         onSubmit={handleSubmit(submit)}
-        ref={form}
       >
         <CardBody className="flex-col gap-5">
           <div className="flex flex-wrap">
