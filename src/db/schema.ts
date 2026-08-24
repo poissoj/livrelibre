@@ -1,11 +1,14 @@
+import { sql } from "drizzle-orm";
 import {
   boolean,
   char,
+  index,
   integer,
   numeric,
   pgEnum,
   pgTable,
   timestamp,
+  uniqueIndex,
   varchar,
 } from "drizzle-orm/pg-core";
 
@@ -27,26 +30,38 @@ export const itemTypeEnum = pgEnum("itemType", ItemTypes);
 
 export const tvaEnum = pgEnum("tva", TVAValues);
 
-export const items = pgTable("items", {
-  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-  type: itemTypeEnum("type").notNull(),
-  isbn: varchar("isbn", { length: 13 }).notNull(),
-  author: varchar("author").notNull(),
-  title: varchar("title").notNull(),
-  publisher: varchar("publisher").notNull(),
-  distributor: varchar("distributor").notNull(),
-  keywords: varchar("keywords"),
-  datebought: char("datebought", { length: 10 }).notNull(),
-  comments: varchar("comments"),
-  price: numeric("price", { precision: 12, scale: 2 }).notNull(),
-  amount: integer("amount").notNull(),
-  tva: tvaEnum("tva").notNull(),
-  starred: boolean("starred").notNull(),
-  nmAuthor: varchar("nmAuthor").notNull(),
-  nmTitle: varchar("nmTitle").notNull(),
-  nmPublisher: varchar("nmPublisher").notNull(),
-  nmDistributor: varchar("nmDistributor").notNull(),
-});
+export const items = pgTable(
+  "items",
+  {
+    id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+    type: itemTypeEnum("type").notNull(),
+    isbn: varchar("isbn", { length: 13 }).notNull(),
+    author: varchar("author").notNull(),
+    title: varchar("title").notNull(),
+    publisher: varchar("publisher").notNull(),
+    distributor: varchar("distributor").notNull(),
+    keywords: varchar("keywords"),
+    datebought: char("datebought", { length: 10 }).notNull(),
+    comments: varchar("comments"),
+    price: numeric("price", { precision: 12, scale: 2 }).notNull(),
+    amount: integer("amount").notNull(),
+    tva: tvaEnum("tva").notNull(),
+    starred: boolean("starred").notNull(),
+    nmAuthor: varchar("nmAuthor").notNull(),
+    nmTitle: varchar("nmTitle").notNull(),
+    nmPublisher: varchar("nmPublisher").notNull(),
+    nmDistributor: varchar("nmDistributor").notNull(),
+  },
+  (table) => [
+    index("items_nmAuthor_idx").on(table.nmAuthor),
+    index("items_nmTitle_idx").on(table.nmTitle),
+    index("items_nmPublisher_idx").on(table.nmPublisher),
+    index("items_nmDistributor_idx").on(table.nmDistributor),
+    uniqueIndex("items_isbn_unique")
+      .on(table.isbn)
+      .where(sql`${table.isbn} != ''`),
+  ],
+);
 export type Item = typeof items.$inferSelect;
 
 export const cart = pgTable("cart", {
@@ -83,20 +98,30 @@ export const paymentTypeEnum = pgEnum("paymentType", [
   "transfer",
 ]);
 
-export const sales = pgTable("sales", {
-  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-  itemType: itemTypeEnum("itemType").notNull(),
-  price: numeric("price", { precision: 12, scale: 2 }).notNull(),
-  quantity: integer("quantity").notNull(),
-  title: varchar("title"),
-  created: timestamp("created", { withTimezone: true }).notNull().defaultNow(),
-  tva: tvaEnum("tva"),
-  linkedToCustomer: boolean("linkedToCustomer").notNull(),
-  itemId: integer("itemId").references(() => items.id),
-  cartId: integer("cartId"), // No reference because cart rows will be deleted
-  deleted: boolean("deleted").notNull(),
-  paymentType: paymentTypeEnum("paymentType"),
-});
+export const sales = pgTable(
+  "sales",
+  {
+    id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+    itemType: itemTypeEnum("itemType").notNull(),
+    price: numeric("price", { precision: 12, scale: 2 }).notNull(),
+    quantity: integer("quantity").notNull(),
+    title: varchar("title"),
+    created: timestamp("created", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    tva: tvaEnum("tva"),
+    linkedToCustomer: boolean("linkedToCustomer").notNull(),
+    itemId: integer("itemId").references(() => items.id),
+    cartId: integer("cartId"), // No reference because cart rows will be deleted
+    deleted: boolean("deleted").notNull(),
+    paymentType: paymentTypeEnum("paymentType"),
+  },
+  (table) => [
+    index("sales_itemId_idx").on(table.itemId),
+    index("sales_deleted_idx").on(table.deleted),
+    index("sales_created_idx").on(table.created),
+  ],
+);
 
 export const customers = pgTable("customers", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
@@ -108,15 +133,21 @@ export const customers = pgTable("customers", {
   comment: varchar("comment").notNull(),
 });
 
-export const purchases = pgTable("purchases", {
-  date: varchar("date").notNull(),
-  amount: numeric("amount", { precision: 12, scale: 2 }).notNull(),
-  customerId: integer("customerId")
-    .notNull()
-    .references(() => customers.id),
-});
+export const purchases = pgTable(
+  "purchases",
+  {
+    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+    date: varchar("date").notNull(),
+    amount: numeric("amount", { precision: 12, scale: 2 }).notNull(),
+    customerId: integer("customerId")
+      .notNull()
+      .references(() => customers.id),
+  },
+  (table) => [index("purchases_customerId_idx").on(table.customerId)],
+);
 
 export const selectedCustomer = pgTable("selectedCustomer", {
+  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
   asideCart: boolean("asideCart").notNull(),
   userId: integer("userId")
     .notNull()
@@ -129,18 +160,27 @@ export const orderStatusEnum = pgEnum("orderStatus", ORDER_STATUS);
 
 export const contactMeanEnum = pgEnum("contactMean", CONTACT_MEAN);
 
-export const orders = pgTable("orders", {
-  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-  created: timestamp("created", { withTimezone: true }).notNull().defaultNow(),
-  customerId: integer("customerId")
-    .notNull()
-    .references(() => customers.id),
-  itemId: integer("itemId").references(() => items.id),
-  itemTitle: varchar("itemTitle").notNull(),
-  ordered: orderStatusEnum("ordered").notNull(),
-  customerNotified: boolean("customerNotified").notNull(),
-  paid: boolean("paid").notNull(),
-  comment: varchar("comment").notNull(),
-  nb: integer("nb").notNull(),
-  contact: contactMeanEnum("contact").notNull().default("unknown"),
-});
+export const orders = pgTable(
+  "orders",
+  {
+    id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+    created: timestamp("created", { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+    customerId: integer("customerId")
+      .notNull()
+      .references(() => customers.id),
+    itemId: integer("itemId").references(() => items.id),
+    itemTitle: varchar("itemTitle").notNull(),
+    ordered: orderStatusEnum("ordered").notNull(),
+    customerNotified: boolean("customerNotified").notNull(),
+    paid: boolean("paid").notNull(),
+    comment: varchar("comment").notNull(),
+    nb: integer("nb").notNull(),
+    contact: contactMeanEnum("contact").notNull().default("unknown"),
+  },
+  (table) => [
+    index("orders_customerId_idx").on(table.customerId),
+    index("orders_ordered_idx").on(table.ordered),
+  ],
+);

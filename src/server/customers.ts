@@ -79,8 +79,6 @@ export const addPurchase = async (customerId: number, amount: number) => {
     .values({ amount: String(amount), date, customerId });
 };
 
-export type SelectedCustomer = typeof selectedCustomer.$inferSelect;
-
 export const getSelectedCustomer = async (
   userId: number,
   asideCart: boolean,
@@ -97,7 +95,9 @@ export const getSelectedCustomer = async (
   return rows.length > 0 ? rows[0] : null;
 };
 
-export const setSelectedCustomer = async (customer: SelectedCustomer) => {
+export const setSelectedCustomer = async (
+  customer: typeof selectedCustomer.$inferInsert,
+) => {
   return await db
     .insert(selectedCustomer)
     .values(customer)

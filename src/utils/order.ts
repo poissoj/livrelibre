@@ -7,8 +7,8 @@ export const ORDER_STATUS = [
   "received",
   "unavailable",
   "canceled",
-  "other",
   "done",
+  "other",
 ] as const;
 
 export type OrderStatus = (typeof ORDER_STATUS)[number];
