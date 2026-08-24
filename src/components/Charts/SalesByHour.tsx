@@ -1,8 +1,9 @@
 import { Bar, BarChart, LabelList, XAxis } from "recharts";
+import type { RenderableText } from "recharts";
 
 const nf = Intl.NumberFormat();
-const format = (node: React.ReactNode) =>
-  typeof node === "number" ? nf.format(node) : node;
+const format = (value: RenderableText) =>
+  typeof value === "number" ? nf.format(value) : value;
 
 const SalesByHour = ({
   hours,

@@ -10,7 +10,7 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { clsx } from "clsx";
 import Link from "next/link";
-import { type FormEvent, type ReactElement, useState } from "react";
+import { type ReactElement, type SubmitEvent, useState } from "react";
 import ContentLoader from "react-content-loader";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
@@ -427,7 +427,7 @@ const CustomerInfos = ({ customer }: { customer: CustomerWithPurchase }) => {
       toast.error("Impossible de faire la remise");
     },
   });
-  const onSubmit = async (event: FormEvent) => {
+  const onSubmit = async (event: SubmitEvent) => {
     event.preventDefault();
     setApplied(discount);
     await mutateAsync({

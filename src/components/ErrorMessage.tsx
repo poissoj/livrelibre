@@ -4,7 +4,7 @@ import type { ReactElement } from "react";
 
 const DEFAULT_ERROR = new Error("Impossible de récupérer les données");
 type Props = {
-  error?: Error;
+  error?: unknown;
 };
 export const ErrorMessage = ({
   error = DEFAULT_ERROR,
@@ -15,7 +15,7 @@ export const ErrorMessage = ({
         <FontAwesomeIcon icon={faExclamationCircle} className="mr-sm" />
         Une erreur est survenue.
       </p>
-      <pre>{error.message}</pre>
+      {error instanceof Error ? <pre>{error.message}</pre> : null}
     </div>
   );
 };

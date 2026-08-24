@@ -1,5 +1,5 @@
 import * as cheerio from "cheerio";
-import { got } from "got";
+import got from "got";
 
 export type BookData = { title: string; author: string; publisher: string };
 

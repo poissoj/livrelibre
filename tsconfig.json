@@ -19,7 +19,6 @@
     "jsx": "react-jsx",
     "incremental": true,
     "verbatimModuleSyntax": true,
-    "baseUrl": ".",
     "paths": {
       "@/*": [
         "./src/*"

@@ -7,26 +7,27 @@ import {
   XAxis,
 } from "recharts";
 import type {
-  Formatter,
-  Payload,
-} from "recharts/types/component/DefaultTooltipContent";
+  RenderableText,
+  TooltipPayloadEntry,
+  TooltipValueType,
+} from "recharts";
 
 import type { RouterOutput } from "@/utils/trpc";
 
 type Sales = RouterOutput["lastSales"];
 
 /* Don't display 0 for empty columns, they appear on top of labels */
-const formatter = (n: React.ReactNode) => (n ? n : "");
+const formatter = (n: RenderableText) => (n ? n : "");
 
 const labelFormatter = (
-  _label: string,
-  payload: readonly Payload<number, string>[],
+  _label: React.ReactNode,
+  payload: readonly TooltipPayloadEntry[],
 ) => {
   const sale = payload[0]?.payload as Sales[number] | undefined;
   return sale?.fullMonthLabel;
 };
-const tooltipFormatter: Formatter<number, string> = (count: number) => [
-  count,
+const tooltipFormatter = (count: TooltipValueType | undefined) => [
+  typeof count === "number" ? count : 0,
   "ventes",
 ];
 

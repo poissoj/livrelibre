@@ -183,7 +183,7 @@ const ImportBooks = ({
 }) => {
   const [, setFile] = useFileContext();
   const [isLoading, setIsLoading] = useState(false);
-  const submit: React.FormEventHandler<HTMLFormElement> = async (event) => {
+  const submit: React.SubmitEventHandler<HTMLFormElement> = async (event) => {
     event.preventDefault();
     setIsLoading(true);
     const response = await fetch("/api/finalizeImport", {
