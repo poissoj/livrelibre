@@ -249,12 +249,13 @@ const TableRow = ({
       </td>
       <td className="p-1">
         {item.comment && (
-          <FontAwesomeIcon
-            icon={faInfoCircle}
-            title={item.comment}
-            size="lg"
-            style={{ color: "#23a3b9" }}
-          />
+          <span title={item.comment}>
+            <FontAwesomeIcon
+              icon={faInfoCircle}
+              size="lg"
+              style={{ color: "#23a3b9" }}
+            />
+          </span>
         )}
       </td>
     </tr>

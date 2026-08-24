@@ -119,10 +119,9 @@ export const SalesTable = ({ carts }: { carts: Carts }) => {
               {index === 0 && (
                 <Cell rowSpan={cart.sales.length}>
                   {"linkedToCustomer" in sale && sale.linkedToCustomer ? (
-                    <FontAwesomeIcon
-                      icon={faUser}
-                      title="Cette vente est associée à un⋅e client⋅e"
-                    />
+                    <span title="Cette vente est associée à un⋅e client⋅e">
+                      <FontAwesomeIcon icon={faUser} />
+                    </span>
                   ) : null}
                 </Cell>
               )}
