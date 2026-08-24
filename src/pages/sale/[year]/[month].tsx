@@ -84,7 +84,7 @@ const SalesLoader = (props: MonthProps) => {
   if (result.isError) {
     return <ErrorMessage />;
   }
-  if (result.isLoading) {
+  if (result.isPending) {
     return <SalesSkeleton />;
   }
   return <SalesTable sales={result.data.salesByDay} />;
@@ -116,7 +116,7 @@ const TVALoader = (props: MonthProps) => {
   if (result.isError) {
     return <ErrorMessage />;
   }
-  if (result.isLoading) {
+  if (result.isPending) {
     return <TVASkeleton />;
   }
   return <StatsByTVA stats={result.data.stats} />;
@@ -143,7 +143,7 @@ const CategoriesLoader = (props: MonthProps) => {
   if (result.isError) {
     return <ErrorMessage />;
   }
-  if (result.isLoading) {
+  if (result.isPending) {
     return <CategorySkeleton />;
   }
   const categories = result.data.itemTypes.map((it) => ({

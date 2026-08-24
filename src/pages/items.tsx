@@ -1,3 +1,4 @@
+import { keepPreviousData } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import React, { type ReactElement } from "react";
 import ContentLoader from "react-content-loader";
@@ -31,7 +32,9 @@ const ItemsSkeleton = (): ReactElement => (
 );
 
 const ItemsLoader = ({ page }: { page: number }) => {
-  const result = trpc.items.useQuery(page, { keepPreviousData: true });
+  const result = trpc.items.useQuery(page, {
+    placeholderData: keepPreviousData,
+  });
   let pageTitle = "Liste des articles";
   if (result.status === "error") {
     return (
@@ -40,7 +43,7 @@ const ItemsLoader = ({ page }: { page: number }) => {
       </ItemsCard>
     );
   }
-  if (result.status === "loading") {
+  if (result.status === "pending") {
     return (
       <ItemsCard title={pageTitle}>
         <ItemsSkeleton />

@@ -74,7 +74,7 @@ const BestSalesLoader = () => {
   if (result.status === "error") {
     return <ErrorMessage />;
   }
-  if (result.status === "loading") {
+  if (result.status === "pending") {
     return <BestSalesSkeleton />;
   }
   return <ItemsTable items={result.data} />;

@@ -1,19 +1,17 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { TRPCError, createCallerFactory } from "@trpc/server";
+import { TRPCError } from "@trpc/server";
 
 import { appRouter } from "@/pages/api/trpc/[trpc]";
 import { truncateAll } from "./helpers";
 
-const createCaller = createCallerFactory()(appRouter);
-
-const admin = createCaller({
+const admin = appRouter.createCaller({
   user: { id: 1, name: "admin", role: "admin" },
 });
-const guest = createCaller({
+const guest = appRouter.createCaller({
   user: { id: 2, name: "guest", role: "guest" },
 });
-const anonymous = createCaller({
+const anonymous = appRouter.createCaller({
   user: { id: 0, name: "", role: "anonymous" },
 });
 

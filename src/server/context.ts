@@ -1,4 +1,3 @@
-import type { inferAsyncReturnType } from "@trpc/server";
 import type { CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { getIronSession } from "iron-session";
 
@@ -27,4 +26,4 @@ export const createContext = async (opts?: CreateNextContextOptions) => {
   };
 };
 
-export type Context = inferAsyncReturnType<typeof createContext>;
+export type Context = Awaited<ReturnType<typeof createContext>>;

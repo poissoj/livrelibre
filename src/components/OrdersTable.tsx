@@ -134,7 +134,7 @@ const NotifiedCheckbox = ({ order }: { order: OrderRow }) => {
     <input
       type="checkbox"
       checked={order.customerNotified}
-      disabled={mutation.isLoading}
+      disabled={mutation.isPending}
       onChange={toggle}
     />
   );

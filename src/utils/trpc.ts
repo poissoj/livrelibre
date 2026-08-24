@@ -44,7 +44,7 @@ export const useBookmark = () => {
     },
   });
   const star = (id: number, starred: boolean) => {
-    if (mutation.isLoading) {
+    if (mutation.isPending) {
       return;
     }
     mutation.mutate({ id, starred });

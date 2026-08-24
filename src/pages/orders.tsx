@@ -94,10 +94,10 @@ const OrdersLoader = () => {
   }
 
   const orderRows: OrderRow[] =
-    result.status === "loading" ? [] : result.data.map(deserializeOrder);
+    result.status === "pending" ? [] : result.data.map(deserializeOrder);
 
   const cardTitle =
-    result.status === "loading"
+    result.status === "pending"
       ? "Chargement"
       : `${orderRows.length} commande${orderRows.length > 1 ? "s" : ""}`;
 

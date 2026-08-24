@@ -72,7 +72,7 @@ const StatsLoader = () => {
     hourSales = <ErrorMessage />;
     daySales = hourSales;
   }
-  if (result.status === "loading") {
+  if (result.status === "pending") {
     hourSales = <SalesByHourSkeleton />;
     daySales = <SalesByDaySkeleton />;
   }

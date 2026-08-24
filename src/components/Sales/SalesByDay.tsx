@@ -22,7 +22,7 @@ const TVALoader = ({ date }: { date: string }) => {
   if (result.isError) {
     return <ErrorMessage />;
   }
-  if (result.isLoading) {
+  if (result.isPending) {
     return <TVASkeleton />;
   }
   return <StatsByTVA stats={result.data.tva} />;
@@ -33,7 +33,7 @@ const CategoriesLoader = ({ date }: { date: string }) => {
   if (result.isError) {
     return <ErrorMessage />;
   }
-  if (result.isLoading) {
+  if (result.isPending) {
     return <CategorySkeleton />;
   }
   const categories = result.data.paymentMethods.map((m) => ({
@@ -56,7 +56,7 @@ const SalesLoader = ({ date }: { date: string }) => {
   if (result.isError) {
     return <ErrorMessage />;
   }
-  if (result.isLoading) {
+  if (result.isPending) {
     return (
       <Card className="flex flex-col">
         <CardTitle>{`Ventes du ${date}`}</CardTitle>

@@ -196,7 +196,7 @@ const CustomerLoader = ({ id }: { id: number }) => {
           <FontAwesomeIcon icon={faTimesCircle} className="mr-sm" />
           Annuler
         </LinkButton>
-        <Button type="submit" className="px-md" disabled={mutation.isLoading}>
+        <Button type="submit" className="px-md" disabled={mutation.isPending}>
           <FontAwesomeIcon icon={faCheckCircle} className="mr-sm" />
           Modifier
         </Button>

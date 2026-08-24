@@ -126,7 +126,7 @@ const OrderLoader = ({ id }: { id: number }) => {
         type="submit"
         className="px-md"
         form="orderForm"
-        disabled={mutation.isLoading}
+        disabled={mutation.isPending}
       >
         <FontAwesomeIcon icon={faCheckCircle} className="mr-sm" />
         Modifier

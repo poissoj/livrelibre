@@ -1,4 +1,5 @@
 import * as React from "react";
+import { keepPreviousData } from "@tanstack/react-query";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -82,7 +83,7 @@ const SearchLoader = ({
   const result = trpc.advancedSearch.useQuery(
     { search: query, page },
     {
-      keepPreviousData: true,
+      placeholderData: keepPreviousData,
     },
   );
   let title = "Recherche avancée";

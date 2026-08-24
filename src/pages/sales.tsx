@@ -39,7 +39,7 @@ const SalesLoader = (): ReactElement | null => {
   if (result.status === "error") {
     return <ErrorMessage />;
   }
-  if (result.status === "loading") {
+  if (result.status === "pending") {
     return <SalesSkeleton />;
   }
   return <SalesTable sales={result.data} />;

@@ -17,8 +17,8 @@ export const AddToCartButton = ({
   className?: string;
 }) => {
   let icon = item.amount > 0 ? faCartPlus : faShoppingCart;
-  const { mutate, isLoading } = useAddToCart();
-  if (isLoading) {
+  const { mutate, isPending } = useAddToCart();
+  if (isPending) {
     icon = faSpinner;
   }
   return (
@@ -35,7 +35,7 @@ export const AddToCartButton = ({
       }}
       disabled={item.amount === 0}
     >
-      <FontAwesomeIcon icon={icon} spin={isLoading} />
+      <FontAwesomeIcon icon={icon} spin={isPending} />
     </button>
   );
 };

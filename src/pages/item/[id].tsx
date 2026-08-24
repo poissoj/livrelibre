@@ -149,9 +149,9 @@ const TitleWithButtons = ({ item }: { item: ItemWithCount }) => {
       >
         <FontAwesomeIcon
           icon={
-            mutation.isLoading ? faSpinner : item.starred ? faStar : emptyStar
+            mutation.isPending ? faSpinner : item.starred ? faStar : emptyStar
           }
-          spin={mutation.isLoading}
+          spin={mutation.isPending}
         />
       </Button>
       <LinkButton
@@ -168,7 +168,7 @@ const TitleWithButtons = ({ item }: { item: ItemWithCount }) => {
 const AddToCartFooter = ({ id, stock }: { id: number; stock: number }) => {
   type FormFields = { quantity: string };
   const { register, handleSubmit } = useForm<FormFields>();
-  const { mutate, isLoading } = useAddToCart();
+  const { mutate, isPending } = useAddToCart();
   const utils = trpc.useUtils();
   const submit = ({ quantity }: FormFields) => {
     mutate(
@@ -196,8 +196,8 @@ const AddToCartFooter = ({ id, stock }: { id: number; stock: number }) => {
       </label>
       <Button type="submit" className="ml-2 px-md" disabled={stock === 0}>
         <FontAwesomeIcon
-          icon={isLoading ? faSpinner : faCartPlus}
-          spin={isLoading}
+          icon={isPending ? faSpinner : faCartPlus}
+          spin={isPending}
           className="mr-2"
         />
         Ajouter au panier
@@ -302,7 +302,7 @@ const Sales = ({ id }: { id: number }) => {
   if (result.status === "error") {
     return <ErrorMessage />;
   }
-  if (result.status === "loading") {
+  if (result.status === "pending") {
     return <SalesSkeleton />;
   }
   return <SalesByMonth sales={result.data} />;

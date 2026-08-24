@@ -1,5 +1,6 @@
 import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { keepPreviousData } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import React, { type ReactElement, useReducer, useState } from "react";
 import ContentLoader from "react-content-loader";
@@ -39,7 +40,9 @@ const CustomersLoader = ({ page }: { page: number }) => {
   const [withPurchases, toggleWithPurchases] = useReducer((v) => !v, false);
   const query = { pageNumber: page, fullname: search, withPurchases };
 
-  const result = trpc.customers.useQuery(query, { keepPreviousData: true });
+  const result = trpc.customers.useQuery(query, {
+    placeholderData: keepPreviousData,
+  });
 
   let pageTitle = "Liste des client⋅es";
   if (result.status === "error") {
@@ -49,7 +52,7 @@ const CustomersLoader = ({ page }: { page: number }) => {
       </ItemsCard>
     );
   }
-  if (result.status === "loading") {
+  if (result.status === "pending") {
     return (
       <ItemsCard title={pageTitle}>
         <ItemsSkeleton />

@@ -36,7 +36,7 @@ const OrderBody = () => {
   if (result.status === "error") {
     return <ErrorMessage />;
   }
-  if (result.status === "loading" && id) {
+  if (result.status === "pending" && id) {
     return <div>Chargement…</div>;
   }
   const data: React.ComponentProps<typeof OrderForm>["data"] = {
@@ -55,7 +55,7 @@ const OrderBody = () => {
         type="submit"
         className="px-md"
         form="newOrder"
-        disabled={mutation.isLoading}
+        disabled={mutation.isPending}
       >
         <FontAwesomeIcon icon={faPlus} className="mr-sm" />
         Ajouter

@@ -22,7 +22,7 @@ export const SellNewItem = (): React.ReactElement => {
   const { register, handleSubmit, reset } = useForm<NewCartItem>();
   const utils = trpc.useUtils();
   const [alert, setAlert] = React.useState<TAlert | null>(null);
-  const { mutateAsync, isLoading } = trpc.addNewItemToCart.useMutation({
+  const { mutateAsync, isPending } = trpc.addNewItemToCart.useMutation({
     async onSuccess() {
       await utils.cart.invalidate();
     },
@@ -82,7 +82,7 @@ export const SellNewItem = (): React.ReactElement => {
               ))}
             </Select>
           </FormRow>
-          <Button type="submit" className="self-center" disabled={isLoading}>
+          <Button type="submit" className="self-center" disabled={isPending}>
             <FontAwesomeIcon icon={faCartPlus} className="mr-sm" />
             Ajouter au panier
           </Button>

@@ -38,7 +38,7 @@ const BookmarksLoader = (): ReactElement | null => {
   if (result.status === "error") {
     return <ErrorMessage />;
   }
-  if (result.status === "loading") {
+  if (result.status === "pending") {
     return <BookmarksSkeleton />;
   }
   return <BookmarksContent bookmarks={result.data} />;

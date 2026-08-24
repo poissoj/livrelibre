@@ -35,7 +35,7 @@ const TH_STYLES = "sticky top-0 bg-white";
 
 const RemoveFromCartButton = ({ id }: { id: number }) => {
   const utils = trpc.useUtils();
-  const { mutate, isLoading } = trpc.removeFromCart.useMutation({
+  const { mutate, isPending } = trpc.removeFromCart.useMutation({
     async onSuccess() {
       await utils.cart.invalidate();
     },
@@ -50,8 +50,8 @@ const RemoveFromCartButton = ({ id }: { id: number }) => {
       title="Enlever du panier"
     >
       <FontAwesomeIcon
-        icon={isLoading ? faSpinner : faTrashAlt}
-        spin={isLoading}
+        icon={isPending ? faSpinner : faTrashAlt}
+        spin={isPending}
       />
     </Button>
   );
@@ -301,7 +301,7 @@ const AsideButton = () => {
   const { handleSubmit } = useForm();
   const utils = trpc.useUtils();
   const asideCart = trpc.asideCart.useQuery();
-  const { mutateAsync, isLoading } = trpc.putCartAside.useMutation({
+  const { mutateAsync, isPending } = trpc.putCartAside.useMutation({
     async onSuccess() {
       await Promise.all([
         utils.cart.invalidate(),
@@ -322,11 +322,11 @@ const AsideButton = () => {
         type="submit"
         className="[padding:10px_15px]"
         value="put-aside"
-        disabled={isLoading || asideCart.data.count > 0}
+        disabled={isPending || asideCart.data.count > 0}
       >
         <FontAwesomeIcon
-          icon={isLoading ? faSpinner : faHourglassStart}
-          spin={isLoading}
+          icon={isPending ? faSpinner : faHourglassStart}
+          spin={isPending}
         />
         <span className="ml-sm">Mettre de côté</span>
       </Button>
@@ -348,7 +348,7 @@ const ReactivateButton = () => {
   const cart = trpc.cart.useQuery();
 
   const utils = trpc.useUtils();
-  const { mutateAsync, isLoading } = trpc.reactivateCart.useMutation({
+  const { mutateAsync, isPending } = trpc.reactivateCart.useMutation({
     async onSuccess() {
       await Promise.all([
         utils.cart.invalidate(),
@@ -369,11 +369,11 @@ const ReactivateButton = () => {
       <Button
         type="submit"
         className="[padding:10px_15px] mb-2"
-        disabled={cart.data.count > 0 || isLoading}
+        disabled={cart.data.count > 0 || isPending}
       >
         <FontAwesomeIcon
-          icon={isLoading ? faSpinner : faShareSquare}
-          spin={isLoading}
+          icon={isPending ? faSpinner : faShareSquare}
+          spin={isPending}
         />
         <span className="ml-sm">Réactiver</span>
       </Button>
@@ -390,7 +390,7 @@ const AsideCartLoader = () => {
       </AsideCartWrapper>
     );
   }
-  if (result.status === "loading") {
+  if (result.status === "pending") {
     return null;
   }
   const { count, total } = result.data;
@@ -418,7 +418,7 @@ const CustomerInfos = ({ customer }: { customer: CustomerWithPurchase }) => {
   const [applied, setApplied] = useState<number>();
 
   const utils = trpc.useUtils();
-  const { mutateAsync, isLoading } = trpc.addNewItemToCart.useMutation({
+  const { mutateAsync, isPending } = trpc.addNewItemToCart.useMutation({
     async onSuccess() {
       await utils.cart.invalidate();
     },
@@ -457,7 +457,7 @@ const CustomerInfos = ({ customer }: { customer: CustomerWithPurchase }) => {
               setDiscount(Number(e.target.value));
             }}
           />
-          <Button type="submit" className="ml-2" disabled={isLoading}>
+          <Button type="submit" className="ml-2" disabled={isPending}>
             Appliquer
           </Button>
         </form>
@@ -547,7 +547,7 @@ const CartLoader = () => {
       </Card>
     );
   }
-  if (result.status === "loading") {
+  if (result.status === "pending") {
     return (
       <Card>
         <CardTitle>Panier</CardTitle>

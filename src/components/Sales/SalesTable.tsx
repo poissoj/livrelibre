@@ -17,7 +17,7 @@ const DeleteSale = ({
   itemId: number | null;
 }) => {
   const utils = trpc.useUtils();
-  const { mutate, isLoading } = trpc.deleteSale.useMutation({
+  const { mutate, isPending } = trpc.deleteSale.useMutation({
     async onSuccess() {
       await utils.salesByDay.invalidate();
     },
@@ -34,8 +34,8 @@ const DeleteSale = ({
       }}
     >
       <FontAwesomeIcon
-        icon={isLoading ? faSpinner : faTrashAlt}
-        spin={isLoading}
+        icon={isPending ? faSpinner : faTrashAlt}
+        spin={isPending}
       />
     </Button>
   );

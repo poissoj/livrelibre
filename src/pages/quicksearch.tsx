@@ -1,4 +1,5 @@
 import * as React from "react";
+import { keepPreviousData } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
@@ -56,7 +57,7 @@ const SearchLoader = ({
   const result = trpc.quicksearch.useQuery(
     { search, page, inStock },
     {
-      keepPreviousData: true,
+      placeholderData: keepPreviousData,
     },
   );
   let title = "Recherche rapide";
