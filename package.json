@@ -12,7 +12,7 @@
     "migrate:db": "drizzle-kit migrate",
     "test": "pnpm test:unit && pnpm test:integration",
     "test:unit": "vitest run tests/unit",
-    "test:integration": "vitest run tests/integration",
+    "test:integration": "vitest run tests/integration --config vitest.integration.config.mts",
     "test:e2e": "pnpm exec playwright test",
     "test-ui": "pnpm exec playwright test --ui"
   },
