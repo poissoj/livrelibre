@@ -19,10 +19,7 @@ const NewCustomer = (): React.ReactElement => {
     <div className="[margin-left:10%] [margin-right:10%] flex-1">
       <Title>Ajouter un client</Title>
       <CustomerForm title="Ajouter un client" onSubmit={submit}>
-        <LinkButton
-          href="/customers"
-          className="mr-2 px-md [background-color:#6E6E6E]"
-        >
+        <LinkButton href="/customers" className="mr-2 px-md !bg-[#6E6E6E]">
           <FontAwesomeIcon icon={faTimesCircle} className="mr-sm" />
           Annuler
         </LinkButton>

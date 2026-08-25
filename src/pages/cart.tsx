@@ -43,7 +43,7 @@ const RemoveFromCartButton = ({ id }: { id: number }) => {
   return (
     <Button
       type="button"
-      className="[background-color:#FF9800]"
+      className="!bg-[#FF9800]"
       onClick={() => {
         mutate(id);
       }}
@@ -234,7 +234,7 @@ const QuickAdd = ({ addError }: { addError: (error: ISBNError) => void }) => {
   };
   return (
     <form className="flex items-center" onSubmit={handleSubmit(submit)}>
-      <label htmlFor="isbn-field" className="flex-shrink-0 mr-2">
+      <label htmlFor="isbn-field" className="shrink-0 mr-2">
         Ajout rapide :
       </label>
       <Input

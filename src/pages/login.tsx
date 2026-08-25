@@ -62,7 +62,7 @@ const Login = () => {
   return (
     <div className="h-full w-full relative">
       <Title>Se connecter</Title>
-      <div className="bg-primary-default w-full h-1/2 absolute top-0" />
+      <div className="bg-primary w-full h-1/2 absolute top-0" />
       <section className="flex flex-col justify-center items-center h-full relative">
         <h1 className="font-['Niconne'] [font-size:52px] text-white mb-4">
           {APP_NAME}

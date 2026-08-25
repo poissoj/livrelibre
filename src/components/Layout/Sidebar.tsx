@@ -37,7 +37,7 @@ const NavLink = ({ href, icon, children }: NavLinkProps) => {
         "block p-md transition-colors duration-300 ease-out border-l-4",
         "hover:bg-gray-darkest",
         "focus:outline-none focus:bg-gray-darkest",
-        ariaCurrent ? "border-primary-default" : "border-transparent",
+        ariaCurrent ? "border-primary" : "border-transparent",
       )}
     >
       <FontAwesomeIcon icon={icon} className="mr-sm" />
@@ -50,7 +50,7 @@ export const Sidebar = (): ReactElement => {
   const { user } = useUser();
   const salesPage = user?.role === "admin" ? "/sales" : "/todaySales";
   return (
-    <nav className="w-56 bg-gray-default text-white">
+    <nav className="w-56 bg-gray text-white">
       <ul>
         <li>
           <NavLink href="/" icon={faTachometerAlt}>

@@ -62,10 +62,10 @@ const Tile = ({
         className={clsx(
           "flex flex-col items-center justify-center gap-2 shrink-0",
           "p-1 border-2 w-20 h-16 rounded cursor-pointer",
-          "peer-focus-visible:ring peer-focus-visible:ring-primary-default/50",
-          "hover:ring-2 hover:ring-primary-default/50 ",
+          "peer-focus-visible:ring-3 peer-focus-visible:ring-primary/50",
+          "hover:ring-2 hover:ring-primary/50 ",
           checked
-            ? "border-primary-default text-primary-darkest"
+            ? "border-primary text-primary-darkest"
             : "border-[#ccc] saturate-0 opacity-75",
         )}
       >

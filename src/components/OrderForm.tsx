@@ -52,7 +52,7 @@ const ContactMean = React.forwardRef<
           "[transition:border-color_ease-in-out_0.15s]",
           { grow: mean === "mail" },
           { "basis-40": mean === "phone" },
-          isActive ? "border-primary-default" : "[border-color:#ccc]",
+          isActive ? "border-primary" : "[border-color:#ccc]",
         )}
       >
         {children}
@@ -104,7 +104,7 @@ const CustomerFormBody = (props: {
       <div className="flex justify-end mb-4 mr-20">
         <Button
           type="button"
-          className="px-md mr-4 [background-color:#6E6E6E]"
+          className="px-md mr-4 !bg-[#6E6E6E]"
           onClick={props.hide}
         >
           <FontAwesomeIcon icon={faTimesCircle} className="mr-sm" />

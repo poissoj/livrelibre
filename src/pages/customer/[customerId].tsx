@@ -191,7 +191,7 @@ const CustomerLoader = ({ id }: { id: number }) => {
         <DeleteCustomerButton id={id} />
         <LinkButton
           href="/customers"
-          className="mr-2 px-md [background-color:#6E6E6E]"
+          className="mr-2 px-md !bg-[#6E6E6E]"
         >
           <FontAwesomeIcon icon={faTimesCircle} className="mr-sm" />
           Annuler
@@ -201,7 +201,7 @@ const CustomerLoader = ({ id }: { id: number }) => {
           Modifier
         </Button>
       </CustomerForm>
-      <div className="flex-grow flex gap-4">
+      <div className="grow flex gap-4">
         <Purchases purchases={result.data.purchases} />
         <Orders customerId={id} />
       </div>

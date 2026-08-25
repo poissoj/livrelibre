@@ -234,7 +234,7 @@ const DilicomPage = () => {
         <ImportBooks books={file.data}>
           <Button
             type="button"
-            className="mr-2 px-md [background-color:#6E6E6E]"
+            className="mr-2 px-md !bg-[#6E6E6E]"
             onClick={() => {
               setFile(null);
             }}

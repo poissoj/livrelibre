@@ -62,7 +62,7 @@ const SalesByDay = dynamic(() => import("@/components/Charts/SalesByDay"), {
   loading: SalesByHourSkeleton,
 });
 
-const Spacer = () => <div className="w-1 h-1 flex-shrink-0" />;
+const Spacer = () => <div className="w-1 h-1 shrink-0" />;
 
 const StatsLoader = () => {
   const result = trpc.stats.useQuery();

@@ -87,7 +87,7 @@ const ItemLoader = ({ id }: { id: number }) => {
     >
       <LinkButton
         href={`/item/${id}`}
-        className="mr-2 px-md [background-color:#6E6E6E]"
+        className="mr-2 px-md !bg-[#6E6E6E]"
       >
         <FontAwesomeIcon icon={faTimesCircle} className="mr-sm" />
         Annuler
