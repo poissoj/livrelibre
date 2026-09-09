@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import { eq } from "drizzle-orm";
 
-import { db } from "@/db/database";
+import { db } from "@livrelibre/server/db/database";
 import { purchases, selectedCustomer } from "@livrelibre/shared/schema";
 import {
   addPurchase,
@@ -12,7 +12,7 @@ import {
   searchCustomers,
   setCustomer,
   setSelectedCustomer,
-} from "@/server/customers";
+} from "@livrelibre/server/server/customers";
 import { seedCustomer, seedUser, truncateAll } from "./helpers";
 
 describe("searchCustomers", () => {

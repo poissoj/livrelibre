@@ -22,6 +22,9 @@
     "paths": {
       "@/*": [
         "./src/*"
+      ],
+      "@server/*": [
+        "./apps/server/src/*"
       ]
     },
     "isolatedModules": true

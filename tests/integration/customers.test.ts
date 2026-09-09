@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { db } from "@/db/database";
+import { db } from "@livrelibre/server/db/database";
 import { purchases } from "@livrelibre/shared/schema";
 import {
   addPurchase,
@@ -8,7 +8,7 @@ import {
   getCustomer,
   getCustomers,
   newCustomer,
-} from "@/server/customers";
+} from "@livrelibre/server/server/customers";
 import { seedCustomer, truncateAll } from "./helpers";
 
 describe("customers", () => {

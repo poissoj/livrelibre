@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { getStats } from "@/server/stats";
+import { getStats } from "@livrelibre/server/server/stats";
 import { seedSale, truncateAll } from "./helpers";
 
 describe("getStats", () => {

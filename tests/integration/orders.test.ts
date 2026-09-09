@@ -6,7 +6,7 @@ import {
   getOrders,
   newOrder,
   setOrder,
-} from "@/server/orders";
+} from "@livrelibre/server/server/orders";
 import { seedCustomer, truncateAll } from "./helpers";
 
 const baseOrder = {

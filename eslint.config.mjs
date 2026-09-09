@@ -36,6 +36,8 @@ export default tseslint.config(
       "eslint.config.mjs",
       "*.spec.ts",
       "drizzle.config.ts",
+      "apps/**",
+      "packages/**",
     ],
   },
 );

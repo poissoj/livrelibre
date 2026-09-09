@@ -1,5 +1,53 @@
 {
   "name": "@livrelibre/server",
   "version": "0.0.0",
-  "private": true
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "exports": {
+    "./db/database": "./src/db/database.ts",
+    "./db/migrate": "./src/db/migrate.ts",
+    "./router": "./src/router.ts",
+    "./server/addItem": "./src/server/addItem.ts",
+    "./server/bestSales": "./src/server/bestSales.ts",
+    "./server/bookmarks": "./src/server/bookmarks.ts",
+    "./server/cart": "./src/server/cart.ts",
+    "./server/customers": "./src/server/customers.ts",
+    "./server/lastSales": "./src/server/lastSales.ts",
+    "./server/orders": "./src/server/orders.ts",
+    "./server/sales": "./src/server/sales.ts",
+    "./server/salesByDay": "./src/server/salesByDay.ts",
+    "./server/salesByMonth": "./src/server/salesByMonth.ts",
+    "./server/searchItem": "./src/server/searchItem.ts",
+    "./server/stats": "./src/server/stats.ts",
+    "./server/updateItem": "./src/server/updateItem.ts",
+    "./utils/getBookData": "./src/utils/getBookData.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "2.1.1",
+    "@hono/trpc-server": "0.4.2",
+    "@livrelibre/shared": "workspace:*",
+    "@trpc/server": "11.18.0",
+    "basic-ftp": "6.2.0",
+    "bcrypt": "6.0.0",
+    "cheerio": "1.2.0",
+    "date-fns": "4.4.0",
+    "dotenv": "17.4.2",
+    "drizzle-orm": "0.45.2",
+    "got": "15.1.0",
+    "hono": "4.13.7",
+    "postgres": "3.4.9",
+    "winston": "3.19.0",
+    "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "6.0.0",
+    "@types/node": "26.2.0",
+    "tsx": "4.23.13",
+    "typescript": "6.0.3"
+  }
 }

@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import { TRPCError } from "@trpc/server";
 
-import { appRouter } from "@/pages/api/trpc/[trpc]";
+import { appRouter } from "@livrelibre/server/router";
 import { truncateAll } from "./helpers";
 
 const admin = appRouter.createCaller({

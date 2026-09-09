@@ -16,7 +16,7 @@ import {
 import { FormRow } from "@/components/FormRow";
 import { formatDate } from "@livrelibre/shared/date";
 import { formatTVA } from "@livrelibre/shared/format";
-import type { BookData } from "@/utils/getBookData";
+import type { BookData } from "@livrelibre/server/utils/getBookData";
 import { type BaseItem, ITEM_TYPES, TVAValues } from "@livrelibre/shared/item";
 
 export type FormFields = Omit<BaseItem, "amount"> & { amount: string };

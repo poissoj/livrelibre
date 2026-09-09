@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import { format } from "date-fns";
 
-import { lastSales } from "@/server/lastSales";
+import { lastSales } from "@livrelibre/server/server/lastSales";
 import { seedItem, seedSale, truncateAll } from "./helpers";
 
 describe("lastSales", () => {

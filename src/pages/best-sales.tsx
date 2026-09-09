@@ -6,7 +6,7 @@ import ContentLoader from "react-content-loader";
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Title } from "@/components/Title";
-import type { BestSale } from "@/server/bestSales";
+import type { BestSale } from "@livrelibre/server/server/bestSales";
 import { formatNumber } from "@livrelibre/shared/format";
 import { trpc } from "@/utils/trpc";
 

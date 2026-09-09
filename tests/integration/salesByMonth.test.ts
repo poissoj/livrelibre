@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { addToCart, payCart } from "@/server/cart";
-import { getSalesByMonth } from "@/server/salesByMonth";
+import { addToCart, payCart } from "@livrelibre/server/server/cart";
+import { getSalesByMonth } from "@livrelibre/server/server/salesByMonth";
 import { seedItem, seedUser, truncateAll } from "./helpers";
 
 describe("getSalesByMonth", () => {

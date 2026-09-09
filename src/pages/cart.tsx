@@ -22,7 +22,7 @@ import { ErrorMessage } from "@/components/ErrorMessage";
 import { Input, Select } from "@/components/FormControls";
 import { SelectCustomer } from "@/components/SelectCustomer";
 import { Title } from "@/components/Title";
-import type { PaymentFormData } from "@/server/cart";
+import type { PaymentFormData } from "@livrelibre/server/server/cart";
 import type { Customer, CustomerWithPurchase } from "@livrelibre/shared/customer";
 import { formatDate } from "@livrelibre/shared/date";
 import { CART_ERRORS } from "@livrelibre/shared/errors";

@@ -7,7 +7,7 @@ import {
   getOrders,
   newOrder,
   setCustomerNotified,
-} from "@/server/orders";
+} from "@livrelibre/server/server/orders";
 import { seedCustomer, seedItem, truncateAll } from "./helpers";
 
 const baseOrder = {

@@ -7,7 +7,7 @@ import {
   getCart,
   putCartAside,
   reactivateCart,
-} from "@/server/cart";
+} from "@livrelibre/server/server/cart";
 import { seedItem, seedUser, truncateAll } from "./helpers";
 
 describe("aside cart", () => {

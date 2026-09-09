@@ -8,7 +8,7 @@ import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Restricted } from "@/components/Restricted";
 import { Title } from "@/components/Title";
-import type { Sale } from "@/server/sales";
+import type { Sale } from "@livrelibre/server/server/sales";
 import { formatNumber, formatPrice } from "@livrelibre/shared/format";
 import { trpc } from "@/utils/trpc";
 
