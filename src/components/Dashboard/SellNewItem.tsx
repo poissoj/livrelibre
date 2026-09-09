@@ -9,8 +9,8 @@ import { Card, CardBody, CardTitle } from "@/components/Card";
 import { Input, Select } from "@/components/FormControls";
 import { FormRow } from "@/components/FormRow";
 import type { NewCartItem } from "@/server/cart";
-import { formatTVA } from "@/utils/format";
-import { ITEM_TYPES, TVAValues } from "@/utils/item";
+import { formatTVA } from "@livrelibre/shared/format";
+import { ITEM_TYPES, TVAValues } from "@livrelibre/shared/item";
 import { trpc } from "@/utils/trpc";
 
 type TAlert = {

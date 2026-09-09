@@ -50,10 +50,10 @@ import {
 import { getStats } from "@/server/stats";
 import { middleware, procedure, router } from "@/server/trpc";
 import { updateItem } from "@/server/updateItem";
-import { ItemTypes, TVAValues } from "@/utils/item";
+import { ItemTypes, TVAValues } from "@livrelibre/shared/item";
 import { logger } from "@/utils/logger";
-import { zOrder, zOrderStatusArray } from "@/utils/order";
-import { norm } from "@/utils/utils";
+import { zOrder, zOrderStatusArray } from "@livrelibre/shared/order";
+import { norm } from "@livrelibre/shared/utils";
 
 const itemSchema = z.object({
   type: z.enum(ItemTypes),

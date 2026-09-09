@@ -1,8 +1,8 @@
 import { useRouter } from "next/router";
 import React from "react";
 
-import type { CustomerWithTotal } from "@/utils/customer";
-import { formatPrice } from "@/utils/format";
+import type { CustomerWithTotal } from "@livrelibre/shared/customer";
+import { formatPrice } from "@livrelibre/shared/format";
 
 export const CustomersTable = ({ items }: { items: CustomerWithTotal[] }) => {
   const router = useRouter();

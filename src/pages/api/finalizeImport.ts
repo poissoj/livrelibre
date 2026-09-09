@@ -4,12 +4,12 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { createRouter } from "next-connect";
 
 import { db } from "@/db/database";
-import { items } from "@/db/schema";
+import { items } from "@livrelibre/shared/schema";
 import { type SessionData, sessionOptions } from "@/lib/session";
-import { formatDate } from "@/utils/date";
-import type { DilicomRowWithId } from "@/utils/dilicomItem";
+import { formatDate } from "@livrelibre/shared/date";
+import type { DilicomRowWithId } from "@livrelibre/shared/dilicomItem";
 import { logger } from "@/utils/logger";
-import { norm } from "@/utils/utils";
+import { norm } from "@livrelibre/shared/utils";
 
 const router = createRouter<NextApiRequest, NextApiResponse>();
 

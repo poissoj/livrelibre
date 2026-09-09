@@ -5,7 +5,7 @@ import {
   formatPercent,
   formatPrice,
   formatTVA,
-} from "@/utils/format";
+} from "@livrelibre/shared/format";
 
 // Note: these functions use `Intl.NumberFormat` with the runtime default
 // locale, so assertions on exact strings are locale-dependent. The tests below

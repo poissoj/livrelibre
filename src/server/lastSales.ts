@@ -3,7 +3,7 @@ import { fr } from "date-fns/locale";
 import { and, eq, lt, sql, sum } from "drizzle-orm";
 
 import { db } from "@/db/database";
-import { sales } from "@/db/schema";
+import { sales } from "@livrelibre/shared/schema";
 
 export const lastSales = async (id: number) => {
   const lastSales = await db

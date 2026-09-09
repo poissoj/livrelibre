@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { eq } from "drizzle-orm";
 
 import { db } from "@/db/database";
-import { items, sales } from "@/db/schema";
+import { items, sales } from "@livrelibre/shared/schema";
 import {
   addISBNToCart,
   addToCart,
@@ -11,7 +11,7 @@ import {
   payCart,
   removeFromCart,
 } from "@/server/cart";
-import { CART_ERRORS } from "@/utils/errors";
+import { CART_ERRORS } from "@livrelibre/shared/errors";
 import { seedItem, seedUser, truncateAll } from "./helpers";
 
 describe("cart", () => {

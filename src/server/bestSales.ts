@@ -1,7 +1,7 @@
 import { desc, eq, sum } from "drizzle-orm";
 
 import { db } from "@/db/database";
-import { items, sales } from "@/db/schema";
+import { items, sales } from "@livrelibre/shared/schema";
 
 export type BestSale = {
   id: number;

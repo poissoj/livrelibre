@@ -1,4 +1,4 @@
-import type { customers } from "@/db/schema";
+import type { customers } from "./schema";
 
 type Purchase = {
   date: string;

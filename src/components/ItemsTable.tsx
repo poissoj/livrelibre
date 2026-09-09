@@ -1,8 +1,8 @@
 import Link from "next/link";
 import React from "react";
 
-import { formatNumber } from "@/utils/format";
-import type { Item } from "@/utils/item";
+import { formatNumber } from "@livrelibre/shared/format";
+import type { Item } from "@livrelibre/shared/item";
 
 import { AddToCartButton } from "./AddToCartButton";
 

@@ -1,7 +1,7 @@
 import { clsx } from "clsx";
 
-import { formatNumber, formatPrice, formatTVA } from "@/utils/format";
-import { PAYMENT_METHODS } from "@/utils/sale";
+import { formatNumber, formatPrice, formatTVA } from "@livrelibre/shared/format";
+import { PAYMENT_METHODS } from "@livrelibre/shared/sale";
 import type { RouterOutput } from "@/utils/trpc";
 
 const TH_STYLES = "sticky top-0 bg-white";

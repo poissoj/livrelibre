@@ -8,18 +8,18 @@ import {
   items as itemsTable,
   sales,
   selectedCustomer as selectedCustomerTable,
-} from "@/db/schema";
+} from "@livrelibre/shared/schema";
 import {
   addPurchase,
   getSelectedCustomer,
   resetCustomer,
   setSelectedCustomer,
 } from "@/server/customers";
-import { formatDate } from "@/utils/date";
-import { CART_ERRORS } from "@/utils/errors";
-import type { ItemType, TVA } from "@/utils/item";
+import { formatDate } from "@livrelibre/shared/date";
+import { CART_ERRORS } from "@livrelibre/shared/errors";
+import type { ItemType, TVA } from "@livrelibre/shared/item";
 import { logger } from "@/utils/logger";
-import type { PaymentType } from "@/utils/sale";
+import type { PaymentType } from "@livrelibre/shared/sale";
 
 type CartItem = {
   itemId?: number | null;

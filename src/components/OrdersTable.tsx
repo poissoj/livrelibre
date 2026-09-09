@@ -13,12 +13,12 @@ import { useRouter } from "next/router";
 import React from "react";
 import { toast } from "react-toastify";
 
-import { formatDateFR } from "@/utils/date";
+import { formatDateFR } from "@livrelibre/shared/date";
 import {
   type CustomerOrders,
   type OrderRow,
   STATUS_LABEL,
-} from "@/utils/order";
+} from "@livrelibre/shared/order";
 import { trpc } from "@/utils/trpc";
 
 import { StatusCircle } from "./StatusCircle";

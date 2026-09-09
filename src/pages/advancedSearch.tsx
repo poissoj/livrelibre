@@ -9,11 +9,11 @@ import { ItemsTable } from "@/components/ItemsTable";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { Pagination } from "@/components/Pagination";
 import { Title } from "@/components/Title";
-import { formatTVA } from "@/utils/format";
-import { ITEM_TYPES } from "@/utils/item";
-import { ITEMS_PER_PAGE } from "@/utils/pagination";
+import { formatTVA } from "@livrelibre/shared/format";
+import { ITEM_TYPES } from "@livrelibre/shared/item";
+import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
 import { trpc } from "@/utils/trpc";
-import { isIn } from "@/utils/utils";
+import { isIn } from "@livrelibre/shared/utils";
 
 const CARD_STYLES = "max-h-full overflow-hidden flex flex-col relative";
 

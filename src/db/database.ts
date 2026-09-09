@@ -1,7 +1,7 @@
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 
-import * as schema from "./schema";
+import * as schema from "@livrelibre/shared/schema";
 
 if (!process.env.POSTGRES_URI) {
   throw new Error("Please provide POSTGRES_URI env var");

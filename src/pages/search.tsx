@@ -9,8 +9,8 @@ import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { Input, Select, Textarea } from "@/components/FormControls";
 import { FormRow } from "@/components/FormRow";
 import { Title } from "@/components/Title";
-import { formatTVA } from "@/utils/format";
-import { ITEM_TYPES, TVAValues } from "@/utils/item";
+import { formatTVA } from "@livrelibre/shared/format";
+import { ITEM_TYPES, TVAValues } from "@livrelibre/shared/item";
 
 const Column = ({ children }: React.PropsWithChildren) => (
   <div className="flex-1 [min-width:20rem] ml-md">{children}</div>

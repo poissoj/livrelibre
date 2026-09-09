@@ -1,10 +1,10 @@
 import { eq } from "drizzle-orm";
 
 import { db } from "@/db/database";
-import { items as itemsTable } from "@/db/schema";
-import type { BaseItem } from "@/utils/item";
+import { items as itemsTable } from "@livrelibre/shared/schema";
+import type { BaseItem } from "@livrelibre/shared/item";
 import { logger } from "@/utils/logger";
-import { norm } from "@/utils/utils";
+import { norm } from "@livrelibre/shared/utils";
 
 export const addItem = async (
   item: BaseItem,

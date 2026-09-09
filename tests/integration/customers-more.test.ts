@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { eq } from "drizzle-orm";
 
 import { db } from "@/db/database";
-import { purchases, selectedCustomer } from "@/db/schema";
+import { purchases, selectedCustomer } from "@livrelibre/shared/schema";
 import {
   addPurchase,
   getCustomer,

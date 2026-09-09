@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { db } from "@/db/database";
-import { sales } from "@/db/schema";
+import { sales } from "@livrelibre/shared/schema";
 import { getBestSales } from "@/server/bestSales";
 import { addToCart, payCart } from "@/server/cart";
 import { deleteSale } from "@/server/salesByDay";

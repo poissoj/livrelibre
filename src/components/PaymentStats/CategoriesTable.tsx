@@ -1,6 +1,6 @@
 import { clsx } from "clsx";
 
-import { formatNumber, formatPrice } from "@/utils/format";
+import { formatNumber, formatPrice } from "@livrelibre/shared/format";
 
 type Category = { label: string; nb: number; total: string | null };
 

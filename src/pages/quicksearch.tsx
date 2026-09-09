@@ -7,7 +7,7 @@ import { ItemsTable } from "@/components/ItemsTable";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { Pagination } from "@/components/Pagination";
 import { Title } from "@/components/Title";
-import { ITEMS_PER_PAGE } from "@/utils/pagination";
+import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
 import { trpc } from "@/utils/trpc";
 
 const CARD_STYLES = "max-h-full overflow-hidden flex flex-col relative";

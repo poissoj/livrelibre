@@ -1,0 +1,24 @@
+{
+  "name": "@livrelibre/shared",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./customer": "./src/customer.ts",
+    "./date": "./src/date.ts",
+    "./dilicomItem": "./src/dilicomItem.ts",
+    "./errors": "./src/errors.ts",
+    "./format": "./src/format.ts",
+    "./item": "./src/item.ts",
+    "./order": "./src/order.ts",
+    "./pagination": "./src/pagination.ts",
+    "./sale": "./src/sale.ts",
+    "./schema": "./src/schema.ts",
+    "./utils": "./src/utils.ts"
+  },
+  "dependencies": {
+    "date-fns": "4.4.0",
+    "drizzle-orm": "0.45.2",
+    "zod": "4.4.3"
+  }
+}

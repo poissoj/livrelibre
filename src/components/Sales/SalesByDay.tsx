@@ -7,8 +7,8 @@ import { CategorySkeleton } from "@/components/PaymentStats/CategorySkeleton";
 import { StatsByTVA } from "@/components/TVAStats/StatsByTVA";
 import { TVASkeleton } from "@/components/TVAStats/TVASkeleton";
 import { Title } from "@/components/Title";
-import { formatPrice } from "@/utils/format";
-import { PAYMENT_METHODS } from "@/utils/sale";
+import { formatPrice } from "@livrelibre/shared/format";
+import { PAYMENT_METHODS } from "@livrelibre/shared/sale";
 import { useScrollRestoration } from "@/utils/scroll";
 import { trpc } from "@/utils/trpc";
 

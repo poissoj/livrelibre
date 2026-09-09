@@ -6,9 +6,9 @@ import type { NextApiRequest, NextApiResponse, PageConfig } from "next";
 import { createRouter } from "next-connect";
 
 import { db } from "@/db/database";
-import { items } from "@/db/schema";
+import { items } from "@livrelibre/shared/schema";
 import { type SessionData, sessionOptions } from "@/lib/session";
-import type { DilicomRow, DilicomRowWithId } from "@/utils/dilicomItem";
+import type { DilicomRow, DilicomRowWithId } from "@livrelibre/shared/dilicomItem";
 import { getBookData } from "@/utils/getBookData";
 import { logger } from "@/utils/logger";
 

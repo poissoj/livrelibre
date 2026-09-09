@@ -12,8 +12,8 @@ import { Restricted } from "@/components/Restricted";
 import { StatsByTVA } from "@/components/TVAStats/StatsByTVA";
 import { TVASkeleton } from "@/components/TVAStats/TVASkeleton";
 import { Title } from "@/components/Title";
-import { formatPrice } from "@/utils/format";
-import { ITEM_TYPES } from "@/utils/item";
+import { formatPrice } from "@livrelibre/shared/format";
+import { ITEM_TYPES } from "@livrelibre/shared/item";
 import { type RouterOutput, trpc } from "@/utils/trpc";
 
 const TH_STYLES = "sticky top-0 bg-white";

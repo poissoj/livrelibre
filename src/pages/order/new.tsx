@@ -8,7 +8,7 @@ import { Button } from "@/components/Button";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { OrderForm } from "@/components/OrderForm";
 import { Title } from "@/components/Title";
-import type { RawOrder } from "@/utils/order";
+import type { RawOrder } from "@livrelibre/shared/order";
 import { trpc } from "@/utils/trpc";
 
 const OrderBody = () => {

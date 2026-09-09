@@ -1,11 +1,11 @@
 import { SQL, and, count, eq, gt, or, sql, sum } from "drizzle-orm";
 
 import { db } from "@/db/database";
-import { type Item, items, sales } from "@/db/schema";
-import { type ItemWithCount } from "@/utils/item";
+import { type Item, items, sales } from "@livrelibre/shared/schema";
+import { type ItemWithCount } from "@livrelibre/shared/item";
 import { logger } from "@/utils/logger";
-import { ITEMS_PER_PAGE } from "@/utils/pagination";
-import { norm, sanitize } from "@/utils/utils";
+import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
+import { norm, sanitize } from "@livrelibre/shared/utils";
 
 export const getItem = async (id: number): Promise<ItemWithCount | null> => {
   const item = await db.query.items.findFirst({ where: eq(items.id, id) });

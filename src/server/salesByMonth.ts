@@ -1,7 +1,7 @@
 import { and, desc, eq, sql, sum } from "drizzle-orm";
 
 import { db } from "@/db/database";
-import { sales } from "@/db/schema";
+import { sales } from "@livrelibre/shared/schema";
 
 export const getSalesByMonth = async (month: string, year: string) => {
   const yearMonth = `${year}-${month}`;

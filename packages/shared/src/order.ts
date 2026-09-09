@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import type { orders } from "@/db/schema";
+import type { orders } from "./schema";
 
 export const ORDER_STATUS = [
   "new",

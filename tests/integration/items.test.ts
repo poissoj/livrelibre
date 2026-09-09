@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { db } from "@/db/database";
-import { items } from "@/db/schema";
+import { items } from "@livrelibre/shared/schema";
 import { addItem } from "@/server/addItem";
 import { getItem, searchItems } from "@/server/searchItem";
 import { updateItem } from "@/server/updateItem";

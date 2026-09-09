@@ -9,12 +9,12 @@ import {
 } from "drizzle-orm";
 
 import { db } from "@/db/database";
-import { customers, purchases, selectedCustomer } from "@/db/schema";
-import type { CustomerWithPurchase } from "@/utils/customer";
-import { formatDate } from "@/utils/date";
+import { customers, purchases, selectedCustomer } from "@livrelibre/shared/schema";
+import type { CustomerWithPurchase } from "@livrelibre/shared/customer";
+import { formatDate } from "@livrelibre/shared/date";
 import { logger } from "@/utils/logger";
-import { ITEMS_PER_PAGE } from "@/utils/pagination";
-import { norm, sanitize } from "@/utils/utils";
+import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
+import { norm, sanitize } from "@livrelibre/shared/utils";
 
 export const getCustomers = async ({
   pageNumber = 1,

@@ -19,10 +19,10 @@ import { Input, Select, Textarea } from "@/components/FormControls";
 import { FormRow } from "@/components/FormRow";
 import { SelectCustomer } from "@/components/SelectCustomer";
 import { type NewItem, SelectItem } from "@/components/SelectItem";
-import type { Customer } from "@/utils/customer";
-import { toInputDate } from "@/utils/date";
-import type { Item } from "@/utils/item";
-import { type ContactMean, type RawOrder, STATUS_LABEL } from "@/utils/order";
+import type { Customer } from "@livrelibre/shared/customer";
+import { toInputDate } from "@livrelibre/shared/date";
+import type { Item } from "@livrelibre/shared/item";
+import { type ContactMean, type RawOrder, STATUS_LABEL } from "@livrelibre/shared/order";
 import { trpc } from "@/utils/trpc";
 
 const ContactMean = React.forwardRef<

@@ -1,7 +1,7 @@
 import { countDistinct, desc, eq, sql, sum } from "drizzle-orm";
 
 import { db } from "@/db/database";
-import { sales } from "@/db/schema";
+import { sales } from "@livrelibre/shared/schema";
 
 type DBSale = {
   month: string;

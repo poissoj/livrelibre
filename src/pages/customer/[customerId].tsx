@@ -19,8 +19,8 @@ import {
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { StatusCircle } from "@/components/StatusCircle";
 import { Title } from "@/components/Title";
-import type { CustomerWithPurchase } from "@/utils/customer";
-import { formatPrice } from "@/utils/format";
+import type { CustomerWithPurchase } from "@livrelibre/shared/customer";
+import { formatPrice } from "@livrelibre/shared/format";
 import { trpc } from "@/utils/trpc";
 
 const CARD_TITLE = "Modifier un⋅e client⋅e";

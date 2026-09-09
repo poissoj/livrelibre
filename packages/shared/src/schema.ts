@@ -12,8 +12,8 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
-import { ItemTypes, TVAValues } from "@/utils/item";
-import { CONTACT_MEAN, ORDER_STATUS } from "@/utils/order";
+import { ItemTypes, TVAValues } from "./item";
+import { CONTACT_MEAN, ORDER_STATUS } from "./order";
 
 export const roleEnum = pgEnum("role", ["admin", "guest"]);
 

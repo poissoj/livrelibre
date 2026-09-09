@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { eq } from "drizzle-orm";
 
 import { db } from "@/db/database";
-import { items } from "@/db/schema";
+import { items } from "@livrelibre/shared/schema";
 import { getBookmarks, starItem } from "@/server/bookmarks";
 import { seedItem, truncateAll } from "./helpers";
 

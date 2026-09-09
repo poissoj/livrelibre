@@ -7,7 +7,7 @@ import { and, sql } from "drizzle-orm";
 import fs from "fs/promises";
 
 import { db } from "@/db/database";
-import { items as itemsTable } from "@/db/schema";
+import { items as itemsTable } from "@livrelibre/shared/schema";
 
 config({ path: ".env.local" });
 

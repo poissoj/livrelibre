@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 
 import { db } from "@/db/database";
-import { customers, items, sales, users } from "@/db/schema";
+import { customers, items, sales, users } from "@livrelibre/shared/schema";
 
 export const truncateAll = async () => {
   await db.execute(

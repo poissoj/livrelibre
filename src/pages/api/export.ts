@@ -3,10 +3,10 @@ import { getIronSession } from "iron-session";
 import type { NextApiRequest, NextApiResponse } from "next";
 
 import { db } from "@/db/database";
-import { items } from "@/db/schema";
+import { items } from "@livrelibre/shared/schema";
 import { type SessionData, sessionOptions } from "@/lib/session";
-import { formatDate } from "@/utils/date";
-import { ITEM_TYPES } from "@/utils/item";
+import { formatDate } from "@livrelibre/shared/date";
+import { ITEM_TYPES } from "@livrelibre/shared/item";
 import { logger } from "@/utils/logger";
 
 const trim = (str: string | undefined) => str?.trim() || "";

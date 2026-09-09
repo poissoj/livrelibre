@@ -10,8 +10,8 @@ import { clsx } from "clsx";
 import { Fragment, type HTMLProps, useState } from "react";
 
 import { COMMON_STYLES } from "@/components/FormControls";
-import { formatPrice } from "@/utils/format";
-import type { Item } from "@/utils/item";
+import { formatPrice } from "@livrelibre/shared/format";
+import type { Item } from "@livrelibre/shared/item";
 import { trpc } from "@/utils/trpc";
 
 export type NewItem = { id: null; title: string };

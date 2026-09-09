@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { eq } from "drizzle-orm";
 
 import { db } from "@/db/database";
-import { items, sales } from "@/db/schema";
+import { items, sales } from "@livrelibre/shared/schema";
 import { addToCart, payCart } from "@/server/cart";
 import { getSales } from "@/server/sales";
 import { deleteSale, getSalesByDay } from "@/server/salesByDay";

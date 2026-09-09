@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { deserializeOrder } from "@/utils/order";
+import { deserializeOrder } from "@livrelibre/shared/order";
 
 const validOrder = {
   created: "2024-01-05",

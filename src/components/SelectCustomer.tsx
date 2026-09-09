@@ -10,7 +10,7 @@ import { clsx } from "clsx";
 import { Fragment, type HTMLProps, useState } from "react";
 
 import { COMMON_STYLES } from "@/components/FormControls";
-import type { Customer } from "@/utils/customer";
+import type { Customer } from "@livrelibre/shared/customer";
 import { trpc } from "@/utils/trpc";
 
 const getLabel = (customer: Customer | null) =>

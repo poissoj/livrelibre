@@ -5,8 +5,8 @@ import { clsx } from "clsx";
 import Link from "next/link";
 
 import { Button } from "@/components/Button";
-import { formatNumber, formatPrice, formatTVA } from "@/utils/format";
-import { PAYMENT_METHODS } from "@/utils/sale";
+import { formatNumber, formatPrice, formatTVA } from "@livrelibre/shared/format";
+import { PAYMENT_METHODS } from "@livrelibre/shared/sale";
 import { type RouterOutput, trpc } from "@/utils/trpc";
 
 const DeleteSale = ({

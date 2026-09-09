@@ -21,9 +21,9 @@ import {
   deserializeOrder,
   zOrderStatus,
   zOrderStatusArray,
-} from "@/utils/order";
+} from "@livrelibre/shared/order";
 import { trpc } from "@/utils/trpc";
-import { norm } from "@/utils/utils";
+import { norm } from "@livrelibre/shared/utils";
 
 const getStatus = (query: string | string[] | undefined): OrderStatus[] => {
   const statusList = zOrderStatusArray.safeParse(query);

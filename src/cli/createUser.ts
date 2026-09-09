@@ -4,7 +4,7 @@ import bcrypt from "bcrypt";
 import { stdin as input, stdout as output } from "node:process";
 
 import { db } from "@/db/database";
-import { users } from "@/db/schema";
+import { users } from "@livrelibre/shared/schema";
 
 const rl = readline.createInterface({ input, output });
 

@@ -13,8 +13,8 @@ import { toast } from "react-toastify";
 import { Button, ButtonAnchor } from "@/components/Button";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { Title } from "@/components/Title";
-import type { DilicomRowWithId } from "@/utils/dilicomItem";
-import { formatNumber, formatPrice } from "@/utils/format";
+import type { DilicomRowWithId } from "@livrelibre/shared/dilicomItem";
+import { formatNumber, formatPrice } from "@livrelibre/shared/format";
 
 type FormFields = {
   dilicom: FileList | undefined;

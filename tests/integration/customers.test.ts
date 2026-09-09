@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { db } from "@/db/database";
-import { purchases } from "@/db/schema";
+import { purchases } from "@livrelibre/shared/schema";
 import {
   addPurchase,
   deleteCustomer,

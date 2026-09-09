@@ -9,7 +9,7 @@ import { ErrorMessage } from "@/components/ErrorMessage";
 import { Restricted } from "@/components/Restricted";
 import { Title } from "@/components/Title";
 import type { Sale } from "@/server/sales";
-import { formatNumber, formatPrice } from "@/utils/format";
+import { formatNumber, formatPrice } from "@livrelibre/shared/format";
 import { trpc } from "@/utils/trpc";
 
 const TH_STYLES = "sticky top-0 bg-white";

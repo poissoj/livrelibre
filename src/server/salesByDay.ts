@@ -1,10 +1,10 @@
 import { eq, inArray, sql } from "drizzle-orm";
 
 import { db } from "@/db/database";
-import { items, sales } from "@/db/schema";
-import type { DBItem, TVA } from "@/utils/item";
-import { type PaymentType } from "@/utils/sale";
-import { isDefined } from "@/utils/utils";
+import { items, sales } from "@livrelibre/shared/schema";
+import type { DBItem, TVA } from "@livrelibre/shared/item";
+import { type PaymentType } from "@livrelibre/shared/sale";
+import { isDefined } from "@livrelibre/shared/utils";
 
 type AggregatedSale = Pick<
   typeof sales.$inferSelect,

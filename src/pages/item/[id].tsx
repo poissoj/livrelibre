@@ -22,9 +22,9 @@ import { Input } from "@/components/FormControls";
 import { NoResults } from "@/components/NoResults";
 import { StatusCircle } from "@/components/StatusCircle";
 import { Title } from "@/components/Title";
-import { formatNumber, formatPrice, formatTVA } from "@/utils/format";
-import { ITEM_TYPES, type ItemWithCount } from "@/utils/item";
-import { type OrderStatus } from "@/utils/order";
+import { formatNumber, formatPrice, formatTVA } from "@livrelibre/shared/format";
+import { ITEM_TYPES, type ItemWithCount } from "@livrelibre/shared/item";
+import { type OrderStatus } from "@livrelibre/shared/order";
 import { trpc, useBookmark } from "@/utils/trpc";
 import { useAddToCart } from "@/utils/useAddToCart";
 

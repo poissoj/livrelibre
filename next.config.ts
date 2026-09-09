@@ -39,6 +39,7 @@ const securityHeaders: { key: string; value: string }[] = [
 
 const nextConfig: NextConfig = {
   env,
+  transpilePackages: ["@livrelibre/shared"],
   i18n: {
     locales: ["fr"],
     defaultLocale: "fr",

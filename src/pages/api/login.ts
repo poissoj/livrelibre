@@ -5,7 +5,7 @@ import type { NextApiHandler } from "next";
 import { z } from "zod";
 
 import { db } from "@/db/database";
-import { users } from "@/db/schema";
+import { users } from "@livrelibre/shared/schema";
 import { type SessionData, sessionOptions } from "@/lib/session";
 import { logger } from "@/utils/logger";
 

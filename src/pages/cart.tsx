@@ -23,11 +23,11 @@ import { Input, Select } from "@/components/FormControls";
 import { SelectCustomer } from "@/components/SelectCustomer";
 import { Title } from "@/components/Title";
 import type { PaymentFormData } from "@/server/cart";
-import type { Customer, CustomerWithPurchase } from "@/utils/customer";
-import { formatDate } from "@/utils/date";
-import { CART_ERRORS } from "@/utils/errors";
-import { formatNumber, formatPrice } from "@/utils/format";
-import { PAYMENT_METHODS } from "@/utils/sale";
+import type { Customer, CustomerWithPurchase } from "@livrelibre/shared/customer";
+import { formatDate } from "@livrelibre/shared/date";
+import { CART_ERRORS } from "@livrelibre/shared/errors";
+import { formatNumber, formatPrice } from "@livrelibre/shared/format";
+import { PAYMENT_METHODS } from "@livrelibre/shared/sale";
 import { trpc } from "@/utils/trpc";
 import type { RouterOutput } from "@/utils/trpc";
 
