@@ -4,14 +4,6 @@ import clsx from "clsx";
 import { useRouter } from "next/router";
 import React, { type ReactElement } from "react";
 
-import { LinkButton } from "@/components/Button";
-import { Card, CardBody, CardTitle } from "@/components/Card";
-import { ErrorMessage } from "@/components/ErrorMessage";
-import { Input } from "@/components/FormControls";
-import { ItemsCard } from "@/components/ItemsCard";
-import { OrdersTable, OrdersTableByCustomer } from "@/components/OrdersTable";
-import { StatusCircle } from "@/components/StatusCircle";
-import { Title } from "@/components/Title";
 import {
   type CustomerOrders,
   ORDER_STATUS,
@@ -22,8 +14,17 @@ import {
   zOrderStatus,
   zOrderStatusArray,
 } from "@livrelibre/shared/order";
-import { trpc } from "@/utils/trpc";
 import { norm } from "@livrelibre/shared/utils";
+
+import { LinkButton } from "@/components/Button";
+import { Card, CardBody, CardTitle } from "@/components/Card";
+import { ErrorMessage } from "@/components/ErrorMessage";
+import { Input } from "@/components/FormControls";
+import { ItemsCard } from "@/components/ItemsCard";
+import { OrdersTable, OrdersTableByCustomer } from "@/components/OrdersTable";
+import { StatusCircle } from "@/components/StatusCircle";
+import { Title } from "@/components/Title";
+import { trpc } from "@/utils/trpc";
 
 const getStatus = (query: string | string[] | undefined): OrderStatus[] => {
   const statusList = zOrderStatusArray.safeParse(query);

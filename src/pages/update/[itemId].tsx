@@ -85,10 +85,7 @@ const ItemLoader = ({ id }: { id: number }) => {
       data={data}
       onSuccess={onSuccess}
     >
-      <LinkButton
-        href={`/item/${id}`}
-        className="mr-2 px-md !bg-[#6E6E6E]"
-      >
+      <LinkButton href={`/item/${id}`} className="mr-2 px-md !bg-[#6E6E6E]">
         <FontAwesomeIcon icon={faTimesCircle} className="mr-sm" />
         Annuler
       </LinkButton>

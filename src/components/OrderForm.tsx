@@ -12,6 +12,15 @@ import clsx from "clsx";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 
+import type { Customer } from "@livrelibre/shared/customer";
+import { toInputDate } from "@livrelibre/shared/date";
+import type { Item } from "@livrelibre/shared/item";
+import {
+  type ContactMean,
+  type RawOrder,
+  STATUS_LABEL,
+} from "@livrelibre/shared/order";
+
 import { Button } from "@/components/Button";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import type { CustomerFormFields } from "@/components/CustomerForm";
@@ -19,10 +28,6 @@ import { Input, Select, Textarea } from "@/components/FormControls";
 import { FormRow } from "@/components/FormRow";
 import { SelectCustomer } from "@/components/SelectCustomer";
 import { type NewItem, SelectItem } from "@/components/SelectItem";
-import type { Customer } from "@livrelibre/shared/customer";
-import { toInputDate } from "@livrelibre/shared/date";
-import type { Item } from "@livrelibre/shared/item";
-import { type ContactMean, type RawOrder, STATUS_LABEL } from "@livrelibre/shared/order";
 import { trpc } from "@/utils/trpc";
 
 const ContactMean = React.forwardRef<

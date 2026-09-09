@@ -1,5 +1,5 @@
-import { getCookie, setCookie } from "hono/cookie";
 import type { Context, Next } from "hono";
+import { getCookie, setCookie } from "hono/cookie";
 import { sign, verify } from "hono/jwt";
 
 import { env } from "./env";

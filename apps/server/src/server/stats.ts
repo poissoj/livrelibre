@@ -1,7 +1,8 @@
 import { count, eq, sql } from "drizzle-orm";
 
-import { db } from "@server/db/database";
 import { sales } from "@livrelibre/shared/schema";
+
+import { db } from "@server/db/database";
 
 export const getStats = async (): Promise<{
   hours: { hour: number; count: number }[];

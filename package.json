@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",
-    "format": "prettier --write src --cache",
+    "format": "prettier --write src apps packages --cache",
     "generate:db": "drizzle-kit generate",
     "migrate:db": "drizzle-kit migrate",
     "test": "pnpm test:unit && pnpm test:integration",

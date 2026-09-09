@@ -1,5 +1,8 @@
 import { type ReactElement, useRef } from "react";
 
+import { formatPrice } from "@livrelibre/shared/format";
+import { PAYMENT_METHODS } from "@livrelibre/shared/sale";
+
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { CategoriesTable } from "@/components/PaymentStats/CategoriesTable";
@@ -7,8 +10,6 @@ import { CategorySkeleton } from "@/components/PaymentStats/CategorySkeleton";
 import { StatsByTVA } from "@/components/TVAStats/StatsByTVA";
 import { TVASkeleton } from "@/components/TVAStats/TVASkeleton";
 import { Title } from "@/components/Title";
-import { formatPrice } from "@livrelibre/shared/format";
-import { PAYMENT_METHODS } from "@livrelibre/shared/sale";
 import { useScrollRestoration } from "@/utils/scroll";
 import { trpc } from "@/utils/trpc";
 

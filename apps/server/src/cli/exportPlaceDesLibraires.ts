@@ -6,8 +6,9 @@ import { config } from "dotenv";
 import { and, sql } from "drizzle-orm";
 import fs from "fs/promises";
 
-import { db } from "@server/db/database";
 import { items as itemsTable } from "@livrelibre/shared/schema";
+
+import { db } from "@server/db/database";
 
 config({ path: ".env.local" });
 

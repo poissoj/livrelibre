@@ -2,12 +2,13 @@ import * as React from "react";
 import { keepPreviousData } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 
+import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
+
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { ItemsTable } from "@/components/ItemsTable";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { Pagination } from "@/components/Pagination";
 import { Title } from "@/components/Title";
-import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
 import { trpc } from "@/utils/trpc";
 
 const CARD_STYLES = "max-h-full overflow-hidden flex flex-col relative";

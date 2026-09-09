@@ -8,13 +8,14 @@ import { type NextRouter, useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
 import { toast } from "react-toastify";
 
+import { type RawOrder, deserializeOrder } from "@livrelibre/shared/order";
+
 import { Button, LinkButton } from "@/components/Button";
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ConfirmationDialog } from "@/components/ConfirmationDialog";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { OrderForm } from "@/components/OrderForm";
 import { Title } from "@/components/Title";
-import { type RawOrder, deserializeOrder } from "@livrelibre/shared/order";
 import { trpc } from "@/utils/trpc";
 
 const CARD_TITLE = "Modifier une commande";

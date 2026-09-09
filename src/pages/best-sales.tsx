@@ -3,11 +3,12 @@ import Link from "next/link";
 import type { ReactElement } from "react";
 import ContentLoader from "react-content-loader";
 
+import type { BestSale } from "@livrelibre/server/server/bestSales";
+import { formatNumber } from "@livrelibre/shared/format";
+
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Title } from "@/components/Title";
-import type { BestSale } from "@livrelibre/server/server/bestSales";
-import { formatNumber } from "@livrelibre/shared/format";
 import { trpc } from "@/utils/trpc";
 
 const TH_STYLES = "sticky top-0 bg-white";

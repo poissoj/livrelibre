@@ -4,6 +4,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
+import type { BookData } from "@livrelibre/server/utils/getBookData";
+import { formatDate } from "@livrelibre/shared/date";
+import { formatTVA } from "@livrelibre/shared/format";
+import { type BaseItem, ITEM_TYPES, TVAValues } from "@livrelibre/shared/item";
+
 import { Alert } from "@/components/Alert";
 import { ButtonWithInput } from "@/components/Button";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
@@ -14,10 +19,6 @@ import {
   Textarea,
 } from "@/components/FormControls";
 import { FormRow } from "@/components/FormRow";
-import { formatDate } from "@livrelibre/shared/date";
-import { formatTVA } from "@livrelibre/shared/format";
-import type { BookData } from "@livrelibre/server/utils/getBookData";
-import { type BaseItem, ITEM_TYPES, TVAValues } from "@livrelibre/shared/item";
 
 export type FormFields = Omit<BaseItem, "amount"> & { amount: string };
 

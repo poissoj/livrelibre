@@ -1,6 +1,9 @@
 import { and, eq, isNotNull, sql } from "drizzle-orm";
 
-import { db } from "@server/db/database";
+import { formatDate } from "@livrelibre/shared/date";
+import { CART_ERRORS } from "@livrelibre/shared/errors";
+import type { ItemType, TVA } from "@livrelibre/shared/item";
+import type { PaymentType } from "@livrelibre/shared/sale";
 import {
   type Item,
   asideCart,
@@ -9,17 +12,15 @@ import {
   sales,
   selectedCustomer as selectedCustomerTable,
 } from "@livrelibre/shared/schema";
+
+import { db } from "@server/db/database";
 import {
   addPurchase,
   getSelectedCustomer,
   resetCustomer,
   setSelectedCustomer,
 } from "@server/server/customers";
-import { formatDate } from "@livrelibre/shared/date";
-import { CART_ERRORS } from "@livrelibre/shared/errors";
-import type { ItemType, TVA } from "@livrelibre/shared/item";
 import { logger } from "@server/utils/logger";
-import type { PaymentType } from "@livrelibre/shared/sale";
 
 type CartItem = {
   itemId?: number | null;

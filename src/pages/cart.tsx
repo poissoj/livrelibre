@@ -15,6 +15,16 @@ import ContentLoader from "react-content-loader";
 import { useForm, useWatch } from "react-hook-form";
 import { toast } from "react-toastify";
 
+import type { PaymentFormData } from "@livrelibre/server/server/cart";
+import type {
+  Customer,
+  CustomerWithPurchase,
+} from "@livrelibre/shared/customer";
+import { formatDate } from "@livrelibre/shared/date";
+import { CART_ERRORS } from "@livrelibre/shared/errors";
+import { formatNumber, formatPrice } from "@livrelibre/shared/format";
+import { PAYMENT_METHODS } from "@livrelibre/shared/sale";
+
 import { Alert } from "@/components/Alert";
 import { Button, LinkButton } from "@/components/Button";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
@@ -22,12 +32,6 @@ import { ErrorMessage } from "@/components/ErrorMessage";
 import { Input, Select } from "@/components/FormControls";
 import { SelectCustomer } from "@/components/SelectCustomer";
 import { Title } from "@/components/Title";
-import type { PaymentFormData } from "@livrelibre/server/server/cart";
-import type { Customer, CustomerWithPurchase } from "@livrelibre/shared/customer";
-import { formatDate } from "@livrelibre/shared/date";
-import { CART_ERRORS } from "@livrelibre/shared/errors";
-import { formatNumber, formatPrice } from "@livrelibre/shared/format";
-import { PAYMENT_METHODS } from "@livrelibre/shared/sale";
 import { trpc } from "@/utils/trpc";
 import type { RouterOutput } from "@/utils/trpc";
 

@@ -4,11 +4,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router";
 import { toast } from "react-toastify";
 
+import type { RawOrder } from "@livrelibre/shared/order";
+
 import { Button } from "@/components/Button";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { OrderForm } from "@/components/OrderForm";
 import { Title } from "@/components/Title";
-import type { RawOrder } from "@livrelibre/shared/order";
 import { trpc } from "@/utils/trpc";
 
 const OrderBody = () => {

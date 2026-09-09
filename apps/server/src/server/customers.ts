@@ -8,13 +8,18 @@ import {
   sum,
 } from "drizzle-orm";
 
-import { db } from "@server/db/database";
-import { customers, purchases, selectedCustomer } from "@livrelibre/shared/schema";
 import type { CustomerWithPurchase } from "@livrelibre/shared/customer";
 import { formatDate } from "@livrelibre/shared/date";
-import { logger } from "@server/utils/logger";
 import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
+import {
+  customers,
+  purchases,
+  selectedCustomer,
+} from "@livrelibre/shared/schema";
 import { norm, sanitize } from "@livrelibre/shared/utils";
+
+import { db } from "@server/db/database";
+import { logger } from "@server/utils/logger";
 
 export const getCustomers = async ({
   pageNumber = 1,

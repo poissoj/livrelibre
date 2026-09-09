@@ -1,7 +1,11 @@
 import clsx from "clsx";
 import React from "react";
 
-import { type OrderStatus, STATUS_COLOR, STATUS_LABEL } from "@livrelibre/shared/order";
+import {
+  type OrderStatus,
+  STATUS_COLOR,
+  STATUS_LABEL,
+} from "@livrelibre/shared/order";
 
 export const StatusCircle = (props: {
   status: OrderStatus;

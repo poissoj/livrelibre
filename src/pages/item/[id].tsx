@@ -14,6 +14,14 @@ import type { ReactElement } from "react";
 import ContentLoader from "react-content-loader";
 import { useForm } from "react-hook-form";
 
+import {
+  formatNumber,
+  formatPrice,
+  formatTVA,
+} from "@livrelibre/shared/format";
+import { ITEM_TYPES, type ItemWithCount } from "@livrelibre/shared/item";
+import { type OrderStatus } from "@livrelibre/shared/order";
+
 import { Alert } from "@/components/Alert";
 import { Button, LinkButton } from "@/components/Button";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
@@ -22,9 +30,6 @@ import { Input } from "@/components/FormControls";
 import { NoResults } from "@/components/NoResults";
 import { StatusCircle } from "@/components/StatusCircle";
 import { Title } from "@/components/Title";
-import { formatNumber, formatPrice, formatTVA } from "@livrelibre/shared/format";
-import { ITEM_TYPES, type ItemWithCount } from "@livrelibre/shared/item";
-import { type OrderStatus } from "@livrelibre/shared/order";
 import { trpc, useBookmark } from "@/utils/trpc";
 import { useAddToCart } from "@/utils/useAddToCart";
 

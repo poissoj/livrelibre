@@ -3,14 +3,15 @@ import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useForm } from "react-hook-form";
 
+import type { NewCartItem } from "@livrelibre/server/server/cart";
+import { formatTVA } from "@livrelibre/shared/format";
+import { ITEM_TYPES, TVAValues } from "@livrelibre/shared/item";
+
 import { Alert } from "@/components/Alert";
 import { Button } from "@/components/Button";
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { Input, Select } from "@/components/FormControls";
 import { FormRow } from "@/components/FormRow";
-import type { NewCartItem } from "@livrelibre/server/server/cart";
-import { formatTVA } from "@livrelibre/shared/format";
-import { ITEM_TYPES, TVAValues } from "@livrelibre/shared/item";
 import { trpc } from "@/utils/trpc";
 
 type TAlert = {

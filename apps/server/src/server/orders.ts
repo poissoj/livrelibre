@@ -1,15 +1,16 @@
 import { TRPCError } from "@trpc/server";
 import { and, count, eq, getTableColumns, inArray, ne } from "drizzle-orm";
 
-import { db } from "@server/db/database";
-import { customers, items, orders } from "@livrelibre/shared/schema";
-import { logger } from "@server/utils/logger";
 import {
   type OrderRow,
   type OrderStatus,
   type RawOrder,
   deserializeOrder,
 } from "@livrelibre/shared/order";
+import { customers, items, orders } from "@livrelibre/shared/schema";
+
+import { db } from "@server/db/database";
+import { logger } from "@server/utils/logger";
 
 export const getOrder = async (id: number) => {
   const rows = await db.select().from(orders).where(eq(orders.id, id));

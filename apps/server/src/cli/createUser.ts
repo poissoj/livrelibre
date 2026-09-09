@@ -3,8 +3,9 @@ import * as readline from "node:readline/promises";
 import bcrypt from "bcrypt";
 import { stdin as input, stdout as output } from "node:process";
 
-import { db } from "@server/db/database";
 import { users } from "@livrelibre/shared/schema";
+
+import { db } from "@server/db/database";
 
 const rl = readline.createInterface({ input, output });
 

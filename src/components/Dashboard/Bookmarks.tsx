@@ -1,10 +1,11 @@
 import Link from "next/link";
 import type { ReactElement } from "react";
 
+import type { Bookmark } from "@livrelibre/server/server/bookmarks";
+
 import { AddToCartButton } from "@/components/AddToCartButton";
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
-import type { Bookmark } from "@livrelibre/server/server/bookmarks";
 import { trpc } from "@/utils/trpc";
 
 import { BookmarksSkeleton } from "./BookmarksSkeleton";

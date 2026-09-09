@@ -9,6 +9,9 @@ import { useRouter } from "next/router";
 import ContentLoader from "react-content-loader";
 import { toast } from "react-toastify";
 
+import type { CustomerWithPurchase } from "@livrelibre/shared/customer";
+import { formatPrice } from "@livrelibre/shared/format";
+
 import { Button, LinkButton } from "@/components/Button";
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ConfirmationDialog } from "@/components/ConfirmationDialog";
@@ -19,8 +22,6 @@ import {
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { StatusCircle } from "@/components/StatusCircle";
 import { Title } from "@/components/Title";
-import type { CustomerWithPurchase } from "@livrelibre/shared/customer";
-import { formatPrice } from "@livrelibre/shared/format";
 import { trpc } from "@/utils/trpc";
 
 const CARD_TITLE = "Modifier un⋅e client⋅e";
@@ -189,10 +190,7 @@ const CustomerLoader = ({ id }: { id: number }) => {
         onSuccess={onSuccess}
       >
         <DeleteCustomerButton id={id} />
-        <LinkButton
-          href="/customers"
-          className="mr-2 px-md !bg-[#6E6E6E]"
-        >
+        <LinkButton href="/customers" className="mr-2 px-md !bg-[#6E6E6E]">
           <FontAwesomeIcon icon={faTimesCircle} className="mr-sm" />
           Annuler
         </LinkButton>

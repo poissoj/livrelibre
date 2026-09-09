@@ -1,7 +1,6 @@
-import { fileURLToPath } from "node:url";
-
 import { drizzle } from "drizzle-orm/postgres-js";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
+import { fileURLToPath } from "node:url";
 import postgres from "postgres";
 
 export const migrateDatabase = async (uri: string) => {

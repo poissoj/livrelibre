@@ -1,6 +1,5 @@
-import { fileURLToPath } from "node:url";
-
 import { config } from "dotenv";
+import { fileURLToPath } from "node:url";
 import { z } from "zod";
 
 config({

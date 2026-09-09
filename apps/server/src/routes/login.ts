@@ -3,9 +3,10 @@ import { eq } from "drizzle-orm";
 import type { Context } from "hono";
 import { z } from "zod";
 
+import { users } from "@livrelibre/shared/schema";
+
 import { setSessionCookie } from "@server/auth";
 import { db } from "@server/db/database";
-import { users } from "@livrelibre/shared/schema";
 import { logger } from "@server/utils/logger";
 
 const credentialsSchema = z.object({

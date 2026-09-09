@@ -1,11 +1,12 @@
 import * as React from "react";
 import { useForm } from "react-hook-form";
 
+import type { Customer } from "@livrelibre/shared/customer";
+
 import { Alert } from "@/components/Alert";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { Input, Textarea } from "@/components/FormControls";
 import { FormRow } from "@/components/FormRow";
-import type { Customer } from "@livrelibre/shared/customer";
 
 export type CustomerFormFields = Omit<Customer, "purchases">;
 

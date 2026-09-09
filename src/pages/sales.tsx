@@ -4,12 +4,13 @@ import { useRouter } from "next/router";
 import type { ReactElement } from "react";
 import ContentLoader from "react-content-loader";
 
+import type { Sale } from "@livrelibre/server/server/sales";
+import { formatNumber, formatPrice } from "@livrelibre/shared/format";
+
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { Restricted } from "@/components/Restricted";
 import { Title } from "@/components/Title";
-import type { Sale } from "@livrelibre/server/server/sales";
-import { formatNumber, formatPrice } from "@livrelibre/shared/format";
 import { trpc } from "@/utils/trpc";
 
 const TH_STYLES = "sticky top-0 bg-white";
