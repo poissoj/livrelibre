@@ -1,7 +1,7 @@
 import * as React from "react";
 import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { type SubmitHandler, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 
 import { Alert } from "@/components/Alert";
@@ -74,15 +74,7 @@ export const ItemForm = ({
   const [alert, setAlert] = React.useState<TAlert | null>(null);
   const [isbnLoading, setIsbnLoading] = React.useState(false);
 
-  const submit: SubmitHandler<FormFields> = async (_data, event) => {
-    const formElement = event?.currentTarget as
-      HTMLFormElement | null | undefined;
-    if (!(formElement instanceof HTMLFormElement)) {
-      return;
-    }
-    const data = Object.fromEntries(
-      new FormData(formElement).entries(),
-    ) as FormFields;
+  const submit = async (data: FormFields) => {
     const { type, msg: message } = await onSubmit(data);
     setAlert({ type, message });
     if (type === "success") {
