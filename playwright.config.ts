@@ -1,4 +1,10 @@
 import { defineConfig, devices } from "@playwright/test";
+import { config } from "dotenv";
+
+config({ path: ".env.local" });
+
+const e2eDatabaseUrl =
+  process.env.TEST_POSTGRES_URI ?? process.env.POSTGRES_URI ?? "";
 
 /**
  * Read environment variables from file.
@@ -69,10 +75,12 @@ export default defineConfig({
   ],
 
   /* Run the Hono API and Vite dev servers before starting the tests */
+  globalSetup: "./tests/e2e-global-setup.ts",
   webServer: [
     {
       command: "pnpm --filter @livrelibre/server dev",
       url: "http://127.0.0.1:3001/api/export",
+      env: { POSTGRES_URI: e2eDatabaseUrl },
       reuseExistingServer: !process.env.CI,
     },
     {
