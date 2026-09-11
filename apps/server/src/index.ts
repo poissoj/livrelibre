@@ -1,6 +1,8 @@
 import { serve } from "@hono/node-server";
+import { serveStatic } from "@hono/node-server/serve-static";
 import { trpcServer } from "@hono/trpc-server";
 import { Hono } from "hono";
+import { fileURLToPath } from "node:url";
 
 import { authMiddleware } from "./auth";
 import { createContext } from "./context";
@@ -28,7 +30,7 @@ app.use("*", async (c, next) => {
 });
 
 // Authentication (JWT from cookie)
-app.use("*", authMiddleware);
+app.use("/api/*", authMiddleware);
 
 // REST routes
 app.post("/api/login", loginRoute);
@@ -46,6 +48,20 @@ app.use(
     createContext,
   }),
 );
+
+// Production static serving (SPA + API in a single process)
+if (process.env.NODE_ENV === "production") {
+  const distRoot = fileURLToPath(new URL("../../web/dist", import.meta.url));
+  console.log(`Serving SPA from ${distRoot}`);
+  app.use(
+    "*",
+    serveStatic({
+      root: distRoot,
+      rewriteRequestPath: (path) =>
+        path.startsWith("/api/") || path.includes(".") ? path : "/index.html",
+    }),
+  );
+}
 
 const port = Number(env.PORT ?? 3001);
 console.log(`Livre Libre server listening on http://localhost:${port}`);
