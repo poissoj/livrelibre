@@ -13,7 +13,7 @@ Pour se connecter, utiliser les identifiants `admin/admin`
 
 ## Prérequis
 
-Livre Libre nécessite [Node.js](https://nodejs.org) et [PostgreSQL](https://www.postgresql.org/) pour fonctionner.
+Livre Libre nécessite [Node.js](https://nodejs.org) (20+), [pnpm](https://pnpm.io) et [PostgreSQL](https://www.postgresql.org/).
 
 ## Installation
 
@@ -25,30 +25,59 @@ pnpm install
 
 ## Configuration
 
-Générez un mot de passe pour COOKIE_PASSWORD.
-Créez le fichier `.env.local` avec les infos suivantes:
+Créez un fichier `.env.local` à la racine du projet (voir `.env.example`) :
 
 ```
+SESSION_SECRET=...   # min 32 caractères, ex. : openssl rand -base64 32
 POSTGRES_URI=postgres://user:password@localhost:5432/livrelibre
-COOKIE_PASSWORD=pN2MLv2tEvY4wDeH3fKWh9Hwm1piff2T3m
 ```
 
 ## Base de données
 
-Lancez `pnpm generate:db` pour générer le script sql qui va créer les tables. Exécutez le avec `psql`.
+Créez la base de données (si elle n'existe pas encore) :
+
+```
+createdb livrelibre
+```
+
+Puis appliquez les migrations :
+
+```
+pnpm migrate:db
+```
+
+Pour générer une nouvelle migration après avoir modifié le schéma, utilisez `pnpm generate:db`.
 
 ## Utilisateur
 
-Installez [bun](https://bun.sh/) pour pouvoir exécuter le fichier .ts.
+Créez un premier utilisateur :
 
-Lancez `bun src/cli/createUser.ts` pour créer un premier utilisateur.
+```
+pnpm --filter @livrelibre/server exec tsx src/cli/createUser.ts
+```
 
-## Build
+## Développement
+
+```
+pnpm dev
+```
+
+Cette commande lance le serveur Hono (API) sur http://localhost:3001 et le front Vite sur http://localhost:5173.
+
+Pour les lancer séparément : `pnpm dev:server` et `pnpm dev:web`.
+
+## Build & lancement (production)
 
 ```
 pnpm build
+pnpm start
 ```
 
-## Lancement
+`pnpm start` lance le serveur Hono qui sert à la fois l'API et l'application sur http://localhost:3001.
 
-Lancez la commande `pnpm start` pour lancer l'application. Par défaut, elle est accessible par navigateur sur http://localhost:3000.
+## Tests & outils
+
+- `pnpm test` — tests unitaires et d'intégration
+- `pnpm test:e2e` — tests de bout en bout (Playwright)
+- `pnpm lint` — lint
+- `pnpm format` — formatage (Prettier)
