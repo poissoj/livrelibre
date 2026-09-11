@@ -1,9 +1,7 @@
+import { eq } from "drizzle-orm";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { eq } from "drizzle-orm";
-
 import { db } from "@livrelibre/server/db/database";
-import { purchases, selectedCustomer } from "@livrelibre/shared/schema";
 import {
   addPurchase,
   getCustomer,
@@ -13,6 +11,8 @@ import {
   setCustomer,
   setSelectedCustomer,
 } from "@livrelibre/server/server/customers";
+import { purchases, selectedCustomer } from "@livrelibre/shared/schema";
+
 import { seedCustomer, seedUser, truncateAll } from "./helpers";
 
 describe("searchCustomers", () => {
@@ -20,7 +20,10 @@ describe("searchCustomers", () => {
 
   it("matches customers by partial name", async () => {
     await seedCustomer({ fullname: "Jean Dupont", nmFullname: "jean dupont" });
-    await seedCustomer({ fullname: "Marie Martin", nmFullname: "marie martin" });
+    await seedCustomer({
+      fullname: "Marie Martin",
+      nmFullname: "marie martin",
+    });
 
     const result = await searchCustomers("dup");
     expect(result).toHaveLength(1);

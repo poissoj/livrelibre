@@ -7,3 +7,7 @@ allowBuilds:
   esbuild: true
   sharp: true
   unrs-resolver: true
+
+minimumReleaseAgeExclude:
+  - '@types/react-dom@19.3.0'
+  - '@types/react@19.3.0'

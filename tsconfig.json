@@ -1,4 +1,5 @@
 {
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
     "target": "ES2021",
     "lib": [
@@ -7,32 +8,16 @@
       "esnext"
     ],
     "allowJs": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
-    "exactOptionalPropertyTypes": true,
-    "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "Bundler",
-    "resolveJsonModule": true,
     "jsx": "react-jsx",
     "incremental": true,
-    "verbatimModuleSyntax": true,
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
       "@server/*": [
         "./apps/server/src/*"
       ]
-    },
-    "isolatedModules": true
+    }
   },
   "include": [
-    "next-env.d.ts",
-    "src/**/*.ts",
-    "src/**/*.tsx",
     "tests*/**/*.ts",
     "*.config.ts",
     "*.config.mts"

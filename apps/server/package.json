@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
   },
   "exports": {
     "./db/database": "./src/db/database.ts",
@@ -47,7 +48,9 @@
   "devDependencies": {
     "@types/bcrypt": "6.0.0",
     "@types/node": "26.2.0",
+    "eslint": "9.39.5",
     "tsx": "4.23.13",
-    "typescript": "6.0.3"
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.67.0"
   }
 }

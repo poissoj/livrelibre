@@ -1,10 +1,10 @@
+import { eq } from "drizzle-orm";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { eq } from "drizzle-orm";
-
 import { db } from "@livrelibre/server/db/database";
-import { items } from "@livrelibre/shared/schema";
 import { getBookmarks, starItem } from "@livrelibre/server/server/bookmarks";
+import { items } from "@livrelibre/shared/schema";
+
 import { seedItem, truncateAll } from "./helpers";
 
 describe("bookmarks", () => {

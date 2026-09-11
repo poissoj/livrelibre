@@ -1,0 +1,64 @@
+@import "tailwindcss";
+@source "../../../packages/shared/src/";
+
+@theme {
+  --color-primary: hsl(174deg 100% 29%);
+  --color-primary-dark: hsl(174deg 100% 25%);
+  --color-primary-darker: hsl(174.5deg 100% 25.5%);
+  --color-primary-darkest: hsl(174deg 100% 20%);
+
+  --color-gray-light: hsl(220deg 13% 91%);
+  --color-gray: hsl(198.8deg 19% 16.5%);
+  --color-gray-dark: hsl(216.9deg 19.1% 26.7%);
+  --color-gray-darker: hsl(218deg 19% 11%);
+  --color-gray-darkest: hsl(197.1deg 21.2% 6.5%);
+
+  --color-white: #fff;
+  --color-black: hsl(210deg 10.8% 14.5%);
+  --color-green: rgb(101 163 13);
+  --color-yellow: rgb(250 204 21);
+  --color-red: rgb(220 38 38);
+  --color-blue: rgb(37 99 235);
+  --color-purple: rgb(107 33 168);
+
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 16px;
+  --spacing-lg: 24px;
+
+  --shadow-b: 0 1px 1px 0 rgb(0 0 0 / 0.05);
+
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-number: "Roboto Mono";
+
+  --transition-property-maxHeight: max-height;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+@font-face {
+  font-family: "Niconne";
+  font-style: normal;
+  font-weight: 400;
+  src: url(/fonts/Niconne.woff2) format("woff2");
+  font-display: fallback;
+}
+@font-face {
+  font-family: "Roboto Mono";
+  font-style: normal;
+  font-weight: regular;
+  src: url(/fonts/Roboto-Mono.woff2) format("woff2");
+  font-display: fallback;
+}
+
+.Toastify {
+  --toastify-color-success: #008073;
+  --toastify-color-warning: rgb(143, 115, 0);
+}

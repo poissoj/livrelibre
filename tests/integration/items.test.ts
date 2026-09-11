@@ -1,10 +1,11 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { db } from "@livrelibre/server/db/database";
-import { items } from "@livrelibre/shared/schema";
 import { addItem } from "@livrelibre/server/server/addItem";
 import { getItem, searchItems } from "@livrelibre/server/server/searchItem";
 import { updateItem } from "@livrelibre/server/server/updateItem";
+import { items } from "@livrelibre/shared/schema";
+
 import { truncateAll } from "./helpers";
 
 const baseItem = {

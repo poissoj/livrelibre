@@ -15,7 +15,7 @@ export const finalizeImportRoute = async (c: Context) => {
   if (user.role === "anonymous") {
     return c.json({ error: "Unauthenticated" }, 401);
   }
-  const data = (await c.req.json()) as DilicomRowWithId[];
+  const data = await c.req.json<DilicomRowWithId[]>();
   const books = data.map((row) => ({
     isbn: row.EAN,
     qty: row.QTE,

@@ -1,9 +1,7 @@
+import { eq } from "drizzle-orm";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { eq } from "drizzle-orm";
-
 import { db } from "@livrelibre/server/db/database";
-import { items, sales } from "@livrelibre/shared/schema";
 import {
   addISBNToCart,
   addToCart,
@@ -12,6 +10,8 @@ import {
   removeFromCart,
 } from "@livrelibre/server/server/cart";
 import { CART_ERRORS } from "@livrelibre/shared/errors";
+import { items, sales } from "@livrelibre/shared/schema";
+
 import { seedItem, seedUser, truncateAll } from "./helpers";
 
 describe("cart", () => {

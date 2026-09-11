@@ -28,8 +28,6 @@ describe("formatDateFR", () => {
 
 describe("toInputDate", () => {
   it("formats for a datetime-local input", () => {
-    expect(toInputDate(new Date(2024, 0, 5, 14, 30))).toBe(
-      "2024-01-05T14:30",
-    );
+    expect(toInputDate(new Date(2024, 0, 5, 14, 30))).toBe("2024-01-05T14:30");
   });
 });

@@ -1,12 +1,15 @@
+import { eq } from "drizzle-orm";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { eq } from "drizzle-orm";
-
 import { db } from "@livrelibre/server/db/database";
-import { items, sales } from "@livrelibre/shared/schema";
 import { addToCart, payCart } from "@livrelibre/server/server/cart";
 import { getSales } from "@livrelibre/server/server/sales";
-import { deleteSale, getSalesByDay } from "@livrelibre/server/server/salesByDay";
+import {
+  deleteSale,
+  getSalesByDay,
+} from "@livrelibre/server/server/salesByDay";
+import { items, sales } from "@livrelibre/shared/schema";
+
 import { seedItem, seedUser, truncateAll } from "./helpers";
 
 describe("sales", () => {

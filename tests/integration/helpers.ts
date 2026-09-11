@@ -14,7 +14,12 @@ export const seedUser = async (
 ) => {
   const rows = await db
     .insert(users)
-    .values({ name: "admin", hash: "a".repeat(60), role: "admin", ...overrides })
+    .values({
+      name: "admin",
+      hash: "a".repeat(60),
+      role: "admin",
+      ...overrides,
+    })
     .returning();
   return rows[0];
 };

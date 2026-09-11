@@ -1,10 +1,11 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { db } from "@livrelibre/server/db/database";
-import { sales } from "@livrelibre/shared/schema";
 import { getBestSales } from "@livrelibre/server/server/bestSales";
 import { addToCart, payCart } from "@livrelibre/server/server/cart";
 import { deleteSale } from "@livrelibre/server/server/salesByDay";
+import { sales } from "@livrelibre/shared/schema";
+
 import { seedItem, seedUser, truncateAll } from "./helpers";
 
 describe("bestSales", () => {

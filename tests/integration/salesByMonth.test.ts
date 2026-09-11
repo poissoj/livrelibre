@@ -2,6 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import { addToCart, payCart } from "@livrelibre/server/server/cart";
 import { getSalesByMonth } from "@livrelibre/server/server/salesByMonth";
+
 import { seedItem, seedUser, truncateAll } from "./helpers";
 
 describe("getSalesByMonth", () => {
@@ -36,7 +37,10 @@ describe("getSalesByMonth", () => {
   });
 
   it("returns empty results for a month without sales", async () => {
-    const { salesByDay, stats, itemTypes } = await getSalesByMonth("02", "2024");
+    const { salesByDay, stats, itemTypes } = await getSalesByMonth(
+      "02",
+      "2024",
+    );
     expect(salesByDay).toHaveLength(0);
     expect(stats).toHaveLength(0);
     expect(itemTypes).toHaveLength(0);
