@@ -17,7 +17,7 @@ export const finalizeImportRoute = async (c: Context) => {
   }
   const data = await c.req.json<DilicomRowWithId[]>();
   const books = data.map((row) => ({
-    isbn: row.EAN,
+    isbn: row.EAN.trim(),
     qty: row.QTE,
     price: row.PRIX,
   }));
@@ -36,7 +36,7 @@ export const finalizeImportRoute = async (c: Context) => {
     const book: typeof items.$inferInsert = {
       amount: row.QTE,
       datebought: today,
-      isbn: row.EAN,
+      isbn: row.EAN.trim(),
       price,
       tva: "5.5",
       type: "book",

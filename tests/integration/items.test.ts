@@ -52,6 +52,12 @@ describe("addItem", () => {
     const res = await addItem(baseItem);
     expect(res.type).toBe("warning");
   });
+
+  it("trims whitespace around the ISBN", async () => {
+    await addItem({ ...baseItem, isbn: " 9780000000001 " });
+    const rows = await db.select().from(items);
+    expect(rows[0].isbn).toBe("9780000000001");
+  });
 });
 
 describe("searchItems", () => {
@@ -98,5 +104,13 @@ describe("updateItem", () => {
     const [updated] = await db.select().from(items);
     expect(updated.nmTitle).toBe("Nouveau Titre");
     expect(updated.nmAuthor).toBe("Nouvel Auteur");
+  });
+
+  it("trims whitespace around the ISBN", async () => {
+    await addItem(baseItem);
+    const [row] = await db.select().from(items);
+    await updateItem({ ...baseItem, isbn: " 9780000000002 " }, row.id);
+    const [updated] = await db.select().from(items);
+    expect(updated.isbn).toBe("9780000000002");
   });
 });

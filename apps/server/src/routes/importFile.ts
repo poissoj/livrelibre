@@ -50,6 +50,7 @@ const filterRows = (json: DilicomRow[]) => {
     if (headerRowFound && row.EAN) {
       rows.push({
         ...row,
+        EAN: row.EAN.trim(),
         PRIX: parseValue(row.PRIX),
         QTE: parseValue(row.QTE),
         TOTAL: parseValue(row.TOTAL),

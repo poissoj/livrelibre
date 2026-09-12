@@ -10,14 +10,16 @@ import { logger } from "@server/utils/logger";
 export const addItem = async (
   item: BaseItem,
 ): Promise<{ type: "success" | "warning" | "error"; msg: string }> => {
+  const isbn = item.isbn.trim();
   const existingItem = await db.query.items.findFirst({
-    where: eq(itemsTable.isbn, item.isbn),
+    where: eq(itemsTable.isbn, isbn),
   });
   if (existingItem && existingItem.isbn !== "") {
     return { type: "warning", msg: "Un article avec cet ISBN existe déjà." };
   }
   const newItem: typeof itemsTable.$inferInsert = {
     ...item,
+    isbn,
     starred: false,
     amount: item.amount,
     price: item.price.replace(",", "."),

@@ -13,6 +13,7 @@ export const updateItem = async (
 ): Promise<{ type: "success" | "error"; msg: string }> => {
   const newItem: Partial<typeof items.$inferInsert> = {
     ...item,
+    isbn: item.isbn.trim(),
     price: item.price.replace(",", "."),
     nmAuthor: norm(item.author),
     nmTitle: norm(item.title),
