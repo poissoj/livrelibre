@@ -112,9 +112,7 @@ export const SalesTable = ({ carts }: { carts: Carts }) => {
                 {formatTVA(sale.tva)}
               </Cell>
               <Cell className="whitespace-nowrap">
-                {sale.paymentType
-                  ? PAYMENT_METHODS[sale.paymentType]
-                  : "Inconnu"}
+                {PAYMENT_METHODS[sale.paymentType]}
               </Cell>
               <Cell className="pr-3">
                 {sale.deleted ? null : (

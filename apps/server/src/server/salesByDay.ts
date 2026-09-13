@@ -22,7 +22,7 @@ type AggregatedSale = Pick<
 type ItemSale = Omit<DBItem, "price" | "type"> & {
   itemId: number;
   price: number;
-  paymentType: PaymentType | null;
+  paymentType: PaymentType;
   quantity: number;
   deleted: boolean;
   id: number;
@@ -30,7 +30,7 @@ type ItemSale = Omit<DBItem, "price" | "type"> & {
 };
 
 type UnlistedSale = Omit<AggregatedSale, "paymentType" | "id" | "cartId"> & {
-  paymentType: PaymentType | null;
+  paymentType: PaymentType;
   itemId: null;
   deleted: boolean;
   id: number;
@@ -65,12 +65,9 @@ export const getSalesByDay = async (date: string) => {
 
   const tvaStats = new Map<
     string,
-    { count: number; total: number; type: PaymentType | null }
+    { count: number; total: number; type: PaymentType }
   >();
-  const paymentStats = new Map<
-    PaymentType | "unknown",
-    { count: number; total: number }
-  >();
+  const paymentStats = new Map<PaymentType, { count: number; total: number }>();
   let salesCount = 0;
   let lastCartId = dbSales[0]?.cartId;
   let total = 0;
@@ -85,16 +82,16 @@ export const getSalesByDay = async (date: string) => {
     lastCartId = sale.cartId;
 
     const paymentType = sale.paymentType;
-    const key = [sale.tva || "Inconnu", paymentType].join();
+    const key = [sale.tva, paymentType].join();
     let tvaStat = tvaStats.get(key);
     if (!tvaStat) {
       tvaStat = { count: 0, total: 0, type: paymentType };
       tvaStats.set(key, tvaStat);
     }
-    let paymentStat = paymentStats.get(paymentType ?? "unknown");
+    let paymentStat = paymentStats.get(paymentType);
     if (!paymentStat) {
       paymentStat = { count: 0, total: 0 };
-      paymentStats.set(paymentType ?? "unknown", paymentStat);
+      paymentStats.set(paymentType, paymentStat);
     }
 
     if (!sale.deleted) {
@@ -153,7 +150,7 @@ export const getSalesByDay = async (date: string) => {
     .sort(
       (a, b) =>
         Number(b.tva) - Number(a.tva) ||
-        (a.paymentType ?? "unknown").localeCompare(b.paymentType ?? "unknown"),
+        a.paymentType.localeCompare(b.paymentType),
     );
 
   const paymentMethods = [...paymentStats.entries()]

@@ -85,6 +85,7 @@ export const seedSale = async (
       linkedToCustomer: false,
       deleted: false,
       paymentType: "cash",
+      cartId: 0,
       ...overrides,
     })
     .returning();

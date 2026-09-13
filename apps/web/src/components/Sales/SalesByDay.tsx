@@ -39,7 +39,7 @@ const CategoriesLoader = ({ date }: { date: string }) => {
   }
   const categories = result.data.paymentMethods.map((m) => ({
     ...m,
-    label: m.type === "unknown" ? "Inconnu" : PAYMENT_METHODS[m.type],
+    label: PAYMENT_METHODS[m.type],
   }));
   return (
     <div className="flex flex-1 flex-col gap-3">

@@ -109,12 +109,12 @@ export const sales = pgTable(
     created: timestamp("created", { withTimezone: true })
       .notNull()
       .defaultNow(),
-    tva: tvaEnum("tva"),
+    tva: tvaEnum("tva").notNull(),
     linkedToCustomer: boolean("linkedToCustomer").notNull(),
     itemId: integer("itemId").references(() => items.id),
-    cartId: integer("cartId"), // No reference because cart rows will be deleted
+    cartId: integer("cartId").notNull(), // No reference because cart rows will be deleted
     deleted: boolean("deleted").notNull(),
-    paymentType: paymentTypeEnum("paymentType"),
+    paymentType: paymentTypeEnum("paymentType").notNull(),
   },
   (table) => [
     index("sales_itemId_idx").on(table.itemId),
