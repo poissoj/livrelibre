@@ -51,7 +51,7 @@ describe("bestSales", () => {
     });
 
     const [sale] = await db.select().from(sales);
-    await deleteSale(sale.id, sale.itemId);
+    await deleteSale(sale.id);
 
     const best = await getBestSales();
     expect(best).toHaveLength(0);

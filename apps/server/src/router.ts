@@ -197,12 +197,11 @@ export const appRouter = router({
     .input(
       z.object({
         saleId: z.number(),
-        itemId: z.number().nullish(),
       }),
     )
     .mutation(async ({ ctx, input }) => {
       logger.info("Delete sale", { user: ctx.user, input });
-      await deleteSale(input.saleId, input.itemId);
+      await deleteSale(input.saleId);
     }),
   deleteCustomer: authProcedure
     .input(z.object({ id: z.number() }))

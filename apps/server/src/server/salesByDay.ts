@@ -1,4 +1,4 @@
-import { eq, inArray, sql } from "drizzle-orm";
+import { and, eq, inArray, sql } from "drizzle-orm";
 
 import type { DBItem, TVA } from "@livrelibre/shared/item";
 import { type PaymentType } from "@livrelibre/shared/sale";
@@ -170,17 +170,19 @@ export const getSalesByDay = async (date: string) => {
   };
 };
 
-export const deleteSale = async (saleId: number, itemId?: number | null) => {
-  const item = await db
+export const deleteSale = async (saleId: number) => {
+  const updated = await db
     .update(sales)
     .set({ deleted: true })
-    .where(eq(sales.id, saleId))
+    .where(and(eq(sales.id, saleId), eq(sales.deleted, false)))
     .returning();
-  if (itemId && item.length > 0) {
-    const amount = item[0].quantity || 1;
-    await db
-      .update(items)
-      .set({ amount: sql`${items.amount} + ${amount}` })
-      .where(eq(items.id, itemId));
+  const sale = updated[0];
+  if (updated.length === 0 || !sale.itemId) {
+    return;
   }
+  const amount = sale.quantity || 1;
+  await db
+    .update(items)
+    .set({ amount: sql`${items.amount} + ${amount}` })
+    .where(eq(items.id, sale.itemId));
 };

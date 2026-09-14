@@ -57,10 +57,30 @@ describe("sales", () => {
     });
 
     const [sale] = await db.select().from(sales);
-    await deleteSale(sale.id, sale.itemId);
+    await deleteSale(sale.id);
 
     const [updatedSale] = await db.select().from(sales);
     expect(updatedSale.deleted).toBe(true);
+
+    const restored = await db.query.items.findFirst({
+      where: eq(items.id, item.id),
+    });
+    expect(restored?.amount).toBe(5);
+  });
+
+  it("deleteSale does not double-restock when called twice", async () => {
+    const user = await seedUser();
+    const item = await seedItem({ amount: 5, price: "10.00" });
+    await addToCart(user.id, item.id);
+    await payCart(user.id, {
+      paymentDate: "2024-01-05",
+      paymentType: "cash",
+      amount: "10.00",
+    });
+
+    const [sale] = await db.select().from(sales);
+    await deleteSale(sale.id);
+    await deleteSale(sale.id);
 
     const restored = await db.query.items.findFirst({
       where: eq(items.id, item.id),

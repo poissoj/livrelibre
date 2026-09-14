@@ -14,13 +14,7 @@ import { PAYMENT_METHODS } from "@livrelibre/shared/sale";
 import { Button } from "@/components/Button";
 import { type RouterOutput, trpc } from "@/utils/trpc";
 
-const DeleteSale = ({
-  saleId,
-  itemId,
-}: {
-  saleId: number;
-  itemId: number | null;
-}) => {
+const DeleteSale = ({ saleId }: { saleId: number }) => {
   const utils = trpc.useUtils();
   const { mutate, isPending } = trpc.deleteSale.useMutation({
     async onSuccess() {
@@ -35,7 +29,7 @@ const DeleteSale = ({
       className="!bg-[#FF9800]"
       title="Supprimer"
       onClick={() => {
-        mutate({ saleId, itemId });
+        mutate({ saleId });
       }}
     >
       <FontAwesomeIcon
@@ -115,9 +109,7 @@ export const SalesTable = ({ carts }: { carts: Carts }) => {
                 {PAYMENT_METHODS[sale.paymentType]}
               </Cell>
               <Cell className="pr-3">
-                {sale.deleted ? null : (
-                  <DeleteSale saleId={sale.id} itemId={sale.itemId} />
-                )}
+                {sale.deleted ? null : <DeleteSale saleId={sale.id} />}
               </Cell>
               {index === 0 && (
                 <Cell rowSpan={cart.sales.length}>
