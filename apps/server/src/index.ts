@@ -14,6 +14,7 @@ import { finalizeImportRoute } from "./routes/finalizeImport";
 import { importFileRoute } from "./routes/importFile";
 import { loginRoute } from "./routes/login";
 import { logoutRoute } from "./routes/logout";
+import { logger } from "./utils/logger";
 
 const app = new Hono();
 
@@ -52,7 +53,7 @@ app.use(
 // Production static serving (SPA + API in a single process)
 if (process.env.NODE_ENV === "production") {
   const distRoot = fileURLToPath(new URL("../../web/dist", import.meta.url));
-  console.log(`Serving SPA from ${distRoot}`);
+  logger.info(`Serving SPA from ${distRoot}`);
   app.use(
     "*",
     serveStatic({
@@ -64,5 +65,5 @@ if (process.env.NODE_ENV === "production") {
 }
 
 const port = Number(env.PORT ?? 3001);
-console.log(`Livre Libre server listening on http://localhost:${port}`);
+logger.info(`Livre Libre server listening on http://localhost:${port}`);
 serve({ fetch: app.fetch, port });

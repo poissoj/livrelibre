@@ -1,12 +1,13 @@
 import { createLogger, format, transports } from "winston";
 
-const consoleTransport = new transports.Console({
-  level: process.env.LOG_LEVEL || "info",
-  format: format.combine(format.colorize(), format.simple()),
-});
+import { env } from "@server/env";
 
 export const logger = createLogger({
-  level: "info",
+  level: env.LOG_LEVEL ?? "info",
   format: format.combine(format.timestamp(), format.errors(), format.json()),
-  transports: [consoleTransport],
+  transports: [
+    new transports.Console({
+      format: format.combine(format.colorize(), format.simple()),
+    }),
+  ],
 });

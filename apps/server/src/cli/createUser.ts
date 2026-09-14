@@ -25,7 +25,7 @@ const main = async () => {
     console.log(`L'utilisateur ${name} a été créé`);
     process.exit(0);
   } catch (error) {
-    console.log(error);
+    console.error(error);
     process.exit(1);
   }
 };

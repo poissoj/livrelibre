@@ -1,6 +1,8 @@
 import * as cheerio from "cheerio";
 import got from "got";
 
+import { logger } from "@server/utils/logger";
+
 export type BookData = { title: string; author: string; publisher: string };
 
 export const getBookData = async (isbn: string): Promise<BookData | null> => {
@@ -20,7 +22,7 @@ export const getBookData = async (isbn: string): Promise<BookData | null> => {
       return { title, author, publisher };
     }
   } catch (error) {
-    console.error(error);
+    logger.error(error);
   }
   return null;
 };

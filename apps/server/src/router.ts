@@ -231,10 +231,13 @@ export const appRouter = router({
         nmFullname: norm(input.customer.fullname),
       };
       if (input.customerId) {
-        logger.info("Update customer", input);
+        logger.info("Update customer", {
+          customerId: input.customerId,
+          fullname: input.customer.fullname,
+        });
         return await setCustomer(customer, input.customerId);
       } else {
-        logger.info("New customer", input.customer);
+        logger.info("New customer", { fullname: input.customer.fullname });
         return await newCustomer(customer);
       }
     }),
