@@ -26,6 +26,13 @@
   --spacing-md: 16px;
   --spacing-lg: 24px;
 
+  /* Tailwind resolves max-w-xs/sm/md/lg through --spacing-* first, which
+     collides with the tokens above. These restore the expected widths. */
+  --max-width-xs: 20rem;
+  --max-width-sm: 24rem;
+  --max-width-md: 28rem;
+  --max-width-lg: 32rem;
+
   --shadow-b: 0 1px 1px 0 rgb(0 0 0 / 0.05);
 
   --font-sans:
