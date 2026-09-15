@@ -267,7 +267,7 @@ export const appRouter = router({
     .input(z.number())
     .mutation(async ({ ctx, input }) => {
       logger.info("Remove from cart", { user: ctx.user, cartItemId: input });
-      await removeFromCart(input);
+      await removeFromCart(ctx.user.id, input);
     }),
   star: authProcedure
     .input(z.object({ id: z.number(), starred: z.boolean() }))

@@ -181,17 +181,17 @@ export const addNewItemToCart = async (userId: number, item: NewCartItem) => {
   await db.insert(cart).values(cartItem);
 };
 
-export const removeFromCart = async (cartItemId: number) => {
+export const removeFromCart = async (userId: number, cartItemId: number) => {
   const result = await db
     .delete(cart)
-    .where(eq(cart.id, cartItemId))
+    .where(and(eq(cart.id, cartItemId), eq(cart.userId, userId)))
     .returning();
   if (result.length === 0) {
     return;
   }
   const amount = result[0].quantity || 1;
   const id = result[0].itemId;
-  logger.info("Remove from cart", { cartItemId, itemId: id });
+  logger.info("Remove from cart", { userId, cartItemId, itemId: id });
   if (id) {
     await db
       .update(itemsTable)

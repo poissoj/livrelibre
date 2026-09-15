@@ -73,7 +73,7 @@ describe("cart", () => {
     await addToCart(user.id, item.id);
 
     const { items: cartItems } = await getCart(user.id);
-    await removeFromCart(cartItems[0].id);
+    await removeFromCart(user.id, cartItems[0].id);
 
     const restored = await db.query.items.findFirst({
       where: eq(items.id, item.id),
@@ -82,5 +82,26 @@ describe("cart", () => {
 
     const cartData = await getCart(user.id);
     expect(cartData.count).toBe(0);
+  });
+
+  it("removeFromCart cannot delete another user's cart line", async () => {
+    const userA = await seedUser();
+    const userB = await seedUser({ name: "guest", role: "guest" });
+    const item = await seedItem({ amount: 5 });
+    await addToCart(userA.id, item.id);
+    await addToCart(userB.id, item.id);
+
+    const { items: cartA } = await getCart(userA.id);
+    await removeFromCart(userB.id, cartA[0].id);
+
+    const cartAData = await getCart(userA.id);
+    expect(cartAData.count).toBe(1);
+    const cartBData = await getCart(userB.id);
+    expect(cartBData.count).toBe(1);
+
+    const unchanged = await db.query.items.findFirst({
+      where: eq(items.id, item.id),
+    });
+    expect(unchanged?.amount).toBe(3);
   });
 });
