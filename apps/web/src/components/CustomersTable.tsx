@@ -11,7 +11,7 @@ export const CustomersTable = ({ items }: { items: CustomerWithTotal[] }) => {
       <thead>
         <tr className="sticky top-0 bg-white z-10">
           <th className="text-left">Nom</th>
-          <th className="text-left">Téléphone</th>
+          <th className="text-left w-32">Téléphone</th>
           <th className="text-left">Mail</th>
           <th className="text-left">Remarque contact</th>
           <th className="text-left">Commentaire</th>
@@ -27,7 +27,7 @@ export const CustomersTable = ({ items }: { items: CustomerWithTotal[] }) => {
             onClick={() => navigate(`/customer/${item.id}`)}
           >
             <td>{item.fullname}</td>
-            <td>{item.phone}</td>
+            <td className="whitespace-nowrap">{item.phone}</td>
             <td>{item.email}</td>
             <td>{item.contact}</td>
             <td>{item.comment}</td>
