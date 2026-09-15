@@ -1,11 +1,10 @@
 import type { ReactElement } from "react";
 
+import { formatDate } from "@livrelibre/shared/date";
+
 import { SalesByDay } from "@/components/Sales/SalesByDay";
 
-const getToday = () => {
-  // We always want day/month/year regardless of the current locale
-  return new Date().toLocaleDateString("fr");
-};
+const getToday = () => formatDate(new Date());
 
 const SalesByDayPage = (): ReactElement | null => {
   const date = getToday();
