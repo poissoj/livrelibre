@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { and, eq, inArray, sql } from "drizzle-orm";
 
 import type { DBItem, TVA } from "@livrelibre/shared/item";
@@ -39,7 +40,20 @@ type UnlistedSale = Omit<AggregatedSale, "paymentType" | "id" | "cartId"> & {
 
 type Sale = ItemSale | UnlistedSale;
 
-export const getSalesByDay = async (date: string) => {
+const getCurrentDate = async () => {
+  const rows = await db.execute<{ today: string }>(
+    sql`SELECT to_char(CURRENT_DATE, 'YYYY-MM-DD') AS today`,
+  );
+  return rows[0].today;
+};
+
+export const getSalesByDay = async (
+  date: string,
+  options?: { restrictToToday?: boolean },
+) => {
+  const effectiveDate = options?.restrictToToday
+    ? await getCurrentDate()
+    : date;
   const dbSales = await db
     .select({
       id: sales.id,
@@ -54,7 +68,7 @@ export const getSalesByDay = async (date: string) => {
       linkedToCustomer: sales.linkedToCustomer,
     })
     .from(sales)
-    .where(eq(sql`CAST(${sales.created} AS date)`, date))
+    .where(eq(sql`CAST(${sales.created} AS date)`, effectiveDate))
     .orderBy(sales.created, sales.cartId, sales.title);
 
   const itemIds = dbSales.map((s) => s.itemId).filter(isDefined);
@@ -170,7 +184,34 @@ export const getSalesByDay = async (date: string) => {
   };
 };
 
-export const deleteSale = async (saleId: number) => {
+export const deleteSale = async (
+  saleId: number,
+  options?: { restrictToToday?: boolean },
+) => {
+  if (options?.restrictToToday) {
+    const todaySales = await db
+      .select({ id: sales.id })
+      .from(sales)
+      .where(
+        and(
+          eq(sales.id, saleId),
+          sql`CAST(${sales.created} AS date) = CURRENT_DATE`,
+        ),
+      );
+    if (todaySales.length === 0) {
+      const existing = await db
+        .select({ id: sales.id })
+        .from(sales)
+        .where(eq(sales.id, saleId));
+      if (existing.length > 0) {
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Vous ne pouvez supprimer qu'une vente du jour",
+        });
+      }
+      return;
+    }
+  }
   const updated = await db
     .update(sales)
     .set({ deleted: true })

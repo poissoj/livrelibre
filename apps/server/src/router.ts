@@ -85,6 +85,13 @@ const checkAuth = middleware(({ ctx, next }) => {
 
 const authProcedure = procedure.use(checkAuth);
 
+const adminProcedure = authProcedure.use(({ ctx, next }) => {
+  if (ctx.user.role !== "admin") {
+    throw new TRPCError({ code: "FORBIDDEN" });
+  }
+  return next();
+});
+
 export const appRouter = router({
   // Queries
   advancedSearch: authProcedure
@@ -144,11 +151,13 @@ export const appRouter = router({
       }),
     )
     .query(async ({ input }) => await searchItems(input)),
-  sales: authProcedure.query(getSales),
+  sales: adminProcedure.query(getSales),
   salesByDay: authProcedure
     .input(z.string().regex(/^\d{4}-\d\d-\d\d$/))
-    .query(async ({ input }) => getSalesByDay(input)),
-  salesByMonth: authProcedure
+    .query(async ({ ctx, input }) =>
+      getSalesByDay(input, { restrictToToday: ctx.user.role !== "admin" }),
+    ),
+  salesByMonth: adminProcedure
     .input(
       z.object({ month: z.string().length(2), year: z.string().length(4) }),
     )
@@ -201,7 +210,9 @@ export const appRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       logger.info("Delete sale", { user: ctx.user, input });
-      await deleteSale(input.saleId);
+      await deleteSale(input.saleId, {
+        restrictToToday: ctx.user.role !== "admin",
+      });
     }),
   deleteCustomer: authProcedure
     .input(z.object({ id: z.number() }))
