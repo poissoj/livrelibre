@@ -6,21 +6,26 @@ import { trpc } from "@/utils/trpc";
 export default function useUser({
   redirectTo = "",
   redirectIfFound = false,
-} = {}) {
+}: { redirectTo?: string; redirectIfFound?: boolean } = {}) {
   const navigate = useNavigate();
-  const { data: user } = trpc.user.useQuery(undefined, { retry: 1 });
+  const {
+    data: user,
+    isPending,
+    isError,
+  } = trpc.user.useQuery(undefined, { retry: 1 });
 
-  const isLoggedIn = user && user.role !== "anonymous";
+  const isLoggedIn = user !== undefined && user.role !== "anonymous";
+
   useEffect(() => {
-    if (!redirectTo || !user) return;
+    if (!redirectTo || isPending || isError) return;
 
     if (
-      (redirectTo && !redirectIfFound && !isLoggedIn) ||
+      (!redirectIfFound && !isLoggedIn) ||
       (redirectIfFound && isLoggedIn)
     ) {
-      void navigate(redirectTo);
+      void navigate(redirectTo, { replace: true });
     }
-  }, [user, redirectIfFound, redirectTo, isLoggedIn, navigate]);
+  }, [isPending, isError, isLoggedIn, redirectIfFound, redirectTo, navigate]);
 
-  return { user, isLoggedIn };
+  return { user, isLoggedIn, isPending, isError };
 }

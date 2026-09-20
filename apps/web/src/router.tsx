@@ -1,6 +1,7 @@
-import { Outlet, createBrowserRouter } from "react-router";
+import { Navigate, Outlet, createBrowserRouter } from "react-router";
 
 import Layout from "@/components/Layout/Layout";
+import { PageLoader } from "@/components/PageLoader";
 import useUser from "@/lib/useUser";
 import Custom404 from "@/pages/404";
 import Custom500 from "@/pages/500";
@@ -29,8 +30,9 @@ import TodaySales from "@/pages/todaySales";
 import UpdateItem from "@/pages/update/[itemId]";
 
 function ProtectedLayout() {
-  const { isLoggedIn } = useUser({ redirectTo: "/login" });
-  if (!isLoggedIn) return null;
+  const { isLoggedIn, isPending, isError } = useUser();
+  if (isPending) return <PageLoader />;
+  if (isError || !isLoggedIn) return <Navigate to="/login" replace />;
   return (
     <Layout>
       <Outlet />

@@ -15,6 +15,7 @@ import { Button } from "@/components/Button";
 import { Input } from "@/components/FormControls";
 import { Title } from "@/components/Title";
 import { APP_NAME } from "@/lib/config";
+import useUser from "@/lib/useUser";
 import { type RouterOutput, trpc } from "@/utils/trpc";
 
 const FormGroup = ({ children }: React.PropsWithChildren) => (
@@ -37,6 +38,7 @@ type LoginFormData = {
 };
 
 const Login = () => {
+  useUser({ redirectTo: "/", redirectIfFound: true });
   const { register, handleSubmit, formState } = useForm<LoginFormData>();
   const utils = trpc.useUtils();
   const navigate = useNavigate();
