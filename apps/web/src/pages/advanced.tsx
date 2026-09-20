@@ -21,7 +21,8 @@ type FormFields = {
   dilicom: FileList | undefined;
 };
 
-type TFile = { filename: string; data: DilicomRowWithId[] } | null;
+type FileData = { filename: string; data: DilicomRowWithId[] };
+type TFile = FileData | null;
 type FileContextValue = [TFile, React.Dispatch<React.SetStateAction<TFile>>];
 
 const FileContext = createContext<FileContextValue | undefined>(undefined);
@@ -214,11 +215,8 @@ const ImportBooks = ({
   );
 };
 
-const DilicomPage = () => {
-  const [file, setFile] = useFileContext();
-  if (!file) {
-    throw new Error("Unable to find file - should never happen");
-  }
+const DilicomPage = ({ file }: { file: FileData }) => {
+  const [, setFile] = useFileContext();
   const nbItems = file.data.reduce((nb, row) => nb + row.QTE, 0);
 
   return (
@@ -253,7 +251,7 @@ const Advanced = (): ReactElement => {
   const [file] = useFileContext();
 
   if (file) {
-    return <DilicomPage />;
+    return <DilicomPage file={file} />;
   }
 
   return (
