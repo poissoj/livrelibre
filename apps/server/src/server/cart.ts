@@ -13,7 +13,7 @@ import {
   selectedCustomer as selectedCustomerTable,
 } from "@livrelibre/shared/schema";
 
-import { db } from "@server/db/database";
+import { type Transaction, db } from "@server/db/database";
 import {
   addPurchase,
   getSelectedCustomer,
@@ -57,59 +57,76 @@ export type PaymentFormData = {
 };
 
 export const payCart = async (userId: number, data: PaymentFormData) => {
-  const cartItems = await db.select().from(cart).where(eq(cart.userId, userId));
+  return await db.transaction(async (tx) => {
+    const cartItems = await tx
+      .select()
+      .from(cart)
+      .where(eq(cart.userId, userId));
 
-  if (cartItems.length === 0) {
-    throw new Error("No items in cart");
-  }
-  const cartId = cartItems[0].id;
-  const customer = await getSelectedCustomer(userId, false);
-  const now = new Date();
-  // If the date is today, we want to save the time too
-  const created =
-    formatDate(now) === data.paymentDate ? now : new Date(data.paymentDate);
-  const salesList: (typeof sales.$inferInsert)[] = cartItems.map((item) => ({
-    cartId,
-    created,
-    itemId: item.itemId,
-    itemType: item.type,
-    price: String(Math.round(Number(item.price) * item.quantity * 100) / 100),
-    quantity: item.quantity,
-    title: item.title,
-    tva: item.tva,
-    paymentType: data.paymentType,
-    linkedToCustomer: Boolean(customer?.customerId),
-    deleted: false,
-  }));
-  await db.insert(sales).values(salesList);
-  await db.delete(cart).where(eq(cart.userId, userId));
-  const total = salesList.reduce((t, sale) => t + Number(sale.price) * 100, 0);
-  if (customer && customer.customerId) {
-    const hasDiscount = cartItems.some(
-      (it) => it.title === "Remise carte de fidélité",
-    );
-    if (hasDiscount) {
-      await resetCustomer(customer.customerId);
-    } else {
-      await addPurchase(customer.customerId, total / 100);
+    if (cartItems.length === 0) {
+      throw new Error("No items in cart");
     }
-    await setSelectedCustomer({ asideCart: false, customerId: null, userId });
-  }
-  return {
-    success: true,
-    change:
-      data.paymentType === "cash"
-        ? Math.round(Number(data.amount) * 100 - total) / 100
-        : null,
-  };
+    const cartId = cartItems[0].id;
+    const customer = await getSelectedCustomer(userId, false, tx);
+    const now = new Date();
+    // If the date is today, we want to save the time too
+    const created =
+      formatDate(now) === data.paymentDate ? now : new Date(data.paymentDate);
+    const salesList: (typeof sales.$inferInsert)[] = cartItems.map((item) => ({
+      cartId,
+      created,
+      itemId: item.itemId,
+      itemType: item.type,
+      price: String(Math.round(Number(item.price) * item.quantity * 100) / 100),
+      quantity: item.quantity,
+      title: item.title,
+      tva: item.tva,
+      paymentType: data.paymentType,
+      linkedToCustomer: Boolean(customer?.customerId),
+      deleted: false,
+    }));
+    await tx.insert(sales).values(salesList);
+    await tx.delete(cart).where(eq(cart.userId, userId));
+    const total = salesList.reduce(
+      (t, sale) => t + Number(sale.price) * 100,
+      0,
+    );
+    if (customer && customer.customerId) {
+      const hasDiscount = cartItems.some(
+        (it) => it.title === "Remise carte de fidélité",
+      );
+      if (hasDiscount) {
+        await resetCustomer(customer.customerId, tx);
+      } else {
+        await addPurchase(customer.customerId, total / 100, tx);
+      }
+      await setSelectedCustomer(
+        { asideCart: false, customerId: null, userId },
+        tx,
+      );
+    }
+    return {
+      success: true,
+      change:
+        data.paymentType === "cash"
+          ? Math.round(Number(data.amount) * 100 - total) / 100
+          : null,
+    };
+  });
 };
 
-const addItemToCart = async (item: Item, userId: number, quantity = 1) => {
-  const cartResult = await db.query.cart.findFirst({
+const addItemToCart = async (
+  item: Item,
+  userId: number,
+  quantity = 1,
+  tx?: Transaction,
+) => {
+  const conn = tx ?? db;
+  const cartResult = await conn.query.cart.findFirst({
     where: and(eq(cart.itemId, item.id), eq(cart.userId, userId)),
   });
   if (cartResult !== undefined) {
-    await db
+    await conn
       .update(cart)
       .set({ quantity: sql`${cart.quantity} + ${quantity}` })
       .where(eq(cart.id, cartResult.id));
@@ -124,7 +141,7 @@ const addItemToCart = async (item: Item, userId: number, quantity = 1) => {
     quantity,
     userId,
   };
-  await db.insert(cart).values(cartItem);
+  await conn.insert(cart).values(cartItem);
 };
 
 export const addToCart = async (
@@ -132,43 +149,50 @@ export const addToCart = async (
   itemId: number,
   quantity = 1,
 ) => {
-  const result = await db
-    .update(itemsTable)
-    .set({ amount: sql`${itemsTable.amount} - ${quantity}` })
-    .where(
-      and(eq(itemsTable.id, itemId), sql`${itemsTable.amount} >= ${quantity}`),
-    )
-    .returning();
-  if (result.length === 0) {
-    throw new Error("Unable to find item");
-  }
-  await addItemToCart(result[0], userId, quantity);
+  await db.transaction(async (tx) => {
+    const result = await tx
+      .update(itemsTable)
+      .set({ amount: sql`${itemsTable.amount} - ${quantity}` })
+      .where(
+        and(
+          eq(itemsTable.id, itemId),
+          sql`${itemsTable.amount} >= ${quantity}`,
+        ),
+      )
+      .returning();
+    if (result.length === 0) {
+      throw new Error("Unable to find item");
+    }
+    await addItemToCart(result[0], userId, quantity, tx);
+  });
 };
 
 export const addISBNToCart = async (userId: number, isbn: string) => {
-  const result = await db
-    .update(itemsTable)
-    .set({ amount: sql`${itemsTable.amount} - 1` })
-    .where(and(eq(itemsTable.isbn, isbn), sql`${itemsTable.amount} >= 1`))
-    .returning();
-  if (result.length === 0) {
-    const item = await db.query.items.findFirst({
-      where: eq(itemsTable.isbn, isbn),
-    });
+  return await db.transaction(async (tx) => {
+    const result = await tx
+      .update(itemsTable)
+      .set({ amount: sql`${itemsTable.amount} - 1` })
+      .where(and(eq(itemsTable.isbn, isbn), sql`${itemsTable.amount} >= 1`))
+      .returning();
+    if (result.length === 0) {
+      const item = await tx.query.items.findFirst({
+        where: eq(itemsTable.isbn, isbn),
+      });
 
-    if (!item) {
-      logger.info("ISBN non trouvé", { userId, isbn });
-      return { errorCode: CART_ERRORS.ITEM_NOT_FOUND };
+      if (!item) {
+        logger.info("ISBN non trouvé", { userId, isbn });
+        return { errorCode: CART_ERRORS.ITEM_NOT_FOUND };
+      }
+      logger.info("Plus de stock", { userId, isbn });
+      return {
+        errorCode: CART_ERRORS.NO_STOCK,
+        title: item.title,
+        id: item.id,
+      };
     }
-    logger.info("Plus de stock", { userId, isbn });
-    return {
-      errorCode: CART_ERRORS.NO_STOCK,
-      title: item.title,
-      id: item.id,
-    };
-  }
-  await addItemToCart(result[0], userId);
-  return { errorCode: null };
+    await addItemToCart(result[0], userId, 1, tx);
+    return { errorCode: null };
+  });
 };
 
 export const addNewItemToCart = async (userId: number, item: NewCartItem) => {
@@ -182,22 +206,24 @@ export const addNewItemToCart = async (userId: number, item: NewCartItem) => {
 };
 
 export const removeFromCart = async (userId: number, cartItemId: number) => {
-  const result = await db
-    .delete(cart)
-    .where(and(eq(cart.id, cartItemId), eq(cart.userId, userId)))
-    .returning();
-  if (result.length === 0) {
-    return;
-  }
-  const amount = result[0].quantity || 1;
-  const id = result[0].itemId;
-  logger.info("Remove from cart", { userId, cartItemId, itemId: id });
-  if (id) {
-    await db
-      .update(itemsTable)
-      .set({ amount: sql`${itemsTable.amount} + ${amount}` })
-      .where(eq(itemsTable.id, id));
-  }
+  await db.transaction(async (tx) => {
+    const result = await tx
+      .delete(cart)
+      .where(and(eq(cart.id, cartItemId), eq(cart.userId, userId)))
+      .returning();
+    if (result.length === 0) {
+      return;
+    }
+    const amount = result[0].quantity || 1;
+    const id = result[0].itemId;
+    logger.info("Remove from cart", { userId, cartItemId, itemId: id });
+    if (id) {
+      await tx
+        .update(itemsTable)
+        .set({ amount: sql`${itemsTable.amount} + ${amount}` })
+        .where(eq(itemsTable.id, id));
+    }
+  });
 };
 
 type CartName = "cart" | "asideCart";
@@ -206,24 +232,26 @@ const schema = { cart, asideCart };
 
 const switchCarts = async (userId: number, from: CartName, to: CartName) => {
   logger.info("Switch cart", { from, userId });
-  const items = await db
-    .select()
-    .from(schema[from])
-    .where(eq(schema[from].userId, userId));
+  await db.transaction(async (tx) => {
+    const items = await tx
+      .select()
+      .from(schema[from])
+      .where(eq(schema[from].userId, userId));
 
-  await db.insert(schema[to]).values(items);
-  await db.delete(schema[from]).where(eq(schema[from].userId, userId));
+    await tx.insert(schema[to]).values(items);
+    await tx.delete(schema[from]).where(eq(schema[from].userId, userId));
 
-  await db
-    .update(selectedCustomerTable)
-    .set({ asideCart: from !== "asideCart" })
-    .where(
-      and(
-        eq(selectedCustomerTable.userId, userId),
-        eq(selectedCustomerTable.asideCart, from === "asideCart"),
-        isNotNull(selectedCustomerTable.customerId),
-      ),
-    );
+    await tx
+      .update(selectedCustomerTable)
+      .set({ asideCart: from !== "asideCart" })
+      .where(
+        and(
+          eq(selectedCustomerTable.userId, userId),
+          eq(selectedCustomerTable.asideCart, from === "asideCart"),
+          isNotNull(selectedCustomerTable.customerId),
+        ),
+      );
+  });
 };
 
 export const putCartAside = (userId: number) =>

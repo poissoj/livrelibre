@@ -9,3 +9,5 @@ if (!process.env.POSTGRES_URI) {
 
 const queryClient = postgres(process.env.POSTGRES_URI);
 export const db = drizzle(queryClient, { schema });
+
+export type Transaction = Parameters<Parameters<typeof db.transaction>[0]>[0];

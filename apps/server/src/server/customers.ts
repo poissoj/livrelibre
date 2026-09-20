@@ -18,7 +18,7 @@ import {
 } from "@livrelibre/shared/schema";
 import { norm, sanitize } from "@livrelibre/shared/utils";
 
-import { db } from "@server/db/database";
+import { type Transaction, db } from "@server/db/database";
 import { logger } from "@server/utils/logger";
 
 export const getCustomers = async ({
@@ -73,13 +73,17 @@ export const searchCustomers = async (search: string) => {
     .limit(MAX_CUSTOMERS_TO_DISPLAY);
 };
 
-export const resetCustomer = async (id: number) => {
-  return await db.delete(purchases).where(eq(purchases.customerId, id));
+export const resetCustomer = async (id: number, tx?: Transaction) => {
+  return await (tx ?? db).delete(purchases).where(eq(purchases.customerId, id));
 };
 
-export const addPurchase = async (customerId: number, amount: number) => {
+export const addPurchase = async (
+  customerId: number,
+  amount: number,
+  tx?: Transaction,
+) => {
   const date = formatDate(new Date()).split("-").reverse().join("/");
-  return await db
+  return await (tx ?? db)
     .insert(purchases)
     .values({ amount: String(amount), date, customerId });
 };
@@ -87,8 +91,9 @@ export const addPurchase = async (customerId: number, amount: number) => {
 export const getSelectedCustomer = async (
   userId: number,
   asideCart: boolean,
+  tx?: Transaction,
 ) => {
-  const rows = await db
+  const rows = await (tx ?? db)
     .select()
     .from(selectedCustomer)
     .where(
@@ -102,8 +107,9 @@ export const getSelectedCustomer = async (
 
 export const setSelectedCustomer = async (
   customer: typeof selectedCustomer.$inferInsert,
+  tx?: Transaction,
 ) => {
-  return await db
+  return await (tx ?? db)
     .insert(selectedCustomer)
     .values(customer)
     .onConflictDoUpdate({ target: selectedCustomer.userId, set: customer });
@@ -128,8 +134,10 @@ export const getCustomer = async (
 
 export const deleteCustomer = async (customerId: number) => {
   try {
-    await db.delete(purchases).where(eq(purchases.customerId, customerId));
-    await db.delete(customers).where(eq(customers.id, customerId));
+    await db.transaction(async (tx) => {
+      await tx.delete(purchases).where(eq(purchases.customerId, customerId));
+      await tx.delete(customers).where(eq(customers.id, customerId));
+    });
     return { type: "success" as const, msg: "Le client a été supprimé" };
   } catch (error) {
     logger.error(error);

@@ -138,6 +138,44 @@ describe("REST routes", () => {
       });
       expect(row?.amount).toBe(2);
     });
+
+    it("rolls back every change when one row fails", async () => {
+      const cookie = await authCookie();
+      const existing = await seedItem({ isbn: "9780000000001", amount: 5 });
+
+      const res = await app.request("/api/finalizeImport", {
+        method: "POST",
+        headers: { "content-type": "application/json", cookie },
+        body: JSON.stringify([
+          {
+            id: existing.id,
+            EAN: existing.isbn,
+            TITRE: existing.title,
+            AUTEUR: existing.author,
+            EDITEUR: existing.publisher,
+            DISTRIBUTEUR: existing.distributor,
+            PRIX: 10,
+            QTE: 3,
+          },
+          {
+            EAN: existing.isbn,
+            TITRE: "Doublon",
+            AUTEUR: "Auteur",
+            EDITEUR: "Éditeur",
+            DISTRIBUTEUR: "Distributeur",
+            PRIX: 10,
+            QTE: 1,
+          },
+        ]),
+      });
+
+      expect(res.status).toBe(500);
+
+      const unchanged = await db.query.items.findFirst({
+        where: eq(items.id, existing.id),
+      });
+      expect(unchanged?.amount).toBe(5);
+    });
   });
 
   describe("POST /api/importFile", () => {

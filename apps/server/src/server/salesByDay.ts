@@ -188,42 +188,44 @@ export const deleteSale = async (
   saleId: number,
   options?: { restrictToToday?: boolean },
 ) => {
-  if (options?.restrictToToday) {
-    const todaySales = await db
-      .select({ id: sales.id })
-      .from(sales)
-      .where(
-        and(
-          eq(sales.id, saleId),
-          sql`CAST(${sales.created} AS date) = CURRENT_DATE`,
-        ),
-      );
-    if (todaySales.length === 0) {
-      const existing = await db
+  await db.transaction(async (tx) => {
+    if (options?.restrictToToday) {
+      const todaySales = await tx
         .select({ id: sales.id })
         .from(sales)
-        .where(eq(sales.id, saleId));
-      if (existing.length > 0) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "Vous ne pouvez supprimer qu'une vente du jour",
-        });
+        .where(
+          and(
+            eq(sales.id, saleId),
+            sql`CAST(${sales.created} AS date) = CURRENT_DATE`,
+          ),
+        );
+      if (todaySales.length === 0) {
+        const existing = await tx
+          .select({ id: sales.id })
+          .from(sales)
+          .where(eq(sales.id, saleId));
+        if (existing.length > 0) {
+          throw new TRPCError({
+            code: "FORBIDDEN",
+            message: "Vous ne pouvez supprimer qu'une vente du jour",
+          });
+        }
+        return;
       }
+    }
+    const updated = await tx
+      .update(sales)
+      .set({ deleted: true })
+      .where(and(eq(sales.id, saleId), eq(sales.deleted, false)))
+      .returning();
+    const sale = updated[0];
+    if (updated.length === 0 || !sale.itemId) {
       return;
     }
-  }
-  const updated = await db
-    .update(sales)
-    .set({ deleted: true })
-    .where(and(eq(sales.id, saleId), eq(sales.deleted, false)))
-    .returning();
-  const sale = updated[0];
-  if (updated.length === 0 || !sale.itemId) {
-    return;
-  }
-  const amount = sale.quantity || 1;
-  await db
-    .update(items)
-    .set({ amount: sql`${items.amount} + ${amount}` })
-    .where(eq(items.id, sale.itemId));
+    const amount = sale.quantity || 1;
+    await tx
+      .update(items)
+      .set({ amount: sql`${items.amount} + ${amount}` })
+      .where(eq(items.id, sale.itemId));
+  });
 };

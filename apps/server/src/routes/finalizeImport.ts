@@ -24,42 +24,44 @@ export const finalizeImportRoute = async (c: Context) => {
   logger.info(`Import ${data.length} books`, { user, books });
   const today = formatDate(new Date()).split("-").reverse().join("/");
   const booksToAdd: (typeof items.$inferInsert)[] = [];
-  for (const row of data) {
-    const price = String(row.PRIX);
-    if (row.id) {
-      await db
-        .update(items)
-        .set({ amount: sql`${items.amount} + ${row.QTE}`, price })
-        .where(eq(items.id, row.id));
-      continue;
+  await db.transaction(async (tx) => {
+    for (const row of data) {
+      const price = String(row.PRIX);
+      if (row.id) {
+        await tx
+          .update(items)
+          .set({ amount: sql`${items.amount} + ${row.QTE}`, price })
+          .where(eq(items.id, row.id));
+        continue;
+      }
+      const book: typeof items.$inferInsert = {
+        amount: row.QTE,
+        datebought: today,
+        isbn: row.EAN.trim(),
+        price,
+        tva: "5.5",
+        type: "book",
+        author: row.AUTEUR,
+        nmAuthor: norm(row.AUTEUR),
+        title: row.TITRE,
+        nmTitle: norm(row.TITRE),
+        publisher: row.EDITEUR,
+        nmPublisher: norm(row.EDITEUR),
+        distributor: row.DISTRIBUTEUR,
+        nmDistributor: norm(row.DISTRIBUTEUR),
+        starred: false,
+        keywords: "",
+        comments: "",
+      };
+      booksToAdd.push(book);
     }
-    const book: typeof items.$inferInsert = {
-      amount: row.QTE,
-      datebought: today,
-      isbn: row.EAN.trim(),
-      price,
-      tva: "5.5",
-      type: "book",
-      author: row.AUTEUR,
-      nmAuthor: norm(row.AUTEUR),
-      title: row.TITRE,
-      nmTitle: norm(row.TITRE),
-      publisher: row.EDITEUR,
-      nmPublisher: norm(row.EDITEUR),
-      distributor: row.DISTRIBUTEUR,
-      nmDistributor: norm(row.DISTRIBUTEUR),
-      starred: false,
-      keywords: "",
-      comments: "",
-    };
-    booksToAdd.push(book);
-  }
-  if (booksToAdd.length > 0) {
-    await db.insert(items).values(booksToAdd);
-    logger.info(`Added ${booksToAdd.length} new books`, {
-      user,
-      isbns: booksToAdd.map((book) => book.isbn),
-    });
-  }
+    if (booksToAdd.length > 0) {
+      await tx.insert(items).values(booksToAdd);
+      logger.info(`Added ${booksToAdd.length} new books`, {
+        user,
+        isbns: booksToAdd.map((book) => book.isbn),
+      });
+    }
+  });
   return c.json({ status: "Import ok" });
 };
