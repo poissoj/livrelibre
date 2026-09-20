@@ -3,6 +3,7 @@ import { Outlet, createBrowserRouter } from "react-router";
 import Layout from "@/components/Layout/Layout";
 import useUser from "@/lib/useUser";
 import Custom404 from "@/pages/404";
+import Custom500 from "@/pages/500";
 import Add from "@/pages/add";
 import AdvancedWrapper from "@/pages/advanced";
 import SearchResults from "@/pages/advancedSearch";
@@ -41,34 +42,41 @@ export const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+    errorElement: <Custom500 />,
   },
   {
     path: "/",
     element: <ProtectedLayout />,
+    errorElement: <Custom500 />,
     children: [
-      { index: true, element: <Dashboard /> },
-      { path: "add", element: <Add /> },
-      { path: "search", element: <Search /> },
-      { path: "advancedSearch", element: <SearchResults /> },
-      { path: "advanced", element: <AdvancedWrapper /> },
-      { path: "items", element: <Items /> },
-      { path: "item/:id", element: <ItemPage /> },
-      { path: "update/:itemId", element: <UpdateItem /> },
-      { path: "customers", element: <Customers /> },
-      { path: "customer/new", element: <NewCustomer /> },
-      { path: "customer/:customerId", element: <UpdateCustomer /> },
-      { path: "cart", element: <CartPage /> },
-      { path: "orders", element: <Orders /> },
-      { path: "order/new", element: <NewOrder /> },
-      { path: "order/:orderId", element: <UpdateOrder /> },
-      { path: "best-sales", element: <BestSales /> },
-      { path: "sales", element: <Sales /> },
-      { path: "sale/:year/:month", element: <SalesByMonth /> },
-      { path: "sale/:year/:month/:day", element: <SalesByDayPage /> },
-      { path: "todaySales", element: <TodaySales /> },
-      { path: "quicksearch", element: <QuickSearchPage /> },
-      { path: "stats", element: <Stats /> },
-      { path: "*", element: <Custom404 /> },
+      {
+        errorElement: <Custom500 />,
+        children: [
+          { index: true, element: <Dashboard /> },
+          { path: "add", element: <Add /> },
+          { path: "search", element: <Search /> },
+          { path: "advancedSearch", element: <SearchResults /> },
+          { path: "advanced", element: <AdvancedWrapper /> },
+          { path: "items", element: <Items /> },
+          { path: "item/:id", element: <ItemPage /> },
+          { path: "update/:itemId", element: <UpdateItem /> },
+          { path: "customers", element: <Customers /> },
+          { path: "customer/new", element: <NewCustomer /> },
+          { path: "customer/:customerId", element: <UpdateCustomer /> },
+          { path: "cart", element: <CartPage /> },
+          { path: "orders", element: <Orders /> },
+          { path: "order/new", element: <NewOrder /> },
+          { path: "order/:orderId", element: <UpdateOrder /> },
+          { path: "best-sales", element: <BestSales /> },
+          { path: "sales", element: <Sales /> },
+          { path: "sale/:year/:month", element: <SalesByMonth /> },
+          { path: "sale/:year/:month/:day", element: <SalesByDayPage /> },
+          { path: "todaySales", element: <TodaySales /> },
+          { path: "quicksearch", element: <QuickSearchPage /> },
+          { path: "stats", element: <Stats /> },
+          { path: "*", element: <Custom404 /> },
+        ],
+      },
     ],
   },
 ]);
