@@ -1,6 +1,7 @@
 import { serveStatic } from "@hono/node-server/serve-static";
 import { trpcServer } from "@hono/trpc-server";
 import { Hono } from "hono";
+import { bodyLimit } from "hono/body-limit";
 import { fileURLToPath } from "node:url";
 
 import { authMiddleware } from "./auth";
@@ -16,6 +17,8 @@ import { logger } from "./utils/logger";
 
 export const app = new Hono();
 
+const MAX_IMPORT_FILE_SIZE = 10 * 1024 * 1024;
+
 // Security headers
 app.use("*", async (c, next) => {
   await next();
@@ -30,6 +33,10 @@ app.use("*", async (c, next) => {
 
 // Authentication (JWT from cookie)
 app.use("/api/*", authMiddleware);
+
+// Limit the size of import payloads (authenticated users only)
+app.use("/api/importFile", bodyLimit({ maxSize: MAX_IMPORT_FILE_SIZE }));
+app.use("/api/finalizeImport", bodyLimit({ maxSize: MAX_IMPORT_FILE_SIZE }));
 
 // REST routes
 app.post("/api/login", loginRoute);

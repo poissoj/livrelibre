@@ -2,7 +2,7 @@ import { eq, sql } from "drizzle-orm";
 import type { Context } from "hono";
 
 import { formatDate } from "@livrelibre/shared/date";
-import { type DilicomRowWithId } from "@livrelibre/shared/dilicomItem";
+import { importPayloadSchema } from "@livrelibre/shared/dilicomItem";
 import { items } from "@livrelibre/shared/schema";
 import { norm } from "@livrelibre/shared/utils";
 
@@ -15,7 +15,16 @@ export const finalizeImportRoute = async (c: Context) => {
   if (user.role === "anonymous") {
     return c.json({ error: "Unauthenticated" }, 401);
   }
-  const data = await c.req.json<DilicomRowWithId[]>();
+  const body = await c.req.json<unknown>().catch(() => null);
+  const parsed = importPayloadSchema.safeParse(body);
+  if (!parsed.success) {
+    logger.info("Invalid import payload", {
+      user,
+      errors: parsed.error.issues,
+    });
+    return c.json({ error: "Données d'import invalides" }, 400);
+  }
+  const data = parsed.data;
   const books = data.map((row) => ({
     isbn: row.EAN.trim(),
     qty: row.QTE,

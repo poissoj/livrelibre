@@ -176,6 +176,30 @@ describe("REST routes", () => {
       });
       expect(unchanged?.amount).toBe(5);
     });
+
+    it("rejects an invalid payload without writing anything", async () => {
+      const cookie = await authCookie();
+      const res = await app.request("/api/finalizeImport", {
+        method: "POST",
+        headers: { "content-type": "application/json", cookie },
+        body: JSON.stringify([{ EAN: "", TITRE: "X", PRIX: -1, QTE: "abc" }]),
+      });
+
+      expect(res.status).toBe(400);
+      const rows = await db.select({ id: items.id }).from(items);
+      expect(rows).toHaveLength(0);
+    });
+
+    it("rejects malformed JSON", async () => {
+      const cookie = await authCookie();
+      const res = await app.request("/api/finalizeImport", {
+        method: "POST",
+        headers: { "content-type": "application/json", cookie },
+        body: "not json",
+      });
+
+      expect(res.status).toBe(400);
+    });
   });
 
   describe("POST /api/importFile", () => {
@@ -195,6 +219,38 @@ describe("REST routes", () => {
         body: new FormData(),
       });
       expect(res.status).toBe(400);
+    });
+
+    it("rejects an unsupported file extension", async () => {
+      const cookie = await authCookie();
+      const form = new FormData();
+      form.append(
+        "dilicom",
+        new File(["EAN,TITRE"], "data.txt", { type: "text/plain" }),
+      );
+      const res = await app.request("/api/importFile", {
+        method: "POST",
+        headers: { cookie },
+        body: form,
+      });
+      expect(res.status).toBe(400);
+    });
+
+    it("rejects a file that is too large", async () => {
+      const cookie = await authCookie();
+      const form = new FormData();
+      form.append(
+        "dilicom",
+        new File([new Uint8Array(10 * 1024 * 1024 + 1)], "big.csv", {
+          type: "text/csv",
+        }),
+      );
+      const res = await app.request("/api/importFile", {
+        method: "POST",
+        headers: { cookie },
+        body: form,
+      });
+      expect(res.status).toBe(413);
     });
   });
 });

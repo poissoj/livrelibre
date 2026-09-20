@@ -26,6 +26,8 @@ const header = [
   "TOTAL",
 ];
 
+const ALLOWED_EXTENSIONS = [".csv", ".slk", ".xlsx"];
+
 const fileToJson = (data: Buffer) => {
   // Need raw: true because in a CSV file, prices like "12,00" are parsed as 1200
   const workbook = xlsx.read(data, { raw: true });
@@ -34,9 +36,9 @@ const fileToJson = (data: Buffer) => {
   return json;
 };
 
-const parseValue = (value: string | number) => {
+const parseValue = (value: string | number | undefined) => {
   if (typeof value === "number") return value;
-  return Number(value.replace(",", "."));
+  return Number(value?.replace(",", "."));
 };
 
 const filterRows = (json: DilicomRow[]) => {
@@ -110,6 +112,10 @@ export const importFileRoute = async (c: Context) => {
   const file = body["dilicom"];
   if (!(file instanceof File)) {
     return c.json({ error: "No file provided" }, 400);
+  }
+  const extension = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
+  if (!ALLOWED_EXTENSIONS.includes(extension)) {
+    return c.json({ error: "Format de fichier non pris en charge" }, 400);
   }
   logger.info("import file", { filename: file.name, user });
   const buffer = Buffer.from(await file.arrayBuffer());
