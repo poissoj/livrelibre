@@ -11,6 +11,7 @@
     "lint": "eslint ."
   },
   "exports": {
+    "./app": "./src/app.ts",
     "./db/database": "./src/db/database.ts",
     "./db/migrate": "./src/db/migrate.ts",
     "./router": "./src/router.ts",
