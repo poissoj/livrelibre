@@ -1,8 +1,6 @@
 import { expect, test } from "@playwright/test";
-import { config } from "dotenv";
 
-config({ path: ".env.local" });
-const { USER_NAME, USER_PASSWORD } = process.env;
+import { E2E_USER } from "./e2e-user";
 
 test("Identifiants invalides", async ({ page }) => {
   await page.goto(`/login`);
@@ -20,15 +18,11 @@ test("Redirige vers /login si non authentifié", async ({ page }) => {
 });
 
 test("Identifiants valides", async ({ page }) => {
-  if (!USER_NAME || !USER_PASSWORD) {
-    test.skip(true, "USER_NAME / USER_PASSWORD absents du .env.local");
-    return;
-  }
   await page.goto(`/login`);
   await page.getByLabel("Identifiant").click();
-  await page.getByLabel("Identifiant").fill(USER_NAME);
+  await page.getByLabel("Identifiant").fill(E2E_USER.name);
   await page.getByLabel("Mot de passe").click();
-  await page.getByLabel("Mot de passe").fill(USER_PASSWORD);
+  await page.getByLabel("Mot de passe").fill(E2E_USER.password);
   await page.getByRole("button", { name: "Connexion" }).click();
   await expect(page).toHaveURL("/");
   await expect(page.getByRole("link", { name: "Livre Libre" })).toBeVisible();
@@ -38,15 +32,11 @@ test("Identifiants valides", async ({ page }) => {
 });
 
 test("Redirige un utilisateur connecté hors de /login", async ({ page }) => {
-  if (!USER_NAME || !USER_PASSWORD) {
-    test.skip(true, "USER_NAME / USER_PASSWORD absents du .env.local");
-    return;
-  }
   await page.goto(`/login`);
   await page.getByLabel("Identifiant").click();
-  await page.getByLabel("Identifiant").fill(USER_NAME);
+  await page.getByLabel("Identifiant").fill(E2E_USER.name);
   await page.getByLabel("Mot de passe").click();
-  await page.getByLabel("Mot de passe").fill(USER_PASSWORD);
+  await page.getByLabel("Mot de passe").fill(E2E_USER.password);
   await page.getByRole("button", { name: "Connexion" }).click();
   await expect(page).toHaveURL("/");
 

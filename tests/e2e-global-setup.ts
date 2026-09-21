@@ -1,5 +1,4 @@
 import bcrypt from "bcrypt";
-import { config } from "dotenv";
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
@@ -8,10 +7,10 @@ import postgres from "postgres";
 
 import { users } from "@livrelibre/shared/schema";
 
+import { E2E_USER } from "./e2e-user";
 import { getTestDatabaseUri } from "./test-db.mts";
 
 export default async function globalSetup() {
-  config({ path: ".env.local" });
   const uri = getTestDatabaseUri();
 
   const client = postgres(uri);
@@ -20,18 +19,15 @@ export default async function globalSetup() {
     migrationsFolder: join(process.cwd(), "apps/server/src/db/migrations"),
   });
 
-  const { USER_NAME, USER_PASSWORD } = process.env;
-  if (USER_NAME && USER_PASSWORD) {
-    const hash = await bcrypt.hash(USER_PASSWORD, 12);
-    const existing = await db
-      .select({ id: users.id })
-      .from(users)
-      .where(eq(users.name, USER_NAME));
-    if (existing.length === 0) {
-      await db.insert(users).values({ name: USER_NAME, hash, role: "admin" });
-    } else {
-      await db.update(users).set({ hash }).where(eq(users.name, USER_NAME));
-    }
+  const hash = await bcrypt.hash(E2E_USER.password, 12);
+  const existing = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(eq(users.name, E2E_USER.name));
+  if (existing.length === 0) {
+    await db.insert(users).values({ name: E2E_USER.name, hash, role: "admin" });
+  } else {
+    await db.update(users).set({ hash }).where(eq(users.name, E2E_USER.name));
   }
 
   await client.end();

@@ -1,16 +1,14 @@
 import { expect, test } from "@playwright/test";
-import { config } from "dotenv";
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
 
 import { items } from "@livrelibre/shared/schema";
 
+import { E2E_USER } from "./e2e-user";
 import { getTestDatabaseUri } from "./test-db.mts";
 
-config({ path: ".env.local" });
 const databaseUrl = getTestDatabaseUri();
-const { USER_NAME, USER_PASSWORD } = process.env;
 
 const isbn = String(Date.now());
 const originalTitle = "Titre E2E avant";
@@ -55,17 +53,13 @@ test.afterAll(async () => {
 });
 
 test("met à jour un article", async ({ page }) => {
-  if (!USER_NAME || !USER_PASSWORD) {
-    test.skip(true, "USER_NAME / USER_PASSWORD absents du .env.local");
-    return;
-  }
   if (itemId == null) {
     throw new Error("Article de test non créé");
   }
 
   await page.goto("/login");
-  await page.getByLabel("Identifiant").fill(USER_NAME);
-  await page.getByLabel("Mot de passe").fill(USER_PASSWORD);
+  await page.getByLabel("Identifiant").fill(E2E_USER.name);
+  await page.getByLabel("Mot de passe").fill(E2E_USER.password);
   await page.getByRole("button", { name: "Connexion" }).click();
   await expect(page).toHaveURL("/");
 
