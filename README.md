@@ -93,5 +93,7 @@ pnpm start
 
 - `pnpm test` — tests unitaires et d'intégration
 - `pnpm test:e2e` — tests de bout en bout (Playwright)
+- `pnpm typecheck` — vérification des types
 - `pnpm lint` — lint
+- `pnpm check` — lint + typecheck
 - `pnpm format` — formatage (Prettier)
