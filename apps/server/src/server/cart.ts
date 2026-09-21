@@ -58,10 +58,12 @@ export type PaymentFormData = {
 
 export const payCart = async (userId: number, data: PaymentFormData) => {
   return await db.transaction(async (tx) => {
+    // Delete first and lock the rows so concurrent payments cannot sell the
+    // same cart twice: a second transaction will block, then see no rows.
     const cartItems = await tx
-      .select()
-      .from(cart)
-      .where(eq(cart.userId, userId));
+      .delete(cart)
+      .where(eq(cart.userId, userId))
+      .returning();
 
     if (cartItems.length === 0) {
       throw new Error("No items in cart");
@@ -86,7 +88,6 @@ export const payCart = async (userId: number, data: PaymentFormData) => {
       deleted: false,
     }));
     await tx.insert(sales).values(salesList);
-    await tx.delete(cart).where(eq(cart.userId, userId));
     const total = salesList.reduce(
       (t, sale) => t + Number(sale.price) * 100,
       0,
