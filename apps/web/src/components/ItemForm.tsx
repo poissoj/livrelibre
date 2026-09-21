@@ -74,9 +74,13 @@ export const ItemForm = ({
     });
   const [alert, setAlert] = React.useState<TAlert | null>(null);
   const [isbnLoading, setIsbnLoading] = React.useState(false);
+  const formRef = React.useRef<HTMLFormElement>(null);
 
   const submit = async (data: FormFields) => {
-    const { type, msg: message } = await onSubmit(data);
+    const formData = formRef.current
+      ? Object.fromEntries(new FormData(formRef.current))
+      : {};
+    const { type, msg: message } = await onSubmit({ ...data, ...formData });
     setAlert({ type, message });
     if (type === "success") {
       if (onSuccess) {
@@ -128,6 +132,7 @@ export const ItemForm = ({
       <CardTitle>{title}</CardTitle>
       <form
         className="flex-1 flex flex-col h-0"
+        ref={formRef}
         onSubmit={handleSubmit(submit)}
       >
         <CardBody className="flex-col gap-5">
