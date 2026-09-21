@@ -58,6 +58,14 @@ export function SelectItem({
           className="absolute z-10 w-full max-h-56 overflow-auto rounded-md shadow-lg ring-1 ring-black/5 bg-gray-light"
           as="ul"
         >
+          {res.isPending && (
+            <li className="px-2 py-1 text-sm italic">Chargement…</li>
+          )}
+          {res.isError && (
+            <li className="px-2 py-1 text-sm [color:#721c24]">
+              Erreur de chargement
+            </li>
+          )}
           {search.length > 0 && (
             <ComboboxOption value={{ id: null, title: search }}>
               {search}

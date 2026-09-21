@@ -42,6 +42,16 @@ const Logout = () => {
 
 const CartBadge = () => {
   const result = trpc.cart.useQuery();
+  if (result.isError) {
+    return (
+      <span
+        className="[border-radius:10rem] bg-red px-2 py-0.5 [font-size:12px] font-medium"
+        title="Panier indisponible"
+      >
+        !
+      </span>
+    );
+  }
   if (result.status === "success" && result.data.count > 0) {
     return (
       <span className="[border-radius:10rem] bg-gray-dark  px-2 py-0.5 [font-size:12px] font-medium">

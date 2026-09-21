@@ -14,6 +14,7 @@ import { Button, LinkButton } from "@/components/Button";
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ConfirmationDialog } from "@/components/ConfirmationDialog";
 import { ErrorMessage } from "@/components/ErrorMessage";
+import { NoResults } from "@/components/NoResults";
 import { OrderForm } from "@/components/OrderForm";
 import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
@@ -104,12 +105,23 @@ const OrderLoader = ({ id }: { id: number }) => {
     );
   }
 
-  if (result.data == null) {
+  if (result.status === "pending") {
     return (
       <Card>
         <CardTitle>{CARD_TITLE}</CardTitle>
         <CardBody>
           <OrderFormSkeleton />
+        </CardBody>
+      </Card>
+    );
+  }
+
+  if (result.data == null) {
+    return (
+      <Card>
+        <CardTitle>Commande introuvable</CardTitle>
+        <CardBody>
+          <NoResults />
         </CardBody>
       </Card>
     );

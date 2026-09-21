@@ -19,6 +19,7 @@ import {
   type CustomerFormFields,
 } from "@/components/CustomerForm";
 import { ErrorMessage } from "@/components/ErrorMessage";
+import { NoResults } from "@/components/NoResults";
 import { StatusCircle } from "@/components/StatusCircle";
 import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
@@ -169,12 +170,23 @@ const CustomerLoader = ({ id }: { id: number }) => {
     );
   }
 
-  if (result.data == null) {
+  if (result.status === "pending") {
     return (
       <Card>
         <CardTitle>{CARD_TITLE}</CardTitle>
         <CardBody>
           <CustomerFormSkeleton />
+        </CardBody>
+      </Card>
+    );
+  }
+
+  if (result.data == null) {
+    return (
+      <Card>
+        <CardTitle>Client introuvable</CardTitle>
+        <CardBody>
+          <NoResults />
         </CardBody>
       </Card>
     );

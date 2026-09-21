@@ -51,6 +51,14 @@ export function SelectCustomer({
           {...inputProps}
         />
         <ComboboxOptions className="absolute z-10 w-full max-h-40 overflow-auto rounded-md p-1 shadow-lg ring-1 ring-black/5 bg-gray-light">
+          {res.isPending && (
+            <li className="px-2 py-1 text-sm italic">Chargement…</li>
+          )}
+          {res.isError && (
+            <li className="px-2 py-1 text-sm [color:#721c24]">
+              Erreur de chargement
+            </li>
+          )}
           {filteredCustomers.map((customer) => (
             <ComboboxOption key={customer.id} value={customer} as={Fragment}>
               {({ focus, selected }) => (

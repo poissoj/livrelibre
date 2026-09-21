@@ -11,6 +11,7 @@ import { Button, LinkButton } from "@/components/Button";
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { type FormFields, ItemForm } from "@/components/ItemForm";
+import { NoResults } from "@/components/NoResults";
 import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
 
@@ -61,12 +62,23 @@ const ItemLoader = ({ id }: { id: number }) => {
     );
   }
 
-  if (result.data == null) {
+  if (result.status === "pending") {
     return (
       <Card>
         <CardTitle>{CARD_TITLE}</CardTitle>
         <CardBody>
           <ItemFormSkeleton />
+        </CardBody>
+      </Card>
+    );
+  }
+
+  if (result.data == null) {
+    return (
+      <Card>
+        <CardTitle>Article introuvable</CardTitle>
+        <CardBody>
+          <NoResults />
         </CardBody>
       </Card>
     );
