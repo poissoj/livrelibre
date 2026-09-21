@@ -16,9 +16,11 @@ export function useQueryParams() {
   const push = async ({
     query: next,
     pathname = location.pathname,
+    replace = false,
   }: {
     query: Record<string, QueryValue>;
     pathname?: string;
+    replace?: boolean;
   }) => {
     const params = new URLSearchParams();
     for (const [key, value] of Object.entries(next)) {
@@ -28,7 +30,7 @@ export function useQueryParams() {
       }
     }
     const search = params.toString();
-    await navigate(search ? `${pathname}?${search}` : pathname);
+    await navigate(search ? `${pathname}?${search}` : pathname, { replace });
   };
 
   return { query, push, pathname: location.pathname, searchParams };

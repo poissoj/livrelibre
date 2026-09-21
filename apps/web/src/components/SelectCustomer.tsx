@@ -6,6 +6,7 @@ import {
   ComboboxOption,
   ComboboxOptions,
 } from "@headlessui/react";
+import { keepPreviousData } from "@tanstack/react-query";
 import { clsx } from "clsx";
 import { Fragment, type HTMLProps, useState } from "react";
 
@@ -13,6 +14,8 @@ import type { Customer } from "@livrelibre/shared/customer";
 
 import { COMMON_STYLES } from "@/components/FormControls";
 import { trpc } from "@/utils/trpc";
+import { useDebouncedValue } from "@/utils/useDebouncedValue";
+import { useDelayedLoading } from "@/utils/useDelayedLoading";
 
 const getLabel = (customer: Customer | null) =>
   customer ? customer.fullname : "";
@@ -32,7 +35,12 @@ export function SelectCustomer({
   ...inputProps
 }: Props) {
   const [query, setQuery] = useState("");
-  const res = trpc.searchCustomer.useQuery(query, { staleTime: 60000 });
+  const debouncedQuery = useDebouncedValue(query, 300);
+  const res = trpc.searchCustomer.useQuery(debouncedQuery, {
+    staleTime: 60000,
+    placeholderData: keepPreviousData,
+  });
+  const showLoading = useDelayedLoading(res.isFetching, 500);
 
   const filteredCustomers = res.data || [];
   const inputStyles = fullWidth
@@ -51,7 +59,7 @@ export function SelectCustomer({
           {...inputProps}
         />
         <ComboboxOptions className="absolute z-10 w-full max-h-40 overflow-auto rounded-md p-1 shadow-lg ring-1 ring-black/5 bg-gray-light">
-          {res.isPending && (
+          {showLoading && (
             <li className="px-2 py-1 text-sm italic">Chargement…</li>
           )}
           {res.isError && (

@@ -24,6 +24,7 @@ import { OrdersTable, OrdersTableByCustomer } from "@/components/OrdersTable";
 import { StatusCircle } from "@/components/StatusCircle";
 import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
+import { useDebouncedValue } from "@/utils/useDebouncedValue";
 import { useQueryParams } from "@/utils/useQueryParams";
 
 const getStatus = (query: string | string[] | undefined): OrderStatus[] => {
@@ -207,6 +208,27 @@ const OrdersBody = ({
 }: React.PropsWithChildren<{ orders: OrderRow[] }>) => {
   const { query, push } = useQueryParams();
   const search = typeof query.search === "string" ? query.search : "";
+  const [searchInput, setSearchInput] = React.useState(search);
+  const debouncedSearch = useDebouncedValue(searchInput, 300);
+
+  const pushRef = React.useRef({ query, push, search });
+  pushRef.current = { query, push, search };
+  const inputRef = React.useRef(searchInput);
+  inputRef.current = searchInput;
+
+  React.useEffect(() => {
+    const { query, push, search } = pushRef.current;
+    const normalized = debouncedSearch.toLowerCase();
+    if (normalized === search) return;
+    void push({ query: { ...query, search: normalized }, replace: true });
+  }, [debouncedSearch]);
+
+  React.useEffect(() => {
+    if (search !== inputRef.current.toLowerCase()) {
+      setSearchInput(search);
+    }
+  }, [search]);
+
   const groupByCustomer = query.group !== "0";
   const toggleGroup = () => {
     const group = 1 - Number(groupByCustomer);
@@ -219,14 +241,9 @@ const OrdersBody = ({
       <div className="flex gap-2 items-center flex-wrap">
         <div className="flex flex-col mb-2 mr-auto">
           <Input
-            defaultValue={search}
+            value={searchInput}
             onChange={(e) => {
-              void push({
-                query: {
-                  ...query,
-                  search: e.target.value.toLowerCase(),
-                },
-              });
+              setSearchInput(e.target.value);
             }}
             className="text-base mb-1 !w-[30rem]"
             placeholder="Nom, prénom, titre, ISBN"

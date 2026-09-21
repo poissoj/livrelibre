@@ -15,6 +15,8 @@ import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { Pagination } from "@/components/Pagination";
 import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
+import { useDebouncedValue } from "@/utils/useDebouncedValue";
+import { useDelayedLoading } from "@/utils/useDelayedLoading";
 
 const SkeletonRow = ({ n }: { n: number }) => (
   <>
@@ -38,11 +40,17 @@ const ItemsSkeleton = (): ReactElement => (
 const CustomersLoader = ({ page }: { page: number }) => {
   const [search, setSearch] = useState("");
   const [withPurchases, toggleWithPurchases] = useReducer((v) => !v, false);
-  const query = { pageNumber: page, fullname: search, withPurchases };
+  const debouncedSearch = useDebouncedValue(search, 300);
+  const query = {
+    pageNumber: page,
+    fullname: debouncedSearch,
+    withPurchases,
+  };
 
   const result = trpc.customers.useQuery(query, {
     placeholderData: keepPreviousData,
   });
+  const showLoading = useDelayedLoading(result.isFetching, 500);
 
   let pageTitle = "Liste des client⋅es";
   if (result.status === "error") {
@@ -66,7 +74,7 @@ const CustomersLoader = ({ page }: { page: number }) => {
     title += " - " + pageLabel;
     pageTitle += " | " + pageLabel;
   }
-  const Wrapper = result.isFetching ? LoadingOverlay : React.Fragment;
+  const Wrapper = showLoading ? LoadingOverlay : React.Fragment;
 
   return (
     <Card className="max-h-full overflow-hidden flex flex-col relative">

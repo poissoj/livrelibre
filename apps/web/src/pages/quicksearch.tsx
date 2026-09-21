@@ -9,6 +9,7 @@ import { LoadingOverlay } from "@/components/LoadingOverlay";
 import { Pagination } from "@/components/Pagination";
 import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
+import { useDelayedLoading } from "@/utils/useDelayedLoading";
 import { useQueryParams } from "@/utils/useQueryParams";
 
 const CARD_STYLES = "max-h-full overflow-hidden flex flex-col relative";
@@ -56,6 +57,7 @@ const SearchLoader = ({
       placeholderData: keepPreviousData,
     },
   );
+  const showLoading = useDelayedLoading(result.isFetching, 500);
   let title = "Recherche rapide";
   let subtitle = "Recherche en cours…";
   let pageCount = 0;
@@ -76,7 +78,7 @@ const SearchLoader = ({
       );
     }
   }
-  const Wrapper = result.isFetching ? LoadingOverlay : React.Fragment;
+  const Wrapper = showLoading ? LoadingOverlay : React.Fragment;
 
   return (
     <Card className={CARD_STYLES}>

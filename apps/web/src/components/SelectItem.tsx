@@ -6,6 +6,7 @@ import {
   ComboboxOption,
   ComboboxOptions,
 } from "@headlessui/react";
+import { keepPreviousData } from "@tanstack/react-query";
 import { clsx } from "clsx";
 import { Fragment, type HTMLProps, useState } from "react";
 
@@ -14,6 +15,8 @@ import type { Item } from "@livrelibre/shared/item";
 
 import { COMMON_STYLES } from "@/components/FormControls";
 import { trpc } from "@/utils/trpc";
+import { useDebouncedValue } from "@/utils/useDebouncedValue";
+import { useDelayedLoading } from "@/utils/useDelayedLoading";
 
 export type NewItem = { id: null; title: string };
 
@@ -36,7 +39,12 @@ export function SelectItem({
   ...inputProps
 }: Props) {
   const [search, setSearch] = useState("");
-  const res = trpc.quicksearch.useQuery({ search }, { staleTime: 60000 });
+  const debouncedSearch = useDebouncedValue(search, 300);
+  const res = trpc.quicksearch.useQuery(
+    { search: debouncedSearch },
+    { staleTime: 60000, placeholderData: keepPreviousData },
+  );
+  const showLoading = useDelayedLoading(res.isFetching, 500);
 
   const filteredItems = res.data?.items || [];
   const inputStyles = fullWidth
@@ -58,7 +66,7 @@ export function SelectItem({
           className="absolute z-10 w-full max-h-56 overflow-auto rounded-md shadow-lg ring-1 ring-black/5 bg-gray-light"
           as="ul"
         >
-          {res.isPending && (
+          {showLoading && (
             <li className="px-2 py-1 text-sm italic">Chargement…</li>
           )}
           {res.isError && (
