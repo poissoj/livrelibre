@@ -6,8 +6,10 @@ import postgres from "postgres";
 
 import { items } from "@livrelibre/shared/schema";
 
+import { getTestDatabaseUri } from "./test-db.mts";
+
 config({ path: ".env.local" });
-const databaseUrl = process.env.TEST_POSTGRES_URI ?? process.env.POSTGRES_URI;
+const databaseUrl = getTestDatabaseUri();
 const { USER_NAME, USER_PASSWORD } = process.env;
 
 const isbn = String(Date.now());
@@ -16,9 +18,6 @@ const updatedTitle = "Titre E2E après";
 let itemId: number | undefined;
 
 test.beforeAll(async () => {
-  if (!databaseUrl) {
-    throw new Error("No test database URI configured (TEST_POSTGRES_URI)");
-  }
   const client = postgres(databaseUrl);
   const db = drizzle(client);
   const [row] = await db
@@ -48,7 +47,7 @@ test.beforeAll(async () => {
 });
 
 test.afterAll(async () => {
-  if (itemId == null || !databaseUrl) return;
+  if (itemId == null) return;
   const client = postgres(databaseUrl);
   const db = drizzle(client);
   await db.delete(items).where(eq(items.id, itemId));

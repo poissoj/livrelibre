@@ -1,5 +1,4 @@
 import { fileURLToPath } from "node:url";
-
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
@@ -11,6 +10,6 @@ export default defineConfig({
   test: {
     environment: "node",
     setupFiles: ["./tests/vitest.setup.ts"],
-    include: ["tests/unit/**/*.test.ts", "tests/integration/**/*.test.ts"],
+    include: ["tests/unit/**/*.test.ts"],
   },
 });

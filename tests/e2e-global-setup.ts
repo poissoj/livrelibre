@@ -8,12 +8,11 @@ import postgres from "postgres";
 
 import { users } from "@livrelibre/shared/schema";
 
+import { getTestDatabaseUri } from "./test-db.mts";
+
 export default async function globalSetup() {
   config({ path: ".env.local" });
-  const uri = process.env.TEST_POSTGRES_URI ?? process.env.POSTGRES_URI;
-  if (!uri) {
-    throw new Error("No test database URI configured (TEST_POSTGRES_URI)");
-  }
+  const uri = getTestDatabaseUri();
 
   const client = postgres(uri);
   const db = drizzle(client);

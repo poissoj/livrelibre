@@ -3,7 +3,14 @@ import { sql } from "drizzle-orm";
 import { db } from "@livrelibre/server/db/database";
 import { customers, items, sales, users } from "@livrelibre/shared/schema";
 
+import { getTestDatabaseUri } from "../test-db.mts";
+
 export const truncateAll = async () => {
+  if (process.env.POSTGRES_URI !== getTestDatabaseUri()) {
+    throw new Error(
+      "Refusing to truncate: the active database is not the test database from .env.test.",
+    );
+  }
   await db.execute(
     sql`TRUNCATE TABLE "users", "items", "cart", "asideCart", "sales", "customers", "purchases", "selectedCustomer", "orders" RESTART IDENTITY CASCADE`,
   );

@@ -1,10 +1,11 @@
 import { defineConfig, devices } from "@playwright/test";
 import { config } from "dotenv";
 
+import { getTestDatabaseUri } from "./tests/test-db.mts";
+
 config({ path: ".env.local" });
 
-const e2eDatabaseUrl =
-  process.env.TEST_POSTGRES_URI ?? process.env.POSTGRES_URI ?? "";
+const e2eDatabaseUrl = getTestDatabaseUri();
 
 /**
  * Read environment variables from file.

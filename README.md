@@ -32,6 +32,20 @@ SESSION_SECRET=...   # min 32 caractères, ex. : openssl rand -base64 32
 POSTGRES_URI=postgres://user:password@localhost:5432/livrelibre
 ```
 
+## Tests
+
+Les tests d'intégration et e2e utilisent une base dédiée : créez un fichier
+`.env.test` à la racine (voir `.env.test.example`) pointant vers une base de
+test, **différente** du `POSTGRES_URI` de `.env.local` :
+
+```
+POSTGRES_URI=postgres://user:password@localhost:5432/livrelibre_test
+```
+
+Si `.env.test` est absent ou pointe vers la même base que `.env.local`, les
+tests échouent immédiatement (ils vident les tables et appliquent les
+migrations).
+
 ## Base de données
 
 Créez la base de données (si elle n'existe pas encore) :
