@@ -35,6 +35,9 @@ SESSION_SECRET=...   # min 32 caractères, ex. : openssl rand -base64 32
 POSTGRES_URI=postgres://user:password@localhost:5432/livrelibre
 ```
 
+La session est valable **7 jours** ; passé ce délai, la connexion est requise à
+nouveau. Modifier `SESSION_SECRET` invalide immédiatement toutes les sessions.
+
 **Web** — `apps/web/.env.local` (voir `apps/web/.env.example`) :
 
 ```

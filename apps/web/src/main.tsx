@@ -1,12 +1,19 @@
 import { config } from "@fortawesome/fontawesome-svg-core";
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { httpBatchLink } from "@trpc/client";
+import {
+  MutationCache,
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
+import { httpBatchLink, isTRPCClientError } from "@trpc/client";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider } from "react-router";
 import { Slide, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+
+import type { AppRouter } from "@livrelibre/server/router";
 
 import "@/global.css";
 import { router } from "@/router";
@@ -14,7 +21,22 @@ import { trpc } from "@/utils/trpc";
 
 config.autoAddCss = false;
 
-const queryClient = new QueryClient();
+const handleUnauthorized = (error: unknown) => {
+  if (
+    isTRPCClientError<AppRouter>(error) &&
+    error.data?.code === "UNAUTHORIZED"
+  ) {
+    queryClient.clear();
+    if (router.state.location.pathname !== "/login") {
+      void router.navigate("/login", { replace: true });
+    }
+  }
+};
+
+const queryClient = new QueryClient({
+  queryCache: new QueryCache({ onError: handleUnauthorized }),
+  mutationCache: new MutationCache({ onError: handleUnauthorized }),
+});
 const trpcClient = trpc.createClient({
   links: [httpBatchLink({ url: "/api/trpc" })],
 });

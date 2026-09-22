@@ -23,6 +23,7 @@ const MAX_IMPORT_FILE_SIZE = 10 * 1024 * 1024;
 app.use("*", async (c, next) => {
   await next();
   c.header("X-Content-Type-Options", "nosniff");
+  c.header("X-Frame-Options", "DENY");
   c.header("Permissions-Policy", "interest-cohort=()");
   c.header("Referrer-Policy", "no-referrer-when-downgrade");
   c.header(

@@ -24,6 +24,7 @@
     "dotenv": "17.4.2",
     "drizzle-orm": "0.45.2",
     "eslint": "9.39.5",
+    "hono": "4.13.7",
     "postgres": "3.4.9",
     "typescript": "6.0.3",
     "typescript-eslint": "8.67.0",
