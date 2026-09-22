@@ -1,17 +1,8 @@
 import { defineConfig, devices } from "@playwright/test";
-import { config } from "dotenv";
 
 import { getTestDatabaseUri } from "./tests/test-db.mts";
 
-config({ path: ".env.local" });
-
 const e2eDatabaseUrl = getTestDatabaseUri();
-
-/**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// require('dotenv').config();
 
 /**
  * See https://playwright.dev/docs/test-configuration.

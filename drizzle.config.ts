@@ -1,7 +1,10 @@
 import { config } from "dotenv";
 import { defineConfig } from "drizzle-kit";
+import { fileURLToPath } from "node:url";
 
-config({ path: ".env.local" });
+config({
+  path: fileURLToPath(new URL("./apps/server/.env.local", import.meta.url)),
+});
 
 export default defineConfig({
   dialect: "postgresql",

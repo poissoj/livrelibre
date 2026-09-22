@@ -1,3 +1,6 @@
 import { config } from "dotenv";
+import { fileURLToPath } from "node:url";
 
-config({ path: ".env.local" });
+config({
+  path: fileURLToPath(new URL("../apps/server/.env.local", import.meta.url)),
+});

@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 import { users } from "@livrelibre/shared/schema";
 
 config({
-  path: fileURLToPath(new URL("../../../../.env.local", import.meta.url)),
+  path: fileURLToPath(new URL("../../.env.local", import.meta.url)),
 });
 
 const { db } = await import("@server/db/database");

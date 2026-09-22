@@ -3,7 +3,7 @@ import { fileURLToPath } from "node:url";
 import { z } from "zod";
 
 config({
-  path: fileURLToPath(new URL("../../../.env.local", import.meta.url)),
+  path: fileURLToPath(new URL("../.env.local", import.meta.url)),
 });
 
 const envSchema = z.object({

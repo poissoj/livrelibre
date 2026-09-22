@@ -1,9 +1,12 @@
 import { parse } from "dotenv";
 import { existsSync, readFileSync } from "node:fs";
 
+const TEST_ENV_FILE = new URL("../.env.test", import.meta.url);
+const SERVER_ENV_FILE = new URL("../apps/server/.env.local", import.meta.url);
+
 export const getTestDatabaseUri = (): string => {
-  const testEnv = existsSync(".env.test")
-    ? parse(readFileSync(".env.test"))
+  const testEnv = existsSync(TEST_ENV_FILE)
+    ? parse(readFileSync(TEST_ENV_FILE))
     : {};
   const uri = testEnv.POSTGRES_URI;
   if (!uri) {
@@ -11,12 +14,12 @@ export const getTestDatabaseUri = (): string => {
       "POSTGRES_URI must be set in .env.test to run database tests (see .env.test.example).",
     );
   }
-  const localEnv = existsSync(".env.local")
-    ? parse(readFileSync(".env.local"))
+  const serverEnv = existsSync(SERVER_ENV_FILE)
+    ? parse(readFileSync(SERVER_ENV_FILE))
     : {};
-  if (uri === localEnv.POSTGRES_URI) {
+  if (uri === serverEnv.POSTGRES_URI) {
     throw new Error(
-      "The test database in .env.test must be different from the POSTGRES_URI in .env.local.",
+      "The test database in .env.test must be different from the POSTGRES_URI in apps/server/.env.local.",
     );
   }
   return uri;
