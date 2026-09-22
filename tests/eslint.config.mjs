@@ -1,6 +1,15 @@
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
+  {
+    ignores: [
+      "eslint.config.mjs",
+      "*.config.mts",
+      "playwright.config.ts",
+      "*.spec.ts",
+      "dist/**",
+    ],
+  },
   ...tseslint.configs.strictTypeChecked,
   {
     languageOptions: {
@@ -27,15 +36,5 @@ export default tseslint.config(
         { ignoreRestSiblings: true },
       ],
     },
-  },
-  {
-    ignores: [
-      "*.config.js",
-      "eslint.config.mjs",
-      "*.spec.ts",
-      "drizzle.config.ts",
-      "apps/**",
-      "packages/**",
-    ],
   },
 );

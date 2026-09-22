@@ -44,15 +44,16 @@ VITE_APP_NAME=Livre Libre
 
 ## Tests
 
-Les tests d'intégration et e2e utilisent une base dédiée : créez un fichier
-`.env.test` à la racine (voir `.env.test.example`) pointant vers une base de
-test, **différente** du `POSTGRES_URI` de `apps/server/.env.local` :
+Les tests sont regroupés dans le package `@livrelibre/tests`. Ils utilisent une
+base dédiée : créez `tests/.env.test` (voir `tests/.env.test.example`) pointant
+vers une base de test, **différente** du `POSTGRES_URI` de
+`apps/server/.env.local` :
 
 ```
 POSTGRES_URI=postgres://user:password@localhost:5432/livrelibre_test
 ```
 
-Si `.env.test` est absent ou pointe vers la même base que
+Si `tests/.env.test` est absent ou pointe vers la même base que
 `apps/server/.env.local`, les tests échouent immédiatement (ils vident les
 tables et appliquent les migrations).
 

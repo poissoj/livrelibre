@@ -1,6 +1,7 @@
 packages:
   - apps/*
   - packages/*
+  - tests
 
 allowBuilds:
   bcrypt: true
@@ -9,5 +10,5 @@ allowBuilds:
   unrs-resolver: true
 
 minimumReleaseAgeExclude:
-  - '@types/react-dom@19.3.0'
-  - '@types/react@19.3.0'
+  - "@types/react-dom@19.3.0"
+  - "@types/react@19.3.0"

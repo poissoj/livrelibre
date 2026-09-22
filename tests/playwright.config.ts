@@ -1,6 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
 
-import { getTestDatabaseUri } from "./tests/test-db.mts";
+import { getTestDatabaseUri } from "./test-db.mts";
 
 const e2eDatabaseUrl = getTestDatabaseUri();
 
@@ -8,7 +8,7 @@ const e2eDatabaseUrl = getTestDatabaseUri();
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
-  testDir: "./tests",
+  testDir: ".",
   /* Only run Playwright specs (Vitest uses .test.ts) */
   testMatch: "**/*.spec.ts",
   /* Run tests in files in parallel */
@@ -67,7 +67,7 @@ export default defineConfig({
   ],
 
   /* Run the Hono API and Vite dev servers before starting the tests */
-  globalSetup: "./tests/e2e-global-setup.ts",
+  globalSetup: "./e2e-global-setup.ts",
   webServer: [
     {
       command: "pnpm --filter @livrelibre/server dev",

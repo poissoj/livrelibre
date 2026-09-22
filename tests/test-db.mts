@@ -1,7 +1,7 @@
 import { parse } from "dotenv";
 import { existsSync, readFileSync } from "node:fs";
 
-const TEST_ENV_FILE = new URL("../.env.test", import.meta.url);
+const TEST_ENV_FILE = new URL("./.env.test", import.meta.url);
 const SERVER_ENV_FILE = new URL("../apps/server/.env.local", import.meta.url);
 
 export const getTestDatabaseUri = (): string => {
@@ -11,7 +11,7 @@ export const getTestDatabaseUri = (): string => {
   const uri = testEnv.POSTGRES_URI;
   if (!uri) {
     throw new Error(
-      "POSTGRES_URI must be set in .env.test to run database tests (see .env.test.example).",
+      "POSTGRES_URI must be set in tests/.env.test to run database tests (see tests/.env.test.example).",
     );
   }
   const serverEnv = existsSync(SERVER_ENV_FILE)
@@ -19,7 +19,7 @@ export const getTestDatabaseUri = (): string => {
     : {};
   if (uri === serverEnv.POSTGRES_URI) {
     throw new Error(
-      "The test database in .env.test must be different from the POSTGRES_URI in apps/server/.env.local.",
+      "The test database in tests/.env.test must be different from the POSTGRES_URI in apps/server/.env.local.",
     );
   }
   return uri;

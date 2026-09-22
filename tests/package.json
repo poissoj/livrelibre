@@ -1,0 +1,32 @@
+{
+  "name": "@livrelibre/tests",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "pnpm test:unit && pnpm test:integration",
+    "test:unit": "vitest run",
+    "test:integration": "vitest run --config vitest.integration.config.mts",
+    "test:e2e": "playwright test",
+    "test-ui": "playwright test --ui",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@livrelibre/server": "workspace:*",
+    "@livrelibre/shared": "workspace:*",
+    "@playwright/test": "1.62.1",
+    "@trpc/server": "11.18.0",
+    "@types/bcrypt": "6.0.0",
+    "@types/node": "26.2.0",
+    "bcrypt": "6.0.0",
+    "date-fns": "4.4.0",
+    "dotenv": "17.4.2",
+    "drizzle-orm": "0.45.2",
+    "eslint": "9.39.5",
+    "postgres": "3.4.9",
+    "typescript": "6.0.3",
+    "typescript-eslint": "8.67.0",
+    "vitest": "4.1.11"
+  }
+}

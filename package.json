@@ -8,40 +8,22 @@
     "dev:web": "pnpm --filter @livrelibre/web dev",
     "build": "pnpm typecheck && pnpm --filter @livrelibre/web build && pnpm --filter @livrelibre/server build",
     "start": "pnpm --filter @livrelibre/server start",
-    "lint": "pnpm --filter @livrelibre/web lint && pnpm --filter @livrelibre/server lint && pnpm --filter @livrelibre/shared lint && eslint .",
-    "typecheck": "pnpm -r typecheck && tsc --noEmit -p tsconfig.json",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck",
     "check": "pnpm lint && pnpm typecheck",
     "format": "prettier --write apps packages tests --cache",
-    "generate:db": "drizzle-kit generate",
-    "migrate:db": "drizzle-kit migrate",
-    "test": "pnpm test:unit && pnpm test:integration",
-    "test:unit": "vitest run tests/unit",
-    "test:integration": "vitest run tests/integration --config vitest.integration.config.mts",
-    "test:e2e": "pnpm exec playwright test",
-    "test-ui": "pnpm exec playwright test --ui"
-  },
-  "dependencies": {
-    "@livrelibre/server": "workspace:*",
-    "@livrelibre/shared": "workspace:*",
-    "dotenv": "17.4.2"
+    "generate:db": "pnpm --filter @livrelibre/server generate:db",
+    "migrate:db": "pnpm --filter @livrelibre/server migrate:db",
+    "test": "pnpm --filter @livrelibre/tests test",
+    "test:unit": "pnpm --filter @livrelibre/tests test:unit",
+    "test:integration": "pnpm --filter @livrelibre/tests test:integration",
+    "test:e2e": "pnpm --filter @livrelibre/tests test:e2e",
+    "test-ui": "pnpm --filter @livrelibre/tests test-ui"
   },
   "devDependencies": {
-    "@playwright/test": "1.62.1",
     "@trivago/prettier-plugin-sort-imports": "6.0.2",
-    "@trpc/server": "11.18.0",
-    "@types/bcrypt": "6.0.0",
-    "@types/node": "26.2.0",
-    "bcrypt": "6.0.0",
     "concurrently": "10.0.5",
-    "date-fns": "4.4.0",
-    "drizzle-kit": "0.31.10",
-    "drizzle-orm": "0.45.2",
-    "eslint": "9.39.5",
-    "postgres": "3.4.9",
-    "prettier": "3.9.6",
-    "typescript": "6.0.3",
-    "typescript-eslint": "8.67.0",
-    "vitest": "4.1.11"
+    "prettier": "3.9.6"
   },
   "packageManager": "pnpm@11.20.0+sha512.9a6f330a95b66446ea088faf1521405a8a01f07fde7124cc9958dfed52d4bb436737e65b08f85f37b46fcba375092558ac51262b816844b22f63406ed166bfee"
 }

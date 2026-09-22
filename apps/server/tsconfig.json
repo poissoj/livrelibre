@@ -8,5 +8,5 @@
       "@server/*": ["./src/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "drizzle.config.ts"]
 }
