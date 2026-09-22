@@ -1,16 +1,19 @@
-/* Usage: ts-node src/cli/exportPlaceDesLibraires.ts
+/* Usage: pnpm --filter @livrelibre/server exec tsx src/cli/exportPlaceDesLibraires.ts
  * run 1/day with cron
  */
 import { Client } from "basic-ftp";
 import { config } from "dotenv";
 import { and, sql } from "drizzle-orm";
 import fs from "fs/promises";
+import { fileURLToPath } from "node:url";
 
 import { items as itemsTable } from "@livrelibre/shared/schema";
 
-import { db } from "@server/db/database";
+config({
+  path: fileURLToPath(new URL("../../../../.env.local", import.meta.url)),
+});
 
-config({ path: ".env.local" });
+const { db } = await import("@server/db/database");
 
 const { SHOP_ID } = process.env;
 
@@ -76,7 +79,7 @@ const main = async () => {
     });
     const fileContent = [header, ...items.map(formatItem)].join("\r\n");
     await fs.writeFile(FILENAME, fileContent);
-    console.log(`Exported ${items.length} items successfully.`);
+    console.log(`${date}: Exported ${items.length} items successfully.`);
     await sendToFtp();
     process.exit(0);
   } catch (error) {
