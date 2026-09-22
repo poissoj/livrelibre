@@ -39,6 +39,7 @@ POSTGRES_URI=postgres://user:password@localhost:5432/livrelibre
 
 ```
 VITE_APP_NAME=Livre Libre
+# VITE_FAVICON=/mon-logo.png
 ```
 
 ## Tests
