@@ -123,16 +123,6 @@ const addItemToCart = async (
   tx?: Transaction,
 ) => {
   const conn = tx ?? db;
-  const cartResult = await conn.query.cart.findFirst({
-    where: and(eq(cart.itemId, item.id), eq(cart.userId, userId)),
-  });
-  if (cartResult !== undefined) {
-    await conn
-      .update(cart)
-      .set({ quantity: sql`${cart.quantity} + ${quantity}` })
-      .where(eq(cart.id, cartResult.id));
-    return;
-  }
   const cartItem: CartItem = {
     itemId: item.id,
     type: item.type,
@@ -142,7 +132,14 @@ const addItemToCart = async (
     quantity,
     userId,
   };
-  await conn.insert(cart).values(cartItem);
+  await conn
+    .insert(cart)
+    .values(cartItem)
+    .onConflictDoUpdate({
+      target: [cart.itemId, cart.userId],
+      targetWhere: sql`${cart.itemId} IS NOT NULL`,
+      set: { quantity: sql`${cart.quantity} + ${quantity}` },
+    });
 };
 
 export const addToCart = async (
@@ -234,13 +231,23 @@ const schema = { cart, asideCart };
 const switchCarts = async (userId: number, from: CartName, to: CartName) => {
   logger.info("Switch cart", { from, userId });
   await db.transaction(async (tx) => {
-    const items = await tx
-      .select()
-      .from(schema[from])
-      .where(eq(schema[from].userId, userId));
+    // Delete first to lock the rows and never lose a concurrent insertion:
+    // rows added to the source during the switch stay in the source cart.
+    const moved = await tx
+      .delete(schema[from])
+      .where(eq(schema[from].userId, userId))
+      .returning();
 
-    await tx.insert(schema[to]).values(items);
-    await tx.delete(schema[from]).where(eq(schema[from].userId, userId));
+    if (moved.length > 0) {
+      await tx
+        .insert(schema[to])
+        .values(moved.map(({ id: _id, ...rest }) => rest))
+        .onConflictDoUpdate({
+          target: [schema[to].itemId, schema[to].userId],
+          targetWhere: sql`${schema[to].itemId} IS NOT NULL`,
+          set: { quantity: sql`${schema[to].quantity} + excluded.quantity` },
+        });
+    }
 
     await tx
       .update(selectedCustomerTable)

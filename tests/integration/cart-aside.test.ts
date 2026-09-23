@@ -54,6 +54,22 @@ describe("aside cart", () => {
     expect((await getAsideCart(user.id)).count).toBe(0);
   });
 
+  it("does not lose an item added while the cart is put aside", async () => {
+    const user = await seedUser();
+    const itemA = await seedItem({ isbn: "9780000000001", amount: 5 });
+    const itemB = await seedItem({ isbn: "9780000000002", amount: 5 });
+    await addToCart(user.id, itemA.id);
+
+    await Promise.allSettled([
+      putCartAside(user.id),
+      addToCart(user.id, itemB.id),
+    ]);
+
+    const cartData = await getCart(user.id);
+    const asideData = await getAsideCart(user.id);
+    expect(cartData.count + asideData.count).toBe(2);
+  });
+
   it("getAsideCart returns zero for an empty aside cart", async () => {
     const user = await seedUser();
     const aside = await getAsideCart(user.id);

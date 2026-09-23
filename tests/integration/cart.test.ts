@@ -33,6 +33,25 @@ describe("cart", () => {
     expect(cartData.total).toBe(10);
   });
 
+  it("merges concurrent adds into a single cart line", async () => {
+    const user = await seedUser();
+    const item = await seedItem({ amount: 5, price: "10.00" });
+
+    await Promise.all([
+      addToCart(user.id, item.id),
+      addToCart(user.id, item.id),
+    ]);
+
+    const cartData = await getCart(user.id);
+    expect(cartData.items).toHaveLength(1);
+    expect(cartData.count).toBe(2);
+
+    const updated = await db.query.items.findFirst({
+      where: eq(items.id, item.id),
+    });
+    expect(updated?.amount).toBe(3);
+  });
+
   it("payCart turns the cart into sales and empties it", async () => {
     const user = await seedUser();
     const item = await seedItem({ amount: 5, price: "10.00" });

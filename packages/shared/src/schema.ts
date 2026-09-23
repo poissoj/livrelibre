@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import {
+  type AnyPgColumn,
   boolean,
   char,
   index,
@@ -64,8 +65,7 @@ export const items = pgTable(
 );
 export type Item = typeof items.$inferSelect;
 
-export const cart = pgTable("cart", {
-  id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+const cartItemColumns = () => ({
   itemId: integer("itemId").references(() => items.id),
   type: itemTypeEnum("type").notNull(),
   title: varchar("title").notNull(),
@@ -77,18 +77,33 @@ export const cart = pgTable("cart", {
     .references(() => users.id),
 });
 
-export const asideCart = pgTable("asideCart", {
-  id: integer("id").primaryKey(),
-  itemId: integer("itemId").references(() => items.id),
-  type: itemTypeEnum("type").notNull(),
-  title: varchar("title").notNull(),
-  price: numeric("price", { precision: 12, scale: 2 }).notNull(),
-  tva: tvaEnum("tva").notNull(),
-  quantity: integer("quantity").notNull(),
-  userId: integer("userId")
-    .notNull()
-    .references(() => users.id),
-});
+const cartIndexes = (
+  table: { itemId: AnyPgColumn; userId: AnyPgColumn },
+  prefix: string,
+) => [
+  index(`${prefix}_userId_idx`).on(table.userId),
+  uniqueIndex(`${prefix}_item_user_unique`)
+    .on(table.itemId, table.userId)
+    .where(sql`${table.itemId} IS NOT NULL`),
+];
+
+export const cart = pgTable(
+  "cart",
+  {
+    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+    ...cartItemColumns(),
+  },
+  (table) => cartIndexes(table, "cart"),
+);
+
+export const asideCart = pgTable(
+  "asideCart",
+  {
+    id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
+    ...cartItemColumns(),
+  },
+  (table) => cartIndexes(table, "asideCart"),
+);
 
 export const paymentTypeEnum = pgEnum("paymentType", [
   "cash",
