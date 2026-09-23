@@ -15,7 +15,7 @@ import {
 import { ItemTypes, TVAValues } from "./item";
 import { CONTACT_MEAN, ORDER_STATUS } from "./order";
 
-export const roleEnum = pgEnum("role", ["admin", "guest"]);
+export const roleEnum = pgEnum("role", ["admin", "cashier"]);
 
 export const users = pgTable("users", {
   id: integer("id").primaryKey().generatedAlwaysAsIdentity(),

@@ -13,7 +13,7 @@ const IS_PRODUCTION = process.env.NODE_ENV === "production";
 export type User = {
   name: string;
   id: number;
-  role: "admin" | "guest" | "anonymous";
+  role: "admin" | "cashier" | "anonymous";
 };
 
 export const ANONYMOUS: User = { name: "", id: 0, role: "anonymous" };
@@ -21,7 +21,7 @@ export const ANONYMOUS: User = { name: "", id: 0, role: "anonymous" };
 const sessionSchema = z.object({
   name: z.string(),
   sub: z.coerce.number(),
-  role: z.enum(["admin", "guest"]),
+  role: z.enum(["admin", "cashier"]),
 });
 
 const signSession = async (user: User): Promise<string> => {

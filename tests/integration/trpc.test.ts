@@ -3,13 +3,13 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import { appRouter } from "@livrelibre/server/router";
 
-import { truncateAll, seedSale } from "./helpers";
+import { seedSale, truncateAll } from "./helpers";
 
 const admin = appRouter.createCaller({
   user: { id: 1, name: "admin", role: "admin" },
 });
-const guest = appRouter.createCaller({
-  user: { id: 2, name: "guest", role: "guest" },
+const cashier = appRouter.createCaller({
+  user: { id: 2, name: "cashier", role: "cashier" },
 });
 const anonymous = appRouter.createCaller({
   user: { id: 0, name: "", role: "anonymous" },
@@ -40,12 +40,12 @@ describe("trpc auth", () => {
     await expect(anonymous.items(1)).rejects.toBeInstanceOf(TRPCError);
   });
 
-  it("allows admin and guest users", async () => {
+  it("allows admin and cashier users", async () => {
     const adminResult = await admin.items(1);
     expect(adminResult.items).toBeDefined();
 
-    const guestResult = await guest.items(1);
-    expect(guestResult.items).toBeDefined();
+    const cashierResult = await cashier.items(1);
+    expect(cashierResult.items).toBeDefined();
   });
 });
 
@@ -75,10 +75,10 @@ describe("trpc round-trip", () => {
 describe("trpc rbac", () => {
   beforeEach(truncateAll);
 
-  it("rejects guests on admin-only procedures", async () => {
-    await expect(guest.sales()).rejects.toMatchObject({ code: "FORBIDDEN" });
+  it("rejects cashiers on admin-only procedures", async () => {
+    await expect(cashier.sales()).rejects.toMatchObject({ code: "FORBIDDEN" });
     await expect(
-      guest.salesByMonth({ month: "01", year: "2024" }),
+      cashier.salesByMonth({ month: "01", year: "2024" }),
     ).rejects.toMatchObject({ code: "FORBIDDEN" });
   });
 
@@ -89,31 +89,31 @@ describe("trpc rbac", () => {
     ).resolves.toBeDefined();
   });
 
-  it("restricts guests to the sales of the current day", async () => {
+  it("restricts cashiers to the sales of the current day", async () => {
     await seedSale({
       created: new Date("2024-01-05T12:00:00Z"),
       quantity: 2,
     });
     await seedSale({ created: new Date(), quantity: 1 });
 
-    const guestResult = await guest.salesByDay("2024-01-05");
-    expect(guestResult.salesCount).toBe(1);
+    const cashierResult = await cashier.salesByDay("2024-01-05");
+    expect(cashierResult.salesCount).toBe(1);
 
     const adminResult = await admin.salesByDay("2024-01-05");
     expect(adminResult.salesCount).toBe(2);
   });
 
-  it("lets a guest delete a sale of the day but not an older one", async () => {
+  it("lets a cashier delete a sale of the day but not an older one", async () => {
     const todaySale = await seedSale({ created: new Date() });
     await expect(
-      guest.deleteSale({ saleId: todaySale.id }),
+      cashier.deleteSale({ saleId: todaySale.id }),
     ).resolves.toBeUndefined();
 
     const oldSale = await seedSale({
       created: new Date("2024-01-05T12:00:00Z"),
     });
     await expect(
-      guest.deleteSale({ saleId: oldSale.id }),
+      cashier.deleteSale({ saleId: oldSale.id }),
     ).rejects.toMatchObject({ code: "FORBIDDEN" });
   });
 

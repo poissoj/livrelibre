@@ -109,7 +109,7 @@ describe("cart", () => {
 
   it("removeFromCart cannot delete another user's cart line", async () => {
     const userA = await seedUser();
-    const userB = await seedUser({ name: "guest", role: "guest" });
+    const userB = await seedUser({ name: "cashier", role: "cashier" });
     const item = await seedItem({ amount: 5 });
     await addToCart(userA.id, item.id);
     await addToCart(userB.id, item.id);
