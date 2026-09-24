@@ -5,10 +5,16 @@ import Custom404 from "@/pages/404.vue";
 import Add from "@/pages/add.vue";
 import Advanced from "@/pages/advanced.vue";
 import SearchResults from "@/pages/advancedSearch.vue";
+import UpdateCustomer from "@/pages/customer/[customerId].vue";
+import NewCustomer from "@/pages/customer/new.vue";
+import Customers from "@/pages/customers.vue";
 import Dashboard from "@/pages/index.vue";
 import ItemPage from "@/pages/item/[id].vue";
 import Items from "@/pages/items.vue";
 import Login from "@/pages/login.vue";
+import UpdateOrder from "@/pages/order/[orderId].vue";
+import NewOrder from "@/pages/order/new.vue";
+import Orders from "@/pages/orders.vue";
 import QuickSearchPage from "@/pages/quicksearch.vue";
 import Search from "@/pages/search.vue";
 import UpdateItem from "@/pages/update/[itemId].vue";
@@ -31,6 +37,20 @@ export const router = createRouter({
         { path: "item/:id", name: "item", component: ItemPage },
         { path: "update/:itemId", name: "update-item", component: UpdateItem },
         { path: "add", name: "add", component: Add },
+        { path: "customers", name: "customers", component: Customers },
+        { path: "customer/new", name: "customer-new", component: NewCustomer },
+        {
+          path: "customer/:customerId",
+          name: "customer",
+          component: UpdateCustomer,
+        },
+        { path: "orders", name: "orders", component: Orders },
+        { path: "order/new", name: "order-new", component: NewOrder },
+        {
+          path: "order/:orderId",
+          name: "order",
+          component: UpdateOrder,
+        },
         { path: "search", name: "search", component: Search },
         {
           path: "advancedSearch",
