@@ -74,14 +74,12 @@ const SalesTable = ({ sales }: { sales: Sale[] }): ReactElement => {
             <td className="text-right font-number">
               {formatNumber(sale.count)}
             </td>
-            <td className="text-right font-number">
-              {sale.ht ? formatPrice(sale.ht) : "Inconnu"}
-            </td>
+            <td className="text-right font-number">{formatPrice(sale.ht)}</td>
             <td className="text-right font-number">
               {formatPrice(sale.amount)}
             </td>
             <td className="text-right font-number pr-2">
-              {sale.avg ? formatPrice(sale.avg) : "Inconnu"}
+              {formatPrice(sale.avg)}
             </td>
           </tr>
         ))}
