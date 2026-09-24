@@ -77,6 +77,8 @@ export const getSalesByDay = async (
     .from(items)
     .where(inArray(items.id, itemIds));
 
+  const itemById = new Map(itemList.map((item) => [item.id, item]));
+
   const tvaStats = new Map<
     string,
     { count: number; total: number; type: PaymentType }
@@ -119,15 +121,12 @@ export const getSalesByDay = async (
 
     const deleted = sale.deleted;
     if (sale.itemId) {
-      let i = 0;
-      while (i < itemList.length && itemList[i].id !== sale.itemId) {
-        i++;
-      }
-      if (i === itemList.length) {
+      const item = itemById.get(sale.itemId);
+      if (!item) {
         throw new Error(`Item ${sale.itemId} not found`);
       }
       salesList.push({
-        ...itemList[i],
+        ...item,
         itemId: sale.itemId,
         price: sale.price,
         paymentType,
