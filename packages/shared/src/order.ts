@@ -30,7 +30,10 @@ export const zOrder = z.object({
   customerNotified: z.boolean(),
   paid: z.boolean(),
   comment: z.string(),
-  nb: z.number().int().positive(),
+  nb: z
+    .number("Nombre d'exemplaires invalide")
+    .int("Nombre d'exemplaires invalide")
+    .positive("Nombre d'exemplaires invalide"),
   contact: zContactMean,
 });
 

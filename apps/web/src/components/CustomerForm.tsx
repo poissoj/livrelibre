@@ -7,6 +7,7 @@ import { Alert } from "@/components/Alert";
 import { Card, CardBody, CardFooter, CardTitle } from "@/components/Card";
 import { Input, Textarea } from "@/components/FormControls";
 import { FormRow } from "@/components/FormRow";
+import { getErrorMessage } from "@/utils/errors";
 
 export type CustomerFormFields = Omit<Customer, "purchases">;
 
@@ -36,14 +37,18 @@ export const CustomerForm = ({
   const [alert, setAlert] = React.useState<TAlert | null>(null);
 
   const submit = async (data: CustomerFormFields) => {
-    const { type, msg: message } = await onSubmit(data);
-    setAlert({ type, message });
-    if (type === "success") {
-      if (onSuccess) {
-        onSuccess();
-      } else {
-        reset();
+    try {
+      const { type, msg: message } = await onSubmit(data);
+      setAlert({ type, message });
+      if (type === "success") {
+        if (onSuccess) {
+          onSuccess();
+        } else {
+          reset();
+        }
       }
+    } catch (error) {
+      setAlert({ type: "error", message: getErrorMessage(error) });
     }
   };
 

@@ -1,8 +1,26 @@
 import { initTRPC } from "@trpc/server";
+import { ZodError } from "zod";
 
 import type { Context } from "./context";
 
-const t = initTRPC.context<Context>().create();
+const t = initTRPC.context<Context>().create({
+  errorFormatter({ shape, error }) {
+    const cause = error.cause;
+    return {
+      ...shape,
+      data: {
+        ...shape.data,
+        issues:
+          cause instanceof ZodError
+            ? cause.issues.map((issue) => ({
+                path: issue.path.join("."),
+                message: issue.message,
+              }))
+            : undefined,
+      },
+    };
+  },
+});
 
 export const router = t.router;
 export const procedure = t.procedure;

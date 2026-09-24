@@ -8,7 +8,7 @@ import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
 
 const Add = (): React.ReactElement => {
-  const mutation = trpc.addItem.useMutation();
+  const mutation = trpc.addItem.useMutation({ meta: { errorToast: false } });
   const submit = async (data: FormFields) => {
     const datebought = data.datebought.split("-").reverse().join("/");
     const item = { ...data, amount: Number(data.amount), datebought };

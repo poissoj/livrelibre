@@ -11,7 +11,9 @@ import { Title } from "@/components/Title";
 import { trpc } from "@/utils/trpc";
 
 const NewCustomer = (): React.ReactElement => {
-  const mutation = trpc.updateCustomer.useMutation();
+  const mutation = trpc.updateCustomer.useMutation({
+    meta: { errorToast: false },
+  });
   const submit = async (customer: CustomerFormFields) => {
     return await mutation.mutateAsync({ customer });
   };

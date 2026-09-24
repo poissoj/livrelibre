@@ -22,6 +22,7 @@ import { ErrorMessage } from "@/components/ErrorMessage";
 import { NoResults } from "@/components/NoResults";
 import { StatusCircle } from "@/components/StatusCircle";
 import { Title } from "@/components/Title";
+import { getErrorMessage } from "@/utils/errors";
 import { trpc } from "@/utils/trpc";
 
 const CARD_TITLE = "Modifier un⋅e client⋅e";
@@ -121,15 +122,21 @@ const Purchases = ({ purchases }: Pick<CustomerWithPurchase, "purchases">) => {
 };
 
 const DeleteCustomerButton = ({ id }: { id: number }) => {
-  const deleteMutation = trpc.deleteCustomer.useMutation();
+  const deleteMutation = trpc.deleteCustomer.useMutation({
+    meta: { errorToast: false },
+  });
   const navigate = useNavigate();
   const deleteCustomer = async () => {
-    const res = await deleteMutation.mutateAsync({ id });
-    if (res.type === "success") {
-      toast.success(res.msg);
-      await navigate("/customers");
-    } else {
-      toast.error(res.msg);
+    try {
+      const res = await deleteMutation.mutateAsync({ id });
+      if (res.type === "success") {
+        toast.success(res.msg);
+        await navigate("/customers");
+      } else {
+        toast.error(res.msg);
+      }
+    } catch (error) {
+      toast.error(getErrorMessage(error));
     }
   };
 
@@ -146,6 +153,7 @@ const CustomerLoader = ({ id }: { id: number }) => {
   const result = trpc.customer.useQuery(id);
   const utils = trpc.useUtils();
   const mutation = trpc.updateCustomer.useMutation({
+    meta: { errorToast: false },
     async onSuccess() {
       await utils.customer.invalidate();
     },

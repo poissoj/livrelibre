@@ -19,6 +19,7 @@ import {
   Textarea,
 } from "@/components/FormControls";
 import { FormRow } from "@/components/FormRow";
+import { getErrorMessage } from "@/utils/errors";
 
 export type FormFields = Omit<BaseItem, "amount"> & { amount: string };
 
@@ -80,14 +81,18 @@ export const ItemForm = ({
     const formData = formRef.current
       ? Object.fromEntries(new FormData(formRef.current))
       : {};
-    const { type, msg: message } = await onSubmit({ ...data, ...formData });
-    setAlert({ type, message });
-    if (type === "success") {
-      if (onSuccess) {
-        onSuccess();
-      } else {
-        reset();
+    try {
+      const { type, msg: message } = await onSubmit({ ...data, ...formData });
+      setAlert({ type, message });
+      if (type === "success") {
+        if (onSuccess) {
+          onSuccess();
+        } else {
+          reset();
+        }
       }
+    } catch (error) {
+      setAlert({ type: "error", message: getErrorMessage(error) });
     }
   };
 

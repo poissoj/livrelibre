@@ -12,6 +12,7 @@ import { Button } from "@/components/Button";
 import { Card, CardBody, CardTitle } from "@/components/Card";
 import { Input, Select } from "@/components/FormControls";
 import { FormRow } from "@/components/FormRow";
+import { getErrorMessage } from "@/utils/errors";
 import { trpc } from "@/utils/trpc";
 
 type TAlert = {
@@ -24,17 +25,22 @@ export const SellNewItem = (): React.ReactElement => {
   const utils = trpc.useUtils();
   const [alert, setAlert] = React.useState<TAlert | null>(null);
   const { mutateAsync, isPending } = trpc.addNewItemToCart.useMutation({
+    meta: { errorToast: false },
     async onSuccess() {
       await utils.cart.invalidate();
     },
-    onError() {
-      setAlert({ type: "error", message: "Impossible d'ajouter au panier" });
+    onError(error) {
+      setAlert({ type: "error", message: getErrorMessage(error) });
     },
   });
   const onSubmit = async (data: NewCartItem) => {
-    await mutateAsync(data);
-    reset();
-    setAlert({ type: "success", message: "Article ajouté au panier" });
+    try {
+      await mutateAsync(data);
+      reset();
+      setAlert({ type: "success", message: "Article ajouté au panier" });
+    } catch {
+      // handled by onError
+    }
   };
 
   return (

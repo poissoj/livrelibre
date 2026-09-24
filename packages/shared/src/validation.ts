@@ -1,29 +1,41 @@
 import { z } from "zod";
 
-export const zId = z.number().int().positive();
+export const zId = z
+  .number("Identifiant invalide")
+  .int("Identifiant invalide")
+  .positive("Identifiant invalide");
 
-export const zPage = z.number().int().min(1);
+export const zPage = z
+  .number("Numéro de page invalide")
+  .int("Numéro de page invalide")
+  .min(1, "Numéro de page invalide");
 
-export const zAmount = z.number().int().nonnegative();
+export const zAmount = z
+  .number("Quantité invalide")
+  .int("Quantité invalide")
+  .nonnegative("Quantité invalide");
 
-export const zQuantity = z.number().int().positive();
+export const zQuantity = z
+  .number("Quantité invalide")
+  .int("Quantité invalide")
+  .positive("Quantité invalide");
 
 /** Price as a string, normalized to a dot and bounded to numeric(12,2). */
 export const zPrice = z
-  .string()
+  .string("Prix invalide")
   .trim()
   .regex(/^\d{1,10}([.,]\d{1,2})?$/, "Prix invalide")
   .transform((value) => value.replace(",", "."));
 
 export const zIsbn = z
-  .string()
+  .string("ISBN invalide")
   .trim()
   .regex(/^\d{0,13}$/, "ISBN invalide");
 
-export const zDateISO = z.iso.date();
+export const zDateISO = z.iso.date("Date invalide");
 
 export const zDateFR = z
-  .string()
+  .string("Date invalide")
   .regex(/^\d{2}\/\d{2}\/\d{4}$/, "Date invalide")
   .refine((value) => {
     const [day, month, year] = value.split("/").map(Number);
@@ -37,5 +49,5 @@ export const zDateFR = z
 
 /** Accepts a date-only string or an ISO datetime string. */
 export const zDateString = z
-  .string()
+  .string("Date invalide")
   .refine((value) => !Number.isNaN(Date.parse(value)), "Date invalide");

@@ -17,6 +17,7 @@ import { ErrorMessage } from "@/components/ErrorMessage";
 import { NoResults } from "@/components/NoResults";
 import { OrderForm } from "@/components/OrderForm";
 import { Title } from "@/components/Title";
+import { getErrorMessage } from "@/utils/errors";
 import { trpc } from "@/utils/trpc";
 import { useQueryParams } from "@/utils/useQueryParams";
 
@@ -53,14 +54,20 @@ const getOrdersURL = (query: Record<string, string | string[]>) => {
 const DeleteOrder = ({ id }: { id: number }) => {
   const navigate = useNavigate();
   const { query } = useQueryParams();
-  const deleteMutation = trpc.deleteOrder.useMutation();
+  const deleteMutation = trpc.deleteOrder.useMutation({
+    meta: { errorToast: false },
+  });
   const deleteOrder = async () => {
-    const res = await deleteMutation.mutateAsync({ id });
-    if (res.type === "success") {
-      toast.success(res.msg);
-      await navigate(getOrdersURL(query));
-    } else {
-      toast.error(res.msg);
+    try {
+      const res = await deleteMutation.mutateAsync({ id });
+      if (res.type === "success") {
+        toast.success(res.msg);
+        await navigate(getOrdersURL(query));
+      } else {
+        toast.error(res.msg);
+      }
+    } catch (error) {
+      toast.error(getErrorMessage(error));
     }
   };
 
@@ -79,6 +86,7 @@ const OrderLoader = ({ id }: { id: number }) => {
   const navigate = useNavigate();
   const { query } = useQueryParams();
   const mutation = trpc.updateOrder.useMutation({
+    meta: { errorToast: false },
     async onSuccess(data) {
       if (data.type === "success") {
         await utils.order.invalidate();
@@ -87,6 +95,9 @@ const OrderLoader = ({ id }: { id: number }) => {
       } else {
         toast.error(data.msg);
       }
+    },
+    onError(error) {
+      toast.error(getErrorMessage(error));
     },
   });
 

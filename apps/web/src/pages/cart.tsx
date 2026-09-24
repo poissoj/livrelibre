@@ -32,6 +32,7 @@ import { ErrorMessage } from "@/components/ErrorMessage";
 import { Input, Select } from "@/components/FormControls";
 import { SelectCustomer } from "@/components/SelectCustomer";
 import { Title } from "@/components/Title";
+import { getErrorMessage } from "@/utils/errors";
 import { trpc } from "@/utils/trpc";
 import type { RouterOutput } from "@/utils/trpc";
 
@@ -131,14 +132,15 @@ const ItemsSkeleton = (): ReactElement => (
 const usePayCart = () => {
   const utils = trpc.useUtils();
   const mutation = trpc.payCart.useMutation({
+    meta: { errorToast: false },
     onSuccess() {
       void utils.cart.invalidate();
       void utils.customers.invalidate();
       void utils.selectedCustomer.invalidate();
       void utils.searchCustomer.invalidate();
     },
-    onError() {
-      toast.error("Impossible de valider le panier");
+    onError(error) {
+      toast.error(getErrorMessage(error));
     },
   });
   return mutation;
@@ -209,6 +211,7 @@ const QuickAdd = ({ addError }: { addError: (error: ISBNError) => void }) => {
   const { register, handleSubmit, resetField } = useForm<FormFields>();
   const utils = trpc.useUtils();
   const mutation = trpc.addISBNToCart.useMutation({
+    meta: { errorToast: false },
     onError(error, isbn) {
       addError({ message: CART_ERRORS.INTERNAL_ERROR, isbn });
     },
@@ -423,11 +426,12 @@ const CustomerInfos = ({ customer }: { customer: CustomerWithPurchase }) => {
 
   const utils = trpc.useUtils();
   const { mutateAsync, isPending } = trpc.addNewItemToCart.useMutation({
+    meta: { errorToast: false },
     async onSuccess() {
       await utils.cart.invalidate();
     },
-    onError() {
-      toast.error("Impossible de faire la remise");
+    onError(error) {
+      toast.error(getErrorMessage(error));
     },
   });
   const onSubmit = async (event: SubmitEvent) => {
@@ -476,11 +480,12 @@ const CustomerSelector = () => {
   const result = trpc.selectedCustomer.useQuery();
   const utils = trpc.useUtils();
   const { mutateAsync } = trpc.selectCustomer.useMutation({
+    meta: { errorToast: false },
     async onSuccess() {
       await utils.selectedCustomer.invalidate();
     },
-    onError() {
-      toast.error("Impossible de faire la remise");
+    onError(error) {
+      toast.error(getErrorMessage(error));
     },
   });
 

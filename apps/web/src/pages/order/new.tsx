@@ -10,6 +10,7 @@ import { Button } from "@/components/Button";
 import { ErrorMessage } from "@/components/ErrorMessage";
 import { OrderForm } from "@/components/OrderForm";
 import { Title } from "@/components/Title";
+import { getErrorMessage } from "@/utils/errors";
 import { trpc } from "@/utils/trpc";
 
 const OrderBody = () => {
@@ -19,6 +20,7 @@ const OrderBody = () => {
   const id = typeof rawId === "string" ? rawId : "";
   const result = trpc.searchItem.useQuery(Number(id), { enabled: id !== "" });
   const mutation = trpc.newOrder.useMutation({
+    meta: { errorToast: false },
     onSuccess(data) {
       if (data.type === "success") {
         toast.success(data.msg);
@@ -27,8 +29,8 @@ const OrderBody = () => {
         toast.error(data.msg);
       }
     },
-    onError() {
-      toast.error("Impossible d'ajouter la commande");
+    onError(error) {
+      toast.error(getErrorMessage(error));
     },
   });
 

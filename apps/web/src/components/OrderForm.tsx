@@ -28,6 +28,7 @@ import { Input, Select, Textarea } from "@/components/FormControls";
 import { FormRow } from "@/components/FormRow";
 import { SelectCustomer } from "@/components/SelectCustomer";
 import { type NewItem, SelectItem } from "@/components/SelectItem";
+import { getErrorMessage } from "@/utils/errors";
 import { trpc } from "@/utils/trpc";
 
 const ContactMean = React.forwardRef<
@@ -72,7 +73,12 @@ const CustomerFormBody = (props: {
   className?: string;
 }) => {
   const { register, handleSubmit, formState } = useForm<CustomerFormFields>();
-  const mutation = trpc.updateCustomer.useMutation();
+  const mutation = trpc.updateCustomer.useMutation({
+    meta: { errorToast: false },
+    onError(error) {
+      toast.error(getErrorMessage(error));
+    },
+  });
   const submit = async (customer: CustomerFormFields) => {
     const resp = await mutation.mutateAsync({ customer });
     if (resp.type === "success") {

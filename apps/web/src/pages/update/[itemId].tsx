@@ -38,7 +38,9 @@ const ItemFormSkeleton = (): React.ReactElement => (
 
 const ItemLoader = ({ id }: { id: number }) => {
   const result = trpc.searchItem.useQuery(id);
-  const mutation = trpc.updateItem.useMutation();
+  const mutation = trpc.updateItem.useMutation({
+    meta: { errorToast: false },
+  });
   const navigate = useNavigate();
 
   const submit = async (data: FormFields) => {
