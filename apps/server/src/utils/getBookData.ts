@@ -9,9 +9,15 @@ export const getBookData = async (isbn: string): Promise<BookData | null> => {
   if (!process.env.ISBN_SEARCH_URL) {
     throw new Error("ISBN_SEARCH_URL is not set");
   }
+  if (!/^\d{10,13}$/.test(isbn)) {
+    return null;
+  }
   const url = process.env.ISBN_SEARCH_URL + isbn;
   try {
-    const body = await got(url).text();
+    const body = await got(url, {
+      timeout: { request: 5000 },
+      retry: { limit: 1 },
+    }).text();
     const $ = cheerio.load(body);
     const details = $(".product-details");
     if (details.length > 0) {

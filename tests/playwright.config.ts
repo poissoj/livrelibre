@@ -72,7 +72,11 @@ export default defineConfig({
     {
       command: "pnpm --filter @livrelibre/server dev",
       url: "http://127.0.0.1:3001/api/export",
-      env: { POSTGRES_URI: e2eDatabaseUrl },
+      // Point the book lookup to an unbound local port: valid URL, no external call.
+      env: {
+        POSTGRES_URI: e2eDatabaseUrl,
+        ISBN_SEARCH_URL: "http://127.0.0.1:9/",
+      },
       reuseExistingServer: !process.env.CI,
     },
     {

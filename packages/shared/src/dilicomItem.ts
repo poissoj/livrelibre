@@ -18,7 +18,7 @@ export const dilicomRowWithIdSchema = dilicomRowSchema.extend({
   amount: z.number().int().nullable().optional(),
 });
 
-export const MAX_IMPORT_ROWS = 10000;
+export const MAX_IMPORT_ROWS = 1000;
 
 export const importPayloadSchema = z
   .array(dilicomRowWithIdSchema)

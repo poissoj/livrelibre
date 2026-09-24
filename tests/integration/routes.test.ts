@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import { app } from "@livrelibre/server/app";
 import { db } from "@livrelibre/server/db/database";
+import { MAX_IMPORT_ROWS } from "@livrelibre/shared/dilicomItem";
 import { items, users } from "@livrelibre/shared/schema";
 
 import { seedItem, truncateAll } from "./helpers";
@@ -139,6 +140,29 @@ describe("REST routes", () => {
       expect(row?.amount).toBe(2);
     });
 
+    it("imports the maximum number of rows", async () => {
+      const cookie = await authCookie();
+      const payload = Array.from({ length: MAX_IMPORT_ROWS }, (_, i) => ({
+        EAN: String(9780000000000 + i),
+        TITRE: `Titre ${i}`,
+        AUTEUR: "Auteur",
+        EDITEUR: "Éditeur",
+        DISTRIBUTEUR: "Distributeur",
+        PRIX: 10,
+        QTE: 1,
+      }));
+
+      const res = await app.request("/api/finalizeImport", {
+        method: "POST",
+        headers: { "content-type": "application/json", cookie },
+        body: JSON.stringify(payload),
+      });
+
+      expect(res.status).toBe(200);
+      const rows = await db.select({ id: items.id }).from(items);
+      expect(rows).toHaveLength(MAX_IMPORT_ROWS);
+    });
+
     it("rolls back every change when one row fails", async () => {
       const cookie = await authCookie();
       const existing = await seedItem({ isbn: "9780000000001", amount: 5 });
@@ -251,6 +275,23 @@ describe("REST routes", () => {
         body: form,
       });
       expect(res.status).toBe(413);
+    });
+
+    it("rejects a file with too many rows", async () => {
+      const cookie = await authCookie();
+      const lines = Array.from(
+        { length: 1001 },
+        (_, i) => `9780000${String(i).padStart(6, "0")},Titre ${i}`,
+      );
+      const csv = ["EAN,TITRE", ...lines].join("\n");
+      const form = new FormData();
+      form.append("dilicom", new File([csv], "data.csv", { type: "text/csv" }));
+      const res = await app.request("/api/importFile", {
+        method: "POST",
+        headers: { cookie },
+        body: form,
+      });
+      expect(res.status).toBe(400);
     });
   });
 });

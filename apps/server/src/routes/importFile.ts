@@ -5,6 +5,7 @@ import type { Context } from "hono";
 import {
   type DilicomRow,
   type DilicomRowWithId,
+  MAX_IMPORT_ROWS,
 } from "@livrelibre/shared/dilicomItem";
 import { items } from "@livrelibre/shared/schema";
 
@@ -68,10 +69,11 @@ const updateFields = async (rows: DilicomRow[]) => {
     .select()
     .from(items)
     .where(inArray(items.isbn, fileEANs));
+  const itemByIsbn = new Map(dbItems.map((item) => [item.isbn, item]));
 
   const itemsList: DilicomRowWithId[] = [];
   for (const row of rows) {
-    const item = dbItems.find((it) => it.isbn === row.EAN);
+    const item = itemByIsbn.get(row.EAN);
     let newRow: DilicomRowWithId;
     if (item) {
       newRow = {
@@ -129,6 +131,12 @@ export const importFileRoute = async (c: Context) => {
         error:
           "Erreur lors de l'import du fichier. Vérifier que le format est correct.",
       },
+      400,
+    );
+  }
+  if (rows.length > MAX_IMPORT_ROWS) {
+    return c.json(
+      { error: `Trop de lignes (maximum ${MAX_IMPORT_ROWS})` },
       400,
     );
   }
