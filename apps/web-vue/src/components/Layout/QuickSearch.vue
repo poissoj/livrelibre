@@ -1,0 +1,67 @@
+<script setup lang="ts">
+import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { clsx } from "clsx";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
+import { toast } from "vue-sonner";
+
+import { useTRPCUtils } from "@/utils/query";
+
+const props = defineProps<{ className?: string }>();
+
+const router = useRouter();
+const utils = useTRPCUtils();
+const isLoading = ref(false);
+const search = ref("");
+
+const submit = async () => {
+  const value = search.value;
+  if (value.length === 0) {
+    return;
+  }
+  if (/^\d{10,}$/.test(value)) {
+    isLoading.value = true;
+    try {
+      const result = await utils.fetch("isbnSearch", value);
+      if (result.count === 0) {
+        toast.info("Aucun article trouvé pour cet ISBN");
+        return;
+      }
+      await router.push(`/item/${String(result.items[0].id)}`);
+    } finally {
+      isLoading.value = false;
+    }
+    return;
+  }
+  await router.push(`/quicksearch?search=${encodeURIComponent(value)}`);
+};
+</script>
+
+<template>
+  <form
+    role="search"
+    :class="clsx('flex p-sm [width:27rem] relative', props.className)"
+    @submit.prevent="submit"
+  >
+    <input
+      v-model="search"
+      type="text"
+      class="flex-1 [padding:5px_10px] rounded bg-white/80 pr-7 focus-visible:ring-2 focus-visible:ring-inset focus-visible:outline-none [--tw-ring-color:#AAA]"
+      placeholder="ISBN, titre, auteur·ice"
+      name="search"
+    />
+    <button
+      type="submit"
+      class="text-black absolute top-2 bottom-2 right-1 px-2"
+      aria-label="Rechercher"
+      :disabled="isLoading"
+    >
+      <FontAwesomeIcon
+        :icon="isLoading ? faSpinner : faSearch"
+        :spin="isLoading"
+        class="mx-1"
+      />
+    </button>
+  </form>
+</template>

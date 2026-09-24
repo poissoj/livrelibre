@@ -1,3 +1,8 @@
+<script setup lang="ts">
+import { Toaster } from "vue-sonner";
+</script>
+
 <template>
-  <div class="p-lg">Livre Libre (Vue) — scaffolding</div>
+  <RouterView />
+  <Toaster position="bottom-left" theme="light" />
 </template>

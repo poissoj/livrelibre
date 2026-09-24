@@ -19,6 +19,7 @@
     "@livrelibre/shared": "workspace:*",
     "@tanstack/vue-query": "5.103.2",
     "@trpc/client": "11.19.0",
+    "@trpc/server": "11.19.0",
     "clsx": "2.1.1",
     "echarts": "6.1.0",
     "vee-validate": "4.15.1",
