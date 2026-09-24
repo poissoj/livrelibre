@@ -1,3 +1,7 @@
+import { z } from "zod";
+
+import { zAmount, zDateFR, zIsbn, zPrice } from "./validation";
+
 export const ITEM_TYPES = {
   postcard: "Carte postale",
   stationery: "Papeterie",
@@ -23,6 +27,23 @@ export const ItemTypes = [
 
 export const TVAValues = ["20", "5.5", "2.1", "0"] as const;
 export type TVA = (typeof TVAValues)[number];
+
+export const zItem = z.object({
+  type: z.enum(ItemTypes),
+  isbn: zIsbn,
+  author: z.string(),
+  title: z.string(),
+  publisher: z.string(),
+  distributor: z.string(),
+  keywords: z.string().nullable(),
+  datebought: zDateFR,
+  comments: z.string().nullable(),
+  price: zPrice,
+  amount: zAmount,
+  tva: z.enum(TVAValues),
+});
+
+export type ItemInput = z.infer<typeof zItem>;
 
 export type BaseItem = {
   type: ItemType;

@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import {
   and,
   countDistinct,
@@ -109,7 +110,20 @@ export const setSelectedCustomer = async (
   customer: typeof selectedCustomer.$inferInsert,
   tx?: Transaction,
 ) => {
-  return await (tx ?? db)
+  const conn = tx ?? db;
+  if (customer.customerId != null) {
+    const found = await conn
+      .select({ id: customers.id })
+      .from(customers)
+      .where(eq(customers.id, customer.customerId));
+    if (found.length === 0) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Client inconnu",
+      });
+    }
+  }
+  return await conn
     .insert(selectedCustomer)
     .values(customer)
     .onConflictDoUpdate({ target: selectedCustomer.userId, set: customer });

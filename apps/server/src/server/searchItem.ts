@@ -73,6 +73,9 @@ const generateSearchCriteria = (query: Record<string, string>) => {
     if (field === "amount") {
       clause = eq(items.amount, Number(value));
     }
+    if (field === "price") {
+      clause = eq(items.price, value.replace(",", "."));
+    }
     criteria.push(clause);
   }
   if (query.inStock) {

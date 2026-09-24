@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import type { orders } from "./schema";
+import { zDateString, zId } from "./validation";
 
 export const ORDER_STATUS = [
   "new",
@@ -21,15 +22,15 @@ export type ContactMean = (typeof CONTACT_MEAN)[number];
 export const zContactMean = z.enum(CONTACT_MEAN);
 
 export const zOrder = z.object({
-  created: z.string(),
-  customerId: z.number(),
-  itemId: z.number().nullable(),
+  created: zDateString,
+  customerId: zId,
+  itemId: zId.nullable(),
   itemTitle: z.string(),
   ordered: zOrderStatus,
   customerNotified: z.boolean(),
   paid: z.boolean(),
   comment: z.string(),
-  nb: z.number().positive(),
+  nb: z.number().int().positive(),
   contact: zContactMean,
 });
 

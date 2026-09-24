@@ -1,9 +1,16 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
-import { ItemTypes, TVAValues } from "@livrelibre/shared/item";
+import { ItemTypes, TVAValues, zItem } from "@livrelibre/shared/item";
 import { zOrder, zOrderStatusArray } from "@livrelibre/shared/order";
 import { norm } from "@livrelibre/shared/utils";
+import {
+  zDateISO,
+  zId,
+  zPage,
+  zPrice,
+  zQuantity,
+} from "@livrelibre/shared/validation";
 
 import { addItem } from "@server/server/addItem";
 import { getBestSales } from "@server/server/bestSales";
@@ -55,26 +62,21 @@ import { logger } from "@server/utils/logger";
 
 import { middleware, procedure, router } from "./trpc";
 
-const itemSchema = z.object({
-  type: z.enum(ItemTypes),
-  isbn: z.string(),
-  author: z.string(),
-  title: z.string(),
-  publisher: z.string(),
-  distributor: z.string(),
-  keywords: z.string().nullable(),
-  datebought: z.string(),
-  comments: z.string().nullable(),
-  price: z.string(),
-  amount: z.number(),
-  tva: z.enum(TVAValues),
-});
-
-const payCartSchema = z.object({
-  paymentDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-  paymentType: z.enum(["cash", "card", "check", "check-lire", "transfer"]),
-  amount: z.string().regex(/^(-?\d+(\.\d+)?)?$/),
-});
+const payCartSchema = z
+  .object({
+    paymentDate: zDateISO,
+    paymentType: z.enum(["cash", "card", "check", "check-lire", "transfer"]),
+    amount: zPrice.or(z.literal("")),
+  })
+  .superRefine(({ paymentType, amount }, ctx) => {
+    if (paymentType === "cash" && amount === "") {
+      ctx.addIssue({
+        code: "custom",
+        message: "Montant requis pour un paiement en espèces",
+        path: ["amount"],
+      });
+    }
+  });
 
 const checkAuth = middleware(({ ctx, next }) => {
   if (ctx.user.role === "anonymous") {
@@ -96,7 +98,20 @@ export const appRouter = router({
   // Queries
   advancedSearch: authProcedure
     .input(
-      z.object({ search: z.record(z.string(), z.string()), page: z.number() }),
+      z
+        .object({ search: z.record(z.string(), z.string()), page: zPage })
+        .superRefine(({ search }, ctx) => {
+          for (const key of ["price", "amount"] as const) {
+            const value = search[key];
+            if (value !== "" && !/^\d+([.,]\d+)?$/.test(value)) {
+              ctx.addIssue({
+                code: "custom",
+                message: `${key} doit être un nombre`,
+                path: ["search", key],
+              });
+            }
+          }
+        }),
     )
     .query(async ({ input }) => await advancedSearch(input.search, input.page)),
   asideCart: authProcedure.query(
@@ -106,15 +121,15 @@ export const appRouter = router({
   bookmarks: authProcedure.query(getBookmarks),
   cart: authProcedure.query(async ({ ctx }) => await getCart(ctx.user.id)),
   items: authProcedure
-    .input(z.number())
+    .input(zPage)
     .query(async ({ input }) => await getItems({ pageNumber: input })),
   customer: authProcedure
-    .input(z.number())
+    .input(zId)
     .query(async ({ input }) => await getCustomer(input)),
   customers: authProcedure
     .input(
       z.object({
-        pageNumber: z.number(),
+        pageNumber: zPage,
         fullname: z.string().optional(),
         withPurchases: z.boolean().default(false),
       }),
@@ -128,47 +143,50 @@ export const appRouter = router({
     return customer?.customerId ? await getCustomer(customer.customerId) : null;
   }),
   order: authProcedure
-    .input(z.number())
+    .input(zId)
     .query(async ({ input }) => await getOrder(input)),
   itemOrders: authProcedure
-    .input(z.number())
+    .input(zId)
     .query(async ({ input }) => await getItemOrders(input)),
   orders: authProcedure
     .input(zOrderStatusArray)
     .query(async ({ input }) => await getOrders(input)),
   customerOrders: authProcedure
-    .input(z.number())
+    .input(zId)
     .query(async ({ input }) => await getCustomerActiveOrders(input)),
   lastSales: authProcedure
-    .input(z.number())
+    .input(zId)
     .query(async ({ input }) => await lastSales(input)),
   quicksearch: authProcedure
     .input(
       z.object({
         search: z.string(),
-        page: z.number().default(1),
+        page: zPage.default(1),
         inStock: z.boolean().default(false),
       }),
     )
     .query(async ({ input }) => await searchItems(input)),
   sales: adminProcedure.query(getSales),
   salesByDay: authProcedure
-    .input(z.string().regex(/^\d{4}-\d\d-\d\d$/))
+    .input(zDateISO)
     .query(async ({ ctx, input }) =>
       getSalesByDay(input, { restrictToToday: ctx.user.role !== "admin" }),
     ),
   salesByMonth: adminProcedure
     .input(
-      z.object({ month: z.string().length(2), year: z.string().length(4) }),
+      z.object({
+        month: z.string().regex(/^(0[1-9]|1[0-2])$/),
+        year: z.string().regex(/^\d{4}$/),
+      }),
     )
     .query(async ({ input }) => await getSalesByMonth(input.month, input.year)),
   searchItem: authProcedure
-    .input(z.number())
+    .input(zId)
     .query(async ({ input }) => await getItem(input)),
   stats: authProcedure.query(getStats),
   user: procedure.query(({ ctx }) => ctx.user),
   isbnSearch: authProcedure
-    .input(z.string().regex(/^\d{10,}$/))
+    .input(z.string().regex(/^\d{10,13}$/))
     .query(async ({ input }) => {
       return await searchItems({ search: input });
     }),
@@ -179,14 +197,14 @@ export const appRouter = router({
       logger.info("Quick add to cart", { user: ctx.user, isbn: input });
       return await addISBNToCart(ctx.user.id, input);
     }),
-  addItem: authProcedure.input(itemSchema).mutation(async ({ ctx, input }) => {
+  addItem: authProcedure.input(zItem).mutation(async ({ ctx, input }) => {
     logger.info("Add new item", { user: ctx.user, item: input });
     return await addItem(input);
   }),
   addNewItemToCart: authProcedure
     .input(
       z.object({
-        price: z.string(),
+        price: zPrice,
         title: z.string(),
         tva: z.enum(TVAValues),
         type: z.enum(ItemTypes),
@@ -197,7 +215,7 @@ export const appRouter = router({
       await addNewItemToCart(ctx.user.id, input);
     }),
   addToCart: authProcedure
-    .input(z.object({ id: z.number(), quantity: z.number().optional() }))
+    .input(z.object({ id: zId, quantity: zQuantity.optional() }))
     .mutation(async ({ input, ctx }) => {
       logger.info("Add to cart", { user: ctx.user, item: input });
       await addToCart(ctx.user.id, input.id, input.quantity);
@@ -205,7 +223,7 @@ export const appRouter = router({
   deleteSale: authProcedure
     .input(
       z.object({
-        saleId: z.number(),
+        saleId: zId,
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -215,7 +233,7 @@ export const appRouter = router({
       });
     }),
   deleteCustomer: authProcedure
-    .input(z.object({ id: z.number() }))
+    .input(z.object({ id: zId }))
     .mutation(async ({ ctx, input }) => {
       logger.info("Delete customer", { user: ctx.user, input });
       return await deleteCustomer(input.id);
@@ -223,9 +241,9 @@ export const appRouter = router({
   updateCustomer: authProcedure
     .input(
       z.object({
-        customerId: z.number().optional(),
+        customerId: zId.optional(),
         customer: z.object({
-          fullname: z.string(),
+          fullname: z.string().min(1),
           phone: z.string().nullable(),
           email: z.string().nullable(),
           contact: z.string(),
@@ -263,14 +281,12 @@ export const appRouter = router({
   reactivateCart: authProcedure.mutation(async ({ ctx }) => {
     await reactivateCart(ctx.user.id);
   }),
-  removeFromCart: authProcedure
-    .input(z.number())
-    .mutation(async ({ ctx, input }) => {
-      logger.info("Remove from cart", { user: ctx.user, cartItemId: input });
-      await removeFromCart(ctx.user.id, input);
-    }),
+  removeFromCart: authProcedure.input(zId).mutation(async ({ ctx, input }) => {
+    logger.info("Remove from cart", { user: ctx.user, cartItemId: input });
+    await removeFromCart(ctx.user.id, input);
+  }),
   star: authProcedure
-    .input(z.object({ id: z.number(), starred: z.boolean() }))
+    .input(z.object({ id: zId, starred: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
       logger.info(`${input.starred ? "Star" : "Unstar"} item ${input.id}`, {
         user: ctx.user,
@@ -278,7 +294,7 @@ export const appRouter = router({
       return await starItem(input.id, input.starred);
     }),
   updateItem: authProcedure
-    .input(z.object({ item: itemSchema, id: z.number() }))
+    .input(z.object({ item: zItem, id: zId }))
     .mutation(async ({ ctx, input }) => {
       logger.info("Update item", { user: ctx.user, item: input });
       return await updateItem(input.item, input.id);
@@ -286,7 +302,7 @@ export const appRouter = router({
   selectCustomer: authProcedure
     .input(
       z.object({
-        customerId: z.number().nullable(),
+        customerId: zId.nullable(),
         asideCart: z.boolean(),
       }),
     )
@@ -302,7 +318,7 @@ export const appRouter = router({
     .input(
       z.object({
         order: zOrder,
-        id: z.number(),
+        id: zId,
       }),
     )
     .mutation(async ({ ctx, input }) => {
@@ -316,7 +332,7 @@ export const appRouter = router({
   setCustomerNotified: authProcedure
     .input(
       z.object({
-        orderId: z.number(),
+        orderId: zId,
         customerNotified: z.boolean(),
       }),
     )
@@ -325,7 +341,7 @@ export const appRouter = router({
       return await setCustomerNotified(input.orderId, input.customerNotified);
     }),
   deleteOrder: authProcedure
-    .input(z.object({ id: z.number() }))
+    .input(z.object({ id: zId }))
     .mutation(async ({ ctx, input }) => {
       logger.info("Delete order", { user: ctx.user, input });
       return await deleteOrder(input.id);

@@ -18,7 +18,8 @@
     "./pagination": "./src/pagination.ts",
     "./sale": "./src/sale.ts",
     "./schema": "./src/schema.ts",
-    "./utils": "./src/utils.ts"
+    "./utils": "./src/utils.ts",
+    "./validation": "./src/validation.ts"
   },
   "dependencies": {
     "date-fns": "4.4.0",
