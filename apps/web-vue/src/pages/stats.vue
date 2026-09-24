@@ -1,15 +1,20 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, defineAsyncComponent } from "vue";
 import { ContentLoader } from "vue-content-loader";
 
 import Card from "@/components/Card.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
-import SalesByDay from "@/components/Charts/SalesByDay.vue";
-import SalesByHour from "@/components/Charts/SalesByHour.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import Title from "@/components/Title.vue";
 import { useTRPCQuery } from "@/utils/query";
+
+const SalesByHour = defineAsyncComponent(
+  () => import("@/components/Charts/SalesByHour.vue"),
+);
+const SalesByDay = defineAsyncComponent(
+  () => import("@/components/Charts/SalesByDay.vue"),
+);
 
 const DAYS = [
   "Dimanche",

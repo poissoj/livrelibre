@@ -1,11 +1,16 @@
 <script setup lang="ts">
+import { defineAsyncComponent } from "vue";
+
 import Card from "@/components/Card.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
-import SalesByMonth from "@/components/Charts/SalesByMonth.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import Skeleton from "@/components/Skeleton.vue";
 import { useTRPCQuery } from "@/utils/query";
+
+const SalesByMonth = defineAsyncComponent(
+  () => import("@/components/Charts/SalesByMonth.vue"),
+);
 
 const props = defineProps<{ id: number }>();
 
