@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import { appRouter } from "@livrelibre/server/router";
 
-import { truncateAll } from "./helpers";
+import { seedUser, truncateAll } from "./helpers";
 
 const caller = appRouter.createCaller({
   user: { id: 1, name: "admin", role: "admin" },
@@ -83,6 +83,22 @@ describe("input validation", () => {
     await expect(
       caller.addItem({ ...baseItem, price: "-5.00" }),
     ).resolves.toBeDefined();
+  });
+
+  it("accepts a negative price for a standalone cart item (loyalty discount)", async () => {
+    const user = await seedUser();
+    const userCaller = appRouter.createCaller({
+      user: { id: user.id, name: user.name, role: "cashier" },
+    });
+
+    await expect(
+      userCaller.addNewItemToCart({
+        price: "-3.00",
+        title: "Remise carte de fidélité",
+        tva: "5.5",
+        type: "book",
+      }),
+    ).resolves.toBeUndefined();
   });
 
   it("rejects a negative or decimal amount", async () => {

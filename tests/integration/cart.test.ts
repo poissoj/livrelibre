@@ -4,15 +4,20 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { db } from "@livrelibre/server/db/database";
 import {
   addISBNToCart,
+  addNewItemToCart,
   addToCart,
   getCart,
   payCart,
   removeFromCart,
 } from "@livrelibre/server/server/cart";
+import {
+  addPurchase,
+  setSelectedCustomer,
+} from "@livrelibre/server/server/customers";
 import { CART_ERRORS } from "@livrelibre/shared/errors";
-import { items, sales } from "@livrelibre/shared/schema";
+import { items, purchases, sales } from "@livrelibre/shared/schema";
 
-import { seedItem, seedUser, truncateAll } from "./helpers";
+import { seedCustomer, seedItem, seedUser, truncateAll } from "./helpers";
 
 describe("cart", () => {
   beforeEach(truncateAll);
@@ -94,6 +99,65 @@ describe("cart", () => {
 
     const cartData = await getCart(user.id);
     expect(cartData.count).toBe(0);
+  });
+
+  it("resets the customer purchases when paying a loyalty discount", async () => {
+    const user = await seedUser();
+    const customer = await seedCustomer();
+    await addPurchase(customer.id, 10);
+    await setSelectedCustomer({
+      asideCart: false,
+      userId: user.id,
+      customerId: customer.id,
+    });
+    await addNewItemToCart(user.id, {
+      price: "-3.00",
+      title: "Remise carte de fidélité",
+      tva: "5.5",
+      type: "book",
+    });
+
+    await payCart(user.id, {
+      paymentDate: "2024-01-05",
+      paymentType: "cash",
+      amount: "0",
+    });
+
+    const remaining = await db
+      .select()
+      .from(purchases)
+      .where(eq(purchases.customerId, customer.id));
+    expect(remaining).toHaveLength(0);
+    const cartData = await getCart(user.id);
+    expect(cartData.count).toBe(0);
+  });
+
+  it("records a purchase for the selected customer", async () => {
+    const user = await seedUser();
+    const customer = await seedCustomer();
+    await setSelectedCustomer({
+      asideCart: false,
+      userId: user.id,
+      customerId: customer.id,
+    });
+    const item = await seedItem({ amount: 5, price: "10.00" });
+    await addToCart(user.id, item.id);
+
+    await payCart(user.id, {
+      paymentDate: "2024-01-05",
+      paymentType: "cash",
+      amount: "10.00",
+    });
+
+    const rows = await db
+      .select()
+      .from(purchases)
+      .where(eq(purchases.customerId, customer.id));
+    expect(rows).toHaveLength(1);
+    expect(rows[0].amount).toBe("10.00");
+
+    const salesRows = await db.select().from(sales);
+    expect(salesRows[0].linkedToCustomer).toBe(true);
   });
 
   it("addISBNToCart returns ITEM_NOT_FOUND for an unknown ISBN", async () => {
