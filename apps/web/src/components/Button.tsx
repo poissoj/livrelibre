@@ -53,7 +53,7 @@ export const ButtonWithInput = ({
 }: {
   children?: React.ReactNode;
 } & React.JSX.IntrinsicElements["button"]) => (
-  <Button className={clsx("rounded-l-none -m[1px]", className)} {...props}>
+  <Button className={clsx("rounded-l-none", className)} {...props}>
     {children}
   </Button>
 );

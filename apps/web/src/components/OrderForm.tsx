@@ -54,7 +54,7 @@ const ContactMean = React.forwardRef<
       <label
         htmlFor={"radio-" + mean}
         className={clsx(
-          "rounded px-3 py-2 fault focus:outline-none border-2 cursor-pointer",
+          "rounded px-3 py-2 focus:outline-none border-2 cursor-pointer",
           "[transition:border-color_ease-in-out_0.15s]",
           { grow: mean === "mail" },
           { "basis-40": mean === "phone" },
