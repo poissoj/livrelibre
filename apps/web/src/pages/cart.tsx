@@ -32,7 +32,7 @@ import { ErrorMessage } from "@/components/ErrorMessage";
 import { Input, Select } from "@/components/FormControls";
 import { SelectCustomer } from "@/components/SelectCustomer";
 import { Title } from "@/components/Title";
-import { getErrorMessage } from "@/utils/errors";
+import { getErrorMessage, logUnexpectedError } from "@/utils/errors";
 import { trpc } from "@/utils/trpc";
 import type { RouterOutput } from "@/utils/trpc";
 
@@ -156,8 +156,12 @@ const PaymentForm = ({ cb }: { cb: (amount: number | null) => void }) => {
     });
   const mutation = usePayCart();
   const onSubmit = async (data: PaymentFormData) => {
-    const res = await mutation.mutateAsync(data);
-    cb(res.change);
+    try {
+      const res = await mutation.mutateAsync(data);
+      cb(res.change);
+    } catch (error) {
+      logUnexpectedError(error);
+    }
   };
   const paymentType = useWatch({ control, name: "paymentType" });
   return (
@@ -308,7 +312,7 @@ const AsideButton = () => {
   const { handleSubmit } = useForm();
   const utils = trpc.useUtils();
   const asideCart = trpc.asideCart.useQuery();
-  const { mutateAsync, isPending } = trpc.putCartAside.useMutation({
+  const { mutate, isPending } = trpc.putCartAside.useMutation({
     async onSuccess() {
       await Promise.all([
         utils.cart.invalidate(),
@@ -316,8 +320,8 @@ const AsideButton = () => {
       ]);
     },
   });
-  const submit = async () => {
-    await mutateAsync();
+  const submit = () => {
+    mutate();
   };
 
   if (asideCart.status !== "success") {
@@ -355,7 +359,7 @@ const ReactivateButton = () => {
   const cart = trpc.cart.useQuery();
 
   const utils = trpc.useUtils();
-  const { mutateAsync, isPending } = trpc.reactivateCart.useMutation({
+  const { mutate, isPending } = trpc.reactivateCart.useMutation({
     async onSuccess() {
       await Promise.all([
         utils.cart.invalidate(),
@@ -367,8 +371,8 @@ const ReactivateButton = () => {
   if (cart.status !== "success") {
     return null;
   }
-  const submit = async () => {
-    await mutateAsync();
+  const submit = () => {
+    mutate();
   };
 
   return (
@@ -425,19 +429,19 @@ const CustomerInfos = ({ customer }: { customer: CustomerWithPurchase }) => {
   const [applied, setApplied] = useState<number>();
 
   const utils = trpc.useUtils();
-  const { mutateAsync, isPending } = trpc.addNewItemToCart.useMutation({
+  const { mutate, isPending } = trpc.addNewItemToCart.useMutation({
     meta: { errorToast: false },
     async onSuccess() {
+      setApplied(discount);
       await utils.cart.invalidate();
     },
     onError(error) {
       toast.error(getErrorMessage(error));
     },
   });
-  const onSubmit = async (event: SubmitEvent) => {
+  const onSubmit = (event: SubmitEvent) => {
     event.preventDefault();
-    setApplied(discount);
-    await mutateAsync({
+    mutate({
       price: String(-discount),
       title: "Remise carte de fidélité",
       type: "book",
@@ -479,7 +483,7 @@ const CustomerInfos = ({ customer }: { customer: CustomerWithPurchase }) => {
 const CustomerSelector = () => {
   const result = trpc.selectedCustomer.useQuery();
   const utils = trpc.useUtils();
-  const { mutateAsync } = trpc.selectCustomer.useMutation({
+  const { mutate } = trpc.selectCustomer.useMutation({
     meta: { errorToast: false },
     async onSuccess() {
       await utils.selectedCustomer.invalidate();
@@ -490,7 +494,7 @@ const CustomerSelector = () => {
   });
 
   const onSelect = (selectedCustomer: Customer | null) => {
-    void mutateAsync({
+    mutate({
       asideCart: false,
       customerId: selectedCustomer?.id ?? null,
     });

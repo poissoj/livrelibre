@@ -28,7 +28,7 @@ import { Input, Select, Textarea } from "@/components/FormControls";
 import { FormRow } from "@/components/FormRow";
 import { SelectCustomer } from "@/components/SelectCustomer";
 import { type NewItem, SelectItem } from "@/components/SelectItem";
-import { getErrorMessage } from "@/utils/errors";
+import { getErrorMessage, logUnexpectedError } from "@/utils/errors";
 import { trpc } from "@/utils/trpc";
 
 const ContactMean = React.forwardRef<
@@ -80,13 +80,17 @@ const CustomerFormBody = (props: {
     },
   });
   const submit = async (customer: CustomerFormFields) => {
-    const resp = await mutation.mutateAsync({ customer });
-    if (resp.type === "success") {
-      toast.success(resp.msg);
-      props.onAdd({ ...customer, id: resp.id });
-      props.hide();
-    } else {
-      toast.error(resp.msg);
+    try {
+      const resp = await mutation.mutateAsync({ customer });
+      if (resp.type === "success") {
+        toast.success(resp.msg);
+        props.onAdd({ ...customer, id: resp.id });
+        props.hide();
+      } else {
+        toast.error(resp.msg);
+      }
+    } catch (error) {
+      logUnexpectedError(error);
     }
   };
   return (
@@ -186,27 +190,34 @@ export const OrderForm = ({
   };
 
   const submit = async (order: InputOrder) => {
-    if (order.isbn && !order.itemId) {
-      const result = await utils.isbnSearch.fetch(order.isbn);
-      if (result.count === 0) {
-        toast.info("Aucun article trouvé pour cet ISBN");
+    try {
+      if (order.isbn && !order.itemId) {
+        const result = await utils.isbnSearch.fetch(order.isbn);
+        if (result.count === 0) {
+          toast.info("Aucun article trouvé pour cet ISBN");
+        }
+        updateItem(result.items[0]);
+        return;
       }
-      updateItem(result.items[0]);
-      return;
-    }
-    if (!order.customerId) {
-      toast.info("Merci de sélectionner un⋅e client⋅e");
-      return;
-    }
-    if (!order.itemTitle) {
-      toast.info("Merci de renseigner le titre ou l'ISBN de l'article");
-      return;
-    }
-    // Convert timezoned date to UTC date to avoid mismatch with server time
-    order.created = new Date(order.created).toISOString();
-    const { type } = await onSubmit({ ...order, customerId: order.customerId });
-    if (type !== "success") {
-      reset();
+      if (!order.customerId) {
+        toast.info("Merci de sélectionner un⋅e client⋅e");
+        return;
+      }
+      if (!order.itemTitle) {
+        toast.info("Merci de renseigner le titre ou l'ISBN de l'article");
+        return;
+      }
+      // Convert timezoned date to UTC date to avoid mismatch with server time
+      order.created = new Date(order.created).toISOString();
+      const { type } = await onSubmit({
+        ...order,
+        customerId: order.customerId,
+      });
+      if (type !== "success") {
+        reset();
+      }
+    } catch (error) {
+      logUnexpectedError(error);
     }
   };
 

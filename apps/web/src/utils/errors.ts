@@ -20,3 +20,13 @@ export const getErrorMessage = (
   }
   return fallback;
 };
+
+/**
+ * Les erreurs tRPC sont déjà présentées à l'utilisateur par le cache
+ * query/mutation (onError). Toute autre erreur est un bug : ne pas la cacher.
+ */
+export const logUnexpectedError = (error: unknown): void => {
+  if (!isTRPCClientError(error)) {
+    console.error(error);
+  }
+};
