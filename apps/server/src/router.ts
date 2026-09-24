@@ -8,6 +8,7 @@ import {
   zDateISO,
   zId,
   zPage,
+  zPositivePrice,
   zPrice,
   zQuantity,
 } from "@livrelibre/shared/validation";
@@ -66,7 +67,7 @@ const payCartSchema = z
   .object({
     paymentDate: zDateISO,
     paymentType: z.enum(["cash", "card", "check", "check-lire", "transfer"]),
-    amount: zPrice.or(z.literal("")),
+    amount: zPositivePrice.or(z.literal("")),
   })
   .superRefine(({ paymentType, amount }, ctx) => {
     if (paymentType === "cash" && amount === "") {
@@ -103,7 +104,9 @@ export const appRouter = router({
         .superRefine(({ search }, ctx) => {
           for (const key of ["price", "amount"] as const) {
             const value = search[key];
-            if (value !== "" && !/^\d+([.,]\d+)?$/.test(value)) {
+            const pattern =
+              key === "price" ? /^-?\d+([.,]\d+)?$/ : /^\d+([.,]\d+)?$/;
+            if (value !== "" && !pattern.test(value)) {
               ctx.addIssue({
                 code: "custom",
                 message: `${key} doit être un nombre`,

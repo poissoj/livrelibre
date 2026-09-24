@@ -79,6 +79,12 @@ describe("input validation", () => {
     ).rejects.toMatchObject(BAD_REQUEST);
   });
 
+  it("accepts a negative price (deposits)", async () => {
+    await expect(
+      caller.addItem({ ...baseItem, price: "-5.00" }),
+    ).resolves.toBeDefined();
+  });
+
   it("rejects a negative or decimal amount", async () => {
     await expect(
       caller.addItem({ ...baseItem, amount: -1 }),

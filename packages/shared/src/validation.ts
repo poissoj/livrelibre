@@ -20,11 +20,18 @@ export const zQuantity = z
   .int("Quantité invalide")
   .positive("Quantité invalide");
 
-/** Price as a string, normalized to a dot and bounded to numeric(12,2). */
+/** Signed price as a string, normalized to a dot and bounded to numeric(12,2). */
 export const zPrice = z
   .string("Prix invalide")
   .trim()
-  .regex(/^\d{1,10}([.,]\d{1,2})?$/, "Prix invalide")
+  .regex(/^-?\d{1,10}([.,]\d{1,2})?$/, "Prix invalide")
+  .transform((value) => value.replace(",", "."));
+
+/** Non-negative amount as a string, normalized to a dot (e.g. cash payment). */
+export const zPositivePrice = z
+  .string("Montant invalide")
+  .trim()
+  .regex(/^\d{1,10}([.,]\d{1,2})?$/, "Montant invalide")
   .transform((value) => value.replace(",", "."));
 
 export const zIsbn = z
