@@ -9,12 +9,10 @@ config({
 const envSchema = z.object({
   SESSION_SECRET: z.string().min(32),
   POSTGRES_URI: z.string().startsWith("postgres://"),
-  APP_URL: z.url().optional(),
   ISBN_SEARCH_URL: z.url().optional(),
   LOG_LEVEL: z
     .enum(["error", "warn", "info", "http", "verbose", "debug", "silly"])
     .optional(),
-  AUTHORIZED_DOMAINS: z.string().optional(),
   PORT: z.string().optional(),
 });
 

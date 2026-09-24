@@ -1,18 +1,19 @@
 import * as cheerio from "cheerio";
 import got from "got";
 
+import { env } from "@server/env";
 import { logger } from "@server/utils/logger";
 
 export type BookData = { title: string; author: string; publisher: string };
 
 export const getBookData = async (isbn: string): Promise<BookData | null> => {
-  if (!process.env.ISBN_SEARCH_URL) {
+  if (!env.ISBN_SEARCH_URL) {
     throw new Error("ISBN_SEARCH_URL is not set");
   }
   if (!/^\d{10,13}$/.test(isbn)) {
     return null;
   }
-  const url = process.env.ISBN_SEARCH_URL + isbn;
+  const url = env.ISBN_SEARCH_URL + isbn;
   try {
     const body = await got(url, {
       timeout: { request: 5000 },
