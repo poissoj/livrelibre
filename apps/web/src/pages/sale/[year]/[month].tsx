@@ -170,7 +170,7 @@ const SalesByMonth = (): ReactElement => {
   return (
     <Restricted role="admin">
       <div className="flex items-start gap-lg flex-1 flex-wrap">
-        <Title>Voir un article</Title>
+        <Title>Ventes du mois</Title>
         <SalesCard />
         <div className="flex flex-col gap-lg flex-1 max-h-full">
           <TVACard />
