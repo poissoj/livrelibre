@@ -303,7 +303,7 @@ export const OrderForm = ({
             </ContactMean>
           </FormRow>
           <FormRow label="Date">
-            <Input type="datetime-local" {...register("created")} />
+            <Input type="datetime-local" required {...register("created")} />
           </FormRow>
           <FormRow label="ISBN">
             <Input
