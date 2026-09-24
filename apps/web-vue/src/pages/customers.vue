@@ -3,7 +3,6 @@ import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { keepPreviousData } from "@tanstack/vue-query";
 import { computed, ref } from "vue";
-import { ContentLoader } from "vue-content-loader";
 import { useRoute } from "vue-router";
 
 import Card from "@/components/Card.vue";
@@ -17,6 +16,7 @@ import ItemsCard from "@/components/ItemsCard.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import Pagination from "@/components/Pagination.vue";
+import Skeleton from "@/components/Skeleton.vue";
 import Title from "@/components/Title.vue";
 import { useTRPCQuery } from "@/utils/query";
 import { useDebouncedValue } from "@/utils/useDebouncedValue";
@@ -70,7 +70,7 @@ const pageTitle = computed(() => {
       <ErrorMessage />
     </ItemsCard>
     <ItemsCard v-else-if="result.isPending.value" title="Liste des client⋅es">
-      <ContentLoader :height="300" width="100%">
+      <Skeleton :height="300">
         <template v-for="n in 10" :key="n">
           <rect
             x="2%"
@@ -105,7 +105,7 @@ const pageTitle = computed(() => {
             height="10"
           />
         </template>
-      </ContentLoader>
+      </Skeleton>
     </ItemsCard>
     <Card v-else class="max-h-full overflow-hidden flex flex-col relative">
       <Title>{{ pageTitle }}</Title>

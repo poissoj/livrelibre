@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { keepPreviousData } from "@tanstack/vue-query";
 import { computed } from "vue";
-import { ContentLoader } from "vue-content-loader";
 import { useRoute } from "vue-router";
 
 import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
@@ -15,6 +14,7 @@ import ItemsCard from "@/components/ItemsCard.vue";
 import ItemsTable from "@/components/ItemsTable.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import Pagination from "@/components/Pagination.vue";
+import Skeleton from "@/components/Skeleton.vue";
 import Title from "@/components/Title.vue";
 import { useTRPCQuery } from "@/utils/query";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
@@ -59,7 +59,7 @@ const pageTitle = computed(() => {
       <ErrorMessage />
     </ItemsCard>
     <ItemsCard v-else-if="result.isPending.value" title="Liste des articles">
-      <ContentLoader :height="300" width="100%">
+      <Skeleton :height="300">
         <template v-for="n in 10" :key="n">
           <rect
             x="2%"
@@ -94,7 +94,7 @@ const pageTitle = computed(() => {
             height="10"
           />
         </template>
-      </ContentLoader>
+      </Skeleton>
     </ItemsCard>
     <Card v-else class="max-h-full overflow-hidden flex flex-col relative">
       <Title>{{ pageTitle }}</Title>

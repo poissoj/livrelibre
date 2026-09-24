@@ -5,7 +5,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { computed } from "vue";
-import { ContentLoader } from "vue-content-loader";
 import { useRoute, useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 
@@ -20,6 +19,7 @@ import ErrorMessage from "@/components/ErrorMessage.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import NoResults from "@/components/NoResults.vue";
 import OrderForm from "@/components/OrderForm.vue";
+import Skeleton from "@/components/Skeleton.vue";
 import Title from "@/components/Title.vue";
 import type { OrderFormData } from "@/components/orderForm";
 import { getErrorMessage } from "@/utils/errors";
@@ -92,7 +92,7 @@ const data = computed<OrderFormData | undefined>(() => {
     <Card v-else-if="orderQuery.isPending.value">
       <CardTitle>{{ CARD_TITLE }}</CardTitle>
       <CardBody>
-        <ContentLoader :height="300" width="100%">
+        <Skeleton :height="300">
           <template v-for="n in 4" :key="n">
             <rect
               x="5%"
@@ -111,7 +111,7 @@ const data = computed<OrderFormData | undefined>(() => {
               height="30"
             />
           </template>
-        </ContentLoader>
+        </Skeleton>
       </CardBody>
     </Card>
     <Card v-else-if="orderQuery.data.value == null">

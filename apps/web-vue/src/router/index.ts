@@ -5,6 +5,8 @@ import Custom404 from "@/pages/404.vue";
 import Add from "@/pages/add.vue";
 import Advanced from "@/pages/advanced.vue";
 import SearchResults from "@/pages/advancedSearch.vue";
+import BestSales from "@/pages/best-sales.vue";
+import CartPage from "@/pages/cart.vue";
 import UpdateCustomer from "@/pages/customer/[customerId].vue";
 import NewCustomer from "@/pages/customer/new.vue";
 import Customers from "@/pages/customers.vue";
@@ -16,7 +18,12 @@ import UpdateOrder from "@/pages/order/[orderId].vue";
 import NewOrder from "@/pages/order/new.vue";
 import Orders from "@/pages/orders.vue";
 import QuickSearchPage from "@/pages/quicksearch.vue";
+import SalesByMonth from "@/pages/sale/[year]/[month].vue";
+import SalesByDayPage from "@/pages/sale/[year]/[month]/[day].vue";
+import Sales from "@/pages/sales.vue";
 import Search from "@/pages/search.vue";
+import Stats from "@/pages/stats.vue";
+import TodaySales from "@/pages/todaySales.vue";
 import UpdateItem from "@/pages/update/[itemId].vue";
 
 export const router = createRouter({
@@ -52,6 +59,21 @@ export const router = createRouter({
           component: UpdateOrder,
         },
         { path: "search", name: "search", component: Search },
+        { path: "cart", name: "cart", component: CartPage },
+        { path: "sales", name: "sales", component: Sales },
+        {
+          path: "sale/:year/:month",
+          name: "sale-month",
+          component: SalesByMonth,
+        },
+        {
+          path: "sale/:year/:month/:day",
+          name: "sale-day",
+          component: SalesByDayPage,
+        },
+        { path: "todaySales", name: "today-sales", component: TodaySales },
+        { path: "best-sales", name: "best-sales", component: BestSales },
+        { path: "stats", name: "stats", component: Stats },
         {
           path: "advancedSearch",
           name: "advanced-search",

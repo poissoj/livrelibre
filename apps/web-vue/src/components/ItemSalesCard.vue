@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { ContentLoader } from "vue-content-loader";
-
 import Card from "@/components/Card.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import SalesByMonth from "@/components/Charts/SalesByMonth.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
+import Skeleton from "@/components/Skeleton.vue";
 import { useTRPCQuery } from "@/utils/query";
 
 const props = defineProps<{ id: number }>();
@@ -18,11 +17,7 @@ const result = useTRPCQuery("lastSales", props.id);
     <CardTitle>Ventes des 2 dernières années</CardTitle>
     <CardBody>
       <ErrorMessage v-if="result.isError.value" />
-      <ContentLoader
-        v-else-if="result.isPending.value"
-        :height="350"
-        width="100%"
-      >
+      <Skeleton v-else-if="result.isPending.value" :height="350">
         <rect x="2%" y="119" width="4%" height="196" />
         <rect x="8%" y="83" width="4%" height="232" />
         <rect x="26%" y="160" width="4%" height="155" />
@@ -31,7 +26,7 @@ const result = useTRPCQuery("lastSales", props.id);
         <rect x="80%" y="119" width="4%" height="196" />
         <rect x="86%" y="109" width="4%" height="206" />
         <rect x="92%" y="160" width="4%" height="155" />
-      </ContentLoader>
+      </Skeleton>
       <SalesByMonth v-else :sales="result.data.value ?? []" />
     </CardBody>
   </Card>

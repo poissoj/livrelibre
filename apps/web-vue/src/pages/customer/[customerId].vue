@@ -5,7 +5,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { computed } from "vue";
-import { ContentLoader } from "vue-content-loader";
 import { useRoute, useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 
@@ -20,6 +19,7 @@ import CustomerForm from "@/components/CustomerForm.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import NoResults from "@/components/NoResults.vue";
+import Skeleton from "@/components/Skeleton.vue";
 import StatusCircle from "@/components/StatusCircle.vue";
 import Title from "@/components/Title.vue";
 import type { CustomerFormFields } from "@/components/customerForm";
@@ -83,7 +83,7 @@ const total = computed(
     <Card v-else-if="result.isPending.value">
       <CardTitle>{{ CARD_TITLE }}</CardTitle>
       <CardBody>
-        <ContentLoader :height="300" width="100%">
+        <Skeleton :height="300">
           <template v-for="n in 4" :key="n">
             <rect
               x="5%"
@@ -102,7 +102,7 @@ const total = computed(
               height="30"
             />
           </template>
-        </ContentLoader>
+        </Skeleton>
       </CardBody>
     </Card>
     <Card v-else-if="result.data.value == null">

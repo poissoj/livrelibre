@@ -1,0 +1,35 @@
+<script setup lang="ts">
+import { faShareSquare, faSpinner } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+
+import Button from "@/components/Button.vue";
+import { useTRPCMutation, useTRPCQuery, useTRPCUtils } from "@/utils/query";
+
+const utils = useTRPCUtils();
+const cart = useTRPCQuery("cart", undefined);
+const { mutate, isPending } = useTRPCMutation("reactivateCart", {
+  onSuccess() {
+    void Promise.all([utils.invalidate("cart"), utils.invalidate("asideCart")]);
+  },
+});
+
+const submit = () => {
+  mutate();
+};
+</script>
+
+<template>
+  <form v-if="cart.isSuccess.value" @submit.prevent="submit">
+    <Button
+      type="submit"
+      class="[padding:10px_15px] mb-2"
+      :disabled="(cart.data.value?.count ?? 0) > 0 || isPending"
+    >
+      <FontAwesomeIcon
+        :icon="isPending ? faSpinner : faShareSquare"
+        :spin="isPending"
+      />
+      <span class="ml-sm">Réactiver</span>
+    </Button>
+  </form>
+</template>

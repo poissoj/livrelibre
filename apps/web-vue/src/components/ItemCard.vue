@@ -9,7 +9,6 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { ref } from "vue";
-import { ContentLoader } from "vue-content-loader";
 import { useRoute, useRouter } from "vue-router";
 
 import Alert from "@/components/Alert.vue";
@@ -23,6 +22,7 @@ import Input from "@/components/Input.vue";
 import ItemDetails from "@/components/ItemDetails.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import NoResults from "@/components/NoResults.vue";
+import Skeleton from "@/components/Skeleton.vue";
 import Title from "@/components/Title.vue";
 import { useTRPCQuery, useTRPCUtils } from "@/utils/query";
 import { useAddToCart } from "@/utils/useAddToCart";
@@ -67,7 +67,7 @@ const submitAddToCart = () => {
   <Card v-else-if="result.isPending.value" class="flex-1">
     <CardTitle>Chargement…</CardTitle>
     <CardBody>
-      <ContentLoader :height="500" width="100%">
+      <Skeleton :height="500">
         <template v-for="n in 14" :key="n">
           <rect
             x="2%"
@@ -86,7 +86,7 @@ const submitAddToCart = () => {
             height="10"
           />
         </template>
-      </ContentLoader>
+      </Skeleton>
     </CardBody>
   </Card>
   <Card v-else-if="result.data.value == null" class="flex-1">
