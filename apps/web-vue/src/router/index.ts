@@ -1,30 +1,31 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 import ProtectedLayout from "@/components/Layout/ProtectedLayout.vue";
-import Custom404 from "@/pages/404.vue";
-import Add from "@/pages/add.vue";
-import Advanced from "@/pages/advanced.vue";
-import SearchResults from "@/pages/advancedSearch.vue";
-import BestSales from "@/pages/best-sales.vue";
-import CartPage from "@/pages/cart.vue";
-import UpdateCustomer from "@/pages/customer/[customerId].vue";
-import NewCustomer from "@/pages/customer/new.vue";
-import Customers from "@/pages/customers.vue";
-import Dashboard from "@/pages/index.vue";
-import ItemPage from "@/pages/item/[id].vue";
-import Items from "@/pages/items.vue";
-import Login from "@/pages/login.vue";
-import UpdateOrder from "@/pages/order/[orderId].vue";
-import NewOrder from "@/pages/order/new.vue";
-import Orders from "@/pages/orders.vue";
-import QuickSearchPage from "@/pages/quicksearch.vue";
-import SalesByMonth from "@/pages/sale/[year]/[month].vue";
-import SalesByDayPage from "@/pages/sale/[year]/[month]/[day].vue";
-import Sales from "@/pages/sales.vue";
-import Search from "@/pages/search.vue";
-import Stats from "@/pages/stats.vue";
-import TodaySales from "@/pages/todaySales.vue";
-import UpdateItem from "@/pages/update/[itemId].vue";
+
+const Custom404 = () => import("@/pages/404.vue");
+const Add = () => import("@/pages/add.vue");
+const Advanced = () => import("@/pages/advanced.vue");
+const SearchResults = () => import("@/pages/advancedSearch.vue");
+const BestSales = () => import("@/pages/best-sales.vue");
+const CartPage = () => import("@/pages/cart.vue");
+const UpdateCustomer = () => import("@/pages/customer/[customerId].vue");
+const NewCustomer = () => import("@/pages/customer/new.vue");
+const Customers = () => import("@/pages/customers.vue");
+const Dashboard = () => import("@/pages/index.vue");
+const ItemPage = () => import("@/pages/item/[id].vue");
+const Items = () => import("@/pages/items.vue");
+const Login = () => import("@/pages/login.vue");
+const UpdateOrder = () => import("@/pages/order/[orderId].vue");
+const NewOrder = () => import("@/pages/order/new.vue");
+const Orders = () => import("@/pages/orders.vue");
+const QuickSearchPage = () => import("@/pages/quicksearch.vue");
+const SalesByMonth = () => import("@/pages/sale/[year]/[month].vue");
+const SalesByDayPage = () => import("@/pages/sale/[year]/[month]/[day].vue");
+const Sales = () => import("@/pages/sales.vue");
+const Search = () => import("@/pages/search.vue");
+const Stats = () => import("@/pages/stats.vue");
+const TodaySales = () => import("@/pages/todaySales.vue");
+const UpdateItem = () => import("@/pages/update/[itemId].vue");
 
 export const router = createRouter({
   history: createWebHistory(),
