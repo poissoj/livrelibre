@@ -18,16 +18,15 @@ import { useDebouncedValue } from "@/utils/useDebouncedValue";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
 
 const props = defineProps<{
-  customer: CustomerSelection | null;
   fullWidth?: boolean;
   inputClass?: string;
   placeholder?: string;
   required?: boolean;
 }>();
 
-const emit = defineEmits<{
-  "update:customer": [value: CustomerSelection | null];
-}>();
+const customer = defineModel<CustomerSelection | null>("customer", {
+  required: true,
+});
 
 const query = ref("");
 const debouncedQuery = useDebouncedValue(query, 300);
@@ -46,13 +45,7 @@ const inputStyles = computed(() =>
 </script>
 
 <template>
-  <Combobox
-    :model-value="props.customer"
-    by="id"
-    @update:model-value="
-      (value) => emit('update:customer', value as CustomerSelection | null)
-    "
-  >
+  <Combobox v-model="customer" by="id">
     <div :class="clsx('relative', props.fullWidth ? 'w-full' : 'w-fit')">
       <ComboboxInput
         :class="clsx(inputStyles, props.inputClass)"

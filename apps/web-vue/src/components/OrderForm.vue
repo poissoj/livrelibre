@@ -45,7 +45,7 @@ const emit = defineEmits<{ submit: [order: RawOrder] }>();
 const utils = useTRPCUtils();
 
 const customer = ref<CustomerSelection | null>(props.data.customer ?? null);
-const item = ref<Item | NewItem | null | undefined>(
+const item = ref<Item | NewItem | null>(
   props.data.item ?? { id: null, title: props.data.itemTitle ?? "" },
 );
 const showCustomerForm = ref(false);
@@ -73,7 +73,7 @@ const updateCustomer = (value: CustomerSelection | null) => {
   customerId.value = value?.id ?? null;
 };
 
-const updateItem = (value: Item | NewItem | null | undefined) => {
+const updateItem = (value: Item | NewItem | null) => {
   item.value = value;
   itemId.value = value?.id ?? null;
   itemTitle.value = value?.title ?? "";
@@ -90,7 +90,7 @@ const submit = async () => {
     if (result.count === 0) {
       toast.info("Aucun article trouvé pour cet ISBN");
     }
-    updateItem(result.items[0]);
+    updateItem(result.items[0] ?? null);
     return;
   }
   if (!customerId.value) {
