@@ -5,15 +5,9 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/vue-query";
-import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 import { type MaybeRefOrGetter, computed, toValue } from "vue";
 
-import type { AppRouter } from "@livrelibre/server/router";
-
-import { trpcClient } from "./trpc";
-
-export type RouterInput = inferRouterInputs<AppRouter>;
-export type RouterOutputMap = inferRouterOutputs<AppRouter>;
+import { type RouterInput, type RouterOutput, trpcClient } from "./trpc";
 
 type ProcedureName = keyof RouterInput;
 
@@ -21,7 +15,7 @@ type QueryCaller = { query: (input: unknown) => Promise<unknown> };
 type MutateCaller = { mutate: (input: unknown) => Promise<unknown> };
 
 type ExtraQueryOptions<K extends ProcedureName> = Partial<
-  UseQueryOptions<RouterOutputMap[K]>
+  UseQueryOptions<RouterOutput[K]>
 >;
 
 export const trpcKey = <K extends ProcedureName>(
@@ -36,8 +30,8 @@ export const trpcQueryOptions = <K extends ProcedureName>(
   const caller = trpcClient[path] as unknown as QueryCaller;
   return {
     queryKey: trpcKey(path, input),
-    queryFn: (): Promise<RouterOutputMap[K]> =>
-      caller.query(input) as Promise<RouterOutputMap[K]>,
+    queryFn: (): Promise<RouterOutput[K]> =>
+      caller.query(input) as Promise<RouterOutput[K]>,
   };
 };
 
@@ -55,13 +49,13 @@ export const useTRPCQuery = <K extends ProcedureName>(
 
 export const useTRPCMutation = <K extends ProcedureName>(
   path: K,
-  options?: UseMutationOptions<RouterOutputMap[K], Error, RouterInput[K]>,
+  options?: UseMutationOptions<RouterOutput[K], Error, RouterInput[K]>,
 ) => {
   const caller = trpcClient[path] as unknown as MutateCaller;
   return useMutation(
     computed(() => ({
-      mutationFn: (input: RouterInput[K]): Promise<RouterOutputMap[K]> =>
-        caller.mutate(input) as Promise<RouterOutputMap[K]>,
+      mutationFn: (input: RouterInput[K]): Promise<RouterOutput[K]> =>
+        caller.mutate(input) as Promise<RouterOutput[K]>,
       ...toValue(options),
     })),
   );
@@ -81,7 +75,7 @@ export const useTRPCUtils = () => {
     setData: <K extends ProcedureName>(
       path: K,
       input: RouterInput[K],
-      data: RouterOutputMap[K],
+      data: RouterOutput[K],
     ) => queryClient.setQueryData(trpcKey(path, input), data),
     clear: () => {
       queryClient.clear();
