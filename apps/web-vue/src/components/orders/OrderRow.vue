@@ -17,7 +17,7 @@ import { useQueryParams } from "@/utils/useQueryParams";
 
 import NotifiedCheckbox from "./NotifiedCheckbox.vue";
 
-const props = defineProps<{ item: OrderRow; className?: string }>();
+const props = defineProps<{ item: OrderRow }>();
 
 const router = useRouter();
 const { query } = useQueryParams();
@@ -34,7 +34,7 @@ const stopPropagation = (event: MouseEvent) => {
 </script>
 
 <template>
-  <tr :class="clsx('cursor-pointer', props.className)" @click="go">
+  <tr class="cursor-pointer" @click="go">
     <td class="pl-2 py-1">{{ formatDateFR(props.item.created) }}</td>
     <td class="p-1">
       <div class="leading-4">{{ props.item.customerName }}</div>

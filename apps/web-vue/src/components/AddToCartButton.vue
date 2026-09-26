@@ -5,14 +5,13 @@ import {
   faSpinner,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { clsx } from "clsx";
 import { computed } from "vue";
 
 import type { Bookmark } from "@livrelibre/server/server/bookmarks";
 
 import { useAddToCart } from "@/utils/useAddToCart";
 
-const props = defineProps<{ item: Bookmark; className?: string }>();
+const props = defineProps<{ item: Bookmark }>();
 
 const { mutate, isPending } = useAddToCart();
 
@@ -24,12 +23,7 @@ const icon = computed(() => {
 
 <template>
   <button
-    :class="
-      clsx(
-        'p-xs mr-xs disabled:(cursor-not-allowed opacity-80) hover:text-primary-darkest',
-        props.className,
-      )
-    "
+    class="p-xs mr-xs disabled:(cursor-not-allowed opacity-80) hover:text-primary-darkest"
     title="Ajouter au panier"
     type="button"
     :disabled="props.item.amount === 0"

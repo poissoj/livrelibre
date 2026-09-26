@@ -1,14 +1,11 @@
 <script setup lang="ts">
 import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { clsx } from "clsx";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 
 import { useTRPCUtils } from "@/utils/query";
-
-const props = defineProps<{ className?: string }>();
 
 const router = useRouter();
 const utils = useTRPCUtils();
@@ -41,7 +38,7 @@ const submit = async () => {
 <template>
   <form
     role="search"
-    :class="clsx('flex p-sm [width:27rem] relative', props.className)"
+    class="flex p-sm [width:27rem] relative"
     @submit.prevent="submit"
   >
     <input

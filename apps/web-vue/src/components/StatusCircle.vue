@@ -7,7 +7,7 @@ import {
   STATUS_LABEL,
 } from "@livrelibre/shared/order";
 
-const props = defineProps<{ status: OrderStatus; className?: string }>();
+const props = defineProps<{ status: OrderStatus }>();
 </script>
 
 <template>
@@ -16,7 +16,6 @@ const props = defineProps<{ status: OrderStatus; className?: string }>();
       clsx(
         'border border-black/60 rounded-xl w-5 h-5',
         STATUS_COLOR[props.status],
-        props.className,
       )
     "
     :title="STATUS_LABEL[props.status]"
