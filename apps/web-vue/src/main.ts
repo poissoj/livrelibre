@@ -52,22 +52,24 @@ const queryClient = new QueryClient({
   }),
 });
 
-router.beforeEach(async (to) => {
-  if (to.meta.public === true) {
-    return true;
-  }
+const isLoggedIn = async (): Promise<boolean> => {
   try {
     const user = await queryClient.query({
       ...trpcQueryOptions("user", undefined),
       staleTime: "static",
     });
-    if (user.role === "anonymous") {
-      return { path: "/login" };
-    }
-    return true;
+    return user.role !== "anonymous";
   } catch {
-    return { path: "/login" };
+    return false;
   }
+};
+
+router.beforeEach(async (to) => {
+  const loggedIn = await isLoggedIn();
+  if (to.path === "/login") {
+    return loggedIn ? { path: "/" } : true;
+  }
+  return loggedIn ? true : { path: "/login" };
 });
 
 const app = createApp(App);

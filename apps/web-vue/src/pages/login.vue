@@ -15,11 +15,8 @@ import Button from "@/components/Button.vue";
 import Input from "@/components/Input.vue";
 import Title from "@/components/Title.vue";
 import { APP_NAME } from "@/lib/config";
-import useUser from "@/lib/useUser";
 import { useTRPCUtils } from "@/utils/query";
 import type { RouterOutput } from "@/utils/trpc";
-
-useUser({ redirectTo: "/", redirectIfFound: true });
 
 const router = useRouter();
 const utils = useTRPCUtils();

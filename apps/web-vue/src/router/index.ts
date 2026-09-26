@@ -33,7 +33,6 @@ export const router = createRouter({
       path: "/login",
       name: "login",
       component: Login,
-      meta: { public: true },
     },
     {
       path: "/",
