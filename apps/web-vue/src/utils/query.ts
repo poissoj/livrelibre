@@ -61,12 +61,18 @@ export const useTRPCMutation = <K extends ProcedureName>(
   );
 };
 
+const invalidationKey = (
+  path: ProcedureName,
+  input: unknown,
+): [ProcedureName] | [ProcedureName, unknown] =>
+  input === undefined ? [path] : [path, input];
+
 export const useTRPCUtils = () => {
   const queryClient = useQueryClient();
   return {
-    invalidate: (path: ProcedureName, input?: unknown) =>
+    invalidate: <K extends ProcedureName>(path: K, input?: RouterInput[K]) =>
       queryClient.invalidateQueries({
-        queryKey: input === undefined ? [path] : [path, input],
+        queryKey: invalidationKey(path, input),
       }),
     reset: (path: ProcedureName) =>
       queryClient.resetQueries({ queryKey: [path] }),
