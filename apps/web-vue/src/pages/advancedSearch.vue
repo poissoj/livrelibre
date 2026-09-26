@@ -16,7 +16,6 @@ import ErrorMessage from "@/components/ErrorMessage.vue";
 import ItemsTable from "@/components/ItemsTable.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import Pagination from "@/components/Pagination.vue";
-import Title from "@/components/Title.vue";
 import { useTRPCQuery } from "@/utils/query";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
 import { usePageParam, useQueryParams } from "@/utils/useQueryParams";
@@ -103,7 +102,6 @@ const cardTitle = computed(() => {
 
 <template>
   <div class="flex flex-1 flex-col gap-lg">
-    <Title>Recherche avancée</Title>
     <Card v-if="isSuccess && list?.count === 0" :class="CARD_STYLES">
       <CardTitle>{{ cardTitle }}</CardTitle>
       <label class="self-end cursor-pointer mr-6 ml-auto">

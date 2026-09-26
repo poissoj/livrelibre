@@ -16,7 +16,7 @@ import LinkButton from "@/components/LinkButton.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import Pagination from "@/components/Pagination.vue";
 import Skeleton from "@/components/Skeleton.vue";
-import Title from "@/components/Title.vue";
+import { useTitle } from "@/lib/useTitle";
 import { useTRPCQuery } from "@/utils/query";
 import { useDebouncedValue } from "@/utils/useDebouncedValue";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
@@ -59,11 +59,11 @@ const pageTitle = computed(() => {
   }
   return title;
 });
+useTitle(pageTitle);
 </script>
 
 <template>
   <div class="flex flex-1 flex-col gap-lg">
-    <Title>Liste des client⋅es</Title>
     <ItemsCard v-if="isError" title="Liste des client⋅es">
       <ErrorMessage />
     </ItemsCard>
@@ -106,7 +106,6 @@ const pageTitle = computed(() => {
       </Skeleton>
     </ItemsCard>
     <Card v-else class="max-h-full overflow-hidden flex flex-col relative">
-      <Title>{{ pageTitle }}</Title>
       <CardTitle class="flex items-center">
         {{ listTitle }}
         <Input

@@ -1,13 +1,10 @@
 <script setup lang="ts">
-import Title from "@/components/Title.vue";
-
 import Bookmarks from "./Bookmarks.vue";
 import SellNewItem from "./SellNewItem.vue";
 </script>
 
 <template>
   <div class="flex items-start gap-lg flex-1 flex-wrap">
-    <Title>Tableau de bord</Title>
     <Bookmarks />
     <div class="flex flex-col gap-lg flex-1">
       <SellNewItem />

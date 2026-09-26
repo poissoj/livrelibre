@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 import ProtectedLayout from "@/components/Layout/ProtectedLayout.vue";
+import { APP_NAME } from "@/lib/config";
 
 const Custom404 = () => import("@/pages/404.vue");
 const Add = () => import("@/pages/add.vue");
@@ -34,63 +35,156 @@ export const router = createRouter({
       path: "/login",
       name: "login",
       component: Login,
+      meta: { title: "Se connecter" },
     },
     {
       path: "/",
       component: ProtectedLayout,
       children: [
-        { path: "", name: "dashboard", component: Dashboard },
-        { path: "items", name: "items", component: Items },
-        { path: "item/:id", name: "item", component: ItemPage },
-        { path: "update/:itemId", name: "update-item", component: UpdateItem },
-        { path: "add", name: "add", component: Add },
-        { path: "customers", name: "customers", component: Customers },
-        { path: "customer/new", name: "customer-new", component: NewCustomer },
+        {
+          path: "",
+          name: "dashboard",
+          component: Dashboard,
+          meta: { title: "Tableau de bord" },
+        },
+        {
+          path: "items",
+          name: "items",
+          component: Items,
+          meta: { title: "Liste des articles" },
+        },
+        {
+          path: "item/:id",
+          name: "item",
+          component: ItemPage,
+          meta: { title: "Voir un article" },
+        },
+        {
+          path: "update/:itemId",
+          name: "update-item",
+          component: UpdateItem,
+          meta: { title: "Modifier un article" },
+        },
+        {
+          path: "add",
+          name: "add",
+          component: Add,
+          meta: { title: "Ajouter un article" },
+        },
+        {
+          path: "customers",
+          name: "customers",
+          component: Customers,
+          meta: { title: "Liste des client⋅es" },
+        },
+        {
+          path: "customer/new",
+          name: "customer-new",
+          component: NewCustomer,
+          meta: { title: "Ajouter un client" },
+        },
         {
           path: "customer/:customerId",
           name: "customer",
           component: UpdateCustomer,
+          meta: { title: "Modifier un client" },
         },
-        { path: "orders", name: "orders", component: Orders },
-        { path: "order/new", name: "order-new", component: NewOrder },
+        {
+          path: "orders",
+          name: "orders",
+          component: Orders,
+          meta: { title: "Liste des commandes" },
+        },
+        {
+          path: "order/new",
+          name: "order-new",
+          component: NewOrder,
+          meta: { title: "Nouvelle commande" },
+        },
         {
           path: "order/:orderId",
           name: "order",
           component: UpdateOrder,
+          meta: { title: "Modifier une commande" },
         },
-        { path: "search", name: "search", component: Search },
-        { path: "cart", name: "cart", component: CartPage },
-        { path: "sales", name: "sales", component: Sales },
+        {
+          path: "search",
+          name: "search",
+          component: Search,
+          meta: { title: "Chercher un article" },
+        },
+        {
+          path: "cart",
+          name: "cart",
+          component: CartPage,
+          meta: { title: "Panier" },
+        },
+        {
+          path: "sales",
+          name: "sales",
+          component: Sales,
+          meta: { title: "Liste des ventes par mois" },
+        },
         {
           path: "sale/:year/:month",
           name: "sale-month",
           component: SalesByMonth,
+          meta: { title: "Ventes du mois" },
         },
         {
           path: "sale/:year/:month/:day",
           name: "sale-day",
           component: SalesByDayPage,
+          meta: { title: "Ventes du jour" },
         },
-        { path: "todaySales", name: "today-sales", component: TodaySales },
-        { path: "best-sales", name: "best-sales", component: BestSales },
-        { path: "stats", name: "stats", component: Stats },
+        {
+          path: "todaySales",
+          name: "today-sales",
+          component: TodaySales,
+          meta: { title: "Ventes du jour" },
+        },
+        {
+          path: "best-sales",
+          name: "best-sales",
+          component: BestSales,
+          meta: { title: "Meilleures ventes" },
+        },
+        {
+          path: "stats",
+          name: "stats",
+          component: Stats,
+          meta: { title: "Statistiques" },
+        },
         {
           path: "advancedSearch",
           name: "advanced-search",
           component: SearchResults,
+          meta: { title: "Recherche avancée" },
         },
-        { path: "advanced", name: "advanced", component: Advanced },
+        {
+          path: "advanced",
+          name: "advanced",
+          component: Advanced,
+          meta: { title: "Avancé" },
+        },
         {
           path: "quicksearch",
           name: "quicksearch",
           component: QuickSearchPage,
+          meta: { title: "Recherche rapide" },
         },
         {
           path: ":pathMatch(.*)*",
           name: "not-found",
           component: Custom404,
+          meta: { title: "Page introuvable" },
         },
       ],
     },
   ],
+});
+
+router.afterEach((to) => {
+  const title = typeof to.meta.title === "string" ? to.meta.title : "";
+  document.title = title ? `${title} | ${APP_NAME}` : APP_NAME;
 });

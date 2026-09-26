@@ -23,7 +23,7 @@ import ItemDetails from "@/components/ItemDetails.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import NoResults from "@/components/NoResults.vue";
 import Skeleton from "@/components/Skeleton.vue";
-import Title from "@/components/Title.vue";
+import { useTitle } from "@/lib/useTitle";
 import { useTRPCQuery, useTRPCUtils } from "@/utils/query";
 import { useAddToCart } from "@/utils/useAddToCart";
 import { useBookmark } from "@/utils/useBookmark";
@@ -36,6 +36,10 @@ const utils = useTRPCUtils();
 
 const { data: item, isPending, isError } = useTRPCQuery("searchItem", props.id);
 const { data: orders } = useTRPCQuery("itemOrders", props.id);
+
+useTitle(() =>
+  item.value ? `${item.value.title} | Voir un article` : "Voir un article",
+);
 
 const { star, mutation: bookmarkMutation } = useBookmark();
 const bookmarkPending = bookmarkMutation.isPending;
@@ -97,7 +101,6 @@ const submitAddToCart = () => {
     </CardBody>
   </Card>
   <Card v-else class="flex-1 max-h-full flex flex-col">
-    <Title>{{ `${item.title} | Voir un article` }}</Title>
     <div class="flex items-center">
       <CardTitle class="mr-auto">{{ item.title }}</CardTitle>
       <LinkButton

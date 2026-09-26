@@ -5,7 +5,6 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import Button from "@/components/Button.vue";
 import CustomerForm from "@/components/CustomerForm.vue";
 import LinkButton from "@/components/LinkButton.vue";
-import Title from "@/components/Title.vue";
 import type { CustomerFormFields } from "@/components/customerForm";
 import { useTRPCMutation } from "@/utils/query";
 
@@ -22,7 +21,6 @@ const submit = async (customer: CustomerFormFields) =>
 
 <template>
   <div class="[margin-left:10%] [margin-right:10%] flex-1">
-    <Title>Ajouter un client</Title>
     <CustomerForm title="Ajouter un client" :on-submit="submit">
       <LinkButton to="/customers" class="mr-2 px-md !bg-gray-medium">
         <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />

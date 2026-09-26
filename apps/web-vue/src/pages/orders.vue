@@ -20,7 +20,6 @@ import ItemsCard from "@/components/ItemsCard.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import OrdersTable from "@/components/OrdersTable.vue";
 import OrdersTableByCustomer from "@/components/OrdersTableByCustomer.vue";
-import Title from "@/components/Title.vue";
 import StatusTile from "@/components/orders/StatusTile.vue";
 import {
   filterGroups,
@@ -111,12 +110,10 @@ const filteredOrders = computed(() =>
 
 <template>
   <div class="flex flex-1 flex-col gap-lg">
-    <Title>Liste des commandes</Title>
     <ItemsCard v-if="isError" title="Liste des commandes">
       <ErrorMessage />
     </ItemsCard>
     <Card v-else class="max-h-full overflow-hidden flex flex-col relative">
-      <Title>Liste des commandes</Title>
       <CardTitle class="flex items-center">
         {{ cardTitle }}
         <LinkButton to="/order/new" class="ml-auto">

@@ -11,7 +11,6 @@ import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import Restricted from "@/components/Restricted.vue";
 import Skeleton from "@/components/Skeleton.vue";
-import Title from "@/components/Title.vue";
 import { useTRPCQuery } from "@/utils/query";
 
 const TH_STYLES = "sticky top-0 bg-white";
@@ -29,7 +28,6 @@ const goToSale = (sale: Sale) => {
 <template>
   <Restricted role="admin">
     <div class="[margin-left:10%] [margin-right:10%] flex-1">
-      <Title>Liste des ventes par mois</Title>
       <Card class="mb-lg max-h-full overflow-hidden flex flex-col">
         <CardTitle>Liste des ventes par mois</CardTitle>
         <CardBody>

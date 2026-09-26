@@ -16,7 +16,6 @@ import ItemForm from "@/components/ItemForm.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import NoResults from "@/components/NoResults.vue";
 import Skeleton from "@/components/Skeleton.vue";
-import Title from "@/components/Title.vue";
 import type { FormFields } from "@/components/itemForm";
 import { useTRPCMutation, useTRPCQuery, useTRPCUtils } from "@/utils/query";
 
@@ -58,7 +57,6 @@ const formData = computed<FormFields | undefined>(() => {
 
 <template>
   <div class="flex-1">
-    <Title>Modifier un article</Title>
     <Card v-if="isError">
       <CardTitle>{{ CARD_TITLE }}</CardTitle>
       <CardBody>

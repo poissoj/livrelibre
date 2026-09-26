@@ -16,7 +16,6 @@ import FormRow from "@/components/FormRow.vue";
 import Input from "@/components/Input.vue";
 import Select from "@/components/Select.vue";
 import Textarea from "@/components/Textarea.vue";
-import Title from "@/components/Title.vue";
 
 const router = useRouter();
 
@@ -56,7 +55,6 @@ const onSubmit = async () => {
 
 <template>
   <div class="[margin-left:10%] [margin-right:10%] flex-1">
-    <Title>Chercher un article</Title>
     <Card class="mb-lg">
       <CardTitle>Chercher un article</CardTitle>
       <form class="flex-1" @submit.prevent="onSubmit">

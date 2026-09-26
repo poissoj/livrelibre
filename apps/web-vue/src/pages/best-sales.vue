@@ -8,7 +8,6 @@ import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import Skeleton from "@/components/Skeleton.vue";
-import Title from "@/components/Title.vue";
 import { useTRPCQuery } from "@/utils/query";
 
 const TH_STYLES = "sticky top-0 bg-white";
@@ -22,7 +21,6 @@ const {
 
 <template>
   <div class="[margin-left:10%] [margin-right:10%] flex flex-1 flex-col gap-lg">
-    <Title>Meilleurs ventes</Title>
     <Card class="max-h-full overflow-hidden flex flex-col">
       <CardTitle>Meilleures ventes</CardTitle>
       <CardBody>

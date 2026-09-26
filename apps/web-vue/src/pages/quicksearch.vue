@@ -12,7 +12,7 @@ import ErrorMessage from "@/components/ErrorMessage.vue";
 import ItemsTable from "@/components/ItemsTable.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import Pagination from "@/components/Pagination.vue";
-import Title from "@/components/Title.vue";
+import { useTitle } from "@/lib/useTitle";
 import { useTRPCQuery } from "@/utils/query";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
 import { usePageParam, useQueryParams } from "@/utils/useQueryParams";
@@ -24,6 +24,7 @@ const { query, push } = useQueryParams();
 const search = computed(() =>
   typeof query.value.search === "string" ? query.value.search : "",
 );
+useTitle(() => `Recherche de "${search.value}"`);
 const page = usePageParam();
 const inStock = computed(() => query.value.inStock === "1");
 
@@ -68,7 +69,6 @@ const subtitle = computed(
 
 <template>
   <div class="flex flex-1 flex-col gap-lg">
-    <Title>{{ `Recherche de "${search}"` }}</Title>
     <Card v-if="isSuccess && searchResult?.count === 0" :class="CARD_STYLES">
       <CardTitle>{{ cardTitle }}</CardTitle>
       <label class="self-end cursor-pointer mr-6 ml-auto">

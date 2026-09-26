@@ -4,7 +4,6 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 import Button from "@/components/Button.vue";
 import ItemForm from "@/components/ItemForm.vue";
-import Title from "@/components/Title.vue";
 import type { FormFields } from "@/components/itemForm";
 import { useTRPCMutation } from "@/utils/query";
 
@@ -22,7 +21,6 @@ const submit = async (data: FormFields) => {
 
 <template>
   <div class="[margin-left:10%] [margin-right:10%] flex-1">
-    <Title>Ajouter un article</Title>
     <ItemForm title="Ajouter un article" :on-submit="submit">
       <Button type="submit" class="px-md" :disabled="addPending">
         <FontAwesomeIcon :icon="faPlus" class="mr-sm" />

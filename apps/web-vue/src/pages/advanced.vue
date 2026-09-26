@@ -19,7 +19,6 @@ import Card from "@/components/Card.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardFooter from "@/components/CardFooter.vue";
 import CardTitle from "@/components/CardTitle.vue";
-import Title from "@/components/Title.vue";
 
 type FileData = { filename: string; data: DilicomRowWithId[] };
 
@@ -145,7 +144,6 @@ const nbItems = computed(
     v-else
     class="[margin-left:10%] [margin-right:10%] flex flex-1 flex-col gap-lg"
   >
-    <Title>Avancé</Title>
     <Card>
       <CardTitle>Importer un fichier DILICOM</CardTitle>
       <form

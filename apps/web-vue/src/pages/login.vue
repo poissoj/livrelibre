@@ -13,7 +13,6 @@ import { useRouter } from "vue-router";
 
 import Button from "@/components/Button.vue";
 import Input from "@/components/Input.vue";
-import Title from "@/components/Title.vue";
 import { APP_NAME } from "@/lib/config";
 import { useTRPCUtils } from "@/utils/query";
 import type { RouterOutput } from "@/utils/trpc";
@@ -57,7 +56,6 @@ const onSubmit = async () => {
 
 <template>
   <div class="h-full w-full relative">
-    <Title>Se connecter</Title>
     <div class="bg-primary w-full h-1/2 absolute top-0" />
     <section class="flex flex-col justify-center items-center h-full relative">
       <h1 class="font-['Niconne'] [font-size:52px] text-white mb-4">

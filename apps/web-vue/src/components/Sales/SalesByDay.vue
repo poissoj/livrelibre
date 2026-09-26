@@ -14,7 +14,7 @@ import SalesSkeleton from "@/components/Sales/SalesSkeleton.vue";
 import SalesTable from "@/components/Sales/SalesTable.vue";
 import StatsByTVA from "@/components/TVAStats/StatsByTVA.vue";
 import TVASkeleton from "@/components/TVAStats/TVASkeleton.vue";
-import Title from "@/components/Title.vue";
+import { useTitle } from "@/lib/useTitle";
 import { useTRPCQuery } from "@/utils/query";
 import { useScrollRestoration } from "@/utils/scroll";
 
@@ -35,6 +35,8 @@ const {
 const formatDate = (date: string) => date.split("-").reverse().join("/");
 
 const title = computed(() => `Liste des ventes du ${formatDate(props.date)}`);
+useTitle(title);
+
 const salesTitle = computed(() =>
   isPending.value
     ? `Ventes du ${props.date}`
@@ -53,7 +55,6 @@ const categories = computed(() =>
     ref="root"
     class="flex flex-1 flex-col gap-lg max-h-full overflow-auto pr-1 pb-1 -mr-1 -mb-1"
   >
-    <Title>{{ title }}</Title>
     <div class="flex gap-lg items-start flex-wrap">
       <Card class="flex-1">
         <CardTitle>Répartition par TVA</CardTitle>

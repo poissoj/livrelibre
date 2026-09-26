@@ -6,7 +6,6 @@ import Card from "@/components/Card.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
-import Title from "@/components/Title.vue";
 import { useTRPCQuery } from "@/utils/query";
 
 const SalesByHour = defineAsyncComponent(
@@ -38,7 +37,6 @@ const days = computed(() =>
 
 <template>
   <div class="flex flex-1 flex-col gap-lg items-center">
-    <Title>Statistiques</Title>
     <Card>
       <CardTitle>Nombre de ventes par heure</CardTitle>
       <CardBody class="[width:900px]">

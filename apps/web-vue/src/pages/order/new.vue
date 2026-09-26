@@ -10,7 +10,6 @@ import type { RawOrder } from "@livrelibre/shared/order";
 import Button from "@/components/Button.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import OrderForm from "@/components/OrderForm.vue";
-import Title from "@/components/Title.vue";
 import type { OrderFormData } from "@/components/orderForm";
 import { getErrorMessage } from "@/utils/errors";
 import { useTRPCMutation, useTRPCQuery } from "@/utils/query";
@@ -60,7 +59,6 @@ const data = computed<OrderFormData>(() => ({
 
 <template>
   <div class="flex-1 max-w-6xl mx-auto">
-    <Title>Nouvelle commande</Title>
     <ErrorMessage v-if="itemError" />
     <div v-else-if="itemPending && itemIdStr">Chargement…</div>
     <OrderForm v-else title="Nouvelle commande" :data="data" @submit="submit">

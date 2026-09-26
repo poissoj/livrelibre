@@ -16,7 +16,6 @@ import Restricted from "@/components/Restricted.vue";
 import Skeleton from "@/components/Skeleton.vue";
 import StatsByTVA from "@/components/TVAStats/StatsByTVA.vue";
 import TVASkeleton from "@/components/TVAStats/TVASkeleton.vue";
-import Title from "@/components/Title.vue";
 import { useTRPCQuery } from "@/utils/query";
 
 const TH_STYLES = "sticky top-0 bg-white";
@@ -57,7 +56,6 @@ const categories = computed(() =>
 <template>
   <Restricted role="admin">
     <div class="flex items-start gap-lg flex-1 flex-wrap">
-      <Title>Ventes du mois</Title>
       <Card class="flex flex-col flex-1 max-h-full overflow-hidden">
         <CardTitle>Liste des ventes - {{ monthLabel }}</CardTitle>
         <CardBody>

@@ -21,7 +21,6 @@ import LinkButton from "@/components/LinkButton.vue";
 import NoResults from "@/components/NoResults.vue";
 import Skeleton from "@/components/Skeleton.vue";
 import StatusCircle from "@/components/StatusCircle.vue";
-import Title from "@/components/Title.vue";
 import type { CustomerFormFields } from "@/components/customerForm";
 import { getErrorMessage } from "@/utils/errors";
 import { useTRPCMutation, useTRPCQuery, useTRPCUtils } from "@/utils/query";
@@ -72,7 +71,6 @@ const total = computed(
 
 <template>
   <div class="flex-1">
-    <Title>Modifier un client</Title>
     <Card v-if="isError">
       <CardTitle>{{ CARD_TITLE }}</CardTitle>
       <CardBody>

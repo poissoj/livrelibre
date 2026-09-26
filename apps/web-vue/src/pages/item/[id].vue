@@ -8,7 +8,6 @@ import CardTitle from "@/components/CardTitle.vue";
 import ItemCard from "@/components/ItemCard.vue";
 import ItemSalesCard from "@/components/ItemSalesCard.vue";
 import NoResults from "@/components/NoResults.vue";
-import Title from "@/components/Title.vue";
 
 const route = useRoute();
 const id = computed(() => route.params.id);
@@ -20,7 +19,6 @@ const idNum = computed(() => Number(id.value));
 
 <template>
   <div class="flex items-start gap-lg flex-1 flex-wrap">
-    <Title>Voir un article</Title>
     <Card v-if="!isValidId" class="flex-1">
       <CardTitle>Article introuvable</CardTitle>
       <CardBody>

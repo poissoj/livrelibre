@@ -10,7 +10,6 @@ import CardFooter from "@/components/CardFooter.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import Skeleton from "@/components/Skeleton.vue";
-import Title from "@/components/Title.vue";
 import AsideButton from "@/components/cart/AsideButton.vue";
 import AsideCartLoader from "@/components/cart/AsideCartLoader.vue";
 import CartTable from "@/components/cart/CartTable.vue";
@@ -37,7 +36,6 @@ const removeError = (isbn: string) => {
 
 <template>
   <div class="[margin-left:10%] [margin-right:10%] flex-1 flex flex-col gap-6">
-    <Title>Panier</Title>
     <Card v-if="isError">
       <CardTitle>Panier</CardTitle>
       <CardBody>
