@@ -136,7 +136,7 @@ const data = computed<OrderFormData | undefined>(() => {
       />
       <LinkButton
         :to="{ path: '/orders', query: query }"
-        class="mr-2 px-md !bg-[#6E6E6E]"
+        class="mr-2 px-md !bg-gray-medium"
       >
         <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
         Annuler

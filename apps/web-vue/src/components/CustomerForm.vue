@@ -12,11 +12,7 @@ import Textarea from "@/components/Textarea.vue";
 import { getErrorMessage } from "@/utils/errors";
 
 import type { CustomerFormFields, CustomerFormResult } from "./customerForm";
-
-type TAlert = {
-  type: "success" | "warning" | "error" | "info";
-  message: string;
-};
+import type { AlertMessage } from "./form";
 
 const props = defineProps<{
   title: string;
@@ -29,7 +25,7 @@ const phone = ref(props.data?.phone ?? "");
 const email = ref(props.data?.email ?? "");
 const contact = ref(props.data?.contact ?? "");
 const comment = ref(props.data?.comment ?? "");
-const alert = ref<TAlert | null>(null);
+const alert = ref<AlertMessage | null>(null);
 
 const buildPayload = (): CustomerFormFields => ({
   fullname: fullname.value,

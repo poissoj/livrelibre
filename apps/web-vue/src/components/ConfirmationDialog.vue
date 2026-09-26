@@ -26,7 +26,7 @@ const confirm = () => {
 </script>
 
 <template>
-  <Button type="button" class="mr-auto !bg-[#991b1b]" @click="isOpen = true">
+  <Button type="button" class="mr-auto !bg-danger" @click="isOpen = true">
     <FontAwesomeIcon :icon="faTrash" class="mr-sm" />
     Supprimer
   </Button>
@@ -59,13 +59,13 @@ const confirm = () => {
             <DialogTitle class="font-bold">{{ props.title }}</DialogTitle>
             <p>{{ props.message }}</p>
             <div class="flex">
-              <Button type="button" class="!bg-[#991b1b]" @click="confirm">
+              <Button type="button" class="!bg-danger" @click="confirm">
                 <FontAwesomeIcon :icon="faTrash" class="mr-sm" />
                 Oui, supprimer
               </Button>
               <Button
                 type="button"
-                class="ml-auto !bg-[#6E6E6E]"
+                class="ml-auto !bg-gray-medium"
                 @click="close"
               >
                 <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />

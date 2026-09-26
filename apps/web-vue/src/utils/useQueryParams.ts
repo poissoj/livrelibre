@@ -49,3 +49,11 @@ export function useQueryParams() {
 
   return { query, push, pathname, searchParams };
 }
+
+export function usePageParam() {
+  const { query } = useQueryParams();
+  return computed(() => {
+    const queryPage = query.value.page;
+    return typeof queryPage === "string" ? Number(queryPage) : 1;
+  });
+}

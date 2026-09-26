@@ -117,7 +117,7 @@ const total = computed(
           message="Êtes-vous sûr⋅e de vouloir supprimer ce⋅tte client⋅e ? Cette action ne peut pas être annulée."
           @confirm="deleteCustomer"
         />
-        <LinkButton to="/customers" class="mr-2 px-md !bg-[#6E6E6E]">
+        <LinkButton to="/customers" class="mr-2 px-md !bg-gray-medium">
           <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
           Annuler
         </LinkButton>

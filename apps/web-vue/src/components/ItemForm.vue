@@ -27,12 +27,8 @@ import Select from "@/components/Select.vue";
 import Textarea from "@/components/Textarea.vue";
 import { getErrorMessage } from "@/utils/errors";
 
+import type { AlertMessage } from "./form";
 import { type FormFields, type ItemFormResult } from "./itemForm";
-
-type TAlert = {
-  type: "success" | "warning" | "error" | "info";
-  message: string;
-};
 
 const props = defineProps<{
   title: string;
@@ -53,7 +49,7 @@ const price = ref<string | number>(props.data?.price ?? "");
 const amount = ref<string | number>(props.data?.amount ?? "0");
 const tva = ref<TVA>(props.data?.tva ?? "5.5");
 
-const alert = ref<TAlert | null>(null);
+const alert = ref<AlertMessage | null>(null);
 const isbnLoading = ref(false);
 
 const reset = () => {

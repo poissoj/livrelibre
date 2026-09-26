@@ -20,6 +20,9 @@
   --color-red: rgb(220 38 38);
   --color-blue: rgb(37 99 235);
   --color-purple: rgb(107 33 168);
+  --color-gray-medium: #6e6e6e;
+  --color-danger: #991b1b;
+  --color-warning: #ff9800;
 
   --spacing-xs: 4px;
   --spacing-sm: 8px;

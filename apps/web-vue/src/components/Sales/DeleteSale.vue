@@ -19,7 +19,7 @@ const { mutate, isPending } = useTRPCMutation("deleteSale", {
   <Button
     type="button"
     aria-label="Supprimer la vente"
-    class="!bg-[#FF9800]"
+    class="!bg-warning"
     title="Supprimer"
     @click="mutate({ saleId: props.saleId })"
   >

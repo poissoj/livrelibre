@@ -4,6 +4,7 @@ import { ref } from "vue";
 import { CART_ERRORS } from "@livrelibre/shared/errors";
 
 import Input from "@/components/Input.vue";
+import { refreshCartRelated } from "@/utils/invalidations";
 import { useTRPCMutation, useTRPCUtils } from "@/utils/query";
 
 import type { ISBNError } from "./types";
@@ -24,13 +25,7 @@ const { mutate: addIsbn } = useTRPCMutation("addISBNToCart", {
       emit("error", { message, isbn: isbnInput, ...rest });
       return;
     }
-    await Promise.all([
-      utils.invalidate("cart"),
-      utils.invalidate("bookmarks"),
-      utils.invalidate("quicksearch"),
-      utils.invalidate("items"),
-      utils.invalidate("advancedSearch"),
-    ]);
+    await refreshCartRelated(utils);
   },
 });
 

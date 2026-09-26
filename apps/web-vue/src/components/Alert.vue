@@ -10,9 +10,11 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { clsx } from "clsx";
 import { computed } from "vue";
 
+import type { AlertType } from "./form";
+
 const props = withDefaults(
   defineProps<{
-    type: "success" | "warning" | "error" | "info";
+    type: AlertType;
     dismissible?: boolean;
   }>(),
   { dismissible: true },

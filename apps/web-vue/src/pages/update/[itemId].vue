@@ -113,7 +113,10 @@ const formData = computed<FormFields | undefined>(() => {
       </CardBody>
     </Card>
     <ItemForm v-else :title="CARD_TITLE" :data="formData" :on-submit="submit">
-      <LinkButton :to="`/item/${String(id)}`" class="mr-2 px-md !bg-[#6E6E6E]">
+      <LinkButton
+        :to="`/item/${String(id)}`"
+        class="mr-2 px-md !bg-gray-medium"
+      >
         <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
         Annuler
       </LinkButton>

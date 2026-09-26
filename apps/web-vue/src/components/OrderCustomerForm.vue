@@ -81,7 +81,7 @@ const submit = async () => {
     <div class="flex justify-end mb-4 mr-20">
       <Button
         type="button"
-        class="px-md mr-4 !bg-[#6E6E6E]"
+        class="px-md mr-4 !bg-gray-medium"
         @click="emit('hide')"
       >
         <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />

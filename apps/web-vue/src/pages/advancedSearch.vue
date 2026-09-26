@@ -19,7 +19,7 @@ import Pagination from "@/components/Pagination.vue";
 import Title from "@/components/Title.vue";
 import { useTRPCQuery } from "@/utils/query";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
-import { useQueryParams } from "@/utils/useQueryParams";
+import { usePageParam, useQueryParams } from "@/utils/useQueryParams";
 
 const CARD_STYLES = "max-h-full overflow-hidden flex flex-col relative";
 
@@ -74,10 +74,7 @@ const searchQuery = computed(() => {
   }
   return body;
 });
-const page = computed(() => {
-  const queryPage = query.value.page;
-  return typeof queryPage === "string" ? Number(queryPage) : 1;
-});
+const page = usePageParam();
 
 const {
   data: list,

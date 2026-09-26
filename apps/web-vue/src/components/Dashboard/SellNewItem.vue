@@ -19,20 +19,16 @@ import CardTitle from "@/components/CardTitle.vue";
 import FormRow from "@/components/FormRow.vue";
 import Input from "@/components/Input.vue";
 import Select from "@/components/Select.vue";
+import type { AlertMessage } from "@/components/form";
 import { getErrorMessage } from "@/utils/errors";
 import { useTRPCMutation, useTRPCUtils } from "@/utils/query";
-
-type TAlert = {
-  type: "success" | "error";
-  message: string;
-};
 
 const utils = useTRPCUtils();
 const price = ref<string | number>("");
 const title = ref("");
 const type = ref<ItemType>("book");
 const tva = ref<TVA>("5.5");
-const alert = ref<TAlert | null>(null);
+const alert = ref<AlertMessage | null>(null);
 
 const { mutateAsync: addItem, isPending: addPending } = useTRPCMutation(
   "addNewItemToCart",

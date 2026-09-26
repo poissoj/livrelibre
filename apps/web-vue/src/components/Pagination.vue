@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { computed } from "vue";
 import { RouterLink } from "vue-router";
 
-import { useQueryParams } from "@/utils/useQueryParams";
+import { usePageParam, useQueryParams } from "@/utils/useQueryParams";
 
 const props = defineProps<{ count: number }>();
 
@@ -38,12 +38,9 @@ const createPageList = (pageNumber: number, count: number) => {
   ];
 };
 
-const { query, pathname, searchParams } = useQueryParams();
+const { pathname, searchParams } = useQueryParams();
 
-const page = computed(() => {
-  const queryPage = query.value.page;
-  return typeof queryPage === "string" ? Number(queryPage) : 1;
-});
+const page = usePageParam();
 
 const makeHref = (nb: number) => {
   const params = new URLSearchParams(searchParams.value);

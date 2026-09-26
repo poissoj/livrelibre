@@ -1,6 +1,7 @@
 import { toast } from "vue-sonner";
 
 import { getErrorMessage } from "./errors";
+import { refreshCartRelated } from "./invalidations";
 import { useTRPCMutation, useTRPCUtils } from "./query";
 
 export const useAddToCart = () => {
@@ -8,13 +9,7 @@ export const useAddToCart = () => {
   return useTRPCMutation("addToCart", {
     meta: { errorToast: false },
     async onSuccess() {
-      await Promise.all([
-        utils.invalidate("cart"),
-        utils.invalidate("bookmarks"),
-        utils.invalidate("quicksearch"),
-        utils.invalidate("items"),
-        utils.invalidate("advancedSearch"),
-      ]);
+      await refreshCartRelated(utils);
     },
     onError(error) {
       toast.error(getErrorMessage(error));

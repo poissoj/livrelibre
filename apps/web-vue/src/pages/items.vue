@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { keepPreviousData } from "@tanstack/vue-query";
 import { computed } from "vue";
-import { useRoute } from "vue-router";
 
 import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
 
@@ -18,12 +17,9 @@ import Skeleton from "@/components/Skeleton.vue";
 import Title from "@/components/Title.vue";
 import { useTRPCQuery } from "@/utils/query";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
+import { usePageParam } from "@/utils/useQueryParams";
 
-const route = useRoute();
-const page = computed(() => {
-  const queryPage = route.query.page;
-  return typeof queryPage === "string" ? Number(queryPage) : 1;
-});
+const page = usePageParam();
 
 const {
   data: pageData,

@@ -3,7 +3,6 @@ import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { keepPreviousData } from "@tanstack/vue-query";
 import { computed, ref } from "vue";
-import { useRoute } from "vue-router";
 
 import Card from "@/components/Card.vue";
 import CardBody from "@/components/CardBody.vue";
@@ -21,12 +20,9 @@ import Title from "@/components/Title.vue";
 import { useTRPCQuery } from "@/utils/query";
 import { useDebouncedValue } from "@/utils/useDebouncedValue";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
+import { usePageParam } from "@/utils/useQueryParams";
 
-const route = useRoute();
-const page = computed(() => {
-  const queryPage = route.query.page;
-  return typeof queryPage === "string" ? Number(queryPage) : 1;
-});
+const page = usePageParam();
 
 const search = ref("");
 const withPurchases = ref(false);

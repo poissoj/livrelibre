@@ -18,7 +18,7 @@ const { mutate, isPending } = useTRPCMutation("removeFromCart", {
 <template>
   <Button
     type="button"
-    class="!bg-[#FF9800]"
+    class="!bg-warning"
     title="Enlever du panier"
     @click="mutate(props.id)"
   >

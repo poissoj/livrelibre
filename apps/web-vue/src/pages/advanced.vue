@@ -124,7 +124,7 @@ const nbItems = computed(
       </span>
       <Button
         type="button"
-        class="mr-2 px-md !bg-[#6E6E6E]"
+        class="mr-2 px-md !bg-gray-medium"
         @click="file = null"
       >
         <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
