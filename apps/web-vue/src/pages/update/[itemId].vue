@@ -18,12 +18,13 @@ import NoResults from "@/components/NoResults.vue";
 import Skeleton from "@/components/Skeleton.vue";
 import Title from "@/components/Title.vue";
 import type { FormFields } from "@/components/itemForm";
-import { useTRPCMutation, useTRPCQuery } from "@/utils/query";
+import { useTRPCMutation, useTRPCQuery, useTRPCUtils } from "@/utils/query";
 
 const CARD_TITLE = "Modifier un article";
 
 const route = useRoute();
 const router = useRouter();
+const utils = useTRPCUtils();
 const id = computed(() => Number(route.params.itemId));
 
 const result = useTRPCQuery("searchItem", id);
@@ -34,6 +35,9 @@ const submit = async (data: FormFields) => {
   const item = { ...data, amount: Number(data.amount), datebought };
   const result = await mutation.mutateAsync({ item, id: id.value });
   if (result.type === "success") {
+    await utils.invalidate("searchItem", id.value);
+    void utils.invalidate("items");
+    void utils.invalidate("advancedSearch");
     void router.push(`/item/${String(id.value)}?status=updated`);
   }
   return result;
