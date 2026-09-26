@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { clsx } from "clsx";
+import { RouterLink } from "vue-router";
 
 import { formatNumber } from "@livrelibre/shared/format";
 

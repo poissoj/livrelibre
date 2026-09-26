@@ -10,9 +10,11 @@ import { CanvasRenderer } from "echarts/renderers";
 import { computed } from "vue";
 import VChart from "vue-echarts";
 
-use([BarChart, GridComponent, CanvasRenderer]);
+const props = defineProps<{
+  days: Array<{ name: string; count: number }>;
+}>();
 
-const props = defineProps<{ days: { name: string; count: number }[] }>();
+use([BarChart, GridComponent, CanvasRenderer]);
 
 const option = computed<EChartsOption>(() => ({
   grid: { top: 0, bottom: 0, left: 0, right: 0, containLabel: true },

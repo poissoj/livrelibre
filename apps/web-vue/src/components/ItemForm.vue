@@ -28,7 +28,7 @@ import Textarea from "@/components/Textarea.vue";
 import { getErrorMessage } from "@/utils/errors";
 
 import type { AlertMessage } from "./form";
-import { type FormFields, type ItemFormResult } from "./itemForm";
+import type { FormFields, ItemFormResult } from "./itemForm";
 
 const props = defineProps<{
   title: string;

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { clsx } from "clsx";
-import { useRouter } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
 
 import type { Sale } from "@livrelibre/server/server/sales";
 import { formatNumber, formatPrice } from "@livrelibre/shared/format";

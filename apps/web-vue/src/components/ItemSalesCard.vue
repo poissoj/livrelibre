@@ -8,11 +8,11 @@ import ErrorMessage from "@/components/ErrorMessage.vue";
 import Skeleton from "@/components/Skeleton.vue";
 import { useTRPCQuery } from "@/utils/query";
 
+const props = defineProps<{ id: number }>();
+
 const SalesByMonth = defineAsyncComponent(
   () => import("@/components/Charts/SalesByMonth.vue"),
 );
-
-const props = defineProps<{ id: number }>();
 
 const { data: sales, isPending, isError } = useTRPCQuery("lastSales", props.id);
 </script>

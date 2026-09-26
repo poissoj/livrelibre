@@ -13,9 +13,9 @@ import VChart from "vue-echarts";
 
 import type { RouterOutput } from "@/utils/trpc";
 
-use([BarChart, GridComponent, TooltipComponent, CanvasRenderer]);
-
 const props = defineProps<{ sales: RouterOutput["lastSales"] }>();
+
+use([BarChart, GridComponent, TooltipComponent, CanvasRenderer]);
 
 const option = computed<EChartsOption>(() => ({
   tooltip: {
