@@ -23,7 +23,11 @@ const props = defineProps<{ date: string }>();
 const root = ref<HTMLElement | null>(null);
 useScrollRestoration(root);
 
-const result = useTRPCQuery(
+const {
+  data: dayStats,
+  isPending,
+  isError,
+} = useTRPCQuery(
   "salesByDay",
   computed(() => props.date),
 );
@@ -32,12 +36,12 @@ const formatDate = (date: string) => date.split("-").reverse().join("/");
 
 const title = computed(() => `Liste des ventes du ${formatDate(props.date)}`);
 const salesTitle = computed(() =>
-  result.isPending.value
+  isPending.value
     ? `Ventes du ${props.date}`
-    : `Ventes du ${formatDate(props.date)} (${String(result.data.value?.salesCount ?? 0)})`,
+    : `Ventes du ${formatDate(props.date)} (${String(dayStats.value?.salesCount ?? 0)})`,
 );
 const categories = computed(() =>
-  (result.data.value?.paymentMethods ?? []).map((method) => ({
+  (dayStats.value?.paymentMethods ?? []).map((method) => ({
     ...method,
     label: PAYMENT_METHODS[method.type],
   })),
@@ -54,22 +58,22 @@ const categories = computed(() =>
       <Card class="flex-1">
         <CardTitle>Répartition par TVA</CardTitle>
         <CardBody>
-          <ErrorMessage v-if="result.isError.value" />
-          <TVASkeleton v-else-if="result.isPending.value" />
-          <StatsByTVA v-else :stats="result.data.value?.tva ?? []" />
+          <ErrorMessage v-if="isError" />
+          <TVASkeleton v-else-if="isPending" />
+          <StatsByTVA v-else :stats="dayStats?.tva ?? []" />
         </CardBody>
       </Card>
       <Card class="flex-1">
         <CardTitle>Répartition par type de paiement</CardTitle>
         <CardBody>
-          <ErrorMessage v-if="result.isError.value" />
-          <CategorySkeleton v-else-if="result.isPending.value" />
+          <ErrorMessage v-if="isError" />
+          <CategorySkeleton v-else-if="isPending" />
           <div v-else class="flex flex-1 flex-col gap-3">
             <CategoriesTable :categories="categories" />
             <p class="self-end">
               <strong>Total&nbsp;: </strong>
               <span class="font-number">
-                {{ formatPrice(result.data.value?.total ?? 0) }}
+                {{ formatPrice(dayStats?.total ?? 0) }}
               </span>
             </p>
           </div>
@@ -79,9 +83,9 @@ const categories = computed(() =>
     <Card class="flex flex-col">
       <CardTitle>{{ salesTitle }}</CardTitle>
       <CardBody>
-        <ErrorMessage v-if="result.isError.value" />
-        <SalesSkeleton v-else-if="result.isPending.value" />
-        <SalesTable v-else :carts="result.data.value?.carts ?? []" />
+        <ErrorMessage v-if="isError" />
+        <SalesSkeleton v-else-if="isPending" />
+        <SalesTable v-else :carts="dayStats?.carts ?? []" />
       </CardBody>
     </Card>
   </div>

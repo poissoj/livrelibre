@@ -19,19 +19,22 @@ const amount = computed(() =>
 const discount = ref(Math.round(amount.value * 3) / 100);
 const applied = ref<number | undefined>(undefined);
 
-const mutation = useTRPCMutation("addNewItemToCart", {
-  meta: { errorToast: false },
-  onSuccess() {
-    applied.value = discount.value;
-    void utils.invalidate("cart");
+const { mutate: addDiscount, isPending: isApplying } = useTRPCMutation(
+  "addNewItemToCart",
+  {
+    meta: { errorToast: false },
+    onSuccess() {
+      applied.value = discount.value;
+      void utils.invalidate("cart");
+    },
+    onError(error) {
+      toast.error(getErrorMessage(error));
+    },
   },
-  onError(error) {
-    toast.error(getErrorMessage(error));
-  },
-});
+);
 
 const onSubmit = () => {
-  mutation.mutate({
+  addDiscount({
     price: String(-discount.value),
     title: "Remise carte de fidélité",
     type: "book",
@@ -58,7 +61,7 @@ const onSubmit = () => {
         class="ml-2 !w-28 font-number"
         @update:model-value="(value) => (discount = Number(value))"
       />
-      <Button type="submit" class="ml-2" :disabled="mutation.isPending.value">
+      <Button type="submit" class="ml-2" :disabled="isApplying">
         Appliquer
       </Button>
     </form>

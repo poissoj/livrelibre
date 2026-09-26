@@ -21,7 +21,7 @@ import QuickAdd from "@/components/cart/QuickAdd.vue";
 import type { ISBNError } from "@/components/cart/types";
 import { useTRPCQuery } from "@/utils/query";
 
-const result = useTRPCQuery("cart", undefined);
+const { data: cart, isPending, isError } = useTRPCQuery("cart", undefined);
 const change = ref<number | null>(null);
 const errors = ref<ISBNError[]>([]);
 
@@ -38,13 +38,13 @@ const removeError = (isbn: string) => {
 <template>
   <div class="[margin-left:10%] [margin-right:10%] flex-1 flex flex-col gap-6">
     <Title>Panier</Title>
-    <Card v-if="result.isError.value">
+    <Card v-if="isError">
       <CardTitle>Panier</CardTitle>
       <CardBody>
         <ErrorMessage />
       </CardBody>
     </Card>
-    <Card v-else-if="result.isPending.value">
+    <Card v-else-if="isPending">
       <CardTitle>Panier</CardTitle>
       <CardBody>
         <Skeleton :height="150">
@@ -85,7 +85,7 @@ const removeError = (isbn: string) => {
         </Skeleton>
       </CardBody>
     </Card>
-    <template v-else-if="(result.data.value?.count ?? 0) === 0">
+    <template v-else-if="(cart?.count ?? 0) === 0">
       <Card>
         <div class="flex items-center">
           <CardTitle class="mr-auto">Panier</CardTitle>
@@ -114,8 +114,8 @@ const removeError = (isbn: string) => {
       <Card class="max-h-full flex flex-col">
         <div class="flex items-center">
           <CardTitle class="mr-auto">
-            Panier - {{ result.data.value?.count }} article{{
-              (result.data.value?.count ?? 0) > 1 ? "s" : ""
+            Panier - {{ cart?.count }} article{{
+              (cart?.count ?? 0) > 1 ? "s" : ""
             }}
           </CardTitle>
           <QuickAdd @error="addError" />
@@ -123,14 +123,14 @@ const removeError = (isbn: string) => {
         <CustomerSelector />
         <CardBody class="flex-col">
           <ErrorList :errors="errors" @remove="removeError" />
-          <CartTable :items="result.data.value?.items ?? []" />
+          <CartTable :items="cart?.items ?? []" />
         </CardBody>
         <CardFooter>
           <p class="mb-2">
             <span class="font-medium [font-size:1.1rem]">
               Total :
               <span class="font-number">
-                {{ formatPrice(result.data.value?.total ?? 0) }}
+                {{ formatPrice(cart?.total ?? 0) }}
               </span>
             </span>
           </p>

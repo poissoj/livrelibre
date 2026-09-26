@@ -26,10 +26,10 @@ const DAYS = [
   "Samedi",
 ];
 
-const result = useTRPCQuery("stats", undefined);
+const { data: stats, isPending, isError } = useTRPCQuery("stats", undefined);
 
 const days = computed(() =>
-  (result.data.value?.days ?? []).map(({ day, count }) => ({
+  (stats.value?.days ?? []).map(({ day, count }) => ({
     name: DAYS[day] ?? "",
     count,
   })),
@@ -42,9 +42,9 @@ const days = computed(() =>
     <Card>
       <CardTitle>Nombre de ventes par heure</CardTitle>
       <CardBody class="[width:900px]">
-        <ErrorMessage v-if="result.isError.value" />
+        <ErrorMessage v-if="isError" />
         <ContentLoader
-          v-else-if="result.isPending.value"
+          v-else-if="isPending"
           viewBox="0 0 900 320"
           :width="900"
           :height="320"
@@ -61,15 +61,15 @@ const days = computed(() =>
           <rect :x="690" :y="150" :width="53" :height="140" />
           <rect :x="757" :y="256" :width="53" :height="34" />
         </ContentLoader>
-        <SalesByHour v-else :hours="result.data.value?.hours ?? []" />
+        <SalesByHour v-else :hours="stats?.hours ?? []" />
       </CardBody>
     </Card>
     <Card>
       <CardTitle>Nombre de ventes par jour</CardTitle>
       <CardBody class="[width:900px] justify-center">
-        <ErrorMessage v-if="result.isError.value" />
+        <ErrorMessage v-if="isError" />
         <ContentLoader
-          v-else-if="result.isPending.value"
+          v-else-if="isPending"
           viewBox="0 0 800 300"
           :width="800"
           :height="300"

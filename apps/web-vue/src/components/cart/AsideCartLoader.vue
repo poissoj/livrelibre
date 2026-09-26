@@ -9,28 +9,30 @@ import { useTRPCQuery } from "@/utils/query";
 
 import ReactivateButton from "./ReactivateButton.vue";
 
-const result = useTRPCQuery("asideCart", undefined);
+const {
+  data: asideCart,
+  isError,
+  isSuccess,
+} = useTRPCQuery("asideCart", undefined);
 </script>
 
 <template>
-  <Card v-if="result.isError.value">
+  <Card v-if="isError">
     <CardTitle>Panier en attente</CardTitle>
     <CardBody>
       <ErrorMessage />
     </CardBody>
   </Card>
-  <Card
-    v-else-if="result.isSuccess.value && (result.data.value?.count ?? 0) > 0"
-  >
+  <Card v-else-if="isSuccess && (asideCart?.count ?? 0) > 0">
     <CardTitle>Panier en attente</CardTitle>
     <CardBody>
       <div class="flex flex-1 justify-between">
         <p>
-          <span class="font-number">{{ result.data.value?.count }}</span>
-          article{{ (result.data.value?.count ?? 0) > 1 ? "s" : "" }}
+          <span class="font-number">{{ asideCart?.count }}</span>
+          article{{ (asideCart?.count ?? 0) > 1 ? "s" : "" }}
           en attente pour
           <span class="font-number ml-2">
-            {{ formatPrice(result.data.value?.total ?? 0) }}
+            {{ formatPrice(asideCart?.total ?? 0) }}
           </span>
         </p>
         <ReactivateButton />

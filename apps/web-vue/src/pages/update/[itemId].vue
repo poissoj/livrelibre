@@ -27,13 +27,15 @@ const router = useRouter();
 const utils = useTRPCUtils();
 const id = computed(() => Number(route.params.itemId));
 
-const result = useTRPCQuery("searchItem", id);
-const mutation = useTRPCMutation("updateItem", { meta: { errorToast: false } });
+const { data: item, isPending, isError } = useTRPCQuery("searchItem", id);
+const { mutateAsync: updateItem } = useTRPCMutation("updateItem", {
+  meta: { errorToast: false },
+});
 
 const submit = async (data: FormFields) => {
   const datebought = data.datebought.split("-").reverse().join("/");
-  const item = { ...data, amount: Number(data.amount), datebought };
-  const result = await mutation.mutateAsync({ item, id: id.value });
+  const payload = { ...data, amount: Number(data.amount), datebought };
+  const result = await updateItem({ item: payload, id: id.value });
   if (result.type === "success") {
     await utils.invalidate("searchItem", id.value);
     void utils.invalidate("items");
@@ -44,12 +46,12 @@ const submit = async (data: FormFields) => {
 };
 
 const formData = computed<FormFields | undefined>(() => {
-  const data = result.data.value;
-  if (!data) return undefined;
+  const loaded = item.value;
+  if (!loaded) return undefined;
   return {
-    ...data,
-    amount: String(data.amount),
-    datebought: data.datebought.split("/").reverse().join("-"),
+    ...loaded,
+    amount: String(loaded.amount),
+    datebought: loaded.datebought.split("/").reverse().join("-"),
   };
 });
 </script>
@@ -57,13 +59,13 @@ const formData = computed<FormFields | undefined>(() => {
 <template>
   <div class="flex-1">
     <Title>Modifier un article</Title>
-    <Card v-if="result.isError.value">
+    <Card v-if="isError">
       <CardTitle>{{ CARD_TITLE }}</CardTitle>
       <CardBody>
         <ErrorMessage />
       </CardBody>
     </Card>
-    <Card v-else-if="result.isPending.value">
+    <Card v-else-if="isPending">
       <CardTitle>{{ CARD_TITLE }}</CardTitle>
       <CardBody>
         <Skeleton :height="410">
@@ -104,7 +106,7 @@ const formData = computed<FormFields | undefined>(() => {
         </Skeleton>
       </CardBody>
     </Card>
-    <Card v-else-if="result.data.value == null">
+    <Card v-else-if="item == null">
       <CardTitle>Article introuvable</CardTitle>
       <CardBody>
         <NoResults />

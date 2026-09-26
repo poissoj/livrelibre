@@ -25,16 +25,18 @@ const page = computed(() => {
   return typeof queryPage === "string" ? Number(queryPage) : 1;
 });
 
-const result = useTRPCQuery("items", page, {
+const {
+  data: pageData,
+  isPending,
+  isError,
+  isFetching,
+} = useTRPCQuery("items", page, {
   placeholderData: keepPreviousData,
 });
-const showLoading = useDelayedLoading(
-  computed(() => result.isFetching.value),
-  500,
-);
+const showLoading = useDelayedLoading(isFetching, 500);
 
 const pageCount = computed(() =>
-  result.data.value ? Math.ceil(result.data.value.count / ITEMS_PER_PAGE) : 0,
+  pageData.value ? Math.ceil(pageData.value.count / ITEMS_PER_PAGE) : 0,
 );
 const listTitle = computed(() => {
   let title = "Tous les articles";
@@ -55,10 +57,10 @@ const pageTitle = computed(() => {
 <template>
   <div class="flex flex-1 flex-col gap-lg">
     <Title>Liste des articles</Title>
-    <ItemsCard v-if="result.isError.value" title="Liste des articles">
+    <ItemsCard v-if="isError" title="Liste des articles">
       <ErrorMessage />
     </ItemsCard>
-    <ItemsCard v-else-if="result.isPending.value" title="Liste des articles">
+    <ItemsCard v-else-if="isPending" title="Liste des articles">
       <Skeleton :height="300">
         <template v-for="n in 10" :key="n">
           <rect
@@ -99,12 +101,12 @@ const pageTitle = computed(() => {
     <Card v-else class="max-h-full overflow-hidden flex flex-col relative">
       <Title>{{ pageTitle }}</Title>
       <CardTitle>{{ listTitle }}</CardTitle>
-      <p class="mt-sm">{{ result.data.value?.count ?? 0 }} articles</p>
+      <p class="mt-sm">{{ pageData?.count ?? 0 }} articles</p>
       <CardBody>
         <LoadingOverlay v-if="showLoading">
-          <ItemsTable :items="result.data.value?.items ?? []" />
+          <ItemsTable :items="pageData?.items ?? []" />
         </LoadingOverlay>
-        <ItemsTable v-else :items="result.data.value?.items ?? []" />
+        <ItemsTable v-else :items="pageData?.items ?? []" />
       </CardBody>
       <CardFooter
         v-if="pageCount > 1"

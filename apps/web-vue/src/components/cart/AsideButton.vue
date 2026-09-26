@@ -6,7 +6,10 @@ import Button from "@/components/Button.vue";
 import { useTRPCMutation, useTRPCQuery, useTRPCUtils } from "@/utils/query";
 
 const utils = useTRPCUtils();
-const asideCart = useTRPCQuery("asideCart", undefined);
+const { data: asideCart, isSuccess: asideCartSuccess } = useTRPCQuery(
+  "asideCart",
+  undefined,
+);
 const { mutate, isPending } = useTRPCMutation("putCartAside", {
   onSuccess() {
     void Promise.all([utils.invalidate("cart"), utils.invalidate("asideCart")]);
@@ -19,12 +22,12 @@ const submit = () => {
 </script>
 
 <template>
-  <form v-if="asideCart.isSuccess.value" @submit.prevent="submit">
+  <form v-if="asideCartSuccess" @submit.prevent="submit">
     <Button
       type="submit"
       class="[padding:10px_15px]"
       value="put-aside"
-      :disabled="isPending || (asideCart.data.value?.count ?? 0) > 0"
+      :disabled="isPending || (asideCart?.count ?? 0) > 0"
     >
       <FontAwesomeIcon
         :icon="isPending ? faSpinner : faHourglassStart"

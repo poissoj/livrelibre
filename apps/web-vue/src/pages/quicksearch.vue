@@ -37,7 +37,12 @@ const toggleStock = async () => {
   await push({ query: next });
 };
 
-const result = useTRPCQuery(
+const {
+  data: searchResult,
+  isError,
+  isSuccess,
+  isFetching,
+} = useTRPCQuery(
   "quicksearch",
   computed(() => ({
     search: search.value,
@@ -46,13 +51,10 @@ const result = useTRPCQuery(
   })),
   { placeholderData: keepPreviousData },
 );
-const showLoading = useDelayedLoading(
-  computed(() => result.isFetching.value),
-  500,
-);
+const showLoading = useDelayedLoading(isFetching, 500);
 
 const pageCount = computed(() =>
-  result.data.value ? Math.ceil(result.data.value.count / ITEMS_PER_PAGE) : 0,
+  searchResult.value ? Math.ceil(searchResult.value.count / ITEMS_PER_PAGE) : 0,
 );
 const cardTitle = computed(() => {
   let title = "Recherche rapide";
@@ -63,17 +65,14 @@ const cardTitle = computed(() => {
 });
 const subtitle = computed(
   () =>
-    `${String(result.data.value?.count ?? 0)} résultat${(result.data.value?.count ?? 0) > 1 ? "s" : ""} pour ${search.value}`,
+    `${String(searchResult.value?.count ?? 0)} résultat${(searchResult.value?.count ?? 0) > 1 ? "s" : ""} pour ${search.value}`,
 );
 </script>
 
 <template>
   <div class="flex flex-1 flex-col gap-lg">
     <Title>{{ `Recherche de "${search}"` }}</Title>
-    <Card
-      v-if="result.isSuccess.value && result.data.value?.count === 0"
-      :class="CARD_STYLES"
-    >
+    <Card v-if="isSuccess && searchResult?.count === 0" :class="CARD_STYLES">
       <CardTitle>{{ cardTitle }}</CardTitle>
       <label class="self-end cursor-pointer mr-6 ml-auto">
         <span>En stock</span>
@@ -89,7 +88,7 @@ const subtitle = computed(
     <Card v-else :class="CARD_STYLES">
       <CardTitle>{{ cardTitle }}</CardTitle>
       <div class="flex flex-1">
-        <p>{{ result.isSuccess.value ? subtitle : "Recherche en cours…" }}</p>
+        <p>{{ isSuccess ? subtitle : "Recherche en cours…" }}</p>
         <label class="self-end cursor-pointer mr-6 ml-auto">
           <span>En stock</span>
           <input
@@ -101,14 +100,11 @@ const subtitle = computed(
         </label>
       </div>
       <CardBody>
-        <ErrorMessage v-if="result.isError.value" />
-        <LoadingOverlay v-if="result.isSuccess.value && showLoading">
-          <ItemsTable :items="result.data.value?.items ?? []" />
+        <ErrorMessage v-if="isError" />
+        <LoadingOverlay v-if="isSuccess && showLoading">
+          <ItemsTable :items="searchResult?.items ?? []" />
         </LoadingOverlay>
-        <ItemsTable
-          v-else-if="result.isSuccess.value"
-          :items="result.data.value?.items ?? []"
-        />
+        <ItemsTable v-else-if="isSuccess" :items="searchResult?.items ?? []" />
       </CardBody>
       <CardFooter
         v-if="pageCount > 1"

@@ -28,16 +28,17 @@ const item = defineModel<ItemValue>("item", { required: true });
 
 const search = ref("");
 const debouncedSearch = useDebouncedValue(search, 300);
-const res = useTRPCQuery(
+const {
+  data: searchResults,
+  isError,
+  isFetching,
+} = useTRPCQuery(
   "quicksearch",
   computed(() => ({ search: debouncedSearch.value })),
   { staleTime: 60000, placeholderData: keepPreviousData },
 );
-const showLoading = useDelayedLoading(
-  computed(() => res.isFetching.value),
-  500,
-);
-const filteredItems = computed(() => res.data.value?.items || []);
+const showLoading = useDelayedLoading(isFetching, 500);
+const filteredItems = computed(() => searchResults.value?.items || []);
 const newItemOption = computed<NewItem>(() => ({
   id: null,
   title: search.value,
@@ -64,7 +65,7 @@ const inputStyles = computed(() =>
         as="ul"
       >
         <li v-if="showLoading" class="px-2 py-1 text-sm italic">Chargement…</li>
-        <li v-if="res.isError.value" class="px-2 py-1 text-sm [color:#721c24]">
+        <li v-if="isError" class="px-2 py-1 text-sm [color:#721c24]">
           Erreur de chargement
         </li>
         <ComboboxOption v-if="search.length > 0" :value="newItemOption">

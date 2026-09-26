@@ -33,20 +33,23 @@ const router = useRouter();
 const utils = useTRPCUtils();
 const id = computed(() => Number(route.params.customerId));
 
-const result = useTRPCQuery("customer", id);
-const orders = useTRPCQuery("customerOrders", id);
-const mutation = useTRPCMutation("updateCustomer", {
-  meta: { errorToast: false },
-  onSuccess() {
-    void utils.invalidate("customer");
+const { data: customer, isPending, isError } = useTRPCQuery("customer", id);
+const { data: customerOrders } = useTRPCQuery("customerOrders", id);
+const { mutateAsync: saveCustomer, isPending: savePending } = useTRPCMutation(
+  "updateCustomer",
+  {
+    meta: { errorToast: false },
+    onSuccess() {
+      void utils.invalidate("customer");
+    },
   },
-});
+);
 const deleteMutation = useTRPCMutation("deleteCustomer", {
   meta: { errorToast: false },
 });
 
 const submit = async (customer: CustomerFormFields) =>
-  await mutation.mutateAsync({ customer, customerId: id.value });
+  await saveCustomer({ customer, customerId: id.value });
 
 const deleteCustomer = async () => {
   try {
@@ -63,20 +66,20 @@ const deleteCustomer = async () => {
 };
 
 const total = computed(
-  () => result.data.value?.purchases.reduce((sum, p) => sum + p.amount, 0) ?? 0,
+  () => customer.value?.purchases.reduce((sum, p) => sum + p.amount, 0) ?? 0,
 );
 </script>
 
 <template>
   <div class="flex-1">
     <Title>Modifier un client</Title>
-    <Card v-if="result.isError.value">
+    <Card v-if="isError">
       <CardTitle>{{ CARD_TITLE }}</CardTitle>
       <CardBody>
         <ErrorMessage />
       </CardBody>
     </Card>
-    <Card v-else-if="result.isPending.value">
+    <Card v-else-if="isPending">
       <CardTitle>{{ CARD_TITLE }}</CardTitle>
       <CardBody>
         <Skeleton :height="300">
@@ -101,18 +104,14 @@ const total = computed(
         </Skeleton>
       </CardBody>
     </Card>
-    <Card v-else-if="result.data.value == null">
+    <Card v-else-if="customer == null">
       <CardTitle>Client introuvable</CardTitle>
       <CardBody>
         <NoResults />
       </CardBody>
     </Card>
     <div v-else class="flex flex-col gap-4 mb-lg">
-      <CustomerForm
-        :title="CARD_TITLE"
-        :data="result.data.value"
-        :on-submit="submit"
-      >
+      <CustomerForm :title="CARD_TITLE" :data="customer" :on-submit="submit">
         <ConfirmationDialog
           title="Supprimer un⋅e client⋅e"
           message="Êtes-vous sûr⋅e de vouloir supprimer ce⋅tte client⋅e ? Cette action ne peut pas être annulée."
@@ -122,11 +121,7 @@ const total = computed(
           <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
           Annuler
         </LinkButton>
-        <Button
-          type="submit"
-          class="px-md"
-          :disabled="mutation.isPending.value"
-        >
+        <Button type="submit" class="px-md" :disabled="savePending">
           <FontAwesomeIcon :icon="faCheckCircle" class="mr-sm" />
           Modifier
         </Button>
@@ -135,10 +130,10 @@ const total = computed(
         <Card class="flex-1">
           <CardTitle>Détail des achats</CardTitle>
           <CardBody class="flex-col">
-            <template v-if="result.data.value.purchases.length > 0">
+            <template v-if="customer.purchases.length > 0">
               <div class="mb-2">
-                {{ result.data.value.purchases.length }} achat{{
-                  result.data.value.purchases.length > 1 ? "s" : ""
+                {{ customer.purchases.length }} achat{{
+                  customer.purchases.length > 1 ? "s" : ""
                 }}
                 pour un total de {{ formatPrice(total) }}
               </div>
@@ -152,10 +147,7 @@ const total = computed(
                   </tr>
                 </thead>
                 <tbody>
-                  <tr
-                    v-for="(purchase, i) in result.data.value.purchases"
-                    :key="i"
-                  >
+                  <tr v-for="(purchase, i) in customer.purchases" :key="i">
                     <td>{{ purchase.date }}</td>
                     <td class="text-right font-number">
                       {{ formatPrice(purchase.amount) }}
@@ -169,18 +161,14 @@ const total = computed(
         </Card>
         <Card class="flex-1">
           <CardTitle>
-            Commandes en cours: {{ orders.data.value?.length ?? 0 }}
+            Commandes en cours: {{ customerOrders?.length ?? 0 }}
           </CardTitle>
           <CardBody>
-            <span v-if="!orders.data.value || orders.data.value.length === 0">
+            <span v-if="!customerOrders || customerOrders.length === 0">
               Aucune commande en cours pour ce⋅tte client⋅e
             </span>
             <ul v-else>
-              <li
-                v-for="order in orders.data.value"
-                :key="order.id"
-                class="mb-1"
-              >
+              <li v-for="order in customerOrders" :key="order.id" class="mb-1">
                 <RouterLink
                   :to="`/order/${String(order.id)}`"
                   class="flex gap-2 items-center"

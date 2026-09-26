@@ -34,10 +34,11 @@ const route = useRoute();
 const router = useRouter();
 const utils = useTRPCUtils();
 
-const result = useTRPCQuery("searchItem", props.id);
-const orders = useTRPCQuery("itemOrders", props.id);
+const { data: item, isPending, isError } = useTRPCQuery("searchItem", props.id);
+const { data: orders } = useTRPCQuery("itemOrders", props.id);
 
 const { star, mutation: bookmarkMutation } = useBookmark();
+const bookmarkPending = bookmarkMutation.isPending;
 const { mutate: addToCart, isPending: addPending } = useAddToCart();
 const quantity = ref("1");
 
@@ -58,13 +59,13 @@ const submitAddToCart = () => {
 </script>
 
 <template>
-  <Card v-if="result.isError.value" class="flex-1">
+  <Card v-if="isError" class="flex-1">
     <CardTitle>Article en erreur</CardTitle>
     <CardBody>
       <ErrorMessage />
     </CardBody>
   </Card>
-  <Card v-else-if="result.isPending.value" class="flex-1">
+  <Card v-else-if="isPending" class="flex-1">
     <CardTitle>Chargement…</CardTitle>
     <CardBody>
       <Skeleton :height="500">
@@ -89,16 +90,16 @@ const submitAddToCart = () => {
       </Skeleton>
     </CardBody>
   </Card>
-  <Card v-else-if="result.data.value == null" class="flex-1">
+  <Card v-else-if="item == null" class="flex-1">
     <CardTitle>Article introuvable</CardTitle>
     <CardBody>
       <NoResults />
     </CardBody>
   </Card>
   <Card v-else class="flex-1 max-h-full flex flex-col">
-    <Title>{{ `${result.data.value.title} | Voir un article` }}</Title>
+    <Title>{{ `${item.title} | Voir un article` }}</Title>
     <div class="flex items-center">
-      <CardTitle class="mr-auto">{{ result.data.value.title }}</CardTitle>
+      <CardTitle class="mr-auto">{{ item.title }}</CardTitle>
       <LinkButton
         :to="`/order/new?item=${String(props.id)}`"
         title="Commander"
@@ -108,23 +109,15 @@ const submitAddToCart = () => {
       </LinkButton>
       <Button
         type="button"
-        :title="
-          result.data.value.starred
-            ? 'Enlever des favoris'
-            : 'Ajouter aux favoris'
-        "
+        :title="item.starred ? 'Enlever des favoris' : 'Ajouter aux favoris'"
         class="rounded-none px-md border-primary-darkest"
-        @click="star(props.id, !result.data.value.starred)"
+        @click="star(props.id, !item.starred)"
       >
         <FontAwesomeIcon
           :icon="
-            bookmarkMutation.isPending.value
-              ? faSpinner
-              : result.data.value.starred
-                ? faStar
-                : emptyStar
+            bookmarkPending ? faSpinner : item.starred ? faStar : emptyStar
           "
-          :spin="bookmarkMutation.isPending.value"
+          :spin="bookmarkPending"
         />
       </Button>
       <LinkButton
@@ -141,9 +134,9 @@ const submitAddToCart = () => {
         type="success"
         @dismiss="dismissStatus"
       >
-        {{ result.data.value.title }} modifié.
+        {{ item.title }} modifié.
       </Alert>
-      <ItemDetails :item="result.data.value" :orders="orders.data.value" />
+      <ItemDetails :item="item" :orders="orders" />
     </CardBody>
     <CardFooter>
       <form class="flex justify-end" @submit.prevent="submitAddToCart">
@@ -153,16 +146,12 @@ const submitAddToCart = () => {
             v-model="quantity"
             type="number"
             :min="1"
-            :max="result.data.value.amount"
+            :max="item.amount"
             :step="1"
             class="font-number !w-20"
           />
         </label>
-        <Button
-          type="submit"
-          class="ml-2 px-md"
-          :disabled="result.data.value.amount === 0"
-        >
+        <Button type="submit" class="ml-2 px-md" :disabled="item.amount === 0">
           <FontAwesomeIcon
             :icon="addPending ? faSpinner : faCartPlus"
             :spin="addPending"

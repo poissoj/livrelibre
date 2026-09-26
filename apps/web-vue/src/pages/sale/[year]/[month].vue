@@ -28,7 +28,11 @@ const year = computed(() => String(route.params.year));
 const month = computed(() => String(route.params.month));
 const params = computed(() => ({ month: month.value, year: year.value }));
 
-const result = useTRPCQuery("salesByMonth", params);
+const {
+  data: monthStats,
+  isPending,
+  isError,
+} = useTRPCQuery("salesByMonth", params);
 
 const formatDate = (date: string) => date.split("-").reverse().join("/");
 const makeSaleURL = (date: string) => `/sale/${date.split("-").join("/")}`;
@@ -43,7 +47,7 @@ const monthLabel = computed(() =>
   ),
 );
 const categories = computed(() =>
-  (result.data.value?.itemTypes ?? []).map((item) => ({
+  (monthStats.value?.itemTypes ?? []).map((item) => ({
     ...item,
     label: ITEM_TYPES[item.itemType],
   })),
@@ -57,8 +61,8 @@ const categories = computed(() =>
       <Card class="flex flex-col flex-1 max-h-full overflow-hidden">
         <CardTitle>Liste des ventes - {{ monthLabel }}</CardTitle>
         <CardBody>
-          <ErrorMessage v-if="result.isError.value" />
-          <Skeleton v-else-if="result.isPending.value" :height="600">
+          <ErrorMessage v-if="isError" />
+          <Skeleton v-else-if="isPending" :height="600">
             <template v-for="n in 20" :key="n">
               <rect
                 x="5%"
@@ -104,7 +108,7 @@ const categories = computed(() =>
             </thead>
             <tbody class="[line-height:2.3rem]">
               <tr
-                v-for="(sale, i) in result.data.value?.salesByDay ?? []"
+                v-for="(sale, i) in monthStats?.salesByDay ?? []"
                 :key="i"
                 class="cursor-pointer hover:bg-gray-light"
                 @click="goToSale(sale.date)"
@@ -127,16 +131,16 @@ const categories = computed(() =>
         <Card class="[min-height:12rem] flex flex-col">
           <CardTitle>Répartition par TVA</CardTitle>
           <CardBody>
-            <ErrorMessage v-if="result.isError.value" />
-            <TVASkeleton v-else-if="result.isPending.value" />
-            <StatsByTVA v-else :stats="result.data.value?.stats ?? []" />
+            <ErrorMessage v-if="isError" />
+            <TVASkeleton v-else-if="isPending" />
+            <StatsByTVA v-else :stats="monthStats?.stats ?? []" />
           </CardBody>
         </Card>
         <Card>
           <CardTitle>Répartition par catégorie</CardTitle>
           <CardBody>
-            <ErrorMessage v-if="result.isError.value" />
-            <CategorySkeleton v-else-if="result.isPending.value" />
+            <ErrorMessage v-if="isError" />
+            <CategorySkeleton v-else-if="isPending" />
             <CategoriesTable v-else :categories="categories" />
           </CardBody>
         </Card>

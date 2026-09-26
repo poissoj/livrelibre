@@ -79,18 +79,20 @@ const page = computed(() => {
   return typeof queryPage === "string" ? Number(queryPage) : 1;
 });
 
-const result = useTRPCQuery(
+const {
+  data: list,
+  isSuccess,
+  isError,
+  isFetching,
+} = useTRPCQuery(
   "advancedSearch",
   computed(() => ({ search: searchQuery.value, page: page.value })),
   { placeholderData: keepPreviousData },
 );
-const showLoading = useDelayedLoading(
-  computed(() => result.isFetching.value),
-  500,
-);
+const showLoading = useDelayedLoading(isFetching, 500);
 
 const pageCount = computed(() =>
-  result.data.value ? Math.ceil(result.data.value.count / ITEMS_PER_PAGE) : 0,
+  list.value ? Math.ceil(list.value.count / ITEMS_PER_PAGE) : 0,
 );
 const queryLabel = computed(() => getQueryLabel(searchQuery.value));
 const cardTitle = computed(() => {
@@ -105,10 +107,7 @@ const cardTitle = computed(() => {
 <template>
   <div class="flex flex-1 flex-col gap-lg">
     <Title>Recherche avancée</Title>
-    <Card
-      v-if="result.isSuccess.value && result.data.value?.count === 0"
-      :class="CARD_STYLES"
-    >
+    <Card v-if="isSuccess && list?.count === 0" :class="CARD_STYLES">
       <CardTitle>{{ cardTitle }}</CardTitle>
       <label class="self-end cursor-pointer mr-6 ml-auto">
         <span>En stock</span>
@@ -130,9 +129,9 @@ const cardTitle = computed(() => {
       <CardTitle>{{ cardTitle }}</CardTitle>
       <div class="flex flex-1">
         <p>
-          Recherche en cours…<template v-if="result.isSuccess.value">
-            : {{ result.data.value?.count }} résultat{{
-              (result.data.value?.count ?? 0) > 1 ? "s" : ""
+          Recherche en cours…<template v-if="isSuccess">
+            : {{ list?.count }} résultat{{
+              (list?.count ?? 0) > 1 ? "s" : ""
             }}
             pour {{ queryLabel }}</template
           >
@@ -148,14 +147,11 @@ const cardTitle = computed(() => {
         </label>
       </div>
       <CardBody>
-        <ErrorMessage v-if="result.isError.value" />
-        <LoadingOverlay v-if="result.isSuccess.value && showLoading">
-          <ItemsTable :items="result.data.value?.items ?? []" />
+        <ErrorMessage v-if="isError" />
+        <LoadingOverlay v-if="isSuccess && showLoading">
+          <ItemsTable :items="list?.items ?? []" />
         </LoadingOverlay>
-        <ItemsTable
-          v-else-if="result.isSuccess.value"
-          :items="result.data.value?.items ?? []"
-        />
+        <ItemsTable v-else-if="isSuccess" :items="list?.items ?? []" />
       </CardBody>
       <CardFooter
         v-if="pageCount > 1"

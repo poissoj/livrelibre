@@ -14,15 +14,15 @@ const SalesByMonth = defineAsyncComponent(
 
 const props = defineProps<{ id: number }>();
 
-const result = useTRPCQuery("lastSales", props.id);
+const { data: sales, isPending, isError } = useTRPCQuery("lastSales", props.id);
 </script>
 
 <template>
   <Card class="mb-lg">
     <CardTitle>Ventes des 2 dernières années</CardTitle>
     <CardBody>
-      <ErrorMessage v-if="result.isError.value" />
-      <Skeleton v-else-if="result.isPending.value" :height="350">
+      <ErrorMessage v-if="isError" />
+      <Skeleton v-else-if="isPending" :height="350">
         <rect x="2%" y="119" width="4%" height="196" />
         <rect x="8%" y="83" width="4%" height="232" />
         <rect x="26%" y="160" width="4%" height="155" />
@@ -32,7 +32,7 @@ const result = useTRPCQuery("lastSales", props.id);
         <rect x="86%" y="109" width="4%" height="206" />
         <rect x="92%" y="160" width="4%" height="155" />
       </Skeleton>
-      <SalesByMonth v-else :sales="result.data.value ?? []" />
+      <SalesByMonth v-else :sales="sales ?? []" />
     </CardBody>
   </Card>
 </template>

@@ -34,30 +34,33 @@ const utils = useTRPCUtils();
 const { query } = useQueryParams();
 const id = computed(() => Number(route.params.orderId));
 
-const orderQuery = useTRPCQuery("order", id);
+const { data: order, isPending, isError } = useTRPCQuery("order", id);
 
-const mutation = useTRPCMutation("updateOrder", {
-  meta: { errorToast: false },
-  onSuccess(data) {
-    if (data.type === "success") {
-      void utils.invalidate("order", id.value);
-      toast.success(data.msg);
-      void router.push({ path: "/orders", query: query.value });
-    } else {
-      toast.error(data.msg);
-    }
+const { mutateAsync: updateOrder, isPending: updatePending } = useTRPCMutation(
+  "updateOrder",
+  {
+    meta: { errorToast: false },
+    onSuccess(result) {
+      if (result.type === "success") {
+        void utils.invalidate("order", id.value);
+        toast.success(result.msg);
+        void router.push({ path: "/orders", query: query.value });
+      } else {
+        toast.error(result.msg);
+      }
+    },
+    onError(error) {
+      toast.error(getErrorMessage(error));
+    },
   },
-  onError(error) {
-    toast.error(getErrorMessage(error));
-  },
-});
+);
 
 const deleteMutation = useTRPCMutation("deleteOrder", {
   meta: { errorToast: false },
 });
 
-const submit = async (order: RawOrder) =>
-  await mutation.mutateAsync({ order, id: id.value });
+const submit = async (orderInput: RawOrder) =>
+  await updateOrder({ order: orderInput, id: id.value });
 
 const deleteOrder = async () => {
   try {
@@ -74,22 +77,22 @@ const deleteOrder = async () => {
 };
 
 const data = computed<OrderFormData | undefined>(() => {
-  const order = orderQuery.data.value;
-  if (!order) return undefined;
-  return { ...order, created: new Date(order.created) };
+  const loaded = order.value;
+  if (!loaded) return undefined;
+  return { ...loaded, created: new Date(loaded.created) };
 });
 </script>
 
 <template>
   <div class="flex-1 max-w-6xl mx-auto">
     <Title>Modifier une commande</Title>
-    <Card v-if="orderQuery.isError.value">
+    <Card v-if="isError">
       <CardTitle>{{ CARD_TITLE }}</CardTitle>
       <CardBody>
         <ErrorMessage />
       </CardBody>
     </Card>
-    <Card v-else-if="orderQuery.isPending.value">
+    <Card v-else-if="isPending">
       <CardTitle>{{ CARD_TITLE }}</CardTitle>
       <CardBody>
         <Skeleton :height="300">
@@ -114,7 +117,7 @@ const data = computed<OrderFormData | undefined>(() => {
         </Skeleton>
       </CardBody>
     </Card>
-    <Card v-else-if="orderQuery.data.value == null">
+    <Card v-else-if="order == null">
       <CardTitle>Commande introuvable</CardTitle>
       <CardBody>
         <NoResults />
@@ -138,7 +141,7 @@ const data = computed<OrderFormData | undefined>(() => {
         <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
         Annuler
       </LinkButton>
-      <Button type="submit" class="px-md" :disabled="mutation.isPending.value">
+      <Button type="submit" class="px-md" :disabled="updatePending">
         <FontAwesomeIcon :icon="faCheckCircle" class="mr-sm" />
         Modifier
       </Button>

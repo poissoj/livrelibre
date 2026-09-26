@@ -13,7 +13,11 @@ import { useTRPCQuery } from "@/utils/query";
 
 const TH_STYLES = "sticky top-0 bg-white";
 
-const result = useTRPCQuery("bestsales", undefined);
+const {
+  data: bestSales,
+  isPending,
+  isError,
+} = useTRPCQuery("bestsales", undefined);
 </script>
 
 <template>
@@ -22,8 +26,8 @@ const result = useTRPCQuery("bestsales", undefined);
     <Card class="max-h-full overflow-hidden flex flex-col">
       <CardTitle>Meilleures ventes</CardTitle>
       <CardBody>
-        <ErrorMessage v-if="result.isError.value" />
-        <Skeleton v-else-if="result.isPending.value" :height="500">
+        <ErrorMessage v-if="isError" />
+        <Skeleton v-else-if="isPending" :height="500">
           <template v-for="n in 17" :key="n">
             <rect
               x="2%"
@@ -67,7 +71,7 @@ const result = useTRPCQuery("bestsales", undefined);
             </tr>
           </thead>
           <tbody>
-            <tr v-for="(item, i) in result.data.value ?? []" :key="item.id">
+            <tr v-for="(item, i) in bestSales ?? []" :key="item.id">
               <td>{{ i + 1 }}</td>
               <td>
                 <span class="text-primary-darkest">

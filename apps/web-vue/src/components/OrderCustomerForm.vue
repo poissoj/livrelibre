@@ -29,9 +29,10 @@ const email = ref("");
 const contact = ref("");
 const comment = ref("");
 
-const mutation = useTRPCMutation("updateCustomer", {
-  meta: { errorToast: false },
-});
+const { mutateAsync: createCustomer, isPending: isSubmitting } =
+  useTRPCMutation("updateCustomer", {
+    meta: { errorToast: false },
+  });
 
 const submit = async () => {
   if (!fullname.value.trim()) {
@@ -46,7 +47,7 @@ const submit = async () => {
     comment: comment.value,
   };
   try {
-    const resp = await mutation.mutateAsync({ customer });
+    const resp = await createCustomer({ customer });
     if (resp.type === "success") {
       toast.success(resp.msg);
       emit("add", { ...customer, id: resp.id });
@@ -89,7 +90,7 @@ const submit = async () => {
       <Button
         type="button"
         class="px-md"
-        :disabled="mutation.isPending.value"
+        :disabled="isSubmitting"
         @click="submit"
       >
         <FontAwesomeIcon :icon="faCheckCircle" class="mr-sm" />

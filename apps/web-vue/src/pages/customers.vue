@@ -38,17 +38,19 @@ const query = computed(() => ({
   withPurchases: withPurchases.value,
 }));
 
-const result = useTRPCQuery("customers", query, {
+const {
+  data: pageData,
+  isPending,
+  isError,
+  isFetching,
+} = useTRPCQuery("customers", query, {
   placeholderData: keepPreviousData,
 });
-const showLoading = useDelayedLoading(
-  computed(() => result.isFetching.value),
-  500,
-);
+const showLoading = useDelayedLoading(isFetching, 500);
 
-const pageCount = computed(() => result.data.value?.pageCount ?? 0);
+const pageCount = computed(() => pageData.value?.pageCount ?? 0);
 const listTitle = computed(() => {
-  let title = `${String(result.data.value?.count ?? 0)} client⋅es `;
+  let title = `${String(pageData.value?.count ?? 0)} client⋅es `;
   if (pageCount.value > 1) {
     title += ` - Page ${String(page.value)} sur ${String(pageCount.value)}`;
   }
@@ -66,10 +68,10 @@ const pageTitle = computed(() => {
 <template>
   <div class="flex flex-1 flex-col gap-lg">
     <Title>Liste des client⋅es</Title>
-    <ItemsCard v-if="result.isError.value" title="Liste des client⋅es">
+    <ItemsCard v-if="isError" title="Liste des client⋅es">
       <ErrorMessage />
     </ItemsCard>
-    <ItemsCard v-else-if="result.isPending.value" title="Liste des client⋅es">
+    <ItemsCard v-else-if="isPending" title="Liste des client⋅es">
       <Skeleton :height="300">
         <template v-for="n in 10" :key="n">
           <rect
@@ -127,9 +129,9 @@ const pageTitle = computed(() => {
       </CardTitle>
       <CardBody>
         <LoadingOverlay v-if="showLoading">
-          <CustomersTable :items="result.data.value?.items ?? []" />
+          <CustomersTable :items="pageData?.items ?? []" />
         </LoadingOverlay>
-        <CustomersTable v-else :items="result.data.value?.items ?? []" />
+        <CustomersTable v-else :items="pageData?.items ?? []" />
       </CardBody>
       <CardFooter
         v-if="pageCount > 1"

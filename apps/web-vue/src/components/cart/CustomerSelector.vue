@@ -12,9 +12,12 @@ import { useTRPCMutation, useTRPCQuery, useTRPCUtils } from "@/utils/query";
 
 import CustomerInfos from "./CustomerInfos.vue";
 
-const result = useTRPCQuery("selectedCustomer", undefined);
+const { data: selectedCustomer, isSuccess } = useTRPCQuery(
+  "selectedCustomer",
+  undefined,
+);
 const utils = useTRPCUtils();
-const mutation = useTRPCMutation("selectCustomer", {
+const { mutate: selectCustomer } = useTRPCMutation("selectCustomer", {
   meta: { errorToast: false },
   onSuccess() {
     void utils.invalidate("selectedCustomer");
@@ -25,21 +28,21 @@ const mutation = useTRPCMutation("selectCustomer", {
 });
 
 const onSelect = (customer: CustomerSelection | null) => {
-  mutation.mutate({ asideCart: false, customerId: customer?.id ?? null });
+  selectCustomer({ asideCart: false, customerId: customer?.id ?? null });
 };
 </script>
 
 <template>
-  <div v-if="result.isSuccess.value">
+  <div v-if="isSuccess">
     <div class="flex gap-1">
       <SelectCustomer
-        :customer="result.data.value ?? null"
+        :customer="selectedCustomer ?? null"
         placeholder="Associer un⋅e client⋅e…"
         @update:customer="onSelect"
       />
-      <template v-if="result.data.value">
+      <template v-if="selectedCustomer">
         <LinkButton
-          :to="`/customer/${String(result.data.value.id)}`"
+          :to="`/customer/${String(selectedCustomer.id)}`"
           title="Modifier"
         >
           <FontAwesomeIcon :icon="faEdit" />
@@ -49,6 +52,6 @@ const onSelect = (customer: CustomerSelection | null) => {
         </Button>
       </template>
     </div>
-    <CustomerInfos v-if="result.data.value" :customer="result.data.value" />
+    <CustomerInfos v-if="selectedCustomer" :customer="selectedCustomer" />
   </div>
 </template>

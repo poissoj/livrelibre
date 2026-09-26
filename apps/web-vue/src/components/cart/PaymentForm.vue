@@ -21,24 +21,27 @@ const paymentDate = ref(formatDate(new Date()));
 const paymentType = ref<PaymentType>("cash");
 const amount = ref<string | number>("");
 
-const mutation = useTRPCMutation("payCart", {
-  meta: { errorToast: false },
-  onSuccess() {
-    void utils.invalidate("cart");
-    void utils.invalidate("customers");
-    void utils.invalidate("selectedCustomer");
-    void utils.invalidate("searchCustomer");
+const { mutateAsync: payCart, isPending: isPaying } = useTRPCMutation(
+  "payCart",
+  {
+    meta: { errorToast: false },
+    onSuccess() {
+      void utils.invalidate("cart");
+      void utils.invalidate("customers");
+      void utils.invalidate("selectedCustomer");
+      void utils.invalidate("searchCustomer");
+    },
+    onError(error) {
+      toast.error(getErrorMessage(error));
+    },
   },
-  onError(error) {
-    toast.error(getErrorMessage(error));
-  },
-});
+);
 
 const isCash = computed(() => paymentType.value === "cash");
 
 const onSubmit = async () => {
   try {
-    const res = await mutation.mutateAsync({
+    const res = await payCart({
       paymentDate: paymentDate.value,
       paymentType: paymentType.value,
       amount: String(amount.value),
@@ -74,11 +77,7 @@ const onSubmit = async () => {
       :min="0"
       :class="clsx('!w-28 font-number', { hidden: !isCash })"
     />
-    <Button
-      type="submit"
-      class="[padding:10px_15px]"
-      :disabled="mutation.isPending.value"
-    >
+    <Button type="submit" class="[padding:10px_15px]" :disabled="isPaying">
       <FontAwesomeIcon :icon="faCheckCircle" />
       <span class="ml-sm">Payer</span>
     </Button>

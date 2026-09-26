@@ -13,7 +13,7 @@ const emit = defineEmits<{ error: [value: ISBNError] }>();
 const utils = useTRPCUtils();
 const isbn = ref("");
 
-const mutation = useTRPCMutation("addISBNToCart", {
+const { mutate: addIsbn } = useTRPCMutation("addISBNToCart", {
   meta: { errorToast: false },
   onError(_error, isbnInput) {
     emit("error", { message: CART_ERRORS.INTERNAL_ERROR, isbn: isbnInput });
@@ -36,7 +36,7 @@ const mutation = useTRPCMutation("addISBNToCart", {
 
 const submit = () => {
   if (!isbn.value) return;
-  mutation.mutate(isbn.value);
+  addIsbn(isbn.value);
   isbn.value = "";
 };
 </script>

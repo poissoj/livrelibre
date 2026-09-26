@@ -46,9 +46,13 @@ const getStatus = (query: string | string[] | undefined): OrderStatus[] => {
 const { query, push } = useQueryParams();
 
 const orderStatus = computed(() => getStatus(query.value.status));
-const result = useTRPCQuery("orders", orderStatus);
+const {
+  data: ordersData,
+  isPending,
+  isError,
+} = useTRPCQuery("orders", orderStatus);
 const orderRows = computed<OrderRow[]>(() =>
-  (result.data.value ?? []).map((order) => ({
+  (ordersData.value ?? []).map((order) => ({
     ...order,
     created: new Date(order.created),
   })),
@@ -89,7 +93,7 @@ const toggleGroup = () => {
 const invertInnerSort = computed(() => query.value.sortBy === "date");
 
 const cardTitle = computed(() =>
-  result.isPending.value
+  isPending.value
     ? "Chargement"
     : `${String(orderRows.value.length)} commande${orderRows.value.length > 1 ? "s" : ""}`,
 );
@@ -108,7 +112,7 @@ const filteredOrders = computed(() =>
 <template>
   <div class="flex flex-1 flex-col gap-lg">
     <Title>Liste des commandes</Title>
-    <ItemsCard v-if="result.isError.value" title="Liste des commandes">
+    <ItemsCard v-if="isError" title="Liste des commandes">
       <ErrorMessage />
     </ItemsCard>
     <Card v-else class="max-h-full overflow-hidden flex flex-col relative">

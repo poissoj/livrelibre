@@ -10,7 +10,11 @@ import { useTRPCQuery } from "@/utils/query";
 
 import BookmarksSkeleton from "./BookmarksSkeleton.vue";
 
-const result = useTRPCQuery("bookmarks", undefined);
+const {
+  data: bookmarks,
+  isPending,
+  isError,
+} = useTRPCQuery("bookmarks", undefined);
 </script>
 
 <template>
@@ -19,11 +23,11 @@ const result = useTRPCQuery("bookmarks", undefined);
   >
     <CardTitle>Favoris</CardTitle>
     <CardBody>
-      <ErrorMessage v-if="result.isError.value" />
-      <BookmarksSkeleton v-else-if="result.isPending.value" />
+      <ErrorMessage v-if="isError" />
+      <BookmarksSkeleton v-else-if="isPending" />
       <ul v-else class="flex-1">
         <li
-          v-for="bookmark in result.data.value ?? []"
+          v-for="bookmark in bookmarks ?? []"
           :key="bookmark.id"
           class="flex text-primary-dark hover:bg-gray-light pl-sm pr-xs"
         >

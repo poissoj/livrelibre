@@ -9,12 +9,15 @@ import Title from "@/components/Title.vue";
 import type { CustomerFormFields } from "@/components/customerForm";
 import { useTRPCMutation } from "@/utils/query";
 
-const mutation = useTRPCMutation("updateCustomer", {
-  meta: { errorToast: false },
-});
+const { mutateAsync: saveCustomer, isPending: savePending } = useTRPCMutation(
+  "updateCustomer",
+  {
+    meta: { errorToast: false },
+  },
+);
 
 const submit = async (customer: CustomerFormFields) =>
-  await mutation.mutateAsync({ customer });
+  await saveCustomer({ customer });
 </script>
 
 <template>
@@ -25,7 +28,7 @@ const submit = async (customer: CustomerFormFields) =>
         <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
         Annuler
       </LinkButton>
-      <Button type="submit" class="px-md" :disabled="mutation.isPending.value">
+      <Button type="submit" class="px-md" :disabled="savePending">
         <FontAwesomeIcon :icon="faPlus" class="mr-sm" />
         Ajouter
       </Button>

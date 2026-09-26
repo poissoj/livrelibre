@@ -30,15 +30,16 @@ const customer = defineModel<CustomerSelection | null>("customer", {
 
 const query = ref("");
 const debouncedQuery = useDebouncedValue(query, 300);
-const res = useTRPCQuery("searchCustomer", debouncedQuery, {
+const {
+  data: results,
+  isError,
+  isFetching,
+} = useTRPCQuery("searchCustomer", debouncedQuery, {
   staleTime: 60000,
   placeholderData: keepPreviousData,
 });
-const showLoading = useDelayedLoading(
-  computed(() => res.isFetching.value),
-  500,
-);
-const filteredCustomers = computed(() => res.data.value || []);
+const showLoading = useDelayedLoading(isFetching, 500);
+const filteredCustomers = computed(() => results.value || []);
 const inputStyles = computed(() =>
   props.fullWidth ? COMMON_STYLES : COMMON_STYLES.replace("w-full", "w-fit"),
 );
@@ -65,7 +66,7 @@ const inputStyles = computed(() =>
         class="absolute z-10 w-full max-h-40 overflow-auto rounded-md p-1 shadow-lg ring-1 ring-black/5 bg-gray-light"
       >
         <li v-if="showLoading" class="px-2 py-1 text-sm italic">Chargement…</li>
-        <li v-if="res.isError.value" class="px-2 py-1 text-sm [color:#721c24]">
+        <li v-if="isError" class="px-2 py-1 text-sm [color:#721c24]">
           Erreur de chargement
         </li>
         <ComboboxOption

@@ -34,19 +34,22 @@ const type = ref<ItemType>("book");
 const tva = ref<TVA>("5.5");
 const alert = ref<TAlert | null>(null);
 
-const mutation = useTRPCMutation("addNewItemToCart", {
-  meta: { errorToast: false },
-  async onSuccess() {
-    await utils.invalidate("cart");
+const { mutateAsync: addItem, isPending: addPending } = useTRPCMutation(
+  "addNewItemToCart",
+  {
+    meta: { errorToast: false },
+    async onSuccess() {
+      await utils.invalidate("cart");
+    },
+    onError(error) {
+      alert.value = { type: "error", message: getErrorMessage(error) };
+    },
   },
-  onError(error) {
-    alert.value = { type: "error", message: getErrorMessage(error) };
-  },
-});
+);
 
 const onSubmit = async () => {
   try {
-    await mutation.mutateAsync({
+    await addItem({
       price: String(price.value),
       title: title.value,
       type: type.value,
@@ -102,11 +105,7 @@ const onSubmit = async () => {
             </option>
           </Select>
         </FormRow>
-        <Button
-          type="submit"
-          class="self-center"
-          :disabled="mutation.isPending.value"
-        >
+        <Button type="submit" class="self-center" :disabled="addPending">
           <FontAwesomeIcon :icon="faCartPlus" class="mr-sm" />
           Ajouter au panier
         </Button>

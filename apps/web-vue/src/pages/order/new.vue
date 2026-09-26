@@ -21,31 +21,38 @@ const router = useRouter();
 const rawId = route.query.item;
 const itemIdStr = typeof rawId === "string" ? rawId : "";
 
-const itemQuery = useTRPCQuery(
+const {
+  data: itemData,
+  isPending: itemPending,
+  isError: itemError,
+} = useTRPCQuery(
   "searchItem",
   computed(() => Number(itemIdStr)),
   computed(() => ({ enabled: itemIdStr !== "" })),
 );
 
-const mutation = useTRPCMutation("newOrder", {
-  meta: { errorToast: false },
-  onSuccess(data) {
-    if (data.type === "success") {
-      toast.success(data.msg);
-      void router.push("/orders");
-    } else {
-      toast.error(data.msg);
-    }
+const { mutateAsync: createOrder, isPending: createPending } = useTRPCMutation(
+  "newOrder",
+  {
+    meta: { errorToast: false },
+    onSuccess(result) {
+      if (result.type === "success") {
+        toast.success(result.msg);
+        void router.push("/orders");
+      } else {
+        toast.error(result.msg);
+      }
+    },
+    onError(error) {
+      toast.error(getErrorMessage(error));
+    },
   },
-  onError(error) {
-    toast.error(getErrorMessage(error));
-  },
-});
+);
 
-const submit = async (order: RawOrder) => await mutation.mutateAsync(order);
+const submit = async (order: RawOrder) => await createOrder(order);
 
 const data = computed<OrderFormData>(() => ({
-  item: itemQuery.data.value || null,
+  item: itemData.value || null,
   nb: 1,
   created: new Date(),
 }));
@@ -54,10 +61,10 @@ const data = computed<OrderFormData>(() => ({
 <template>
   <div class="flex-1 max-w-6xl mx-auto">
     <Title>Nouvelle commande</Title>
-    <ErrorMessage v-if="itemQuery.isError.value" />
-    <div v-else-if="itemQuery.isPending.value && itemIdStr">Chargement…</div>
+    <ErrorMessage v-if="itemError" />
+    <div v-else-if="itemPending && itemIdStr">Chargement…</div>
     <OrderForm v-else title="Nouvelle commande" :data="data" @submit="submit">
-      <Button type="submit" class="px-md" :disabled="mutation.isPending.value">
+      <Button type="submit" class="px-md" :disabled="createPending">
         <FontAwesomeIcon :icon="faPlus" class="mr-sm" />
         Ajouter
       </Button>
