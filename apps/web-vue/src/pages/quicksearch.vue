@@ -98,10 +98,9 @@ const subtitle = computed(
       </div>
       <CardBody>
         <ErrorMessage v-if="isError" />
-        <LoadingOverlay v-if="isSuccess && showLoading">
+        <LoadingOverlay :loading="isSuccess && showLoading">
           <ItemsTable :items="searchResult?.items ?? []" />
         </LoadingOverlay>
-        <ItemsTable v-else-if="isSuccess" :items="searchResult?.items ?? []" />
       </CardBody>
       <CardFooter
         v-if="pageCount > 1"

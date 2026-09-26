@@ -124,10 +124,9 @@ const pageTitle = computed(() => {
         </LinkButton>
       </CardTitle>
       <CardBody>
-        <LoadingOverlay v-if="showLoading">
+        <LoadingOverlay :loading="showLoading">
           <CustomersTable :items="pageData?.items ?? []" />
         </LoadingOverlay>
-        <CustomersTable v-else :items="pageData?.items ?? []" />
       </CardBody>
       <CardFooter
         v-if="pageCount > 1"

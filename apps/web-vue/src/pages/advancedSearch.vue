@@ -145,10 +145,9 @@ const cardTitle = computed(() => {
       </div>
       <CardBody>
         <ErrorMessage v-if="isError" />
-        <LoadingOverlay v-if="isSuccess && showLoading">
+        <LoadingOverlay :loading="isSuccess && showLoading">
           <ItemsTable :items="list?.items ?? []" />
         </LoadingOverlay>
-        <ItemsTable v-else-if="isSuccess" :items="list?.items ?? []" />
       </CardBody>
       <CardFooter
         v-if="pageCount > 1"

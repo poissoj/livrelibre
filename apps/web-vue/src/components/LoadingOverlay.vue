@@ -1,13 +1,19 @@
 <script setup lang="ts">
 import { faRotate } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { clsx } from "clsx";
+
+const props = withDefaults(defineProps<{ loading?: boolean }>(), {
+  loading: false,
+});
 </script>
 
 <template>
-  <div class="flex flex-1 bg-white opacity-40">
+  <div :class="clsx('flex flex-1', props.loading && 'bg-white opacity-40')">
     <slot />
   </div>
   <FontAwesomeIcon
+    v-if="props.loading"
     :icon="faRotate"
     spin
     class="absolute inset-0 m-auto"

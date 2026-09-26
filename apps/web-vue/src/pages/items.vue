@@ -99,10 +99,9 @@ const pageTitle = computed(() => {
       <CardTitle>{{ listTitle }}</CardTitle>
       <p class="mt-sm">{{ pageData?.count ?? 0 }} articles</p>
       <CardBody>
-        <LoadingOverlay v-if="showLoading">
+        <LoadingOverlay :loading="showLoading">
           <ItemsTable :items="pageData?.items ?? []" />
         </LoadingOverlay>
-        <ItemsTable v-else :items="pageData?.items ?? []" />
       </CardBody>
       <CardFooter
         v-if="pageCount > 1"
