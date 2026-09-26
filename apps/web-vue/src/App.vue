@@ -4,5 +4,5 @@ import { Toaster } from "vue-sonner";
 
 <template>
   <RouterView />
-  <Toaster position="bottom-left" theme="light" />
+  <Toaster position="bottom-left" theme="light" rich-colors />
 </template>
