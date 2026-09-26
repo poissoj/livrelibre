@@ -14,7 +14,7 @@ test("affiche le message d'erreur de validation du serveur", async ({
   await page.goto("/add");
   await page.getByLabel("Titre").fill("Test validation");
   await page.getByLabel("Prix de vente").fill("10.00");
-  await page.locator('input[name="isbn"]').fill("abc");
+  await page.getByLabel("ISBN", { exact: true }).fill("abc");
   await page.getByRole("button", { name: "Ajouter" }).click();
 
   await expect(page.getByText("ISBN invalide")).toBeVisible();
