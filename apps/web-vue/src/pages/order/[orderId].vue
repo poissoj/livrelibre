@@ -123,8 +123,8 @@ const data = computed<OrderFormData | undefined>(() => {
     <OrderForm
       v-else-if="data"
       :title="CARD_TITLE"
-      :on-submit="submit"
       :data="data"
+      @submit="submit"
     >
       <ConfirmationDialog
         title="Supprimer une commande"

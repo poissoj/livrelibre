@@ -20,9 +20,8 @@ type TAlert = {
 
 const props = defineProps<{
   title: string;
-  onSubmit: (data: CustomerFormFields) => Promise<CustomerFormResult>;
   data?: CustomerFormFields | undefined;
-  onSuccess?: (() => void) | undefined;
+  onSubmit: (data: CustomerFormFields) => Promise<CustomerFormResult>;
 }>();
 
 const fullname = ref(props.data?.fullname ?? "");
@@ -52,12 +51,8 @@ const submit = async () => {
   try {
     const { type, msg: message } = await props.onSubmit(buildPayload());
     alert.value = { type, message };
-    if (type === "success") {
-      if (props.onSuccess) {
-        props.onSuccess();
-      } else {
-        reset();
-      }
+    if (type === "success" && props.data === undefined) {
+      reset();
     }
   } catch (error) {
     alert.value = { type: "error", message: getErrorMessage(error) };
@@ -92,11 +87,7 @@ const submit = async () => {
         <div class="flex justify-end mb-sm">
           <slot />
         </div>
-        <Alert
-          v-if="alert"
-          :type="alert.type"
-          :on-dismiss="() => (alert = null)"
-        >
+        <Alert v-if="alert" :type="alert.type" @dismiss="alert = null">
           {{ alert.message }}
         </Alert>
       </CardFooter>

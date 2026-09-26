@@ -32,11 +32,11 @@ const mutation = useTRPCMutation("updateItem", { meta: { errorToast: false } });
 const submit = async (data: FormFields) => {
   const datebought = data.datebought.split("-").reverse().join("/");
   const item = { ...data, amount: Number(data.amount), datebought };
-  return await mutation.mutateAsync({ item, id: id.value });
-};
-
-const onSuccess = () => {
-  void router.push(`/item/${String(id.value)}?status=updated`);
+  const result = await mutation.mutateAsync({ item, id: id.value });
+  if (result.type === "success") {
+    void router.push(`/item/${String(id.value)}?status=updated`);
+  }
+  return result;
 };
 
 const formData = computed<FormFields | undefined>(() => {
@@ -106,13 +106,7 @@ const formData = computed<FormFields | undefined>(() => {
         <NoResults />
       </CardBody>
     </Card>
-    <ItemForm
-      v-else
-      :title="CARD_TITLE"
-      :on-submit="submit"
-      :data="formData"
-      :on-success="onSuccess"
-    >
+    <ItemForm v-else :title="CARD_TITLE" :data="formData" :on-submit="submit">
       <LinkButton :to="`/item/${String(id)}`" class="mr-2 px-md !bg-[#6E6E6E]">
         <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
         Annuler

@@ -111,7 +111,7 @@ const onSubmit = async () => {
           Ajouter au panier
         </Button>
       </form>
-      <Alert v-if="alert" :type="alert.type" :on-dismiss="() => (alert = null)">
+      <Alert v-if="alert" :type="alert.type" @dismiss="alert = null">
         {{ alert.message }}
       </Alert>
     </CardBody>

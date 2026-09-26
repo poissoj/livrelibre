@@ -97,7 +97,7 @@ const removeError = (isbn: string) => {
             v-if="change"
             type="info"
             class="mb-5"
-            :on-dismiss="() => (change = null)"
+            @dismiss="change = null"
           >
             <span>
               À rendre:

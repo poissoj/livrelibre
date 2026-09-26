@@ -48,10 +48,6 @@ const deleteMutation = useTRPCMutation("deleteCustomer", {
 const submit = async (customer: CustomerFormFields) =>
   await mutation.mutateAsync({ customer, customerId: id.value });
 
-const onSuccess = () => {
-  // do nothing
-};
-
 const deleteCustomer = async () => {
   try {
     const res = await deleteMutation.mutateAsync({ id: id.value });
@@ -114,9 +110,8 @@ const total = computed(
     <div v-else class="flex flex-col gap-4 mb-lg">
       <CustomerForm
         :title="CARD_TITLE"
-        :on-submit="submit"
         :data="result.data.value"
-        :on-success="onSuccess"
+        :on-submit="submit"
       >
         <ConfirmationDialog
           title="Supprimer un⋅e client⋅e"

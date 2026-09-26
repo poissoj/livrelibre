@@ -139,7 +139,7 @@ const submitAddToCart = () => {
       <Alert
         v-if="route.query.status === 'updated'"
         type="success"
-        :on-dismiss="dismissStatus"
+        @dismiss="dismissStatus"
       >
         {{ result.data.value.title }} modifié.
       </Alert>

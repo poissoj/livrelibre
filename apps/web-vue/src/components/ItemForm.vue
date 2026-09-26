@@ -36,9 +36,8 @@ type TAlert = {
 
 const props = defineProps<{
   title: string;
-  onSubmit: (data: FormFields) => Promise<ItemFormResult>;
   data?: FormFields | undefined;
-  onSuccess?: (() => void) | undefined;
+  onSubmit: (data: FormFields) => Promise<ItemFormResult>;
 }>();
 
 const type = ref<ItemType>(props.data?.type ?? "book");
@@ -92,12 +91,8 @@ const submit = async () => {
     const { type: resultType, msg: message } =
       await props.onSubmit(buildPayload());
     alert.value = { type: resultType, message };
-    if (resultType === "success") {
-      if (props.onSuccess) {
-        props.onSuccess();
-      } else {
-        reset();
-      }
+    if (resultType === "success" && props.data === undefined) {
+      reset();
     }
   } catch (error) {
     alert.value = { type: "error", message: getErrorMessage(error) };
@@ -224,11 +219,7 @@ const isbnHandler = async () => {
         <div class="flex justify-end mb-sm">
           <slot />
         </div>
-        <Alert
-          v-if="alert"
-          :type="alert.type"
-          :on-dismiss="() => (alert = null)"
-        >
+        <Alert v-if="alert" :type="alert.type" @dismiss="alert = null">
           {{ alert.message }}
         </Alert>
       </CardFooter>

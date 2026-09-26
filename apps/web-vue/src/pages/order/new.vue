@@ -56,12 +56,7 @@ const data = computed<OrderFormData>(() => ({
     <Title>Nouvelle commande</Title>
     <ErrorMessage v-if="itemQuery.isError.value" />
     <div v-else-if="itemQuery.isPending.value && itemIdStr">Chargement…</div>
-    <OrderForm
-      v-else
-      title="Nouvelle commande"
-      :on-submit="submit"
-      :data="data"
-    >
+    <OrderForm v-else title="Nouvelle commande" :data="data" @submit="submit">
       <Button type="submit" class="px-md" :disabled="mutation.isPending.value">
         <FontAwesomeIcon :icon="faPlus" class="mr-sm" />
         Ajouter

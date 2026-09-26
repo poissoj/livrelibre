@@ -17,7 +17,7 @@ const emit = defineEmits<{ remove: [isbn: string] }>();
     :key="error.isbn"
     :type="error.message === CART_ERRORS.INTERNAL_ERROR ? 'error' : 'warning'"
     class="mb-1"
-    :on-dismiss="() => emit('remove', error.isbn)"
+    @dismiss="emit('remove', error.isbn)"
   >
     <template v-if="error.message === CART_ERRORS.INTERNAL_ERROR">
       Une erreur est survenue lors de l'ajout de {{ error.isbn }}

@@ -10,7 +10,7 @@ const { user } = useUser();
 
 <template>
   <div v-if="user?.role !== props.role">
-    <Alert type="warning">
+    <Alert type="warning" :dismissible="false">
       Vous n’êtes pas autorisé à accéder à cette partie.
     </Alert>
   </div>

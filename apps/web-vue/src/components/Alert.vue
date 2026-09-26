@@ -10,11 +10,15 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { clsx } from "clsx";
 import { computed } from "vue";
 
-const props = defineProps<{
-  type: "success" | "warning" | "error" | "info";
-  className?: string;
-  onDismiss?: () => void;
-}>();
+const props = withDefaults(
+  defineProps<{
+    type: "success" | "warning" | "error" | "info";
+    dismissible?: boolean;
+  }>(),
+  { dismissible: true },
+);
+
+const emit = defineEmits<{ dismiss: [] }>();
 
 const ALERT_STYLES = {
   success: "[color:#0f5132] [border-color:#badbcc] [background-color:#d1e7dd]",
@@ -30,7 +34,7 @@ const ICONS = {
   info: faInfoCircle,
 } as const;
 
-const style = computed(() => clsx(ALERT_STYLES[props.type], props.className));
+const style = computed(() => ALERT_STYLES[props.type]);
 </script>
 
 <template>
@@ -38,11 +42,11 @@ const style = computed(() => clsx(ALERT_STYLES[props.type], props.className));
     <FontAwesomeIcon :icon="ICONS[props.type]" class="mr-sm" />
     <slot />
     <button
-      v-if="props.onDismiss"
+      v-if="props.dismissible"
       type="button"
       class="ml-auto p-2"
       aria-label="Fermer"
-      @click="props.onDismiss?.()"
+      @click="emit('dismiss')"
     >
       <FontAwesomeIcon :icon="faTimes" size="lg" />
     </button>

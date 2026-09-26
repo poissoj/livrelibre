@@ -18,9 +18,9 @@ import type {
 import { getErrorMessage } from "@/utils/errors";
 import { useTRPCMutation } from "@/utils/query";
 
-const props = defineProps<{
-  onAdd: (customer: SelectedCustomer) => void;
-  onHide: () => void;
+const emit = defineEmits<{
+  add: [customer: SelectedCustomer];
+  hide: [];
 }>();
 
 const fullname = ref("");
@@ -49,8 +49,8 @@ const submit = async () => {
     const resp = await mutation.mutateAsync({ customer });
     if (resp.type === "success") {
       toast.success(resp.msg);
-      props.onAdd({ ...customer, id: resp.id });
-      props.onHide();
+      emit("add", { ...customer, id: resp.id });
+      emit("hide");
     } else {
       toast.error(resp.msg);
     }
@@ -81,7 +81,7 @@ const submit = async () => {
       <Button
         type="button"
         class="px-md mr-4 !bg-[#6E6E6E]"
-        @click="props.onHide"
+        @click="emit('hide')"
       >
         <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
         Annuler

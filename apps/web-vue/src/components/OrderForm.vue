@@ -31,19 +31,16 @@ import Select from "@/components/Select.vue";
 import SelectCustomer from "@/components/SelectCustomer.vue";
 import SelectItem from "@/components/SelectItem.vue";
 import Textarea from "@/components/Textarea.vue";
-import type {
-  CustomerSelection,
-  OrderFormData,
-  OrderFormResult,
-} from "@/components/orderForm";
+import type { CustomerSelection, OrderFormData } from "@/components/orderForm";
 import type { NewItem } from "@/components/selectItem";
 import { useTRPCUtils } from "@/utils/query";
 
 const props = defineProps<{
   title: string;
-  onSubmit: (order: RawOrder) => Promise<OrderFormResult>;
   data: OrderFormData;
 }>();
+
+const emit = defineEmits<{ submit: [order: RawOrder] }>();
 
 const utils = useTRPCUtils();
 
@@ -109,7 +106,7 @@ const submit = async () => {
     toast.error("Date invalide");
     return;
   }
-  await props.onSubmit({
+  emit("submit", {
     created: parsedDate.toISOString(),
     customerId: customerId.value,
     itemId: itemId.value,
@@ -156,8 +153,8 @@ const submit = async () => {
           </FormRow>
           <OrderCustomerForm
             v-if="showCustomerForm"
-            :on-add="updateCustomer"
-            :on-hide="toggleCustomerForm"
+            @add="updateCustomer"
+            @hide="toggleCustomerForm"
           />
           <FormRow label="Contacter par" field-class="gap-2">
             <ContactMean
