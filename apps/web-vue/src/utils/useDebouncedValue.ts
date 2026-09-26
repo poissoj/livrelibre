@@ -1,4 +1,11 @@
-import { type MaybeRefOrGetter, type Ref, ref, toValue, watch } from "vue";
+import {
+  type MaybeRefOrGetter,
+  type Ref,
+  onScopeDispose,
+  ref,
+  toValue,
+  watch,
+} from "vue";
 
 export const useDebouncedValue = <T>(
   value: MaybeRefOrGetter<T>,
@@ -16,6 +23,10 @@ export const useDebouncedValue = <T>(
       }, delay);
     },
   );
+
+  onScopeDispose(() => {
+    clearTimeout(timer);
+  });
 
   return debounced;
 };

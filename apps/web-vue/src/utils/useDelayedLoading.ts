@@ -1,4 +1,11 @@
-import { type MaybeRefOrGetter, type Ref, ref, toValue, watch } from "vue";
+import {
+  type MaybeRefOrGetter,
+  type Ref,
+  onScopeDispose,
+  ref,
+  toValue,
+  watch,
+} from "vue";
 
 export const useDelayedLoading = (
   isLoading: MaybeRefOrGetter<boolean>,
@@ -21,6 +28,10 @@ export const useDelayedLoading = (
     },
     { immediate: true },
   );
+
+  onScopeDispose(() => {
+    clearTimeout(timer);
+  });
 
   return show;
 };
