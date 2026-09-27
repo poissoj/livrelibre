@@ -1,7 +1,13 @@
 import { sql } from "drizzle-orm";
 
 import { db } from "@livrelibre/server/db/database";
-import { customers, items, sales, users } from "@livrelibre/shared/schema";
+import {
+  customers,
+  items,
+  orders,
+  sales,
+  users,
+} from "@livrelibre/shared/schema";
 
 import { getTestDatabaseUri } from "../test-db.mts";
 
@@ -72,6 +78,26 @@ export const seedCustomer = async (
       phone: null,
       email: null,
       comment: "",
+      ...overrides,
+    })
+    .returning();
+  return rows[0];
+};
+
+export const seedOrder = async (
+  overrides: Partial<typeof orders.$inferInsert> = {},
+) => {
+  const rows = await db
+    .insert(orders)
+    .values({
+      customerId: 1,
+      itemTitle: "Title",
+      ordered: "new",
+      customerNotified: false,
+      paid: false,
+      comment: "",
+      nb: 1,
+      contact: "unknown",
       ...overrides,
     })
     .returning();

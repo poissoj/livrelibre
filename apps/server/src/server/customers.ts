@@ -1,6 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import {
   and,
+  count,
   countDistinct,
   eq,
   getTableColumns,
@@ -14,6 +15,7 @@ import { formatDate } from "@livrelibre/shared/date";
 import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
 import {
   customers,
+  orders,
   purchases,
   selectedCustomer,
 } from "@livrelibre/shared/schema";
@@ -147,16 +149,32 @@ export const getCustomer = async (
 };
 
 export const deleteCustomer = async (customerId: number) => {
-  try {
-    await db.transaction(async (tx) => {
-      await tx.delete(purchases).where(eq(purchases.customerId, customerId));
-      await tx.delete(customers).where(eq(customers.id, customerId));
-    });
+  return await db.transaction(async (tx) => {
+    const ordersCount = await tx
+      .select({ count: count() })
+      .from(orders)
+      .where(eq(orders.customerId, customerId));
+    if (ordersCount[0].count > 0) {
+      throw new TRPCError({
+        code: "PRECONDITION_FAILED",
+        message: "Ce client a des commandes et ne peut pas être supprimé",
+      });
+    }
+    await tx
+      .update(selectedCustomer)
+      .set({ customerId: null })
+      .where(eq(selectedCustomer.customerId, customerId));
+    await tx.delete(purchases).where(eq(purchases.customerId, customerId));
+    const deleted = await tx
+      .delete(customers)
+      .where(eq(customers.id, customerId))
+      .returning({ id: customers.id });
+    if (deleted.length === 0) {
+      throw new TRPCError({ code: "NOT_FOUND", message: "Client inconnu" });
+    }
+    logger.info("Delete customer", { customerId });
     return { type: "success" as const, msg: "Le client a été supprimé" };
-  } catch (error) {
-    logger.error(error);
-    return { type: "error" as const, msg: "Impossible de supprimer le client" };
-  }
+  });
 };
 
 export const setCustomer = async (

@@ -129,12 +129,8 @@ const DeleteCustomerButton = ({ id }: { id: number }) => {
   const deleteCustomer = async () => {
     try {
       const res = await deleteMutation.mutateAsync({ id });
-      if (res.type === "success") {
-        toast.success(res.msg);
-        await navigate("/customers");
-      } else {
-        toast.error(res.msg);
-      }
+      toast.success(res.msg);
+      await navigate("/customers");
     } catch (error) {
       toast.error(getErrorMessage(error));
     }
