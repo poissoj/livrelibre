@@ -123,7 +123,10 @@ export const getSalesByDay = async (
     if (sale.itemId) {
       const item = itemById.get(sale.itemId);
       if (!item) {
-        throw new Error(`Item ${sale.itemId} not found`);
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Article introuvable",
+        });
       }
       salesList.push({
         ...item,

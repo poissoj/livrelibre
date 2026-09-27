@@ -5,7 +5,6 @@ import { items as itemsTable } from "@livrelibre/shared/schema";
 import { norm } from "@livrelibre/shared/utils";
 
 import { db } from "@server/db/database";
-import { logger } from "@server/utils/logger";
 
 export const addItem = async (
   item: BaseItem,
@@ -29,11 +28,6 @@ export const addItem = async (
     nmDistributor: norm(item.distributor),
   };
 
-  try {
-    await db.insert(itemsTable).values(newItem);
-  } catch (error) {
-    logger.error("Add new item", error);
-    return { type: "error", msg: "Impossible d'ajouter cet article." };
-  }
+  await db.insert(itemsTable).values(newItem);
   return { type: "success", msg: `"${item.title}" a été ajouté.` };
 };

@@ -53,6 +53,18 @@ app.use(
   trpcServer({
     router: appRouter,
     createContext,
+    onError({ path, type, error }) {
+      if (error.code !== "INTERNAL_SERVER_ERROR") {
+        return;
+      }
+      const cause = error.cause;
+      logger.error(`tRPC internal error on ${path ?? "unknown"}`, {
+        path,
+        type,
+        message: error.message,
+        stack: cause instanceof Error ? cause.stack : error.stack,
+      });
+    },
   }),
 );
 

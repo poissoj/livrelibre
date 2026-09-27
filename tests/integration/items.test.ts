@@ -113,4 +113,9 @@ describe("updateItem", () => {
     const [updated] = await db.select().from(items);
     expect(updated.isbn).toBe("9780000000002");
   });
+
+  it("returns an error for an unknown id", async () => {
+    const res = await updateItem(baseItem, 999999);
+    expect(res.type).toBe("error");
+  });
 });

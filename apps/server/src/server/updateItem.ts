@@ -5,7 +5,6 @@ import { items } from "@livrelibre/shared/schema";
 import { norm } from "@livrelibre/shared/utils";
 
 import { db } from "@server/db/database";
-import { logger } from "@server/utils/logger";
 
 export const updateItem = async (
   item: BaseItem,
@@ -20,11 +19,13 @@ export const updateItem = async (
     nmPublisher: norm(item.publisher),
     nmDistributor: norm(item.distributor),
   };
-  try {
-    await db.update(items).set(newItem).where(eq(items.id, id));
-    return { type: "success", msg: "L'article a été modifié" };
-  } catch (error) {
-    logger.error(error);
-    return { type: "error", msg: "Impossible de modifier l'article" };
+  const rows = await db
+    .update(items)
+    .set(newItem)
+    .where(eq(items.id, id))
+    .returning({ id: items.id });
+  if (rows.length === 0) {
+    return { type: "error", msg: "L'article n'existe pas" };
   }
+  return { type: "success", msg: "L'article a été modifié" };
 };

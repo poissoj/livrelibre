@@ -57,6 +57,29 @@ describe("cart", () => {
     expect(updated?.amount).toBe(3);
   });
 
+  it("addToCart rejects when stock is insufficient", async () => {
+    const user = await seedUser();
+    const item = await seedItem({ amount: 1 });
+
+    await addToCart(user.id, item.id);
+
+    await expect(addToCart(user.id, item.id)).rejects.toMatchObject({
+      code: "NOT_FOUND",
+    });
+  });
+
+  it("payCart rejects an empty cart", async () => {
+    const user = await seedUser();
+
+    await expect(
+      payCart(user.id, {
+        paymentDate: "2024-01-05",
+        paymentType: "cash",
+        amount: "0",
+      }),
+    ).rejects.toMatchObject({ code: "PRECONDITION_FAILED" });
+  });
+
   it("payCart turns the cart into sales and empties it", async () => {
     const user = await seedUser();
     const item = await seedItem({ amount: 5, price: "10.00" });

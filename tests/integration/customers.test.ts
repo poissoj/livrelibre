@@ -27,9 +27,6 @@ describe("customers", () => {
       comment: "",
     });
     expect(res.type).toBe("success");
-    if (res.type !== "success") {
-      throw new Error("expected success");
-    }
     const customer = await getCustomer(res.id);
     expect(customer?.fullname).toBe("Jean Dupont");
   });

@@ -1,3 +1,4 @@
+import { TRPCError } from "@trpc/server";
 import { and, eq, isNotNull, sql } from "drizzle-orm";
 
 import { formatDate } from "@livrelibre/shared/date";
@@ -66,7 +67,10 @@ export const payCart = async (userId: number, data: PaymentFormData) => {
       .returning();
 
     if (cartItems.length === 0) {
-      throw new Error("No items in cart");
+      throw new TRPCError({
+        code: "PRECONDITION_FAILED",
+        message: "Le panier est vide",
+      });
     }
     const cartId = cartItems[0].id;
     const customer = await getSelectedCustomer(userId, false, tx);
@@ -159,7 +163,10 @@ export const addToCart = async (
       )
       .returning();
     if (result.length === 0) {
-      throw new Error("Unable to find item");
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Article introuvable ou stock insuffisant",
+      });
     }
     await addItemToCart(result[0], userId, quantity, tx);
   });

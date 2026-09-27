@@ -181,28 +181,25 @@ export const setCustomer = async (
   customer: typeof customers.$inferInsert,
   id: number,
 ) => {
-  try {
-    await db.update(customers).set(customer).where(eq(customers.id, id));
-    return { type: "success" as const, msg: "Le client a été modifié", id };
-  } catch (error) {
-    logger.error(error);
-    return { type: "error" as const, msg: "Impossible de modifier le client" };
+  const rows = await db
+    .update(customers)
+    .set(customer)
+    .where(eq(customers.id, id))
+    .returning({ id: customers.id });
+  if (rows.length === 0) {
+    return { type: "error" as const, msg: "Le client n'existe pas" };
   }
+  return { type: "success" as const, msg: "Le client a été modifié", id };
 };
 
 export const newCustomer = async (customer: typeof customers.$inferInsert) => {
-  try {
-    const rows = await db
-      .insert(customers)
-      .values(customer)
-      .returning({ id: customers.id });
-    return {
-      type: "success" as const,
-      msg: "Le client a été ajouté",
-      id: rows[0].id,
-    };
-  } catch (error) {
-    logger.error(error);
-    return { type: "error" as const, msg: "Impossible d'ajouter le client" };
-  }
+  const rows = await db
+    .insert(customers)
+    .values(customer)
+    .returning({ id: customers.id });
+  return {
+    type: "success" as const,
+    msg: "Le client a été ajouté",
+    id: rows[0].id,
+  };
 };
