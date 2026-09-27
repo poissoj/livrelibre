@@ -108,19 +108,18 @@ const sortGroups = (sortBy: string) => {
 const NotifiedCheckbox = ({ order }: { order: OrderRow }) => {
   const utils = trpc.useUtils();
   const mutation = trpc.setCustomerNotified.useMutation({
-    async onSuccess() {
+    async onSuccess(_data, variables) {
       toast.success(
-        `La commande de "${order.itemTitle}" a été marquée comme ${order.customerNotified ? "non " : ""}prévenue.`,
+        `La commande de "${order.itemTitle}" a été marquée comme ${
+          variables.customerNotified ? "" : "non "
+        }prévenue.`,
       );
-      await utils.order.invalidate(order.id);
-      utils.order.setData(order.id, (oldData) => {
-        if (!oldData) return undefined;
-        return { ...oldData, customerNotified: !oldData.customerNotified };
-      });
+      utils.order.setData(order.id, (oldData) =>
+        oldData
+          ? { ...oldData, customerNotified: variables.customerNotified }
+          : undefined,
+      );
       await utils.orders.invalidate();
-    },
-    onError(error) {
-      toast.error(error.message);
     },
   });
   const toggle = () => {
