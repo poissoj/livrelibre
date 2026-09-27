@@ -12,3 +12,8 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - "@types/react-dom@19.3.0"
   - "@types/react@19.3.0"
+
+packageExtensions:
+  drizzle-kit:
+    dependencies:
+      postgres: "3.4.9"
