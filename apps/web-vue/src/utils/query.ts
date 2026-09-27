@@ -81,8 +81,12 @@ export const useTRPCUtils = () => {
     setData: <K extends ProcedureName>(
       path: K,
       input: RouterInput[K],
-      data: RouterOutput[K],
-    ) => queryClient.setQueryData(trpcKey(path, input), data),
+      updater:
+        | RouterOutput[K]
+        | ((
+            oldData: RouterOutput[K] | undefined,
+          ) => RouterOutput[K] | undefined),
+    ) => queryClient.setQueryData(trpcKey(path, input), updater),
     clear: () => {
       queryClient.clear();
     },

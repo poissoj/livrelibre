@@ -53,12 +53,8 @@ const submit = async (customer: CustomerFormFields) =>
 const deleteCustomer = async () => {
   try {
     const res = await deleteMutation.mutateAsync({ id: id.value });
-    if (res.type === "success") {
-      toast.success(res.msg);
-      await router.push("/customers");
-    } else {
-      toast.error(res.msg);
-    }
+    toast.success(res.msg);
+    await router.push("/customers");
   } catch (error) {
     toast.error(getErrorMessage(error));
   }

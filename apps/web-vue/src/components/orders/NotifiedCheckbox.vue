@@ -11,15 +11,18 @@ const utils = useTRPCUtils();
 const { mutate: setNotified, isPending: isUpdating } = useTRPCMutation(
   "setCustomerNotified",
   {
-    onSuccess() {
+    onSuccess(_data, variables) {
       toast.success(
-        `La commande de "${props.order.itemTitle}" a été marquée comme ${props.order.customerNotified ? "non " : ""}prévenue.`,
+        `La commande de "${props.order.itemTitle}" a été marquée comme ${
+          variables.customerNotified ? "" : "non "
+        }prévenue.`,
       );
-      void utils.invalidate("order", props.order.id);
+      utils.setData("order", props.order.id, (oldData) =>
+        oldData
+          ? { ...oldData, customerNotified: variables.customerNotified }
+          : undefined,
+      );
       void utils.invalidate("orders");
-    },
-    onError(error) {
-      toast.error(error.message);
     },
   },
 );
