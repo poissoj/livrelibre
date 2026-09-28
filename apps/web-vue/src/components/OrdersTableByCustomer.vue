@@ -25,7 +25,7 @@ const sortedItems = computed(() =>
     <OrderTableHead group />
     <tbody
       v-for="row in sortedItems"
-      :key="row.customer.name"
+      :key="row.orders[0].customerId"
       class="leading-7 odd:bg-gray-light"
     >
       <OrderRowCmp
