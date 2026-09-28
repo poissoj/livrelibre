@@ -128,8 +128,8 @@ test("applique la remise fidélité au panier", async ({ page }) => {
   await expect(page).toHaveURL("/");
 
   await page.goto("/cart");
-  await page.locator("#isbn-field").fill(isbn);
-  await page.locator("#isbn-field").press("Enter");
+  await page.getByLabel("Ajout rapide").fill(isbn);
+  await page.getByLabel("Ajout rapide").press("Enter");
   await expect(page.getByText("Panier - 1 article")).toBeVisible();
 
   await page.getByPlaceholder(/Associer/).click();

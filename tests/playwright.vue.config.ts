@@ -14,6 +14,8 @@ export default defineConfig({
   testMatch: "**/*.spec.ts",
   /* Run tests in files in parallel */
   fullyParallel: true,
+  /* The e2e user shares cart/customer state across tests: run serially */
+  workers: 1,
   /* Fail the build on CI if you accidentally left test.only in the source code. */
   forbidOnly: !!process.env.CI,
   /* Retry on CI only */
