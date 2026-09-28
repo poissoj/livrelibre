@@ -1,16 +1,32 @@
-import { useEffect, useState } from "react";
+import {
+  type MaybeRefOrGetter,
+  type Ref,
+  onScopeDispose,
+  ref,
+  toValue,
+  watch,
+} from "vue";
 
-export const useDebouncedValue = <T>(value: T, delay = 300) => {
-  const [debounced, setDebounced] = useState(value);
+export const useDebouncedValue = <T>(
+  value: MaybeRefOrGetter<T>,
+  delay = 300,
+): Ref<T> => {
+  const debounced = ref(toValue(value)) as Ref<T>;
+  let timer: ReturnType<typeof setTimeout> | undefined;
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebounced(value);
-    }, delay);
-    return () => {
+  watch(
+    () => toValue(value),
+    (next) => {
       clearTimeout(timer);
-    };
-  }, [value, delay]);
+      timer = setTimeout(() => {
+        debounced.value = next;
+      }, delay);
+    },
+  );
+
+  onScopeDispose(() => {
+    clearTimeout(timer);
+  });
 
   return debounced;
 };

@@ -1,31 +1,13 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router";
+import { computed } from "vue";
 
-import { trpc } from "@/utils/trpc";
+import { useTRPCQuery } from "@/utils/query";
 
-export default function useUser({
-  redirectTo = "",
-  redirectIfFound = false,
-}: { redirectTo?: string; redirectIfFound?: boolean } = {}) {
-  const navigate = useNavigate();
-  const {
-    data: user,
-    isPending,
-    isError,
-  } = trpc.user.useQuery(undefined, { retry: 1 });
+export default function useUser() {
+  const query = useTRPCQuery("user", undefined, { retry: 1 });
+  const user = computed(() => query.data.value);
+  const isLoggedIn = computed(
+    () => user.value !== undefined && user.value.role !== "anonymous",
+  );
 
-  const isLoggedIn = user !== undefined && user.role !== "anonymous";
-
-  useEffect(() => {
-    if (!redirectTo || isPending || isError) return;
-
-    if (
-      (!redirectIfFound && !isLoggedIn) ||
-      (redirectIfFound && isLoggedIn)
-    ) {
-      void navigate(redirectTo, { replace: true });
-    }
-  }, [isPending, isError, isLoggedIn, redirectIfFound, redirectTo, navigate]);
-
-  return { user, isLoggedIn, isPending, isError };
+  return { user, isLoggedIn };
 }

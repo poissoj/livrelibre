@@ -20,6 +20,9 @@
   --color-red: rgb(220 38 38);
   --color-blue: rgb(37 99 235);
   --color-purple: rgb(107 33 168);
+  --color-gray-medium: #6e6e6e;
+  --color-danger: #991b1b;
+  --color-warning: #ff9800;
 
   --spacing-xs: 4px;
   --spacing-sm: 8px;
@@ -46,7 +49,7 @@
 
 html,
 body,
-#root {
+#app {
   height: 100%;
 }
 
@@ -65,7 +68,24 @@ body,
   font-display: fallback;
 }
 
-.Toastify {
-  --toastify-color-success: #008073;
-  --toastify-color-warning: rgb(143, 115, 0);
+[data-sonner-toaster][data-sonner-theme="light"] {
+  --success-bg: #008073;
+  --success-border: #008073;
+  --success-text: #fff;
+
+  --warning-bg: rgb(143, 115, 0);
+  --warning-border: rgb(143, 115, 0);
+  --warning-text: #fff;
+
+  --error-bg: hsl(6, 78%, 57%);
+  --error-border: hsl(6, 78%, 57%);
+  --error-text: #fff;
+
+  --info-bg: #3498db;
+  --info-border: #3498db;
+  --info-text: #fff;
+}
+
+[data-sonner-toast][data-styled="true"] {
+  font-size: 1rem;
 }

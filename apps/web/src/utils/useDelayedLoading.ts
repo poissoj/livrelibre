@@ -1,20 +1,37 @@
-import { useEffect, useState } from "react";
+import {
+  type MaybeRefOrGetter,
+  type Ref,
+  onScopeDispose,
+  ref,
+  toValue,
+  watch,
+} from "vue";
 
-export const useDelayedLoading = (isLoading: boolean, delay = 500) => {
-  const [show, setShow] = useState(false);
+export const useDelayedLoading = (
+  isLoading: MaybeRefOrGetter<boolean>,
+  delay = 500,
+): Ref<boolean> => {
+  const show = ref(false);
+  let timer: ReturnType<typeof setTimeout> | undefined;
 
-  useEffect(() => {
-    if (!isLoading) {
-      setShow(false);
-      return;
-    }
-    const timer = setTimeout(() => {
-      setShow(true);
-    }, delay);
-    return () => {
+  watch(
+    () => toValue(isLoading),
+    (loading) => {
       clearTimeout(timer);
-    };
-  }, [isLoading, delay]);
+      if (!loading) {
+        show.value = false;
+        return;
+      }
+      timer = setTimeout(() => {
+        show.value = true;
+      }, delay);
+    },
+    { immediate: true },
+  );
+
+  onScopeDispose(() => {
+    clearTimeout(timer);
+  });
 
   return show;
 };

@@ -8,7 +8,6 @@
     "test:unit": "vitest run",
     "test:integration": "vitest run --config vitest.integration.config.mts",
     "test:e2e": "playwright test",
-    "test:e2e:vue": "playwright test --config playwright.vue.config.ts",
     "test-ui": "playwright test --ui",
     "typecheck": "tsc --noEmit",
     "lint": "eslint ."

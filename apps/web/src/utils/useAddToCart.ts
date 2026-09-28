@@ -1,24 +1,18 @@
-import { toast } from "react-toastify";
+import { toast } from "vue-sonner";
 
 import { getErrorMessage } from "./errors";
-import { trpc } from "./trpc";
+import { refreshCartRelated } from "./invalidations";
+import { useTRPCMutation, useTRPCUtils } from "./query";
 
 export const useAddToCart = () => {
-  const utils = trpc.useUtils();
-  const mutation = trpc.addToCart.useMutation({
+  const utils = useTRPCUtils();
+  return useTRPCMutation("addToCart", {
     meta: { errorToast: false },
     async onSuccess() {
-      await Promise.all([
-        utils.cart.invalidate(),
-        utils.bookmarks.invalidate(),
-        utils.quicksearch.invalidate(),
-        utils.items.invalidate(),
-        utils.advancedSearch.invalidate(),
-      ]);
+      await refreshCartRelated(utils);
     },
     onError(error) {
       toast.error(getErrorMessage(error));
     },
   });
-  return mutation;
 };

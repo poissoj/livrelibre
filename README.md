@@ -97,7 +97,7 @@ pnpm --filter @livrelibre/server exec tsx src/cli/createUser.ts
 pnpm dev
 ```
 
-Cette commande lance le serveur Hono (API) sur http://localhost:3001 et le front Vite sur http://localhost:5173.
+Cette commande lance le serveur Hono (API) sur http://localhost:3001 et le front Vite sur http://localhost:5174.
 
 Pour les lancer séparément : `pnpm dev:server` et `pnpm dev:web`.
 

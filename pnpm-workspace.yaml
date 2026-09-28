@@ -11,8 +11,6 @@ allowBuilds:
   vue-demi: true
 
 minimumReleaseAgeExclude:
-  - "@types/react-dom@19.3.0"
-  - "@types/react@19.3.0"
   - eslint-plugin-vue@10.11.1
 
 packageExtensions:
