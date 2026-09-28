@@ -13,9 +13,9 @@ import { toast } from "vue-sonner";
 import type { DilicomRowWithId } from "@livrelibre/shared/dilicomItem";
 import { formatNumber, formatPrice } from "@livrelibre/shared/format";
 
-import Button from "@/components/Button.vue";
+import AppButton from "@/components/AppButton.vue";
+import AppCard from "@/components/AppCard.vue";
 import ButtonAnchor from "@/components/ButtonAnchor.vue";
-import Card from "@/components/Card.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardFooter from "@/components/CardFooter.vue";
 import CardTitle from "@/components/CardTitle.vue";
@@ -81,7 +81,7 @@ const nbItems = computed(
 </script>
 
 <template>
-  <Card v-if="file" class="self-start max-h-full flex flex-col flex-1">
+  <AppCard v-if="file" class="self-start max-h-full flex flex-col flex-1">
     <CardTitle>Import du fichier {{ file.filename }}</CardTitle>
     <CardBody class="flex flex-col">
       <table class="flex-1 border-separate [border-spacing:0.5rem]">
@@ -121,15 +121,15 @@ const nbItems = computed(
         Total: <span class="font-number">{{ formatNumber(nbItems) }}</span>
         articles
       </span>
-      <Button
+      <AppButton
         type="button"
         class="mr-2 px-md !bg-gray-medium"
         @click="file = null"
       >
         <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
         Annuler
-      </Button>
-      <Button
+      </AppButton>
+      <AppButton
         type="button"
         class="px-md"
         :disabled="isImporting"
@@ -137,14 +137,14 @@ const nbItems = computed(
       >
         <FontAwesomeIcon :icon="faCheckCircle" class="mr-sm" />
         Valider
-      </Button>
+      </AppButton>
     </CardFooter>
-  </Card>
+  </AppCard>
   <div
     v-else
     class="[margin-left:10%] [margin-right:10%] flex flex-1 flex-col gap-lg"
   >
-    <Card>
+    <AppCard>
       <CardTitle>Importer un fichier DILICOM</CardTitle>
       <form
         class="flex flex-col w-full"
@@ -163,7 +163,7 @@ const nbItems = computed(
           </label>
         </CardBody>
         <CardFooter>
-          <Button
+          <AppButton
             class="px-4"
             type="submit"
             :disabled="isSubmitting || !hasFile"
@@ -174,11 +174,11 @@ const nbItems = computed(
               class="mr-2"
             />
             {{ isSubmitting ? "Traitement…" : "Envoyer" }}
-          </Button>
+          </AppButton>
         </CardFooter>
       </form>
-    </Card>
-    <Card>
+    </AppCard>
+    <AppCard>
       <CardTitle>Export du stock</CardTitle>
       <CardBody>
         <p>Export du stock au format CSV</p>
@@ -189,6 +189,6 @@ const nbItems = computed(
           Télécharger
         </ButtonAnchor>
       </CardFooter>
-    </Card>
+    </AppCard>
   </div>
 </template>

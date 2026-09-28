@@ -3,7 +3,7 @@ import { ref } from "vue";
 
 import { CART_ERRORS } from "@livrelibre/shared/errors";
 
-import Input from "@/components/Input.vue";
+import AppInput from "@/components/AppInput.vue";
 import { refreshCartRelated } from "@/utils/invalidations";
 import { useTRPCMutation, useTRPCUtils } from "@/utils/query";
 
@@ -39,7 +39,7 @@ const submit = () => {
 <template>
   <form class="flex items-center" @submit.prevent="submit">
     <label for="isbn-field" class="shrink-0 mr-2">Ajout rapide :</label>
-    <Input
+    <AppInput
       id="isbn-field"
       v-model="isbn"
       type="text"

@@ -11,14 +11,14 @@ import {
   TVAValues,
 } from "@livrelibre/shared/item";
 
-import Alert from "@/components/Alert.vue";
-import Button from "@/components/Button.vue";
-import Card from "@/components/Card.vue";
+import AppAlert from "@/components/AppAlert.vue";
+import AppButton from "@/components/AppButton.vue";
+import AppCard from "@/components/AppCard.vue";
+import AppInput from "@/components/AppInput.vue";
+import AppSelect from "@/components/AppSelect.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import FormRow from "@/components/FormRow.vue";
-import Input from "@/components/Input.vue";
-import Select from "@/components/Select.vue";
 import type { AlertMessage } from "@/components/form";
 import { getErrorMessage } from "@/utils/errors";
 import { useTRPCMutation, useTRPCUtils } from "@/utils/query";
@@ -63,12 +63,12 @@ const onSubmit = async () => {
 </script>
 
 <template>
-  <Card class="mb-lg">
+  <AppCard class="mb-lg">
     <CardTitle>Vendre un article non répertorié</CardTitle>
     <CardBody class="flex-col gap-4">
       <form class="flex flex-col flex-1" @submit.prevent="onSubmit">
         <FormRow label="Prix">
-          <Input
+          <AppInput
             v-model="price"
             type="number"
             class="font-number"
@@ -77,14 +77,14 @@ const onSubmit = async () => {
           />
         </FormRow>
         <FormRow label="Titre">
-          <Input
+          <AppInput
             v-model="title"
             type="text"
             placeholder="Article indépendant"
           />
         </FormRow>
         <FormRow label="Type">
-          <Select v-model="type">
+          <AppSelect v-model="type">
             <option
               v-for="[key, label] in Object.entries(ITEM_TYPES)"
               :key="key"
@@ -92,23 +92,23 @@ const onSubmit = async () => {
             >
               {{ label }}
             </option>
-          </Select>
+          </AppSelect>
         </FormRow>
         <FormRow label="TVA">
-          <Select v-model="tva" class="font-number">
+          <AppSelect v-model="tva" class="font-number">
             <option v-for="value in TVAValues" :key="value" :value="value">
               {{ formatTVA(value) }}
             </option>
-          </Select>
+          </AppSelect>
         </FormRow>
-        <Button type="submit" class="self-center" :disabled="addPending">
+        <AppButton type="submit" class="self-center" :disabled="addPending">
           <FontAwesomeIcon :icon="faCartPlus" class="mr-sm" />
           Ajouter au panier
-        </Button>
+        </AppButton>
       </form>
-      <Alert v-if="alert" :type="alert.type" @dismiss="alert = null">
+      <AppAlert v-if="alert" :type="alert.type" @dismiss="alert = null">
         {{ alert.message }}
-      </Alert>
+      </AppAlert>
     </CardBody>
-  </Card>
+  </AppCard>
 </template>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { formatPrice } from "@livrelibre/shared/format";
 
-import Card from "@/components/Card.vue";
+import AppCard from "@/components/AppCard.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
@@ -17,13 +17,13 @@ const {
 </script>
 
 <template>
-  <Card v-if="isError">
+  <AppCard v-if="isError">
     <CardTitle>Panier en attente</CardTitle>
     <CardBody>
       <ErrorMessage />
     </CardBody>
-  </Card>
-  <Card v-else-if="isSuccess && (asideCart?.count ?? 0) > 0">
+  </AppCard>
+  <AppCard v-else-if="isSuccess && (asideCart?.count ?? 0) > 0">
     <CardTitle>Panier en attente</CardTitle>
     <CardBody>
       <div class="flex flex-1 justify-between">
@@ -38,5 +38,5 @@ const {
         <ReactivateButton />
       </div>
     </CardBody>
-  </Card>
+  </AppCard>
 </template>

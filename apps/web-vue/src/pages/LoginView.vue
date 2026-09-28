@@ -11,8 +11,8 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
-import Button from "@/components/Button.vue";
-import Input from "@/components/Input.vue";
+import AppButton from "@/components/AppButton.vue";
+import AppInput from "@/components/AppInput.vue";
 import { APP_NAME } from "@/lib/config";
 import { useTRPCUtils } from "@/utils/query";
 import type { RouterOutput } from "@/utils/trpc";
@@ -79,7 +79,7 @@ const onSubmit = async () => {
           <label for="username" class="uppercase font-medium"
             >Identifiant</label
           >
-          <Input
+          <AppInput
             id="username"
             v-model="username"
             type="text"
@@ -104,7 +104,7 @@ const onSubmit = async () => {
               {{ showPassword ? "Masquer" : "Afficher" }}
             </button>
           </div>
-          <Input
+          <AppInput
             id="password"
             v-model="password"
             :type="showPassword ? 'text' : 'password'"
@@ -112,14 +112,14 @@ const onSubmit = async () => {
             required
           />
         </div>
-        <Button type="submit" :disabled="isSubmitting">
+        <AppButton type="submit" :disabled="isSubmitting">
           <FontAwesomeIcon
             :icon="isSubmitting ? faSpinner : faSignInAlt"
             :spin="isSubmitting"
             class="mr-2"
           />
           Connexion
-        </Button>
+        </AppButton>
       </form>
     </section>
   </div>

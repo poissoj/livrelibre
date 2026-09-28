@@ -14,17 +14,17 @@ import {
   TVAValues,
 } from "@livrelibre/shared/item";
 
-import Alert from "@/components/Alert.vue";
+import AppAlert from "@/components/AppAlert.vue";
+import AppCard from "@/components/AppCard.vue";
+import AppInput from "@/components/AppInput.vue";
+import AppSelect from "@/components/AppSelect.vue";
+import AppTextarea from "@/components/AppTextarea.vue";
 import ButtonWithInput from "@/components/ButtonWithInput.vue";
-import Card from "@/components/Card.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardFooter from "@/components/CardFooter.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import FormRow from "@/components/FormRow.vue";
-import Input from "@/components/Input.vue";
 import InputWithButton from "@/components/InputWithButton.vue";
-import Select from "@/components/Select.vue";
-import Textarea from "@/components/Textarea.vue";
 import { getErrorMessage } from "@/utils/errors";
 
 import type { AlertMessage } from "./form";
@@ -125,14 +125,14 @@ const isbnHandler = async () => {
 </script>
 
 <template>
-  <Card class="max-h-full flex flex-col">
+  <AppCard class="max-h-full flex flex-col">
     <CardTitle>{{ props.title }}</CardTitle>
     <form class="flex-1 flex flex-col h-0" @submit.prevent="submit">
       <CardBody class="flex-col gap-5">
         <div class="flex flex-wrap">
           <div class="flex-1 [min-width:20rem] ml-md">
             <FormRow label="Type">
-              <Select v-model="type">
+              <AppSelect v-model="type">
                 <option
                   v-for="[key, label] in Object.entries(ITEM_TYPES)"
                   :key="key"
@@ -140,7 +140,7 @@ const isbnHandler = async () => {
                 >
                   {{ label }}
                 </option>
-              </Select>
+              </AppSelect>
             </FormRow>
             <FormRow label="ISBN">
               <InputWithButton
@@ -162,30 +162,30 @@ const isbnHandler = async () => {
               </ButtonWithInput>
             </FormRow>
             <FormRow label="Auteur·ice">
-              <Input v-model="author" type="text" />
+              <AppInput v-model="author" type="text" />
             </FormRow>
             <FormRow label="Titre">
-              <Input v-model="title" type="text" required />
+              <AppInput v-model="title" type="text" required />
             </FormRow>
             <FormRow label="Maison d'édition">
-              <Input v-model="publisher" type="text" />
+              <AppInput v-model="publisher" type="text" />
             </FormRow>
             <FormRow label="Distributeur">
-              <Input v-model="distributor" type="text" />
+              <AppInput v-model="distributor" type="text" />
             </FormRow>
             <FormRow label="Mots-clés">
-              <Input v-model="keywords" type="text" />
+              <AppInput v-model="keywords" type="text" />
             </FormRow>
           </div>
           <div class="flex-1 [min-width:20rem] ml-md">
             <FormRow label="Date d’achat">
-              <Input v-model="datebought" type="date" />
+              <AppInput v-model="datebought" type="date" />
             </FormRow>
             <FormRow label="Commentaires">
-              <Textarea v-model="comments" />
+              <AppTextarea v-model="comments" />
             </FormRow>
             <FormRow label="Prix de vente">
-              <Input
+              <AppInput
                 v-model="price"
                 type="number"
                 :step="0.01"
@@ -194,7 +194,7 @@ const isbnHandler = async () => {
               />
             </FormRow>
             <FormRow label="Quantité">
-              <Input
+              <AppInput
                 v-model="amount"
                 type="number"
                 :min="0"
@@ -202,11 +202,11 @@ const isbnHandler = async () => {
               />
             </FormRow>
             <FormRow label="TVA">
-              <Select v-model="tva" class="font-number">
+              <AppSelect v-model="tva" class="font-number">
                 <option v-for="value in TVAValues" :key="value" :value="value">
                   {{ formatTVA(value) }}
                 </option>
-              </Select>
+              </AppSelect>
             </FormRow>
           </div>
         </div>
@@ -215,10 +215,10 @@ const isbnHandler = async () => {
         <div class="flex justify-end mb-sm">
           <slot />
         </div>
-        <Alert v-if="alert" :type="alert.type" @dismiss="alert = null">
+        <AppAlert v-if="alert" :type="alert.type" @dismiss="alert = null">
           {{ alert.message }}
-        </Alert>
+        </AppAlert>
       </CardFooter>
     </form>
-  </Card>
+  </AppCard>
 </template>

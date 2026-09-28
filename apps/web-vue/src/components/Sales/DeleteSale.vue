@@ -2,7 +2,7 @@
 import { faSpinner, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-import Button from "@/components/Button.vue";
+import AppButton from "@/components/AppButton.vue";
 import { useTRPCMutation, useTRPCUtils } from "@/utils/query";
 
 const props = defineProps<{ saleId: number }>();
@@ -16,7 +16,7 @@ const { mutate, isPending } = useTRPCMutation("deleteSale", {
 </script>
 
 <template>
-  <Button
+  <AppButton
     type="button"
     aria-label="Supprimer la vente"
     class="!bg-warning"
@@ -27,5 +27,5 @@ const { mutate, isPending } = useTRPCMutation("deleteSale", {
       :icon="isPending ? faSpinner : faTrashAlt"
       :spin="isPending"
     />
-  </Button>
+  </AppButton>
 </template>

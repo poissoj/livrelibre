@@ -4,7 +4,7 @@ import { computed, ref } from "vue";
 import { formatPrice } from "@livrelibre/shared/format";
 import { PAYMENT_METHODS } from "@livrelibre/shared/sale";
 
-import Card from "@/components/Card.vue";
+import AppCard from "@/components/AppCard.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
@@ -56,15 +56,15 @@ const categories = computed(() =>
     class="flex flex-1 flex-col gap-lg max-h-full overflow-auto pr-1 pb-1 -mr-1 -mb-1"
   >
     <div class="flex gap-lg items-start flex-wrap">
-      <Card class="flex-1">
+      <AppCard class="flex-1">
         <CardTitle>Répartition par TVA</CardTitle>
         <CardBody>
           <ErrorMessage v-if="isError" />
           <TVASkeleton v-else-if="isPending" />
           <StatsByTVA v-else :stats="dayStats?.tva ?? []" />
         </CardBody>
-      </Card>
-      <Card class="flex-1">
+      </AppCard>
+      <AppCard class="flex-1">
         <CardTitle>Répartition par type de paiement</CardTitle>
         <CardBody>
           <ErrorMessage v-if="isError" />
@@ -79,15 +79,15 @@ const categories = computed(() =>
             </p>
           </div>
         </CardBody>
-      </Card>
+      </AppCard>
     </div>
-    <Card class="flex flex-col">
+    <AppCard class="flex flex-col">
       <CardTitle>{{ salesTitle }}</CardTitle>
       <CardBody>
         <ErrorMessage v-if="isError" />
         <SalesSkeleton v-else-if="isPending" />
         <SalesTable v-else :carts="dayStats?.carts ?? []" />
       </CardBody>
-    </Card>
+    </AppCard>
   </div>
 </template>

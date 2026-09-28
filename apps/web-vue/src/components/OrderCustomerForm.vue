@@ -7,10 +7,10 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
 
-import Button from "@/components/Button.vue";
+import AppButton from "@/components/AppButton.vue";
+import AppInput from "@/components/AppInput.vue";
+import AppTextarea from "@/components/AppTextarea.vue";
 import FormRow from "@/components/FormRow.vue";
-import Input from "@/components/Input.vue";
-import Textarea from "@/components/Textarea.vue";
 import type {
   CustomerFormFields,
   SelectedCustomer,
@@ -64,30 +64,30 @@ const submit = async () => {
 <template>
   <div class="transition-maxHeight duration-200 overflow-hidden">
     <FormRow label="Nom complet">
-      <Input v-model="fullname" type="text" />
+      <AppInput v-model="fullname" type="text" />
     </FormRow>
     <FormRow label="Téléphone">
-      <Input v-model="phone" type="tel" />
+      <AppInput v-model="phone" type="tel" />
     </FormRow>
     <FormRow label="Email">
-      <Input v-model="email" type="email" />
+      <AppInput v-model="email" type="email" />
     </FormRow>
     <FormRow label="Remarque contact">
-      <Input v-model="contact" type="text" />
+      <AppInput v-model="contact" type="text" />
     </FormRow>
     <FormRow label="Commentaires">
-      <Textarea v-model="comment" />
+      <AppTextarea v-model="comment" />
     </FormRow>
     <div class="flex justify-end mb-4 mr-20">
-      <Button
+      <AppButton
         type="button"
         class="px-md mr-4 !bg-gray-medium"
         @click="emit('hide')"
       >
         <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
         Annuler
-      </Button>
-      <Button
+      </AppButton>
+      <AppButton
         type="button"
         class="px-md"
         :disabled="isSubmitting"
@@ -95,7 +95,7 @@ const submit = async () => {
       >
         <FontAwesomeIcon :icon="faCheckCircle" class="mr-sm" />
         Ajouter
-      </Button>
+      </AppButton>
     </div>
   </div>
 </template>

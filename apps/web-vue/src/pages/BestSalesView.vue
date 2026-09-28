@@ -4,11 +4,11 @@ import { RouterLink } from "vue-router";
 
 import { formatNumber } from "@livrelibre/shared/format";
 
-import Card from "@/components/Card.vue";
+import AppCard from "@/components/AppCard.vue";
+import AppSkeleton from "@/components/AppSkeleton.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
-import Skeleton from "@/components/Skeleton.vue";
 import { useTRPCQuery } from "@/utils/query";
 
 const TH_STYLES = "sticky top-0 bg-white";
@@ -22,11 +22,11 @@ const {
 
 <template>
   <div class="[margin-left:10%] [margin-right:10%] flex flex-1 flex-col gap-lg">
-    <Card class="max-h-full overflow-hidden flex flex-col">
+    <AppCard class="max-h-full overflow-hidden flex flex-col">
       <CardTitle>Meilleures ventes</CardTitle>
       <CardBody>
         <ErrorMessage v-if="isError" />
-        <Skeleton v-else-if="isPending" :height="500">
+        <AppSkeleton v-else-if="isPending" :height="500">
           <template v-for="n in 17" :key="n">
             <rect
               x="2%"
@@ -52,7 +52,7 @@ const {
               rx="5"
             />
           </template>
-        </Skeleton>
+        </AppSkeleton>
         <table
           v-else
           class="flex-1 [border-collapse:separate] [border-spacing:2px_0.5rem]"
@@ -91,6 +91,6 @@ const {
           </tbody>
         </table>
       </CardBody>
-    </Card>
+    </AppCard>
   </div>
 </template>

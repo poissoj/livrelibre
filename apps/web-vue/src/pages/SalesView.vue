@@ -5,12 +5,12 @@ import { RouterLink, useRouter } from "vue-router";
 import type { Sale } from "@livrelibre/server/server/sales";
 import { formatNumber, formatPrice } from "@livrelibre/shared/format";
 
-import Card from "@/components/Card.vue";
+import AppCard from "@/components/AppCard.vue";
+import AppSkeleton from "@/components/AppSkeleton.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
-import Restricted from "@/components/Restricted.vue";
-import Skeleton from "@/components/Skeleton.vue";
+import RestrictedContent from "@/components/RestrictedContent.vue";
 import { useTRPCQuery } from "@/utils/query";
 
 const TH_STYLES = "sticky top-0 bg-white";
@@ -26,13 +26,13 @@ const goToSale = (sale: Sale) => {
 </script>
 
 <template>
-  <Restricted role="admin">
+  <RestrictedContent role="admin">
     <div class="[margin-left:10%] [margin-right:10%] flex-1">
-      <Card class="mb-lg max-h-full overflow-hidden flex flex-col">
+      <AppCard class="mb-lg max-h-full overflow-hidden flex flex-col">
         <CardTitle>Liste des ventes par mois</CardTitle>
         <CardBody>
           <ErrorMessage v-if="isError" />
-          <Skeleton v-else-if="isPending" :height="380">
+          <AppSkeleton v-else-if="isPending" :height="380">
             <template v-for="n in 12" :key="n">
               <rect
                 x="5%"
@@ -75,7 +75,7 @@ const goToSale = (sale: Sale) => {
                 height="12"
               />
             </template>
-          </Skeleton>
+          </AppSkeleton>
           <table v-else class="flex-1">
             <thead>
               <tr>
@@ -120,7 +120,7 @@ const goToSale = (sale: Sale) => {
             </tbody>
           </table>
         </CardBody>
-      </Card>
+      </AppCard>
     </div>
-  </Restricted>
+  </RestrictedContent>
 </template>

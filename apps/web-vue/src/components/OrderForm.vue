@@ -18,19 +18,19 @@ import {
   STATUS_LABEL,
 } from "@livrelibre/shared/order";
 
-import Button from "@/components/Button.vue";
-import Card from "@/components/Card.vue";
+import AppButton from "@/components/AppButton.vue";
+import AppCard from "@/components/AppCard.vue";
+import AppInput from "@/components/AppInput.vue";
+import AppSelect from "@/components/AppSelect.vue";
+import AppTextarea from "@/components/AppTextarea.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardFooter from "@/components/CardFooter.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ContactMean from "@/components/ContactMean.vue";
 import FormRow from "@/components/FormRow.vue";
-import Input from "@/components/Input.vue";
 import OrderCustomerForm from "@/components/OrderCustomerForm.vue";
-import Select from "@/components/Select.vue";
 import SelectCustomer from "@/components/SelectCustomer.vue";
 import SelectItem from "@/components/SelectItem.vue";
-import Textarea from "@/components/Textarea.vue";
 import type { CustomerSelection, OrderFormData } from "@/components/orderForm";
 import type { NewItem } from "@/components/selectItem";
 import { useTRPCUtils } from "@/utils/query";
@@ -122,13 +122,13 @@ const submit = async () => {
 </script>
 
 <template>
-  <Card class="max-h-full flex flex-col">
+  <AppCard class="max-h-full flex flex-col">
     <CardTitle>{{ props.title }}</CardTitle>
     <form class="contents" @submit.prevent="submit">
       <CardBody class="flex-col gap-5">
         <div class="flex flex-col">
           <FormRow label="Client⋅e">
-            <Input
+            <AppInput
               v-if="showCustomerForm"
               type="text"
               class="w-full bg-[#ccc] cursor-not-allowed"
@@ -142,14 +142,14 @@ const submit = async () => {
               required
               @update:customer="updateCustomer"
             />
-            <Button
+            <AppButton
               class="ml-sm self-center"
               title="Nouveau client"
               type="button"
               @click="toggleCustomerForm"
             >
               <FontAwesomeIcon :icon="faUserPlus" />
-            </Button>
+            </AppButton>
           </FormRow>
           <OrderCustomerForm
             v-if="showCustomerForm"
@@ -190,22 +190,22 @@ const submit = async () => {
             </ContactMean>
           </FormRow>
           <FormRow label="Date">
-            <Input v-model="created" type="datetime-local" required />
+            <AppInput v-model="created" type="datetime-local" required />
           </FormRow>
           <FormRow label="ISBN">
-            <Input v-model="isbn" type="text" :maxlength="13" />
+            <AppInput v-model="isbn" type="text" :maxlength="13" />
           </FormRow>
           <FormRow label="Titre">
             <SelectItem :item="item" full-width @update:item="updateItem" />
           </FormRow>
           <FormRow label="Commentaires">
-            <Textarea v-model="comment" />
+            <AppTextarea v-model="comment" />
           </FormRow>
           <FormRow label="Nb d'exemplaires">
-            <Input v-model="nb" type="number" :min="1" required />
+            <AppInput v-model="nb" type="number" :min="1" required />
           </FormRow>
           <FormRow label="État">
-            <Select v-model="ordered">
+            <AppSelect v-model="ordered">
               <option
                 v-for="[key, label] in Object.entries(STATUS_LABEL)"
                 :key="key"
@@ -213,7 +213,7 @@ const submit = async () => {
               >
                 {{ label }}
               </option>
-            </Select>
+            </AppSelect>
           </FormRow>
           <FormRow
             label="Payé"
@@ -236,5 +236,5 @@ const submit = async () => {
         </div>
       </CardFooter>
     </form>
-  </Card>
+  </AppCard>
 </template>

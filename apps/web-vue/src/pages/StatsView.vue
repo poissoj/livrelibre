@@ -2,7 +2,7 @@
 import { computed, defineAsyncComponent } from "vue";
 import { ContentLoader } from "vue-content-loader";
 
-import Card from "@/components/Card.vue";
+import AppCard from "@/components/AppCard.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
@@ -37,7 +37,7 @@ const days = computed(() =>
 
 <template>
   <div class="flex flex-1 flex-col gap-lg items-center">
-    <Card>
+    <AppCard>
       <CardTitle>Nombre de ventes par heure</CardTitle>
       <CardBody class="[width:900px]">
         <ErrorMessage v-if="isError" />
@@ -61,8 +61,8 @@ const days = computed(() =>
         </ContentLoader>
         <SalesByHour v-else :hours="stats?.hours ?? []" />
       </CardBody>
-    </Card>
-    <Card>
+    </AppCard>
+    <AppCard>
       <CardTitle>Nombre de ventes par jour</CardTitle>
       <CardBody class="[width:900px] justify-center">
         <ErrorMessage v-if="isError" />
@@ -82,7 +82,7 @@ const days = computed(() =>
         </ContentLoader>
         <SalesByDay v-else :days="days" />
       </CardBody>
-    </Card>
+    </AppCard>
     <div class="w-1 h-1 shrink-0" />
   </div>
 </template>

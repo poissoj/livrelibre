@@ -3,7 +3,7 @@ import { RouterLink } from "vue-router";
 
 import { CART_ERRORS } from "@livrelibre/shared/errors";
 
-import Alert from "@/components/Alert.vue";
+import AppAlert from "@/components/AppAlert.vue";
 
 import type { ISBNError } from "./types";
 
@@ -12,7 +12,7 @@ const emit = defineEmits<{ remove: [isbn: string] }>();
 </script>
 
 <template>
-  <Alert
+  <AppAlert
     v-for="error in props.errors"
     :key="error.isbn"
     :type="error.message === CART_ERRORS.INTERNAL_ERROR ? 'error' : 'warning'"
@@ -33,5 +33,5 @@ const emit = defineEmits<{ remove: [isbn: string] }>();
         </RouterLink>
       </span>
     </template>
-  </Alert>
+  </AppAlert>
 </template>

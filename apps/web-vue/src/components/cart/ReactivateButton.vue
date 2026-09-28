@@ -2,7 +2,7 @@
 import { faShareSquare, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-import Button from "@/components/Button.vue";
+import AppButton from "@/components/AppButton.vue";
 import { useTRPCMutation, useTRPCQuery, useTRPCUtils } from "@/utils/query";
 
 const utils = useTRPCUtils();
@@ -20,7 +20,7 @@ const submit = () => {
 
 <template>
   <form v-if="cartSuccess" @submit.prevent="submit">
-    <Button
+    <AppButton
       type="submit"
       class="[padding:10px_15px] mb-2"
       :disabled="(cart?.count ?? 0) > 0 || isPending"
@@ -30,6 +30,6 @@ const submit = () => {
         :spin="isPending"
       />
       <span class="ml-sm">Réactiver</span>
-    </Button>
+    </AppButton>
   </form>
 </template>

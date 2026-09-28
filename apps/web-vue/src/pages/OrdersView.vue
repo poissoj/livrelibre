@@ -11,11 +11,11 @@ import {
   zOrderStatusArray,
 } from "@livrelibre/shared/order";
 
-import Card from "@/components/Card.vue";
+import AppCard from "@/components/AppCard.vue";
+import AppInput from "@/components/AppInput.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
-import Input from "@/components/Input.vue";
 import ItemsCard from "@/components/ItemsCard.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import OrdersTable from "@/components/OrdersTable.vue";
@@ -113,7 +113,7 @@ const filteredOrders = computed(() =>
     <ItemsCard v-if="isError" title="Liste des commandes">
       <ErrorMessage />
     </ItemsCard>
-    <Card v-else class="max-h-full overflow-hidden flex flex-col relative">
+    <AppCard v-else class="max-h-full overflow-hidden flex flex-col relative">
       <CardTitle class="flex items-center">
         {{ cardTitle }}
         <LinkButton to="/order/new" class="ml-auto">
@@ -124,7 +124,7 @@ const filteredOrders = computed(() =>
       <CardBody class="flex-col">
         <div class="flex gap-2 items-center flex-wrap">
           <div class="flex flex-col mb-2 mr-auto">
-            <Input
+            <AppInput
               v-model="searchInput"
               class="text-base mb-1 !w-[30rem]"
               placeholder="Nom, prénom, titre, ISBN"
@@ -159,6 +159,6 @@ const filteredOrders = computed(() =>
           <OrdersTable v-else :items="filteredOrders" />
         </div>
       </CardBody>
-    </Card>
+    </AppCard>
   </div>
 </template>

@@ -8,14 +8,14 @@ import { ITEM_TYPES } from "@livrelibre/shared/item";
 import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
 import { isIn } from "@livrelibre/shared/utils";
 
-import Card from "@/components/Card.vue";
+import AppCard from "@/components/AppCard.vue";
+import AppPagination from "@/components/AppPagination.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardFooter from "@/components/CardFooter.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import ItemsTable from "@/components/ItemsTable.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
-import Pagination from "@/components/Pagination.vue";
 import { useTRPCQuery } from "@/utils/query";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
 import { usePageParam, useQueryParams } from "@/utils/useQueryParams";
@@ -102,7 +102,7 @@ const cardTitle = computed(() => {
 
 <template>
   <div class="flex flex-1 flex-col gap-lg">
-    <Card v-if="isSuccess && list?.count === 0" :class="CARD_STYLES">
+    <AppCard v-if="isSuccess && list?.count === 0" :class="CARD_STYLES">
       <CardTitle>{{ cardTitle }}</CardTitle>
       <label class="self-end cursor-pointer mr-6 ml-auto">
         <span>En stock</span>
@@ -119,8 +119,8 @@ const cardTitle = computed(() => {
           Nouvelle recherche
         </RouterLink>
       </p>
-    </Card>
-    <Card v-else :class="CARD_STYLES">
+    </AppCard>
+    <AppCard v-else :class="CARD_STYLES">
       <CardTitle>{{ cardTitle }}</CardTitle>
       <div class="flex flex-1">
         <p>
@@ -151,8 +151,8 @@ const cardTitle = computed(() => {
         v-if="pageCount > 1"
         class="flex justify-center pt-6 2xl:pt-8"
       >
-        <Pagination :count="pageCount" />
+        <AppPagination :count="pageCount" />
       </CardFooter>
-    </Card>
+    </AppCard>
   </div>
 </template>

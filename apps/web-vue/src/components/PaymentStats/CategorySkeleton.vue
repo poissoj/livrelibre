@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import Skeleton from "@/components/Skeleton.vue";
+import AppSkeleton from "@/components/AppSkeleton.vue";
 </script>
 
 <template>
-  <Skeleton :height="150">
+  <AppSkeleton :height="150">
     <template v-for="n in 5" :key="n">
       <rect
         x="5%"
@@ -30,5 +30,5 @@ import Skeleton from "@/components/Skeleton.vue";
         height="10"
       />
     </template>
-  </Skeleton>
+  </AppSkeleton>
 </template>

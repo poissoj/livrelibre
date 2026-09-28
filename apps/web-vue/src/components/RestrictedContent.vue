@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import useUser from "@/lib/useUser";
 
-import Alert from "./Alert.vue";
+import AppAlert from "./AppAlert.vue";
 
 const props = defineProps<{ role: string }>();
 
@@ -10,9 +10,9 @@ const { user } = useUser();
 
 <template>
   <div v-if="user?.role !== props.role">
-    <Alert type="warning" :dismissible="false">
+    <AppAlert type="warning" :dismissible="false">
       Vous n’êtes pas autorisé à accéder à cette partie.
-    </Alert>
+    </AppAlert>
   </div>
   <slot v-else />
 </template>

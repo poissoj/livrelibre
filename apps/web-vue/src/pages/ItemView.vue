@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 
-import Card from "@/components/Card.vue";
+import AppCard from "@/components/AppCard.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ItemCard from "@/components/ItemCard.vue";
@@ -19,12 +19,12 @@ const idNum = computed(() => Number(id.value));
 
 <template>
   <div class="flex items-start gap-lg flex-1 flex-wrap">
-    <Card v-if="!isValidId" class="flex-1">
+    <AppCard v-if="!isValidId" class="flex-1">
       <CardTitle>Article introuvable</CardTitle>
       <CardBody>
         <NoResults />
       </CardBody>
-    </Card>
+    </AppCard>
     <template v-else>
       <ItemCard :id="idNum" />
       <div class="flex flex-col gap-lg flex-1">

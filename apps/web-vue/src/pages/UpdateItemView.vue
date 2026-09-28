@@ -7,15 +7,15 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-import Button from "@/components/Button.vue";
-import Card from "@/components/Card.vue";
+import AppButton from "@/components/AppButton.vue";
+import AppCard from "@/components/AppCard.vue";
+import AppSkeleton from "@/components/AppSkeleton.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import ItemForm from "@/components/ItemForm.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import NoResults from "@/components/NoResults.vue";
-import Skeleton from "@/components/Skeleton.vue";
 import type { FormFields } from "@/components/itemForm";
 import { useTRPCMutation, useTRPCQuery, useTRPCUtils } from "@/utils/query";
 
@@ -57,16 +57,16 @@ const formData = computed<FormFields | undefined>(() => {
 
 <template>
   <div class="flex-1">
-    <Card v-if="isError">
+    <AppCard v-if="isError">
       <CardTitle>{{ CARD_TITLE }}</CardTitle>
       <CardBody>
         <ErrorMessage />
       </CardBody>
-    </Card>
-    <Card v-else-if="isPending">
+    </AppCard>
+    <AppCard v-else-if="isPending">
       <CardTitle>{{ CARD_TITLE }}</CardTitle>
       <CardBody>
-        <Skeleton :height="410">
+        <AppSkeleton :height="410">
           <template v-for="n in 7" :key="n">
             <rect
               x="5%"
@@ -101,15 +101,15 @@ const formData = computed<FormFields | undefined>(() => {
               height="30"
             />
           </template>
-        </Skeleton>
+        </AppSkeleton>
       </CardBody>
-    </Card>
-    <Card v-else-if="item == null">
+    </AppCard>
+    <AppCard v-else-if="item == null">
       <CardTitle>Article introuvable</CardTitle>
       <CardBody>
         <NoResults />
       </CardBody>
-    </Card>
+    </AppCard>
     <ItemForm v-else :title="CARD_TITLE" :data="formData" :on-submit="submit">
       <LinkButton
         :to="`/item/${String(id)}`"
@@ -118,10 +118,10 @@ const formData = computed<FormFields | undefined>(() => {
         <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
         Annuler
       </LinkButton>
-      <Button type="submit" class="px-md">
+      <AppButton type="submit" class="px-md">
         <FontAwesomeIcon :icon="faCheckCircle" class="mr-sm" />
         Modifier
-      </Button>
+      </AppButton>
     </ItemForm>
   </div>
 </template>

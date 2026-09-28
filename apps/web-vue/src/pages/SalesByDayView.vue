@@ -2,7 +2,7 @@
 import { computed } from "vue";
 import { useRoute } from "vue-router";
 
-import Restricted from "@/components/Restricted.vue";
+import RestrictedContent from "@/components/RestrictedContent.vue";
 import SalesByDay from "@/components/Sales/SalesByDay.vue";
 
 const route = useRoute();
@@ -13,7 +13,7 @@ const date = computed(
 </script>
 
 <template>
-  <Restricted role="admin">
+  <RestrictedContent role="admin">
     <SalesByDay :date="date" />
-  </Restricted>
+  </RestrictedContent>
 </template>

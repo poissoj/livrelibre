@@ -5,8 +5,8 @@ import { toast } from "vue-sonner";
 import type { CustomerWithPurchase } from "@livrelibre/shared/customer";
 import { formatPrice } from "@livrelibre/shared/format";
 
-import Button from "@/components/Button.vue";
-import Input from "@/components/Input.vue";
+import AppButton from "@/components/AppButton.vue";
+import AppInput from "@/components/AppInput.vue";
 import { getErrorMessage } from "@/utils/errors";
 import { useTRPCMutation, useTRPCUtils } from "@/utils/query";
 
@@ -53,7 +53,7 @@ const onSubmit = () => {
     </div>
     <form v-if="applied === undefined" @submit.prevent="onSubmit">
       Remise possible:
-      <Input
+      <AppInput
         :model-value="discount"
         type="number"
         :step="0.01"
@@ -61,9 +61,9 @@ const onSubmit = () => {
         class="ml-2 !w-28 font-number"
         @update:model-value="(value) => (discount = Number(value))"
       />
-      <Button type="submit" class="ml-2" :disabled="isApplying">
+      <AppButton type="submit" class="ml-2" :disabled="isApplying">
         Appliquer
-      </Button>
+      </AppButton>
     </form>
     <div v-else>Remise de {{ formatPrice(applied) }} appliquée</div>
   </div>

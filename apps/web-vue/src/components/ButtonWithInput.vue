@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import Button from "./Button.vue";
+import AppButton from "./AppButton.vue";
 </script>
 
 <template>
-  <Button class="rounded-l-none -m-[1px]">
+  <AppButton class="rounded-l-none -m-[1px]">
     <slot />
-  </Button>
+  </AppButton>
 </template>

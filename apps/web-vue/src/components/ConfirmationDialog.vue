@@ -10,7 +10,7 @@ import {
 } from "@headlessui/vue";
 import { ref } from "vue";
 
-import Button from "./Button.vue";
+import AppButton from "./AppButton.vue";
 
 const props = defineProps<{ title: string; message: string }>();
 const emit = defineEmits<{ confirm: [] }>();
@@ -26,10 +26,10 @@ const confirm = () => {
 </script>
 
 <template>
-  <Button type="button" class="mr-auto !bg-danger" @click="isOpen = true">
+  <AppButton type="button" class="mr-auto !bg-danger" @click="isOpen = true">
     <FontAwesomeIcon :icon="faTrash" class="mr-sm" />
     Supprimer
-  </Button>
+  </AppButton>
   <TransitionRoot appear :show="isOpen" as="template">
     <Dialog as="div" class="relative" @close="close">
       <TransitionChild
@@ -59,18 +59,18 @@ const confirm = () => {
             <DialogTitle class="font-bold">{{ props.title }}</DialogTitle>
             <p>{{ props.message }}</p>
             <div class="flex">
-              <Button type="button" class="!bg-danger" @click="confirm">
+              <AppButton type="button" class="!bg-danger" @click="confirm">
                 <FontAwesomeIcon :icon="faTrash" class="mr-sm" />
                 Oui, supprimer
-              </Button>
-              <Button
+              </AppButton>
+              <AppButton
                 type="button"
                 class="ml-auto !bg-gray-medium"
                 @click="close"
               >
                 <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
                 Non, annuler
-              </Button>
+              </AppButton>
             </div>
           </DialogPanel>
         </TransitionChild>

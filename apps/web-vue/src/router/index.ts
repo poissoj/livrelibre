@@ -3,30 +3,30 @@ import { createRouter, createWebHistory } from "vue-router";
 import ProtectedLayout from "@/components/Layout/ProtectedLayout.vue";
 import { APP_NAME } from "@/lib/config";
 
-const Custom404 = () => import("@/pages/404.vue");
-const Add = () => import("@/pages/add.vue");
-const Advanced = () => import("@/pages/advanced.vue");
-const SearchResults = () => import("@/pages/advancedSearch.vue");
-const BestSales = () => import("@/pages/best-sales.vue");
-const CartPage = () => import("@/pages/cart.vue");
-const UpdateCustomer = () => import("@/pages/customer/[customerId].vue");
-const NewCustomer = () => import("@/pages/customer/new.vue");
-const Customers = () => import("@/pages/customers.vue");
-const Dashboard = () => import("@/pages/index.vue");
-const ItemPage = () => import("@/pages/item/[id].vue");
-const Items = () => import("@/pages/items.vue");
-const Login = () => import("@/pages/login.vue");
-const UpdateOrder = () => import("@/pages/order/[orderId].vue");
-const NewOrder = () => import("@/pages/order/new.vue");
-const Orders = () => import("@/pages/orders.vue");
-const QuickSearchPage = () => import("@/pages/quicksearch.vue");
-const SalesByMonth = () => import("@/pages/sale/[year]/[month].vue");
-const SalesByDayPage = () => import("@/pages/sale/[year]/[month]/[day].vue");
-const Sales = () => import("@/pages/sales.vue");
-const Search = () => import("@/pages/search.vue");
-const Stats = () => import("@/pages/stats.vue");
-const TodaySales = () => import("@/pages/todaySales.vue");
-const UpdateItem = () => import("@/pages/update/[itemId].vue");
+const NotFoundView = () => import("@/pages/NotFoundView.vue");
+const AddItemView = () => import("@/pages/AddItemView.vue");
+const AdvancedView = () => import("@/pages/AdvancedView.vue");
+const AdvancedSearchView = () => import("@/pages/AdvancedSearchView.vue");
+const BestSalesView = () => import("@/pages/BestSalesView.vue");
+const CartView = () => import("@/pages/CartView.vue");
+const CustomerView = () => import("@/pages/CustomerView.vue");
+const NewCustomerView = () => import("@/pages/NewCustomerView.vue");
+const CustomersView = () => import("@/pages/CustomersView.vue");
+const DashboardView = () => import("@/pages/DashboardView.vue");
+const ItemView = () => import("@/pages/ItemView.vue");
+const ItemsView = () => import("@/pages/ItemsView.vue");
+const LoginView = () => import("@/pages/LoginView.vue");
+const OrderView = () => import("@/pages/OrderView.vue");
+const NewOrderView = () => import("@/pages/NewOrderView.vue");
+const OrdersView = () => import("@/pages/OrdersView.vue");
+const QuickSearchView = () => import("@/pages/QuickSearchView.vue");
+const SalesByMonthView = () => import("@/pages/SalesByMonthView.vue");
+const SalesByDayView = () => import("@/pages/SalesByDayView.vue");
+const SalesView = () => import("@/pages/SalesView.vue");
+const SearchView = () => import("@/pages/SearchView.vue");
+const StatsView = () => import("@/pages/StatsView.vue");
+const TodaySalesView = () => import("@/pages/TodaySalesView.vue");
+const UpdateItemView = () => import("@/pages/UpdateItemView.vue");
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -34,7 +34,7 @@ export const router = createRouter({
     {
       path: "/login",
       name: "login",
-      component: Login,
+      component: LoginView,
       meta: { title: "Se connecter" },
     },
     {
@@ -44,139 +44,139 @@ export const router = createRouter({
         {
           path: "",
           name: "dashboard",
-          component: Dashboard,
+          component: DashboardView,
           meta: { title: "Tableau de bord" },
         },
         {
           path: "items",
           name: "items",
-          component: Items,
+          component: ItemsView,
           meta: { title: "Liste des articles" },
         },
         {
           path: "item/:id",
           name: "item",
-          component: ItemPage,
+          component: ItemView,
           meta: { title: "Voir un article" },
         },
         {
           path: "update/:itemId",
           name: "update-item",
-          component: UpdateItem,
+          component: UpdateItemView,
           meta: { title: "Modifier un article" },
         },
         {
           path: "add",
           name: "add",
-          component: Add,
+          component: AddItemView,
           meta: { title: "Ajouter un article" },
         },
         {
           path: "customers",
           name: "customers",
-          component: Customers,
+          component: CustomersView,
           meta: { title: "Liste des client⋅es" },
         },
         {
           path: "customer/new",
           name: "customer-new",
-          component: NewCustomer,
+          component: NewCustomerView,
           meta: { title: "Ajouter un client" },
         },
         {
           path: "customer/:customerId",
           name: "customer",
-          component: UpdateCustomer,
+          component: CustomerView,
           meta: { title: "Modifier un client" },
         },
         {
           path: "orders",
           name: "orders",
-          component: Orders,
+          component: OrdersView,
           meta: { title: "Liste des commandes" },
         },
         {
           path: "order/new",
           name: "order-new",
-          component: NewOrder,
+          component: NewOrderView,
           meta: { title: "Nouvelle commande" },
         },
         {
           path: "order/:orderId",
           name: "order",
-          component: UpdateOrder,
+          component: OrderView,
           meta: { title: "Modifier une commande" },
         },
         {
           path: "search",
           name: "search",
-          component: Search,
+          component: SearchView,
           meta: { title: "Chercher un article" },
         },
         {
           path: "cart",
           name: "cart",
-          component: CartPage,
+          component: CartView,
           meta: { title: "Panier" },
         },
         {
           path: "sales",
           name: "sales",
-          component: Sales,
+          component: SalesView,
           meta: { title: "Liste des ventes par mois" },
         },
         {
           path: "sale/:year/:month",
           name: "sale-month",
-          component: SalesByMonth,
+          component: SalesByMonthView,
           meta: { title: "Ventes du mois" },
         },
         {
           path: "sale/:year/:month/:day",
           name: "sale-day",
-          component: SalesByDayPage,
+          component: SalesByDayView,
           meta: { title: "Ventes du jour" },
         },
         {
           path: "todaySales",
           name: "today-sales",
-          component: TodaySales,
+          component: TodaySalesView,
           meta: { title: "Ventes du jour" },
         },
         {
           path: "best-sales",
           name: "best-sales",
-          component: BestSales,
+          component: BestSalesView,
           meta: { title: "Meilleures ventes" },
         },
         {
           path: "stats",
           name: "stats",
-          component: Stats,
+          component: StatsView,
           meta: { title: "Statistiques" },
         },
         {
           path: "advancedSearch",
           name: "advanced-search",
-          component: SearchResults,
+          component: AdvancedSearchView,
           meta: { title: "Recherche avancée" },
         },
         {
           path: "advanced",
           name: "advanced",
-          component: Advanced,
+          component: AdvancedView,
           meta: { title: "Avancé" },
         },
         {
           path: "quicksearch",
           name: "quicksearch",
-          component: QuickSearchPage,
+          component: QuickSearchView,
           meta: { title: "Recherche rapide" },
         },
         {
           path: ":pathMatch(.*)*",
           name: "not-found",
-          component: Custom404,
+          component: NotFoundView,
           meta: { title: "Page introuvable" },
         },
       ],

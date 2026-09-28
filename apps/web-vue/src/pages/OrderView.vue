@@ -10,8 +10,9 @@ import { toast } from "vue-sonner";
 
 import type { RawOrder } from "@livrelibre/shared/order";
 
-import Button from "@/components/Button.vue";
-import Card from "@/components/Card.vue";
+import AppButton from "@/components/AppButton.vue";
+import AppCard from "@/components/AppCard.vue";
+import AppSkeleton from "@/components/AppSkeleton.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ConfirmationDialog from "@/components/ConfirmationDialog.vue";
@@ -19,7 +20,6 @@ import ErrorMessage from "@/components/ErrorMessage.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import NoResults from "@/components/NoResults.vue";
 import OrderForm from "@/components/OrderForm.vue";
-import Skeleton from "@/components/Skeleton.vue";
 import type { OrderFormData } from "@/components/orderForm";
 import { getErrorMessage } from "@/utils/errors";
 import { useTRPCMutation, useTRPCQuery, useTRPCUtils } from "@/utils/query";
@@ -84,16 +84,16 @@ const data = computed<OrderFormData | undefined>(() => {
 
 <template>
   <div class="flex-1 max-w-6xl mx-auto">
-    <Card v-if="isError">
+    <AppCard v-if="isError">
       <CardTitle>{{ CARD_TITLE }}</CardTitle>
       <CardBody>
         <ErrorMessage />
       </CardBody>
-    </Card>
-    <Card v-else-if="isPending">
+    </AppCard>
+    <AppCard v-else-if="isPending">
       <CardTitle>{{ CARD_TITLE }}</CardTitle>
       <CardBody>
-        <Skeleton :height="300">
+        <AppSkeleton :height="300">
           <template v-for="n in 4" :key="n">
             <rect
               x="5%"
@@ -112,15 +112,15 @@ const data = computed<OrderFormData | undefined>(() => {
               height="30"
             />
           </template>
-        </Skeleton>
+        </AppSkeleton>
       </CardBody>
-    </Card>
-    <Card v-else-if="order == null">
+    </AppCard>
+    <AppCard v-else-if="order == null">
       <CardTitle>Commande introuvable</CardTitle>
       <CardBody>
         <NoResults />
       </CardBody>
-    </Card>
+    </AppCard>
     <OrderForm
       v-else-if="data"
       :title="CARD_TITLE"
@@ -139,10 +139,10 @@ const data = computed<OrderFormData | undefined>(() => {
         <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
         Annuler
       </LinkButton>
-      <Button type="submit" class="px-md" :disabled="updatePending">
+      <AppButton type="submit" class="px-md" :disabled="updatePending">
         <FontAwesomeIcon :icon="faCheckCircle" class="mr-sm" />
         Modifier
-      </Button>
+      </AppButton>
     </OrderForm>
   </div>
 </template>

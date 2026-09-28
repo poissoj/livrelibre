@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-import Alert from "@/components/Alert.vue";
-import Card from "@/components/Card.vue";
+import AppAlert from "@/components/AppAlert.vue";
+import AppCard from "@/components/AppCard.vue";
+import AppInput from "@/components/AppInput.vue";
+import AppTextarea from "@/components/AppTextarea.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardFooter from "@/components/CardFooter.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import FormRow from "@/components/FormRow.vue";
-import Input from "@/components/Input.vue";
-import Textarea from "@/components/Textarea.vue";
 import { getErrorMessage } from "@/utils/errors";
 
 import type { CustomerFormFields, CustomerFormResult } from "./customerForm";
@@ -57,25 +57,25 @@ const submit = async () => {
 </script>
 
 <template>
-  <Card class="max-h-full flex flex-col">
+  <AppCard class="max-h-full flex flex-col">
     <CardTitle>{{ props.title }}</CardTitle>
     <form class="flex-1 flex flex-col h-0" @submit.prevent="submit">
       <CardBody class="flex-col gap-5">
         <div class="flex flex-wrap flex-col">
           <FormRow label="Nom complet">
-            <Input v-model="fullname" type="text" required />
+            <AppInput v-model="fullname" type="text" required />
           </FormRow>
           <FormRow label="Téléphone">
-            <Input v-model="phone" type="tel" />
+            <AppInput v-model="phone" type="tel" />
           </FormRow>
           <FormRow label="Email">
-            <Input v-model="email" type="email" />
+            <AppInput v-model="email" type="email" />
           </FormRow>
           <FormRow label="Remarque contact">
-            <Input v-model="contact" type="text" />
+            <AppInput v-model="contact" type="text" />
           </FormRow>
           <FormRow label="Commentaires">
-            <Textarea v-model="comment" />
+            <AppTextarea v-model="comment" />
           </FormRow>
         </div>
       </CardBody>
@@ -83,10 +83,10 @@ const submit = async () => {
         <div class="flex justify-end mb-sm">
           <slot />
         </div>
-        <Alert v-if="alert" :type="alert.type" @dismiss="alert = null">
+        <AppAlert v-if="alert" :type="alert.type" @dismiss="alert = null">
           {{ alert.message }}
-        </Alert>
+        </AppAlert>
       </CardFooter>
     </form>
-  </Card>
+  </AppCard>
 </template>

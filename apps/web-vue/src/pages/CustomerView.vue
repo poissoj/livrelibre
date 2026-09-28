@@ -10,8 +10,9 @@ import { toast } from "vue-sonner";
 
 import { formatPrice } from "@livrelibre/shared/format";
 
-import Button from "@/components/Button.vue";
-import Card from "@/components/Card.vue";
+import AppButton from "@/components/AppButton.vue";
+import AppCard from "@/components/AppCard.vue";
+import AppSkeleton from "@/components/AppSkeleton.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ConfirmationDialog from "@/components/ConfirmationDialog.vue";
@@ -19,7 +20,6 @@ import CustomerForm from "@/components/CustomerForm.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import NoResults from "@/components/NoResults.vue";
-import Skeleton from "@/components/Skeleton.vue";
 import StatusCircle from "@/components/StatusCircle.vue";
 import type { CustomerFormFields } from "@/components/customerForm";
 import { getErrorMessage } from "@/utils/errors";
@@ -67,16 +67,16 @@ const total = computed(
 
 <template>
   <div class="flex-1">
-    <Card v-if="isError">
+    <AppCard v-if="isError">
       <CardTitle>{{ CARD_TITLE }}</CardTitle>
       <CardBody>
         <ErrorMessage />
       </CardBody>
-    </Card>
-    <Card v-else-if="isPending">
+    </AppCard>
+    <AppCard v-else-if="isPending">
       <CardTitle>{{ CARD_TITLE }}</CardTitle>
       <CardBody>
-        <Skeleton :height="300">
+        <AppSkeleton :height="300">
           <template v-for="n in 4" :key="n">
             <rect
               x="5%"
@@ -95,15 +95,15 @@ const total = computed(
               height="30"
             />
           </template>
-        </Skeleton>
+        </AppSkeleton>
       </CardBody>
-    </Card>
-    <Card v-else-if="customer == null">
+    </AppCard>
+    <AppCard v-else-if="customer == null">
       <CardTitle>Client introuvable</CardTitle>
       <CardBody>
         <NoResults />
       </CardBody>
-    </Card>
+    </AppCard>
     <div v-else class="flex flex-col gap-4 mb-lg">
       <CustomerForm :title="CARD_TITLE" :data="customer" :on-submit="submit">
         <ConfirmationDialog
@@ -115,13 +115,13 @@ const total = computed(
           <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
           Annuler
         </LinkButton>
-        <Button type="submit" class="px-md" :disabled="savePending">
+        <AppButton type="submit" class="px-md" :disabled="savePending">
           <FontAwesomeIcon :icon="faCheckCircle" class="mr-sm" />
           Modifier
-        </Button>
+        </AppButton>
       </CustomerForm>
       <div class="grow flex gap-4">
-        <Card class="flex-1">
+        <AppCard class="flex-1">
           <CardTitle>Détail des achats</CardTitle>
           <CardBody class="flex-col">
             <template v-if="customer.purchases.length > 0">
@@ -152,8 +152,8 @@ const total = computed(
             </template>
             <span v-else>Aucun achat pour ce⋅tte client⋅e</span>
           </CardBody>
-        </Card>
-        <Card class="flex-1">
+        </AppCard>
+        <AppCard class="flex-1">
           <CardTitle>
             Commandes en cours: {{ customerOrders?.length ?? 0 }}
           </CardTitle>
@@ -173,7 +173,7 @@ const total = computed(
               </li>
             </ul>
           </CardBody>
-        </Card>
+        </AppCard>
       </div>
     </div>
   </div>

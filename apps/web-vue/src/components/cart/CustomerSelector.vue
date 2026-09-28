@@ -3,7 +3,7 @@ import { faEdit, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { toast } from "vue-sonner";
 
-import Button from "@/components/Button.vue";
+import AppButton from "@/components/AppButton.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import SelectCustomer from "@/components/SelectCustomer.vue";
 import type { CustomerSelection } from "@/components/orderForm";
@@ -47,9 +47,9 @@ const onSelect = (customer: CustomerSelection | null) => {
         >
           <FontAwesomeIcon :icon="faEdit" />
         </LinkButton>
-        <Button type="button" title="Dissocier" @click="onSelect(null)">
+        <AppButton type="button" title="Dissocier" @click="onSelect(null)">
           <FontAwesomeIcon :icon="faTimesCircle" />
-        </Button>
+        </AppButton>
       </template>
     </div>
     <CustomerInfos v-if="selectedCustomer" :customer="selectedCustomer" />

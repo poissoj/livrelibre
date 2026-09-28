@@ -3,13 +3,13 @@ import { ref } from "vue";
 
 import { formatPrice } from "@livrelibre/shared/format";
 
-import Alert from "@/components/Alert.vue";
-import Card from "@/components/Card.vue";
+import AppAlert from "@/components/AppAlert.vue";
+import AppCard from "@/components/AppCard.vue";
+import AppSkeleton from "@/components/AppSkeleton.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardFooter from "@/components/CardFooter.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
-import Skeleton from "@/components/Skeleton.vue";
 import AsideButton from "@/components/cart/AsideButton.vue";
 import AsideCartLoader from "@/components/cart/AsideCartLoader.vue";
 import CartTable from "@/components/cart/CartTable.vue";
@@ -36,16 +36,16 @@ const removeError = (isbn: string) => {
 
 <template>
   <div class="[margin-left:10%] [margin-right:10%] flex-1 flex flex-col gap-6">
-    <Card v-if="isError">
+    <AppCard v-if="isError">
       <CardTitle>Panier</CardTitle>
       <CardBody>
         <ErrorMessage />
       </CardBody>
-    </Card>
-    <Card v-else-if="isPending">
+    </AppCard>
+    <AppCard v-else-if="isPending">
       <CardTitle>Panier</CardTitle>
       <CardBody>
-        <Skeleton :height="150">
+        <AppSkeleton :height="150">
           <template v-for="n in 5" :key="n">
             <rect
               x="2%"
@@ -80,18 +80,18 @@ const removeError = (isbn: string) => {
               height="10"
             />
           </template>
-        </Skeleton>
+        </AppSkeleton>
       </CardBody>
-    </Card>
+    </AppCard>
     <template v-else-if="(cart?.count ?? 0) === 0">
-      <Card>
+      <AppCard>
         <div class="flex items-center">
           <CardTitle class="mr-auto">Panier</CardTitle>
           <QuickAdd @error="addError" />
         </div>
         <CardBody class="flex-col">
           <ErrorList :errors="errors" @remove="removeError" />
-          <Alert
+          <AppAlert
             v-if="change"
             type="info"
             class="mb-5"
@@ -102,14 +102,14 @@ const removeError = (isbn: string) => {
               <span class="font-number">{{ change?.toFixed(2) }}</span
               >€
             </span>
-          </Alert>
+          </AppAlert>
           <p>Aucun article dans le panier</p>
         </CardBody>
-      </Card>
+      </AppCard>
       <AsideCartLoader />
     </template>
     <template v-else>
-      <Card class="max-h-full flex flex-col">
+      <AppCard class="max-h-full flex flex-col">
         <div class="flex items-center">
           <CardTitle class="mr-auto">
             Panier - {{ cart?.count }} article{{
@@ -137,7 +137,7 @@ const removeError = (isbn: string) => {
             <PaymentForm @change="(value) => (change = value)" />
           </div>
         </CardFooter>
-      </Card>
+      </AppCard>
       <AsideCartLoader />
     </template>
   </div>

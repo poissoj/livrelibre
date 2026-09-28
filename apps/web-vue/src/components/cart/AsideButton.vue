@@ -2,7 +2,7 @@
 import { faHourglassStart, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-import Button from "@/components/Button.vue";
+import AppButton from "@/components/AppButton.vue";
 import { useTRPCMutation, useTRPCQuery, useTRPCUtils } from "@/utils/query";
 
 const utils = useTRPCUtils();
@@ -23,7 +23,7 @@ const submit = () => {
 
 <template>
   <form v-if="asideCartSuccess" @submit.prevent="submit">
-    <Button
+    <AppButton
       type="submit"
       class="[padding:10px_15px]"
       value="put-aside"
@@ -34,6 +34,6 @@ const submit = () => {
         :spin="isPending"
       />
       <span class="ml-sm">Mettre de côté</span>
-    </Button>
+    </AppButton>
   </form>
 </template>

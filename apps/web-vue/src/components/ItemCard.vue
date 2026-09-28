@@ -11,18 +11,18 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
-import Alert from "@/components/Alert.vue";
-import Button from "@/components/Button.vue";
-import Card from "@/components/Card.vue";
+import AppAlert from "@/components/AppAlert.vue";
+import AppButton from "@/components/AppButton.vue";
+import AppCard from "@/components/AppCard.vue";
+import AppInput from "@/components/AppInput.vue";
+import AppSkeleton from "@/components/AppSkeleton.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardFooter from "@/components/CardFooter.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
-import Input from "@/components/Input.vue";
 import ItemDetails from "@/components/ItemDetails.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import NoResults from "@/components/NoResults.vue";
-import Skeleton from "@/components/Skeleton.vue";
 import { useTitle } from "@/lib/useTitle";
 import { useTRPCQuery, useTRPCUtils } from "@/utils/query";
 import { useAddToCart } from "@/utils/useAddToCart";
@@ -63,16 +63,16 @@ const submitAddToCart = () => {
 </script>
 
 <template>
-  <Card v-if="isError" class="flex-1">
+  <AppCard v-if="isError" class="flex-1">
     <CardTitle>Article en erreur</CardTitle>
     <CardBody>
       <ErrorMessage />
     </CardBody>
-  </Card>
-  <Card v-else-if="isPending" class="flex-1">
+  </AppCard>
+  <AppCard v-else-if="isPending" class="flex-1">
     <CardTitle>Chargement…</CardTitle>
     <CardBody>
-      <Skeleton :height="500">
+      <AppSkeleton :height="500">
         <template v-for="n in 14" :key="n">
           <rect
             x="2%"
@@ -91,16 +91,16 @@ const submitAddToCart = () => {
             height="10"
           />
         </template>
-      </Skeleton>
+      </AppSkeleton>
     </CardBody>
-  </Card>
-  <Card v-else-if="item == null" class="flex-1">
+  </AppCard>
+  <AppCard v-else-if="item == null" class="flex-1">
     <CardTitle>Article introuvable</CardTitle>
     <CardBody>
       <NoResults />
     </CardBody>
-  </Card>
-  <Card v-else class="flex-1 max-h-full flex flex-col">
+  </AppCard>
+  <AppCard v-else class="flex-1 max-h-full flex flex-col">
     <div class="flex items-center">
       <CardTitle class="mr-auto">{{ item.title }}</CardTitle>
       <LinkButton
@@ -110,7 +110,7 @@ const submitAddToCart = () => {
       >
         <FontAwesomeIcon :icon="faBook" />
       </LinkButton>
-      <Button
+      <AppButton
         type="button"
         :title="item.starred ? 'Enlever des favoris' : 'Ajouter aux favoris'"
         class="rounded-none px-md border-primary-darkest"
@@ -122,7 +122,7 @@ const submitAddToCart = () => {
           "
           :spin="bookmarkPending"
         />
-      </Button>
+      </AppButton>
       <LinkButton
         :to="`/update/${String(props.id)}`"
         title="Modifier"
@@ -132,20 +132,20 @@ const submitAddToCart = () => {
       </LinkButton>
     </div>
     <CardBody class="flex-col">
-      <Alert
+      <AppAlert
         v-if="route.query.status === 'updated'"
         type="success"
         @dismiss="dismissStatus"
       >
         {{ item.title }} modifié.
-      </Alert>
+      </AppAlert>
       <ItemDetails :item="item" :orders="orders" />
     </CardBody>
     <CardFooter>
       <form class="flex justify-end" @submit.prevent="submitAddToCart">
         <label>
           <span class="font-medium mr-2">Quantité</span>
-          <Input
+          <AppInput
             v-model="quantity"
             type="number"
             :min="1"
@@ -154,15 +154,19 @@ const submitAddToCart = () => {
             class="font-number !w-20"
           />
         </label>
-        <Button type="submit" class="ml-2 px-md" :disabled="item.amount === 0">
+        <AppButton
+          type="submit"
+          class="ml-2 px-md"
+          :disabled="item.amount === 0"
+        >
           <FontAwesomeIcon
             :icon="addPending ? faSpinner : faCartPlus"
             :spin="addPending"
             class="mr-2"
           />
           Ajouter au panier
-        </Button>
+        </AppButton>
       </form>
     </CardFooter>
-  </Card>
+  </AppCard>
 </template>

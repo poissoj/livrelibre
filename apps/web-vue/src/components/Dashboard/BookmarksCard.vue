@@ -2,7 +2,7 @@
 import { RouterLink } from "vue-router";
 
 import AddToCartButton from "@/components/AddToCartButton.vue";
-import Card from "@/components/Card.vue";
+import AppCard from "@/components/AppCard.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
@@ -18,7 +18,7 @@ const {
 </script>
 
 <template>
-  <Card
+  <AppCard
     class="flex-1 max-h-full overflow-hidden flex flex-col [min-width:24rem]"
   >
     <CardTitle>Favoris</CardTitle>
@@ -40,5 +40,5 @@ const {
         </li>
       </ul>
     </CardBody>
-  </Card>
+  </AppCard>
 </template>

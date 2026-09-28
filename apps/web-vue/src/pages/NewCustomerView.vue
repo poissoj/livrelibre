@@ -2,7 +2,7 @@
 import { faPlus, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
-import Button from "@/components/Button.vue";
+import AppButton from "@/components/AppButton.vue";
 import CustomerForm from "@/components/CustomerForm.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import type { CustomerFormFields } from "@/components/customerForm";
@@ -26,10 +26,10 @@ const submit = async (customer: CustomerFormFields) =>
         <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
         Annuler
       </LinkButton>
-      <Button type="submit" class="px-md" :disabled="savePending">
+      <AppButton type="submit" class="px-md" :disabled="savePending">
         <FontAwesomeIcon :icon="faPlus" class="mr-sm" />
         Ajouter
-      </Button>
+      </AppButton>
     </CustomerForm>
   </div>
 </template>

@@ -7,7 +7,7 @@ import { toast } from "vue-sonner";
 
 import type { RawOrder } from "@livrelibre/shared/order";
 
-import Button from "@/components/Button.vue";
+import AppButton from "@/components/AppButton.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import OrderForm from "@/components/OrderForm.vue";
 import type { OrderFormData } from "@/components/orderForm";
@@ -62,10 +62,10 @@ const data = computed<OrderFormData>(() => ({
     <ErrorMessage v-if="itemError" />
     <div v-else-if="itemPending && itemIdStr">Chargement…</div>
     <OrderForm v-else title="Nouvelle commande" :data="data" @submit="submit">
-      <Button type="submit" class="px-md" :disabled="createPending">
+      <AppButton type="submit" class="px-md" :disabled="createPending">
         <FontAwesomeIcon :icon="faPlus" class="mr-sm" />
         Ajouter
-      </Button>
+      </AppButton>
     </OrderForm>
   </div>
 </template>
