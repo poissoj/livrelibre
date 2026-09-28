@@ -15,7 +15,7 @@ import type { AppRouter } from "@livrelibre/server/router";
 
 import "@/global.css";
 import { router } from "@/router";
-import { getErrorMessage } from "@/utils/errors";
+import { getErrorMessage, logUnexpectedError } from "@/utils/errors";
 import { trpcQueryOptions } from "@/utils/query";
 
 import App from "./App.vue";
@@ -36,7 +36,8 @@ function handleError(error: unknown, meta?: Record<string, unknown>) {
   if (meta?.errorToast === false) {
     return;
   }
-  toast.error(getErrorMessage(error));
+  const message = getErrorMessage(error);
+  toast.error(message, { id: message });
 }
 
 const queryClient = new QueryClient({
@@ -73,6 +74,9 @@ router.beforeEach(async (to) => {
 });
 
 const app = createApp(App);
+app.config.errorHandler = (error) => {
+  logUnexpectedError(error);
+};
 app.use(router);
 app.use(VueQueryPlugin, { queryClient });
 app.mount("#app");
