@@ -23,9 +23,14 @@ const cartError = computed(() => cart.isError.value);
 const cartCount = computed(() => cart.data.value?.count ?? 0);
 
 const logout = async () => {
-  await fetch("/api/logout", { method: "POST" });
-  await utils.reset("user");
-  await router.push("/login");
+  try {
+    await fetch("/api/logout", { method: "POST" });
+  } catch {
+    // Déconnexion locale même si l'appel serveur échoue.
+  } finally {
+    await utils.reset("user");
+    await router.push("/login");
+  }
 };
 </script>
 
