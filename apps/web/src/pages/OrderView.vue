@@ -58,8 +58,13 @@ const deleteMutation = useTRPCMutation("deleteOrder", {
   meta: { errorToast: false },
 });
 
-const submit = async (orderInput: RawOrder) =>
-  await updateOrder({ order: orderInput, id: id.value });
+const submit = async (orderInput: RawOrder) => {
+  try {
+    await updateOrder({ order: orderInput, id: id.value });
+  } catch {
+    // handled by onError
+  }
+};
 
 const deleteOrder = async () => {
   try {

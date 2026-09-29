@@ -33,6 +33,7 @@ import SelectCustomer from "@/components/SelectCustomer.vue";
 import SelectItem from "@/components/SelectItem.vue";
 import type { CustomerSelection, OrderFormData } from "@/components/orderForm";
 import type { NewItem } from "@/components/selectItem";
+import { getErrorMessage } from "@/utils/errors";
 import { useTRPCUtils } from "@/utils/query";
 
 const props = defineProps<{
@@ -81,43 +82,47 @@ const updateItem = (value: Item | NewItem | null) => {
 };
 
 const submit = async () => {
-  if (isbn.value && !itemId.value) {
-    if (!/^\d{10,13}$/.test(isbn.value)) {
-      toast.error("ISBN invalide");
+  try {
+    if (isbn.value && !itemId.value) {
+      if (!/^\d{10,13}$/.test(isbn.value)) {
+        toast.error("ISBN invalide");
+        return;
+      }
+      const result = await utils.fetch("isbnSearch", isbn.value);
+      if (result.count === 0) {
+        toast.info("Aucun article trouvé pour cet ISBN");
+      }
+      updateItem(result.items[0] ?? null);
       return;
     }
-    const result = await utils.fetch("isbnSearch", isbn.value);
-    if (result.count === 0) {
-      toast.info("Aucun article trouvé pour cet ISBN");
+    if (!customerId.value) {
+      toast.info("Merci de sélectionner un⋅e client⋅e");
+      return;
     }
-    updateItem(result.items[0] ?? null);
-    return;
+    if (!itemTitle.value) {
+      toast.info("Merci de renseigner le titre ou l'ISBN de l'article");
+      return;
+    }
+    const parsedDate = new Date(created.value);
+    if (Number.isNaN(parsedDate.getTime())) {
+      toast.error("Date invalide");
+      return;
+    }
+    emit("submit", {
+      created: parsedDate.toISOString(),
+      customerId: customerId.value,
+      itemId: itemId.value,
+      itemTitle: itemTitle.value,
+      ordered: ordered.value,
+      customerNotified: customerNotified.value,
+      paid: paid.value,
+      comment: comment.value,
+      nb: Number(nb.value),
+      contact: contact.value,
+    });
+  } catch (error) {
+    toast.error(getErrorMessage(error));
   }
-  if (!customerId.value) {
-    toast.info("Merci de sélectionner un⋅e client⋅e");
-    return;
-  }
-  if (!itemTitle.value) {
-    toast.info("Merci de renseigner le titre ou l'ISBN de l'article");
-    return;
-  }
-  const parsedDate = new Date(created.value);
-  if (Number.isNaN(parsedDate.getTime())) {
-    toast.error("Date invalide");
-    return;
-  }
-  emit("submit", {
-    created: parsedDate.toISOString(),
-    customerId: customerId.value,
-    itemId: itemId.value,
-    itemTitle: itemTitle.value,
-    ordered: ordered.value,
-    customerNotified: customerNotified.value,
-    paid: paid.value,
-    comment: comment.value,
-    nb: Number(nb.value),
-    contact: contact.value,
-  });
 };
 </script>
 

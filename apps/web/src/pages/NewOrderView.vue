@@ -48,7 +48,13 @@ const { mutateAsync: createOrder, isPending: createPending } = useTRPCMutation(
   },
 );
 
-const submit = async (order: RawOrder) => await createOrder(order);
+const submit = async (order: RawOrder) => {
+  try {
+    await createOrder(order);
+  } catch {
+    // handled by onError
+  }
+};
 
 const data = computed<OrderFormData>(() => ({
   item: itemData.value || null,
