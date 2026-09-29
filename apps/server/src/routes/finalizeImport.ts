@@ -3,6 +3,7 @@ import type { Context } from "hono";
 
 import { formatDate } from "@livrelibre/shared/date";
 import { importPayloadSchema } from "@livrelibre/shared/dilicomItem";
+import { ERROR_CODES } from "@livrelibre/shared/errors";
 import { items } from "@livrelibre/shared/schema";
 import { norm } from "@livrelibre/shared/utils";
 
@@ -13,7 +14,7 @@ import { logger } from "@server/utils/logger";
 export const finalizeImportRoute = async (c: Context) => {
   const user = c.get("user") as User;
   if (user.role === "anonymous") {
-    return c.json({ error: "Unauthenticated" }, 401);
+    return c.json({ error: ERROR_CODES.UNAUTHENTICATED }, 401);
   }
   const body = await c.req.json<unknown>().catch(() => null);
   const parsed = importPayloadSchema.safeParse(body);
@@ -22,7 +23,7 @@ export const finalizeImportRoute = async (c: Context) => {
       user,
       errors: parsed.error.issues,
     });
-    return c.json({ error: "Données d'import invalides" }, 400);
+    return c.json({ error: ERROR_CODES.IMPORT_INVALID }, 400);
   }
   const data = parsed.data;
   const books = data.map((row) => ({

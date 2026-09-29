@@ -1,6 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
+import { ERROR_CODES } from "@livrelibre/shared/errors";
 import { ItemTypes, TVAValues, zItem } from "@livrelibre/shared/item";
 import { zOrder, zOrderStatusArray } from "@livrelibre/shared/order";
 import { norm } from "@livrelibre/shared/utils";
@@ -73,7 +74,7 @@ const payCartSchema = z
     if (paymentType === "cash" && amount === "") {
       ctx.addIssue({
         code: "custom",
-        message: "Montant requis pour un paiement en espèces",
+        message: ERROR_CODES.CASH_AMOUNT_REQUIRED,
         path: ["amount"],
       });
     }
@@ -109,7 +110,7 @@ export const appRouter = router({
             if (value !== "" && !pattern.test(value)) {
               ctx.addIssue({
                 code: "custom",
-                message: `${key} doit être un nombre`,
+                message: ERROR_CODES.INVALID_NUMBER,
                 path: ["search", key],
               });
             }
@@ -246,7 +247,7 @@ export const appRouter = router({
       z.object({
         customerId: zId.optional(),
         customer: z.object({
-          fullname: z.string().min(1),
+          fullname: z.string().min(1, ERROR_CODES.INVALID_NAME),
           phone: z.string().nullable(),
           email: z.string().nullable(),
           contact: z.string(),

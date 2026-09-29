@@ -14,6 +14,7 @@ import { useRoute, useRouter } from "vue-router";
 import AppButton from "@/components/AppButton.vue";
 import AppInput from "@/components/AppInput.vue";
 import { APP_NAME } from "@/lib/config";
+import { getErrorMessage, getRestErrorMessage } from "@/utils/errors";
 import { useTRPCUtils } from "@/utils/query";
 import type { RouterOutput } from "@/utils/trpc";
 
@@ -37,9 +38,6 @@ const showPassword = ref(false);
 const isSubmitting = ref(false);
 const errorMsg = ref("");
 
-const translateErrorMessage = (msg: string) =>
-  msg === "Invalid credentials" ? "Identifiants invalides" : msg;
-
 const onSubmit = async () => {
   isSubmitting.value = true;
   try {
@@ -56,9 +54,14 @@ const onSubmit = async () => {
       utils.setData("user", undefined, user);
       await router.push(redirectTarget.value);
     } else {
-      const { error } = (await res.json()) as { error: string };
-      errorMsg.value = translateErrorMessage(error);
+      const body: unknown = await res.json().catch(() => null);
+      errorMsg.value = getRestErrorMessage(
+        body,
+        "Impossible de vous connecter.",
+      );
     }
+  } catch (error) {
+    errorMsg.value = getErrorMessage(error, "Impossible de vous connecter.");
   } finally {
     isSubmitting.value = false;
   }

@@ -17,11 +17,10 @@ const message = computed(() =>
   <div
     class="p-sm [border:1px_solid_#f5c6cb] [color:#721c24] [background-color:#f8d7da] self-start"
   >
-    <p class="mb-sm">
+    <p class="mb-sm whitespace-pre-line">
       <FontAwesomeIcon :icon="faExclamationCircle" class="mr-sm" />
-      Une erreur est survenue.
+      {{ message }}
     </p>
-    <pre>{{ message }}</pre>
     <AppButton
       v-if="props.onRetry"
       type="button"

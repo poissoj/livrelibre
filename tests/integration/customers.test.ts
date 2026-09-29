@@ -56,7 +56,7 @@ describe("customers", () => {
     await seedOrder({ customerId: customer.id });
 
     await expect(deleteCustomer(customer.id)).rejects.toThrow(
-      "Ce client a des commandes",
+      "CUSTOMER_HAS_ORDERS",
     );
     expect(await getCustomer(customer.id)).not.toBeNull();
   });
@@ -78,6 +78,6 @@ describe("customers", () => {
   });
 
   it("deleteCustomer rejects an unknown customer", async () => {
-    await expect(deleteCustomer(999999)).rejects.toThrow("Client inconnu");
+    await expect(deleteCustomer(999999)).rejects.toThrow("CUSTOMER_NOT_FOUND");
   });
 });

@@ -1,6 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { and, eq, inArray, sql } from "drizzle-orm";
 
+import { ERROR_CODES } from "@livrelibre/shared/errors";
 import type { DBItem, TVA } from "@livrelibre/shared/item";
 import { type PaymentType } from "@livrelibre/shared/sale";
 import { items, sales } from "@livrelibre/shared/schema";
@@ -125,7 +126,7 @@ export const getSalesByDay = async (
       if (!item) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Article introuvable",
+          message: ERROR_CODES.ITEM_NOT_FOUND,
         });
       }
       salesList.push({
@@ -209,7 +210,7 @@ export const deleteSale = async (
         if (existing.length > 0) {
           throw new TRPCError({
             code: "FORBIDDEN",
-            message: "Vous ne pouvez supprimer qu'une vente du jour",
+            message: ERROR_CODES.SALE_NOT_TODAY,
           });
         }
         return;

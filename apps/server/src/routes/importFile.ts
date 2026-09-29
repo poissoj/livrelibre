@@ -7,6 +7,7 @@ import {
   type DilicomRowWithId,
   MAX_IMPORT_ROWS,
 } from "@livrelibre/shared/dilicomItem";
+import { ERROR_CODES } from "@livrelibre/shared/errors";
 import { items } from "@livrelibre/shared/schema";
 
 import { type User } from "@server/auth";
@@ -108,16 +109,16 @@ const updateFields = async (rows: DilicomRow[]) => {
 export const importFileRoute = async (c: Context) => {
   const user = c.get("user") as User;
   if (user.role === "anonymous") {
-    return c.json({ error: "Unauthenticated" }, 401);
+    return c.json({ error: ERROR_CODES.UNAUTHENTICATED }, 401);
   }
   const body = await c.req.parseBody();
   const file = body["dilicom"];
   if (!(file instanceof File)) {
-    return c.json({ error: "No file provided" }, 400);
+    return c.json({ error: ERROR_CODES.MISSING_FILE }, 400);
   }
   const extension = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
   if (!ALLOWED_EXTENSIONS.includes(extension)) {
-    return c.json({ error: "Format de fichier non pris en charge" }, 400);
+    return c.json({ error: ERROR_CODES.UNSUPPORTED_FORMAT }, 400);
   }
   logger.info("import file", { filename: file.name, user });
   const buffer = Buffer.from(await file.arrayBuffer());
@@ -126,25 +127,16 @@ export const importFileRoute = async (c: Context) => {
     rows = filterRows(fileToJson(buffer));
   } catch (error) {
     logger.error(error);
-    return c.json(
-      {
-        error:
-          "Erreur lors de l'import du fichier. Vérifier que le format est correct.",
-      },
-      400,
-    );
+    return c.json({ error: ERROR_CODES.IMPORT_INVALID }, 400);
   }
   if (rows.length > MAX_IMPORT_ROWS) {
-    return c.json(
-      { error: `Trop de lignes (maximum ${MAX_IMPORT_ROWS})` },
-      400,
-    );
+    return c.json({ error: ERROR_CODES.IMPORT_TOO_MANY_ROWS }, 400);
   }
   try {
     const itemsList = await updateFields(rows);
     return c.json(itemsList);
   } catch (error) {
     logger.error(error);
-    return c.json({ error: "Erreur lors du traitement du fichier" }, 500);
+    return c.json({ error: ERROR_CODES.IMPORT_FAILED }, 500);
   }
 };

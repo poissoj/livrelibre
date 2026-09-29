@@ -1,6 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import { and, count, eq, getTableColumns, inArray, ne } from "drizzle-orm";
 
+import { ERROR_CODES } from "@livrelibre/shared/errors";
 import {
   type OrderRow,
   type OrderStatus,
@@ -20,7 +21,10 @@ export const getOrder = async (id: number) => {
       .from(customers)
       .where(eq(customers.id, dbOrder.customerId));
     if (customer.length === 0) {
-      throw new TRPCError({ code: "NOT_FOUND", message: "Client inconnu" });
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: ERROR_CODES.CUSTOMER_NOT_FOUND,
+      });
     }
     const item = dbOrder.itemId
       ? await db.query.items.findFirst({ where: eq(items.id, dbOrder.itemId) })
@@ -116,7 +120,7 @@ export const setCustomerNotified = async (
     .returning();
   if (rows.length === 0) {
     throw new TRPCError({
-      message: "La commande n'existe pas",
+      message: ERROR_CODES.ORDER_NOT_FOUND,
       code: "BAD_REQUEST",
     });
   }

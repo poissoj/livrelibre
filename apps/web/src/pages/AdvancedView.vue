@@ -19,6 +19,7 @@ import ButtonAnchor from "@/components/ButtonAnchor.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardFooter from "@/components/CardFooter.vue";
 import CardTitle from "@/components/CardTitle.vue";
+import { getErrorMessage, getRestErrorMessage } from "@/utils/errors";
 
 type FileData = { filename: string; data: DilicomRowWithId[] };
 
@@ -42,12 +43,16 @@ const importFile = async () => {
       body: formData,
     });
     if (!response.ok) {
-      const json = (await response.json()) as { error: string };
-      toast.error(json.error);
+      const body: unknown = await response.json().catch(() => null);
+      toast.error(
+        getRestErrorMessage(body, "Erreur lors de l'import du fichier."),
+      );
       return;
     }
     const data = (await response.json()) as DilicomRowWithId[];
     file.value = { filename: selected.name, data };
+  } catch (error) {
+    toast.error(getErrorMessage(error));
   } finally {
     isSubmitting.value = false;
   }
@@ -62,7 +67,8 @@ const finalizeImport = async () => {
       body: JSON.stringify(file.value.data),
     });
     if (!response.ok) {
-      toast.error("Erreur lors de l'import");
+      const body: unknown = await response.json().catch(() => null);
+      toast.error(getRestErrorMessage(body, "Erreur lors de l'import."));
       return;
     }
     const nb = file.value.data.length;
@@ -70,6 +76,8 @@ const finalizeImport = async () => {
       `Le fichier a été importé correctement (${String(nb)} article${nb > 1 ? "s" : ""}).`,
     );
     file.value = null;
+  } catch (error) {
+    toast.error(getErrorMessage(error));
   } finally {
     isImporting.value = false;
   }

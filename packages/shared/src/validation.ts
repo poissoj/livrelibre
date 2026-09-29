@@ -1,49 +1,51 @@
 import { z } from "zod";
 
+import { ERROR_CODES } from "./errors";
+
 export const zId = z
-  .number("Identifiant invalide")
-  .int("Identifiant invalide")
-  .positive("Identifiant invalide");
+  .number(ERROR_CODES.INVALID_ID)
+  .int(ERROR_CODES.INVALID_ID)
+  .positive(ERROR_CODES.INVALID_ID);
 
 export const zPage = z
-  .number("Numéro de page invalide")
-  .int("Numéro de page invalide")
-  .min(1, "Numéro de page invalide");
+  .number(ERROR_CODES.INVALID_PAGE)
+  .int(ERROR_CODES.INVALID_PAGE)
+  .min(1, ERROR_CODES.INVALID_PAGE);
 
 export const zAmount = z
-  .number("Quantité invalide")
-  .int("Quantité invalide")
-  .nonnegative("Quantité invalide");
+  .number(ERROR_CODES.INVALID_QUANTITY)
+  .int(ERROR_CODES.INVALID_QUANTITY)
+  .nonnegative(ERROR_CODES.INVALID_QUANTITY);
 
 export const zQuantity = z
-  .number("Quantité invalide")
-  .int("Quantité invalide")
-  .positive("Quantité invalide");
+  .number(ERROR_CODES.INVALID_QUANTITY)
+  .int(ERROR_CODES.INVALID_QUANTITY)
+  .positive(ERROR_CODES.INVALID_QUANTITY);
 
 /** Signed price as a string, normalized to a dot and bounded to numeric(12,2). */
 export const zPrice = z
-  .string("Prix invalide")
+  .string(ERROR_CODES.INVALID_PRICE)
   .trim()
-  .regex(/^-?\d{1,10}([.,]\d{1,2})?$/, "Prix invalide")
+  .regex(/^-?\d{1,10}([.,]\d{1,2})?$/, ERROR_CODES.INVALID_PRICE)
   .transform((value) => value.replace(",", "."));
 
 /** Non-negative amount as a string, normalized to a dot (e.g. cash payment). */
 export const zPositivePrice = z
-  .string("Montant invalide")
+  .string(ERROR_CODES.INVALID_AMOUNT)
   .trim()
-  .regex(/^\d{1,10}([.,]\d{1,2})?$/, "Montant invalide")
+  .regex(/^\d{1,10}([.,]\d{1,2})?$/, ERROR_CODES.INVALID_AMOUNT)
   .transform((value) => value.replace(",", "."));
 
 export const zIsbn = z
-  .string("ISBN invalide")
+  .string(ERROR_CODES.INVALID_ISBN)
   .trim()
-  .regex(/^\d{0,13}$/, "ISBN invalide");
+  .regex(/^\d{0,13}$/, ERROR_CODES.INVALID_ISBN);
 
-export const zDateISO = z.iso.date("Date invalide");
+export const zDateISO = z.iso.date(ERROR_CODES.INVALID_DATE);
 
 export const zDateFR = z
-  .string("Date invalide")
-  .regex(/^\d{2}\/\d{2}\/\d{4}$/, "Date invalide")
+  .string(ERROR_CODES.INVALID_DATE)
+  .regex(/^\d{2}\/\d{2}\/\d{4}$/, ERROR_CODES.INVALID_DATE)
   .refine((value) => {
     const [day, month, year] = value.split("/").map(Number);
     const date = new Date(Date.UTC(year, month - 1, day));
@@ -52,9 +54,12 @@ export const zDateFR = z
       date.getUTCMonth() === month - 1 &&
       date.getUTCDate() === day
     );
-  }, "Date invalide");
+  }, ERROR_CODES.INVALID_DATE);
 
 /** Accepts a date-only string or an ISO datetime string. */
 export const zDateString = z
-  .string("Date invalide")
-  .refine((value) => !Number.isNaN(Date.parse(value)), "Date invalide");
+  .string(ERROR_CODES.INVALID_DATE)
+  .refine(
+    (value) => !Number.isNaN(Date.parse(value)),
+    ERROR_CODES.INVALID_DATE,
+  );

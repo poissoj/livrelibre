@@ -2,6 +2,7 @@ import { TRPCError } from "@trpc/server";
 import { and, eq, isNotNull, sql } from "drizzle-orm";
 
 import { formatDate } from "@livrelibre/shared/date";
+import { ERROR_CODES } from "@livrelibre/shared/errors";
 import type { ItemType, TVA } from "@livrelibre/shared/item";
 import type { PaymentType } from "@livrelibre/shared/sale";
 import {
@@ -68,7 +69,7 @@ export const payCart = async (userId: number, data: PaymentFormData) => {
     if (cartItems.length === 0) {
       throw new TRPCError({
         code: "PRECONDITION_FAILED",
-        message: "Le panier est vide",
+        message: ERROR_CODES.CART_EMPTY,
       });
     }
     const cartId = cartItems[0].id;
@@ -164,7 +165,7 @@ export const addToCart = async (
     if (result.length === 0) {
       throw new TRPCError({
         code: "NOT_FOUND",
-        message: "Article introuvable ou stock insuffisant",
+        message: ERROR_CODES.ITEM_UNAVAILABLE,
       });
     }
     await addItemToCart(result[0], userId, quantity, tx);

@@ -2,6 +2,7 @@ import { ne } from "drizzle-orm";
 import type { Context } from "hono";
 
 import { formatDate } from "@livrelibre/shared/date";
+import { ERROR_CODES } from "@livrelibre/shared/errors";
 import { ITEM_TYPES } from "@livrelibre/shared/item";
 import { items } from "@livrelibre/shared/schema";
 
@@ -45,7 +46,7 @@ const makeCSV = async () => {
 export const exportRoute = async (c: Context) => {
   const user = c.get("user") as User;
   if (user.role === "anonymous") {
-    return c.json({ error: "Unauthenticated" }, 401);
+    return c.json({ error: ERROR_CODES.UNAUTHENTICATED }, 401);
   }
   try {
     const csv = await makeCSV();
@@ -58,6 +59,6 @@ export const exportRoute = async (c: Context) => {
     return c.body(csv);
   } catch (error) {
     logger.error(error);
-    return c.json({ error: "Unable to export stock" }, 500);
+    return c.json({ error: ERROR_CODES.EXPORT_FAILED }, 500);
   }
 };

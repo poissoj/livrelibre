@@ -12,6 +12,7 @@ import {
 
 import type { CustomerWithPurchase } from "@livrelibre/shared/customer";
 import { formatDate } from "@livrelibre/shared/date";
+import { ERROR_CODES } from "@livrelibre/shared/errors";
 import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
 import {
   customers,
@@ -121,7 +122,7 @@ export const setSelectedCustomer = async (
     if (found.length === 0) {
       throw new TRPCError({
         code: "BAD_REQUEST",
-        message: "Client inconnu",
+        message: ERROR_CODES.CUSTOMER_NOT_FOUND,
       });
     }
   }
@@ -157,7 +158,7 @@ export const deleteCustomer = async (customerId: number) => {
     if (ordersCount[0].count > 0) {
       throw new TRPCError({
         code: "PRECONDITION_FAILED",
-        message: "Ce client a des commandes et ne peut pas être supprimé",
+        message: ERROR_CODES.CUSTOMER_HAS_ORDERS,
       });
     }
     await tx
@@ -170,7 +171,10 @@ export const deleteCustomer = async (customerId: number) => {
       .where(eq(customers.id, customerId))
       .returning({ id: customers.id });
     if (deleted.length === 0) {
-      throw new TRPCError({ code: "NOT_FOUND", message: "Client inconnu" });
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: ERROR_CODES.CUSTOMER_NOT_FOUND,
+      });
     }
     logger.info("Delete customer", { customerId });
     return { type: "success" as const, msg: "Le client a été supprimé" };

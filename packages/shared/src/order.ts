@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+import { ERROR_CODES } from "./errors";
 import type { orders } from "./schema";
 import { zDateString, zId } from "./validation";
 
@@ -31,9 +32,9 @@ export const zOrder = z.object({
   paid: z.boolean(),
   comment: z.string(),
   nb: z
-    .number("Nombre d'exemplaires invalide")
-    .int("Nombre d'exemplaires invalide")
-    .positive("Nombre d'exemplaires invalide"),
+    .number(ERROR_CODES.INVALID_NB)
+    .int(ERROR_CODES.INVALID_NB)
+    .positive(ERROR_CODES.INVALID_NB),
   contact: zContactMean,
 });
 
