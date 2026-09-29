@@ -3,6 +3,7 @@ import { faEdit, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { toast } from "vue-sonner";
 
+import AppAlert from "@/components/AppAlert.vue";
 import AppButton from "@/components/AppButton.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import SelectCustomer from "@/components/SelectCustomer.vue";
@@ -12,10 +13,11 @@ import { useTRPCMutation, useTRPCQuery, useTRPCUtils } from "@/utils/query";
 
 import CustomerInfos from "./CustomerInfos.vue";
 
-const { data: selectedCustomer, isSuccess } = useTRPCQuery(
-  "selectedCustomer",
-  undefined,
-);
+const {
+  data: selectedCustomer,
+  isSuccess,
+  isError,
+} = useTRPCQuery("selectedCustomer", undefined);
 const utils = useTRPCUtils();
 const { mutate: selectCustomer } = useTRPCMutation("selectCustomer", {
   meta: { errorToast: false },
@@ -33,7 +35,10 @@ const onSelect = (customer: CustomerSelection | null) => {
 </script>
 
 <template>
-  <div v-if="isSuccess">
+  <AppAlert v-if="isError" type="error" :dismissible="false">
+    Impossible de charger le⋅la client⋅e associé⋅e.
+  </AppAlert>
+  <div v-else-if="isSuccess">
     <div class="flex gap-1">
       <SelectCustomer
         :customer="selectedCustomer ?? null"

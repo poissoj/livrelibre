@@ -12,6 +12,7 @@ import type { ItemOrder } from "./item";
 const props = defineProps<{
   item: ItemWithCount;
   orders: ItemOrder[] | undefined;
+  ordersError?: boolean;
 }>();
 
 const formatStringPrice = (price: string) =>
@@ -50,7 +51,8 @@ const formatStringPrice = (price: string) =>
     </dd>
     <dt class="[flex-basis:30%] p-sm font-medium">Commandes</dt>
     <dd class="[flex:1_0_70%] p-sm">
-      <template v-if="props.orders">
+      <template v-if="props.ordersError">Erreur de chargement</template>
+      <template v-else-if="props.orders">
         <span v-if="props.orders.length === 0">Aucune commande en cours</span>
         <div v-else class="flex gap-2">
           <div v-for="order in props.orders" :key="order.status" class="flex">

@@ -35,7 +35,10 @@ const router = useRouter();
 const utils = useTRPCUtils();
 
 const { data: item, isPending, isError } = useTRPCQuery("searchItem", props.id);
-const { data: orders } = useTRPCQuery("itemOrders", props.id);
+const { data: orders, isError: ordersError } = useTRPCQuery(
+  "itemOrders",
+  props.id,
+);
 
 useTitle(() =>
   item.value ? `${item.value.title} | Voir un article` : "Voir un article",
@@ -139,7 +142,7 @@ const submitAddToCart = () => {
       >
         {{ item.title }} modifié.
       </AppAlert>
-      <ItemDetails :item="item" :orders="orders" />
+      <ItemDetails :item="item" :orders="orders" :orders-error="ordersError" />
     </CardBody>
     <CardFooter>
       <form class="flex justify-end" @submit.prevent="submitAddToCart">
