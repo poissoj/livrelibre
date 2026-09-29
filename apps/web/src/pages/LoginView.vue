@@ -8,8 +8,8 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { computed, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 
 import AppButton from "@/components/AppButton.vue";
 import AppInput from "@/components/AppInput.vue";
@@ -18,7 +18,18 @@ import { useTRPCUtils } from "@/utils/query";
 import type { RouterOutput } from "@/utils/trpc";
 
 const router = useRouter();
+const route = useRoute();
 const utils = useTRPCUtils();
+
+// Chemin interne uniquement, pour éviter une redirection ouverte.
+const redirectTarget = computed(() => {
+  const redirect = route.query.redirect;
+  return typeof redirect === "string" &&
+    redirect.startsWith("/") &&
+    !redirect.startsWith("//")
+    ? redirect
+    : "/";
+});
 
 const username = ref("");
 const password = ref("");
@@ -43,7 +54,7 @@ const onSubmit = async () => {
     if (res.ok) {
       const user = (await res.json()) as RouterOutput["user"];
       utils.setData("user", undefined, user);
-      await router.push("/");
+      await router.push(redirectTarget.value);
     } else {
       const { error } = (await res.json()) as { error: string };
       errorMsg.value = translateErrorMessage(error);

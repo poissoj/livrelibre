@@ -14,6 +14,7 @@ import "vue-sonner/style.css";
 import type { AppRouter } from "@livrelibre/server/router";
 
 import "@/global.css";
+import { USER_QUERY_OPTIONS } from "@/lib/userQuery";
 import { router } from "@/router";
 import { getErrorMessage, logUnexpectedError } from "@/utils/errors";
 import { trpcQueryOptions } from "@/utils/query";
@@ -22,15 +23,28 @@ import App from "./App.vue";
 
 config.autoAddCss = false;
 
+const loginRedirect = (fullPath: string) =>
+  fullPath === "/"
+    ? { path: "/login" }
+    : { path: "/login", query: { redirect: fullPath } };
+
+const redirectToLogin = () => {
+  const current = router.currentRoute.value;
+  if (current.path !== "/login") {
+    void router.push(loginRedirect(current.fullPath));
+  }
+};
+
 function handleError(error: unknown, meta?: Record<string, unknown>) {
   if (
     isTRPCClientError<AppRouter>(error) &&
     error.data?.code === "UNAUTHORIZED"
   ) {
+    // Session expirée pendant un refetch en arrière-plan : annuler les requêtes
+    // en cours pour éviter une tempête de refetch avant la redirection.
+    void queryClient.cancelQueries();
     queryClient.clear();
-    if (router.currentRoute.value.path !== "/login") {
-      void router.push("/login");
-    }
+    redirectToLogin();
     return;
   }
   if (meta?.errorToast === false) {
@@ -53,24 +67,27 @@ const queryClient = new QueryClient({
   }),
 });
 
-const isLoggedIn = async (): Promise<boolean> => {
-  try {
-    const user = await queryClient.query({
-      ...trpcQueryOptions("user", undefined),
-      staleTime: "static",
-    });
-    return user.role !== "anonymous";
-  } catch {
-    return false;
-  }
-};
+const fetchUser = () =>
+  queryClient.query({
+    ...trpcQueryOptions("user", undefined),
+    ...USER_QUERY_OPTIONS,
+  });
 
 router.beforeEach(async (to) => {
-  const loggedIn = await isLoggedIn();
+  let loggedIn: boolean;
+  try {
+    const user = await fetchUser();
+    loggedIn = user.role !== "anonymous";
+  } catch {
+    // Erreur transitoire (réseau, 500) : ne pas déconnecter l'utilisateur.
+    // La vue ciblée affichera l'erreur ; une nouvelle tentative aura lieu à la
+    // prochaine navigation.
+    return true;
+  }
   if (to.path === "/login") {
     return loggedIn ? { path: "/" } : true;
   }
-  return loggedIn ? true : { path: "/login" };
+  return loggedIn ? true : loginRedirect(to.fullPath);
 });
 
 const app = createApp(App);
