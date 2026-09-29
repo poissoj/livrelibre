@@ -80,6 +80,7 @@ const {
   isSuccess,
   isError,
   isFetching,
+  refetch,
 } = useTRPCQuery(
   "advancedSearch",
   computed(() => ({ search: searchQuery.value, page: page.value })),
@@ -142,7 +143,7 @@ const cardTitle = computed(() => {
         </label>
       </div>
       <CardBody>
-        <ErrorMessage v-if="isError" />
+        <ErrorMessage v-if="isError" :on-retry="refetch" />
         <LoadingOverlay :loading="isSuccess && showLoading">
           <ItemsTable :items="list?.items ?? []" />
         </LoadingOverlay>

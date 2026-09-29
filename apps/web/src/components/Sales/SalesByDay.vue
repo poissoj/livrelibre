@@ -27,6 +27,7 @@ const {
   data: dayStats,
   isPending,
   isError,
+  refetch,
 } = useTRPCQuery(
   "salesByDay",
   computed(() => props.date),
@@ -59,7 +60,7 @@ const categories = computed(() =>
       <AppCard class="flex-1">
         <CardTitle>Répartition par TVA</CardTitle>
         <CardBody>
-          <ErrorMessage v-if="isError" />
+          <ErrorMessage v-if="isError" :on-retry="refetch" />
           <TVASkeleton v-else-if="isPending" />
           <StatsByTVA v-else :stats="dayStats?.tva ?? []" />
         </CardBody>
@@ -67,7 +68,7 @@ const categories = computed(() =>
       <AppCard class="flex-1">
         <CardTitle>Répartition par type de paiement</CardTitle>
         <CardBody>
-          <ErrorMessage v-if="isError" />
+          <ErrorMessage v-if="isError" :on-retry="refetch" />
           <CategorySkeleton v-else-if="isPending" />
           <div v-else class="flex flex-1 flex-col gap-3">
             <CategoriesTable :categories="categories" />
@@ -84,7 +85,7 @@ const categories = computed(() =>
     <AppCard class="flex flex-col">
       <CardTitle>{{ salesTitle }}</CardTitle>
       <CardBody>
-        <ErrorMessage v-if="isError" />
+        <ErrorMessage v-if="isError" :on-retry="refetch" />
         <SalesSkeleton v-else-if="isPending" />
         <SalesTable v-else :carts="dayStats?.carts ?? []" />
       </CardBody>

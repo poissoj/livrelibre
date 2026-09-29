@@ -26,6 +26,7 @@ const {
   isPending,
   isError,
   isFetching,
+  refetch,
 } = useTRPCQuery("items", page, {
   placeholderData: keepPreviousData,
 });
@@ -54,7 +55,7 @@ useTitle(pageTitle);
 <template>
   <div class="flex flex-1 flex-col gap-lg">
     <ItemsCard v-if="isError" title="Liste des articles">
-      <ErrorMessage />
+      <ErrorMessage :on-retry="refetch" />
     </ItemsCard>
     <ItemsCard v-else-if="isPending" title="Liste des articles">
       <AppSkeleton :height="300">

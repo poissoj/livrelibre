@@ -24,6 +24,7 @@ const {
   data: itemData,
   isPending: itemPending,
   isError: itemError,
+  refetch: refetchItem,
 } = useTRPCQuery(
   "searchItem",
   computed(() => Number(itemIdStr)),
@@ -65,7 +66,7 @@ const data = computed<OrderFormData>(() => ({
 
 <template>
   <div class="flex-1 max-w-6xl mx-auto">
-    <ErrorMessage v-if="itemError" />
+    <ErrorMessage v-if="itemError" :on-retry="refetchItem" />
     <div v-else-if="itemPending && itemIdStr">Chargement…</div>
     <OrderForm v-else title="Nouvelle commande" :data="data" @submit="submit">
       <AppButton type="submit" class="px-md" :disabled="createPending">

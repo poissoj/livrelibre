@@ -26,7 +26,12 @@ const router = useRouter();
 const utils = useTRPCUtils();
 const id = computed(() => Number(route.params.itemId));
 
-const { data: item, isPending, isError } = useTRPCQuery("searchItem", id);
+const {
+  data: item,
+  isPending,
+  isError,
+  refetch,
+} = useTRPCQuery("searchItem", id);
 const { mutateAsync: updateItem } = useTRPCMutation("updateItem", {
   meta: { errorToast: false },
 });
@@ -60,7 +65,7 @@ const formData = computed<FormFields | undefined>(() => {
     <AppCard v-if="isError">
       <CardTitle>{{ CARD_TITLE }}</CardTitle>
       <CardBody>
-        <ErrorMessage />
+        <ErrorMessage :on-retry="refetch" />
       </CardBody>
     </AppCard>
     <AppCard v-else-if="isPending">

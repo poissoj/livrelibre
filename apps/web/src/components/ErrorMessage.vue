@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { faExclamationCircle } from "@fortawesome/free-solid-svg-icons";
+import { faExclamationCircle, faRedo } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { computed } from "vue";
 
+import AppButton from "@/components/AppButton.vue";
 import { getErrorMessage } from "@/utils/errors";
 
-const props = defineProps<{ error?: unknown }>();
+const props = defineProps<{ error?: unknown; onRetry?: () => void }>();
 
 const message = computed(() =>
   getErrorMessage(props.error, "Impossible de récupérer les données"),
@@ -21,5 +22,14 @@ const message = computed(() =>
       Une erreur est survenue.
     </p>
     <pre>{{ message }}</pre>
+    <AppButton
+      v-if="props.onRetry"
+      type="button"
+      class="mt-sm"
+      @click="props.onRetry()"
+    >
+      <FontAwesomeIcon :icon="faRedo" class="mr-sm" />
+      Réessayer
+    </AppButton>
   </div>
 </template>

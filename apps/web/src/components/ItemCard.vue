@@ -34,7 +34,12 @@ const route = useRoute();
 const router = useRouter();
 const utils = useTRPCUtils();
 
-const { data: item, isPending, isError } = useTRPCQuery("searchItem", props.id);
+const {
+  data: item,
+  isPending,
+  isError,
+  refetch,
+} = useTRPCQuery("searchItem", props.id);
 const { data: orders, isError: ordersError } = useTRPCQuery(
   "itemOrders",
   props.id,
@@ -69,7 +74,7 @@ const submitAddToCart = () => {
   <AppCard v-if="isError" class="flex-1">
     <CardTitle>Article en erreur</CardTitle>
     <CardBody>
-      <ErrorMessage />
+      <ErrorMessage :on-retry="refetch" />
     </CardBody>
   </AppCard>
   <AppCard v-else-if="isPending" class="flex-1">

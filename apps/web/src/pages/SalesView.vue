@@ -16,7 +16,12 @@ import { useTRPCQuery } from "@/utils/query";
 const TH_STYLES = "sticky top-0 bg-white";
 
 const router = useRouter();
-const { data: sales, isPending, isError } = useTRPCQuery("sales", undefined);
+const {
+  data: sales,
+  isPending,
+  isError,
+  refetch,
+} = useTRPCQuery("sales", undefined);
 
 const makeSaleURL = (sale: Sale) =>
   `/sale/${sale.month.split("/").reverse().join("/")}`;
@@ -31,7 +36,7 @@ const goToSale = (sale: Sale) => {
       <AppCard class="mb-lg max-h-full overflow-hidden flex flex-col">
         <CardTitle>Liste des ventes par mois</CardTitle>
         <CardBody>
-          <ErrorMessage v-if="isError" />
+          <ErrorMessage v-if="isError" :on-retry="refetch" />
           <AppSkeleton v-else-if="isPending" :height="380">
             <template v-for="n in 12" :key="n">
               <rect

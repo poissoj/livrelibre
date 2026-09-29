@@ -8,8 +8,8 @@ import ServerErrorView from "@/pages/ServerErrorView.vue";
 
 <template>
   <ErrorBoundary>
-    <template #fallback>
-      <ServerErrorView />
+    <template #fallback="{ reset }">
+      <ServerErrorView @retry="reset" />
     </template>
     <RouterView />
   </ErrorBoundary>

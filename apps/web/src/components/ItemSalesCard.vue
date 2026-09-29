@@ -14,14 +14,19 @@ const SalesByMonth = defineAsyncComponent(
   () => import("@/components/Charts/SalesByMonth.vue"),
 );
 
-const { data: sales, isPending, isError } = useTRPCQuery("lastSales", props.id);
+const {
+  data: sales,
+  isPending,
+  isError,
+  refetch,
+} = useTRPCQuery("lastSales", props.id);
 </script>
 
 <template>
   <AppCard class="mb-lg">
     <CardTitle>Ventes des 2 dernières années</CardTitle>
     <CardBody>
-      <ErrorMessage v-if="isError" />
+      <ErrorMessage v-if="isError" :on-retry="refetch" />
       <AppSkeleton v-else-if="isPending" :height="350">
         <rect x="2%" y="119" width="4%" height="196" />
         <rect x="8%" y="83" width="4%" height="232" />

@@ -49,6 +49,7 @@ const {
   data: ordersData,
   isPending,
   isError,
+  refetch,
 } = useTRPCQuery("orders", orderStatus);
 const orderRows = computed<OrderRow[]>(() =>
   (ordersData.value ?? []).map((order) => ({
@@ -111,7 +112,7 @@ const filteredOrders = computed(() =>
 <template>
   <div class="flex flex-1 flex-col gap-lg">
     <ItemsCard v-if="isError" title="Liste des commandes">
-      <ErrorMessage />
+      <ErrorMessage :on-retry="refetch" />
     </ItemsCard>
     <AppCard v-else class="max-h-full overflow-hidden flex flex-col relative">
       <CardTitle class="flex items-center">

@@ -31,6 +31,7 @@ const {
   data: monthStats,
   isPending,
   isError,
+  refetch,
 } = useTRPCQuery("salesByMonth", params);
 
 const formatDate = (date: string) => date.split("-").reverse().join("/");
@@ -59,7 +60,7 @@ const categories = computed(() =>
       <AppCard class="flex flex-col flex-1 max-h-full overflow-hidden">
         <CardTitle>Liste des ventes - {{ monthLabel }}</CardTitle>
         <CardBody>
-          <ErrorMessage v-if="isError" />
+          <ErrorMessage v-if="isError" :on-retry="refetch" />
           <AppSkeleton v-else-if="isPending" :height="600">
             <template v-for="n in 20" :key="n">
               <rect
@@ -129,7 +130,7 @@ const categories = computed(() =>
         <AppCard class="[min-height:12rem] flex flex-col">
           <CardTitle>Répartition par TVA</CardTitle>
           <CardBody>
-            <ErrorMessage v-if="isError" />
+            <ErrorMessage v-if="isError" :on-retry="refetch" />
             <TVASkeleton v-else-if="isPending" />
             <StatsByTVA v-else :stats="monthStats?.stats ?? []" />
           </CardBody>
@@ -137,7 +138,7 @@ const categories = computed(() =>
         <AppCard>
           <CardTitle>Répartition par catégorie</CardTitle>
           <CardBody>
-            <ErrorMessage v-if="isError" />
+            <ErrorMessage v-if="isError" :on-retry="refetch" />
             <CategorySkeleton v-else-if="isPending" />
             <CategoriesTable v-else :categories="categories" />
           </CardBody>

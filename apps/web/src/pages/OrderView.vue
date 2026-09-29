@@ -33,7 +33,7 @@ const utils = useTRPCUtils();
 const { query } = useQueryParams();
 const id = computed(() => Number(route.params.orderId));
 
-const { data: order, isPending, isError } = useTRPCQuery("order", id);
+const { data: order, isPending, isError, refetch } = useTRPCQuery("order", id);
 
 const { mutateAsync: updateOrder, isPending: updatePending } = useTRPCMutation(
   "updateOrder",
@@ -92,7 +92,7 @@ const data = computed<OrderFormData | undefined>(() => {
     <AppCard v-if="isError">
       <CardTitle>{{ CARD_TITLE }}</CardTitle>
       <CardBody>
-        <ErrorMessage />
+        <ErrorMessage :on-retry="refetch" />
       </CardBody>
     </AppCard>
     <AppCard v-else-if="isPending">

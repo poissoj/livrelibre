@@ -20,7 +20,12 @@ import QuickAdd from "@/components/cart/QuickAdd.vue";
 import type { ISBNError } from "@/components/cart/types";
 import { useTRPCQuery } from "@/utils/query";
 
-const { data: cart, isPending, isError } = useTRPCQuery("cart", undefined);
+const {
+  data: cart,
+  isPending,
+  isError,
+  refetch,
+} = useTRPCQuery("cart", undefined);
 const change = ref<number | null>(null);
 const errors = ref<ISBNError[]>([]);
 
@@ -39,7 +44,7 @@ const removeError = (isbn: string) => {
     <AppCard v-if="isError">
       <CardTitle>Panier</CardTitle>
       <CardBody>
-        <ErrorMessage />
+        <ErrorMessage :on-retry="refetch" />
       </CardBody>
     </AppCard>
     <AppCard v-else-if="isPending">

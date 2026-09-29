@@ -32,11 +32,17 @@ const router = useRouter();
 const utils = useTRPCUtils();
 const id = computed(() => Number(route.params.customerId));
 
-const { data: customer, isPending, isError } = useTRPCQuery("customer", id);
-const { data: customerOrders, isError: ordersError } = useTRPCQuery(
-  "customerOrders",
-  id,
-);
+const {
+  data: customer,
+  isPending,
+  isError,
+  refetch: refetchCustomer,
+} = useTRPCQuery("customer", id);
+const {
+  data: customerOrders,
+  isError: ordersError,
+  refetch: refetchOrders,
+} = useTRPCQuery("customerOrders", id);
 const { mutateAsync: saveCustomer, isPending: savePending } = useTRPCMutation(
   "updateCustomer",
   {
@@ -73,7 +79,7 @@ const total = computed(
     <AppCard v-if="isError">
       <CardTitle>{{ CARD_TITLE }}</CardTitle>
       <CardBody>
-        <ErrorMessage />
+        <ErrorMessage :on-retry="refetchCustomer" />
       </CardBody>
     </AppCard>
     <AppCard v-else-if="isPending">
@@ -163,7 +169,7 @@ const total = computed(
             >
           </CardTitle>
           <CardBody>
-            <ErrorMessage v-if="ordersError" />
+            <ErrorMessage v-if="ordersError" :on-retry="refetchOrders" />
             <span v-else-if="!customerOrders || customerOrders.length === 0">
               Aucune commande en cours pour ce⋅tte client⋅e
             </span>

@@ -13,6 +13,7 @@ const {
   data: asideCart,
   isError,
   isSuccess,
+  refetch,
 } = useTRPCQuery("asideCart", undefined);
 </script>
 
@@ -20,7 +21,7 @@ const {
   <AppCard v-if="isError">
     <CardTitle>Panier en attente</CardTitle>
     <CardBody>
-      <ErrorMessage />
+      <ErrorMessage :on-retry="refetch" />
     </CardBody>
   </AppCard>
   <AppCard v-else-if="isSuccess && (asideCart?.count ?? 0) > 0">

@@ -17,6 +17,7 @@ const {
   data: bestSales,
   isPending,
   isError,
+  refetch,
 } = useTRPCQuery("bestsales", undefined);
 </script>
 
@@ -25,7 +26,7 @@ const {
     <AppCard class="max-h-full overflow-hidden flex flex-col">
       <CardTitle>Meilleures ventes</CardTitle>
       <CardBody>
-        <ErrorMessage v-if="isError" />
+        <ErrorMessage v-if="isError" :on-retry="refetch" />
         <AppSkeleton v-else-if="isPending" :height="500">
           <template v-for="n in 17" :key="n">
             <rect

@@ -25,7 +25,12 @@ const DAYS = [
   "Samedi",
 ];
 
-const { data: stats, isPending, isError } = useTRPCQuery("stats", undefined);
+const {
+  data: stats,
+  isPending,
+  isError,
+  refetch,
+} = useTRPCQuery("stats", undefined);
 
 const days = computed(() =>
   (stats.value?.days ?? []).map(({ day, count }) => ({
@@ -40,7 +45,7 @@ const days = computed(() =>
     <AppCard>
       <CardTitle>Nombre de ventes par heure</CardTitle>
       <CardBody class="[width:900px]">
-        <ErrorMessage v-if="isError" />
+        <ErrorMessage v-if="isError" :on-retry="refetch" />
         <ContentLoader
           v-else-if="isPending"
           viewBox="0 0 900 320"
@@ -65,7 +70,7 @@ const days = computed(() =>
     <AppCard>
       <CardTitle>Nombre de ventes par jour</CardTitle>
       <CardBody class="[width:900px] justify-center">
-        <ErrorMessage v-if="isError" />
+        <ErrorMessage v-if="isError" :on-retry="refetch" />
         <ContentLoader
           v-else-if="isPending"
           viewBox="0 0 800 300"

@@ -40,6 +40,7 @@ const {
   isError,
   isSuccess,
   isFetching,
+  refetch,
 } = useTRPCQuery(
   "quicksearch",
   computed(() => ({
@@ -97,7 +98,7 @@ const subtitle = computed(
         </label>
       </div>
       <CardBody>
-        <ErrorMessage v-if="isError" />
+        <ErrorMessage v-if="isError" :on-retry="refetch" />
         <LoadingOverlay :loading="isSuccess && showLoading">
           <ItemsTable :items="searchResult?.items ?? []" />
         </LoadingOverlay>
