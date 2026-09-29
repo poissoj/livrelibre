@@ -5,6 +5,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 
+import { getErrorMessage } from "@/utils/errors";
 import { useTRPCUtils } from "@/utils/query";
 
 const router = useRouter();
@@ -26,6 +27,8 @@ const submit = async () => {
         return;
       }
       await router.push(`/item/${String(result.items[0].id)}`);
+    } catch (error) {
+      toast.error(getErrorMessage(error));
     } finally {
       isLoading.value = false;
     }
