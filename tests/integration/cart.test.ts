@@ -14,7 +14,6 @@ import {
   addPurchase,
   setSelectedCustomer,
 } from "@livrelibre/server/server/customers";
-import { CART_ERRORS } from "@livrelibre/shared/errors";
 import { items, purchases, sales } from "@livrelibre/shared/schema";
 
 import { seedCustomer, seedItem, seedUser, truncateAll } from "./helpers";
@@ -186,14 +185,14 @@ describe("cart", () => {
   it("addISBNToCart returns ITEM_NOT_FOUND for an unknown ISBN", async () => {
     const user = await seedUser();
     const res = await addISBNToCart(user.id, "9781111111111");
-    expect(res.errorCode).toBe(CART_ERRORS.ITEM_NOT_FOUND);
+    expect(res.errorCode).toBe("ITEM_NOT_FOUND");
   });
 
   it("addISBNToCart returns NO_STOCK when the item is out of stock", async () => {
     const user = await seedUser();
     await seedItem({ isbn: "9781234567890", amount: 0 });
     const res = await addISBNToCart(user.id, "9781234567890");
-    expect(res.errorCode).toBe(CART_ERRORS.NO_STOCK);
+    expect(res.errorCode).toBe("NO_STOCK");
   });
 
   it("removeFromCart restores stock", async () => {

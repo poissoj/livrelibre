@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-import { CART_ERRORS } from "@livrelibre/shared/errors";
-
 import AppInput from "@/components/AppInput.vue";
 import { refreshCartRelated } from "@/utils/invalidations";
 import { useTRPCMutation, useTRPCUtils } from "@/utils/query";
@@ -17,7 +15,7 @@ const isbn = ref("");
 const { mutate: addIsbn } = useTRPCMutation("addISBNToCart", {
   meta: { errorToast: false },
   onError(_error, isbnInput) {
-    emit("error", { message: CART_ERRORS.INTERNAL_ERROR, isbn: isbnInput });
+    emit("error", { message: "INTERNAL_ERROR", isbn: isbnInput });
   },
   async onSuccess(data, isbnInput) {
     if (data.errorCode) {

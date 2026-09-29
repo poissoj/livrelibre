@@ -2,7 +2,6 @@ import { TRPCError } from "@trpc/server";
 import { and, eq, isNotNull, sql } from "drizzle-orm";
 
 import { formatDate } from "@livrelibre/shared/date";
-import { CART_ERRORS } from "@livrelibre/shared/errors";
 import type { ItemType, TVA } from "@livrelibre/shared/item";
 import type { PaymentType } from "@livrelibre/shared/sale";
 import {
@@ -172,7 +171,15 @@ export const addToCart = async (
   });
 };
 
-export const addISBNToCart = async (userId: number, isbn: string) => {
+type AddIsbnToCartResult =
+  | { errorCode: "ITEM_NOT_FOUND" }
+  | { errorCode: "NO_STOCK"; title: string; id: number }
+  | { errorCode: null };
+
+export const addISBNToCart = async (
+  userId: number,
+  isbn: string,
+): Promise<AddIsbnToCartResult> => {
   return await db.transaction(async (tx) => {
     const result = await tx
       .update(itemsTable)
@@ -186,11 +193,11 @@ export const addISBNToCart = async (userId: number, isbn: string) => {
 
       if (!item) {
         logger.info("ISBN non trouvé", { userId, isbn });
-        return { errorCode: CART_ERRORS.ITEM_NOT_FOUND };
+        return { errorCode: "ITEM_NOT_FOUND" };
       }
       logger.info("Plus de stock", { userId, isbn });
       return {
-        errorCode: CART_ERRORS.NO_STOCK,
+        errorCode: "NO_STOCK",
         title: item.title,
         id: item.id,
       };

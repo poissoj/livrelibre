@@ -1,7 +1,7 @@
-import type { CART_ERRORS } from "@livrelibre/shared/errors";
+import type { CartError } from "@livrelibre/shared/errors";
 
 export type ISBNError = {
-  message: CART_ERRORS;
+  message: CartError;
   isbn: string;
   title?: string;
   id?: number;
