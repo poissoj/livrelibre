@@ -1,5 +1,5 @@
-import { type Ref, computed, onBeforeUnmount, onMounted, watch } from "vue";
-import { useRoute } from "vue-router";
+import { type Ref, computed, onMounted } from "vue";
+import { onBeforeRouteLeave, useRoute } from "vue-router";
 
 const saveScrollPos = (path: string, elt: HTMLElement | null) => {
   if (!elt) return;
@@ -28,12 +28,7 @@ export function useScrollRestoration(ref: Ref<HTMLElement | null>) {
     restoreScrollPos(path.value, ref.value);
   });
 
-  watch(path, (newPath, oldPath) => {
-    saveScrollPos(oldPath, ref.value);
-    restoreScrollPos(newPath, ref.value);
-  });
-
-  onBeforeUnmount(() => {
+  onBeforeRouteLeave(() => {
     saveScrollPos(path.value, ref.value);
   });
 }
