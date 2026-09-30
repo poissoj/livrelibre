@@ -29,6 +29,7 @@ test("Liste des articles vers la fiche article et ajout au panier", async ({
   await expect(page.getByText("Prix de vente")).toBeVisible();
 
   await page.getByRole("button", { name: "Ajouter au panier" }).click();
+  await expect(page.getByTitle("Voir le panier")).toContainText("1");
 
   await page.goto("/cart");
   await expect(page.getByText("Panier - 1 article")).toBeVisible();
