@@ -22,7 +22,6 @@ describe("sales", () => {
     await payCart(user.id, {
       paymentDate: "2024-01-05",
       paymentType: "cash",
-      amount: "10.00",
     });
 
     const result = await getSalesByDay("2024-01-05");
@@ -37,7 +36,6 @@ describe("sales", () => {
     await payCart(user.id, {
       paymentDate: "2024-01-05",
       paymentType: "cash",
-      amount: "10.00",
     });
 
     const months = await getSales();
@@ -53,7 +51,6 @@ describe("sales", () => {
     await payCart(user.id, {
       paymentDate: "2024-01-05",
       paymentType: "cash",
-      amount: "10.00",
     });
 
     const [sale] = await db.select().from(sales);
@@ -75,7 +72,6 @@ describe("sales", () => {
     await payCart(user.id, {
       paymentDate: "2024-01-05",
       paymentType: "cash",
-      amount: "10.00",
     });
 
     const [sale] = await db.select().from(sales);

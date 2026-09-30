@@ -9,7 +9,6 @@ import {
   zDateISO,
   zId,
   zPage,
-  zPositivePrice,
   zPrice,
   zQuantity,
 } from "@livrelibre/shared/validation";
@@ -64,21 +63,10 @@ import { logger } from "@server/utils/logger";
 
 import { middleware, procedure, router } from "./trpc";
 
-const payCartSchema = z
-  .object({
-    paymentDate: zDateISO,
-    paymentType: z.enum(["cash", "card", "check", "check-lire", "transfer"]),
-    amount: zPositivePrice.or(z.literal("")),
-  })
-  .superRefine(({ paymentType, amount }, ctx) => {
-    if (paymentType === "cash" && amount === "") {
-      ctx.addIssue({
-        code: "custom",
-        message: ERROR_CODES.CASH_AMOUNT_REQUIRED,
-        path: ["amount"],
-      });
-    }
-  });
+const payCartSchema = z.object({
+  paymentDate: zDateISO,
+  paymentType: z.enum(["cash", "card", "check", "check-lire", "transfer"]),
+});
 
 const checkAuth = middleware(({ ctx, next }) => {
   if (ctx.user.role === "anonymous") {

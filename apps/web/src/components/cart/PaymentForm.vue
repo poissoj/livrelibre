@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { clsx } from "clsx";
-import { computed, ref } from "vue";
+import { ref } from "vue";
 import { toast } from "vue-sonner";
 
 import { formatDate } from "@livrelibre/shared/date";
@@ -14,12 +13,9 @@ import AppSelect from "@/components/AppSelect.vue";
 import { getErrorMessage } from "@/utils/errors";
 import { useTRPCMutation, useTRPCUtils } from "@/utils/query";
 
-const emit = defineEmits<{ change: [value: number | null] }>();
-
 const utils = useTRPCUtils();
 const paymentDate = ref(formatDate(new Date()));
 const paymentType = ref<PaymentType>("cash");
-const amount = ref<string | number>("");
 
 const { mutateAsync: payCart, isPending: isPaying } = useTRPCMutation(
   "payCart",
@@ -37,16 +33,12 @@ const { mutateAsync: payCart, isPending: isPaying } = useTRPCMutation(
   },
 );
 
-const isCash = computed(() => paymentType.value === "cash");
-
 const onSubmit = async () => {
   try {
-    const res = await payCart({
+    await payCart({
       paymentDate: paymentDate.value,
       paymentType: paymentType.value,
-      amount: String(amount.value),
     });
-    emit("change", res.change);
   } catch {
     // handled by onError
   }
@@ -71,17 +63,6 @@ const onSubmit = async () => {
         {{ label }}
       </option>
     </AppSelect>
-    <label for="cash" :class="clsx('sr-only', { hidden: !isCash })">
-      Espèces
-    </label>
-    <AppInput
-      id="cash"
-      v-model="amount"
-      type="number"
-      :step="0.01"
-      :min="0"
-      :class="clsx('!w-28 font-number', { hidden: !isCash })"
-    />
     <AppButton type="submit" class="[padding:10px_15px]" :disabled="isPaying">
       <FontAwesomeIcon :icon="faCheckCircle" />
       <span class="ml-sm">Payer</span>

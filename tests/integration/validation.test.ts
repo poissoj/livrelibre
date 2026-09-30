@@ -119,16 +119,6 @@ describe("input validation", () => {
     ).rejects.toMatchObject(BAD_REQUEST);
   });
 
-  it("requires an amount for a cash payment", async () => {
-    await expect(
-      caller.payCart({
-        paymentDate: "2024-01-05",
-        paymentType: "cash",
-        amount: "",
-      }),
-    ).rejects.toMatchObject(BAD_REQUEST);
-  });
-
   it("rejects a non-numeric advanced search price", async () => {
     await expect(
       caller.advancedSearch({ search: { price: "abc" }, page: 1 }),

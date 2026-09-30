@@ -15,7 +15,6 @@ describe("getSalesByMonth", () => {
     await payCart(user.id, {
       paymentDate: "2024-01-05",
       paymentType: "cash",
-      amount: "10.00",
     });
 
     const { salesByDay, stats, itemTypes } = await getSalesByMonth(

@@ -74,7 +74,6 @@ describe("cart", () => {
       payCart(user.id, {
         paymentDate: "2024-01-05",
         paymentType: "cash",
-        amount: "0",
       }),
     ).rejects.toMatchObject({ code: "PRECONDITION_FAILED" });
   });
@@ -87,7 +86,6 @@ describe("cart", () => {
     const res = await payCart(user.id, {
       paymentDate: "2024-01-05",
       paymentType: "cash",
-      amount: "10.00",
     });
     expect(res.success).toBe(true);
 
@@ -109,7 +107,6 @@ describe("cart", () => {
       payCart(user.id, {
         paymentDate: "2024-01-05",
         paymentType: "cash",
-        amount: "10.00",
       });
     const results = await Promise.allSettled([attempt(), attempt()]);
 
@@ -142,7 +139,6 @@ describe("cart", () => {
     await payCart(user.id, {
       paymentDate: "2024-01-05",
       paymentType: "cash",
-      amount: "0",
     });
 
     const remaining = await db
@@ -168,7 +164,6 @@ describe("cart", () => {
     await payCart(user.id, {
       paymentDate: "2024-01-05",
       paymentType: "cash",
-      amount: "10.00",
     });
 
     const rows = await db

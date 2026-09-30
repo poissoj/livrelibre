@@ -54,7 +54,6 @@ export const getCart = async (userId: number) => {
 export type PaymentFormData = {
   paymentDate: string;
   paymentType: PaymentType;
-  amount: string;
 };
 
 export const payCart = async (userId: number, data: PaymentFormData) => {
@@ -112,10 +111,6 @@ export const payCart = async (userId: number, data: PaymentFormData) => {
     }
     return {
       success: true,
-      change:
-        data.paymentType === "cash"
-          ? Math.round(Number(data.amount) * 100 - total) / 100
-          : null,
     };
   });
 };

@@ -3,7 +3,6 @@ import { ref } from "vue";
 
 import { formatPrice } from "@livrelibre/shared/format";
 
-import AppAlert from "@/components/AppAlert.vue";
 import AppCard from "@/components/AppCard.vue";
 import AppSkeleton from "@/components/AppSkeleton.vue";
 import CardBody from "@/components/CardBody.vue";
@@ -26,7 +25,6 @@ const {
   isError,
   refetch,
 } = useTRPCQuery("cart", undefined);
-const change = ref<number | null>(null);
 const errors = ref<ISBNError[]>([]);
 
 const addError = (error: ISBNError) => {
@@ -96,18 +94,6 @@ const removeError = (isbn: string) => {
         </div>
         <CardBody class="flex-col">
           <ErrorList :errors="errors" @remove="removeError" />
-          <AppAlert
-            v-if="change"
-            type="info"
-            class="mb-5"
-            @dismiss="change = null"
-          >
-            <span>
-              À rendre:
-              <span class="font-number">{{ change?.toFixed(2) }}</span
-              >€
-            </span>
-          </AppAlert>
           <p>Aucun article dans le panier</p>
         </CardBody>
       </AppCard>
@@ -139,7 +125,7 @@ const removeError = (isbn: string) => {
           </p>
           <div class="flex justify-between">
             <AsideButton />
-            <PaymentForm @change="(value) => (change = value)" />
+            <PaymentForm />
           </div>
         </CardFooter>
       </AppCard>

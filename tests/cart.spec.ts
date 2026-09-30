@@ -57,8 +57,6 @@ test("Parcours panier complet", async ({ page }) => {
   await expect(page.getByRole("link", { name: "Modifier" })).toBeVisible();
 
   // Paiement
-  await page.getByLabel("Espèces").fill("100");
   await page.getByRole("button", { name: "Payer" }).click();
   await expect(page.getByText("Aucun article dans le panier")).toBeVisible();
-  await expect(page.getByText(/À rendre/)).toBeVisible();
 });

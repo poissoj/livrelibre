@@ -29,7 +29,6 @@ export const ERROR_CODES = {
   INVALID_NB: "INVALID_NB",
   INVALID_NUMBER: "INVALID_NUMBER",
   INVALID_NAME: "INVALID_NAME",
-  CASH_AMOUNT_REQUIRED: "CASH_AMOUNT_REQUIRED",
   // REST routes
   UNAUTHENTICATED: "UNAUTHENTICATED",
   INVALID_CREDENTIALS: "INVALID_CREDENTIALS",
@@ -71,7 +70,6 @@ export const ERROR_MESSAGES: Record<ErrorCode, string> = {
   INVALID_NB: "Nombre d'exemplaires invalide.",
   INVALID_NUMBER: "Valeur numérique invalide.",
   INVALID_NAME: "Nom invalide.",
-  CASH_AMOUNT_REQUIRED: "Montant requis pour un paiement en espèces.",
   UNAUTHENTICATED: "Non authentifié·e.",
   INVALID_CREDENTIALS: "Identifiants invalides.",
   MISSING_USERNAME: "Identifiant manquant.",

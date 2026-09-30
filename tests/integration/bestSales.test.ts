@@ -29,7 +29,6 @@ describe("bestSales", () => {
     await payCart(user.id, {
       paymentDate: "2024-01-05",
       paymentType: "cash",
-      amount: "40.00",
     });
 
     const best = await getBestSales();
@@ -47,7 +46,6 @@ describe("bestSales", () => {
     await payCart(user.id, {
       paymentDate: "2024-01-05",
       paymentType: "cash",
-      amount: "20.00",
     });
 
     const [sale] = await db.select().from(sales);
