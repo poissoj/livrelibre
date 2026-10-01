@@ -69,7 +69,12 @@ export const getSalesByDay = async (
       linkedToCustomer: sales.linkedToCustomer,
     })
     .from(sales)
-    .where(eq(sql`CAST(${sales.created} AS date)`, effectiveDate))
+    .where(
+      and(
+        sql`${sales.created} >= ${effectiveDate}::date`,
+        sql`${sales.created} < ${effectiveDate}::date + interval '1 day'`,
+      ),
+    )
     .orderBy(sales.created, sales.cartId, sales.title);
 
   const itemIds = dbSales.map((s) => s.itemId).filter(isDefined);
@@ -199,7 +204,8 @@ export const deleteSale = async (
         .where(
           and(
             eq(sales.id, saleId),
-            sql`CAST(${sales.created} AS date) = CURRENT_DATE`,
+            sql`${sales.created} >= CURRENT_DATE`,
+            sql`${sales.created} < CURRENT_DATE + interval '1 day'`,
           ),
         );
       if (todaySales.length === 0) {

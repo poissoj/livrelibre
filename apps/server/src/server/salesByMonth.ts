@@ -5,7 +5,7 @@ import { sales } from "@livrelibre/shared/schema";
 import { db } from "@server/db/database";
 
 export const getSalesByMonth = async (month: string, year: string) => {
-  const yearMonth = `${year}-${month}`;
+  const monthStart = `${year}-${month}-01`;
   const reqSales = db
     .select({
       date: sql<string>`to_char(${sales.created}, 'YYYY-MM-dd')`,
@@ -17,7 +17,12 @@ export const getSalesByMonth = async (month: string, year: string) => {
       ),
     })
     .from(sales)
-    .where(sql`to_char(${sales.created}, 'YYYY-MM') = ${yearMonth}`)
+    .where(
+      and(
+        sql`${sales.created} >= ${monthStart}::date`,
+        sql`${sales.created} < ${monthStart}::date + interval '1 month'`,
+      ),
+    )
     .groupBy(({ date }) => date)
     .orderBy(({ date }) => desc(date));
   const reqStats = db
@@ -31,7 +36,8 @@ export const getSalesByMonth = async (month: string, year: string) => {
     .where(
       and(
         eq(sales.deleted, false),
-        sql`to_char(${sales.created}, 'YYYY-MM') = ${yearMonth}`,
+        sql`${sales.created} >= ${monthStart}::date`,
+        sql`${sales.created} < ${monthStart}::date + interval '1 month'`,
       ),
     )
     .groupBy(sales.paymentType, sales.tva)
@@ -46,7 +52,8 @@ export const getSalesByMonth = async (month: string, year: string) => {
     .where(
       and(
         eq(sales.deleted, false),
-        sql`to_char(${sales.created}, 'YYYY-MM') = ${yearMonth}`,
+        sql`${sales.created} >= ${monthStart}::date`,
+        sql`${sales.created} < ${monthStart}::date + interval '1 month'`,
       ),
     )
     .groupBy(sales.itemType)
