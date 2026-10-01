@@ -3,7 +3,7 @@ import AppButton from "./AppButton.vue";
 </script>
 
 <template>
-  <AppButton class="rounded-l-none -m-[1px]">
+  <AppButton class="rounded-l-none">
     <slot />
   </AppButton>
 </template>
