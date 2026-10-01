@@ -32,6 +32,9 @@ test("Ventes, ventes du jour, statistiques et meilleures ventes", async ({
     page.getByText("Répartition par type de paiement"),
   ).toBeVisible();
   await expect(
+    page.getByRole("columnheader", { name: "Panier", exact: true }),
+  ).toBeVisible();
+  await expect(
     page.getByRole("button", { name: "Supprimer la vente" }).first(),
   ).toBeVisible();
 

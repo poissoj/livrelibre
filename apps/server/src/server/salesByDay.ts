@@ -94,12 +94,14 @@ export const getSalesByDay = async (
   let lastCartId = dbSales[0]?.cartId;
   let total = 0;
 
-  const carts: { sales: Sale[] }[] = [];
+  const carts: { sales: Sale[]; total: number }[] = [];
   let salesList: Sale[] = [];
+  let cartTotal = 0;
   for (const sale of dbSales) {
     if (lastCartId && sale.cartId && sale.cartId !== lastCartId) {
-      carts.push({ sales: salesList });
+      carts.push({ sales: salesList, total: cartTotal });
       salesList = [];
+      cartTotal = 0;
     }
     lastCartId = sale.cartId;
 
@@ -123,6 +125,7 @@ export const getSalesByDay = async (
       paymentStat.count += sale.quantity;
       paymentStat.total += sale.price;
       total += sale.price;
+      cartTotal += sale.price;
     }
 
     const deleted = sale.deleted;
@@ -156,7 +159,7 @@ export const getSalesByDay = async (
     }
   }
   if (salesList.length > 0) {
-    carts.push({ sales: salesList });
+    carts.push({ sales: salesList, total: cartTotal });
   }
 
   const stats = [...tvaStats.entries()]

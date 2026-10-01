@@ -37,6 +37,7 @@ const saleLinked = (sale: Sale) =>
         <th :class="clsx(TH_STYLES, 'text-left')">Auteur·ice</th>
         <th :class="clsx(TH_STYLES, 'text-right')">Quantité</th>
         <th :class="clsx(TH_STYLES, 'text-right')">Prix total</th>
+        <th :class="clsx(TH_STYLES, 'text-right')">Panier</th>
         <th :class="clsx(TH_STYLES, 'text-right')">TVA</th>
         <th :class="clsx(TH_STYLES, 'text-left')">Paiement</th>
         <th :class="clsx(TH_STYLES, 'w-8')"></th>
@@ -70,6 +71,9 @@ const saleLinked = (sale: Sale) =>
         <td class="p-sm text-right font-number">{{ sale.quantity }}</td>
         <td class="p-sm text-right font-number">
           {{ formatPrice(sale.price) }}
+        </td>
+        <td class="p-sm text-right font-number">
+          {{ index === cart.sales.length - 1 ? formatPrice(cart.total) : "" }}
         </td>
         <td class="p-sm text-right font-number">{{ formatTVA(sale.tva) }}</td>
         <td class="p-sm whitespace-nowrap">

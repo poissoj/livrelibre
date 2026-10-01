@@ -27,6 +27,24 @@ describe("sales", () => {
     const result = await getSalesByDay("2024-01-05");
     expect(result.salesCount).toBe(1);
     expect(result.total).toBe(10);
+    expect(result.carts).toHaveLength(1);
+    expect(result.carts[0].total).toBe(10);
+  });
+
+  it("getSalesByDay excludes deleted sales from the cart total", async () => {
+    const user = await seedUser();
+    const item = await seedItem({ amount: 5, price: "10.00" });
+    await addToCart(user.id, item.id);
+    await payCart(user.id, {
+      paymentDate: "2024-01-05",
+      paymentType: "cash",
+    });
+
+    const [sale] = await db.select().from(sales);
+    await deleteSale(sale.id);
+
+    const result = await getSalesByDay("2024-01-05");
+    expect(result.carts[0].total).toBe(0);
   });
 
   it("getSales aggregates by month", async () => {
