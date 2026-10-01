@@ -22,7 +22,7 @@ export const getItem = async (id: number): Promise<ItemWithCount | null> => {
 
 const generateQuickSearchCriteria = (search: string, inStock: boolean) => {
   let criteria: SQL | undefined;
-  if (/^\d{13,}$/.test(search)) {
+  if (/^\d{10,}$/.test(search)) {
     criteria = eq(items.isbn, search.slice(0, 13));
   } else if (/\s/.test(search)) {
     const tokens = search.split(/\s+/).map((str) => sanitize(norm(str)));
