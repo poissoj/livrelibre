@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { nextTick, onMounted, ref } from "vue";
 
 import AppInput from "@/components/AppInput.vue";
 import { refreshCartRelated } from "@/utils/invalidations";
@@ -11,6 +11,14 @@ const emit = defineEmits<{ error: [value: ISBNError] }>();
 
 const utils = useTRPCUtils();
 const isbn = ref("");
+const inputRef = ref<InstanceType<typeof AppInput> | null>(null);
+
+const focusInput = () => {
+  void nextTick(() => {
+    inputRef.value?.focus();
+  });
+};
+onMounted(focusInput);
 
 const { mutate: addIsbn } = useTRPCMutation("addISBNToCart", {
   meta: { errorToast: false },
@@ -31,6 +39,7 @@ const submit = () => {
   if (!isbn.value) return;
   addIsbn(isbn.value);
   isbn.value = "";
+  focusInput();
 };
 </script>
 
@@ -39,12 +48,12 @@ const submit = () => {
     <label for="isbn-field" class="shrink-0 mr-2">Ajout rapide :</label>
     <AppInput
       id="isbn-field"
+      ref="inputRef"
       v-model="isbn"
       type="text"
       placeholder="ISBN"
       :maxlength="13"
       class="!w-40"
-      autofocus
     />
   </form>
 </template>

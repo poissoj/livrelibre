@@ -32,9 +32,13 @@ test("Parcours panier complet", async ({ page }) => {
   await page.goto("/cart");
 
   // Ajout rapide par ISBN
+  await expect(page.getByLabel("Ajout rapide")).toBeFocused();
   await page.getByLabel("Ajout rapide").fill(item.isbn);
   await page.getByLabel("Ajout rapide").press("Enter");
   await expect(page.getByText("Panier - 1 article")).toBeVisible();
+
+  // Le champ reprend le focus après l'ajout
+  await expect(page.getByLabel("Ajout rapide")).toBeFocused();
 
   // Retrait d'un article
   await page.getByRole("button", { name: "Enlever du panier" }).click();
