@@ -85,7 +85,7 @@ const onSubmit = async () => {
           <FontAwesomeIcon :icon="faUser" class="mr-2" />
           Connexion
         </h2>
-        <p v-if="errorMsg" class="[color:#721c24] mb-sm">
+        <p v-if="errorMsg" role="alert" class="[color:#721c24] mb-sm">
           <FontAwesomeIcon :icon="faExclamationCircle" class="mr-sm" />
           {{ errorMsg }}
         </p>
@@ -97,6 +97,7 @@ const onSubmit = async () => {
             id="username"
             v-model="username"
             type="text"
+            autocomplete="username"
             autofocus
             required
           />
@@ -109,6 +110,8 @@ const onSubmit = async () => {
             <button
               type="button"
               class="ml-auto"
+              :aria-pressed="showPassword"
+              aria-controls="password"
               @click="showPassword = !showPassword"
             >
               <FontAwesomeIcon
@@ -122,7 +125,7 @@ const onSubmit = async () => {
             id="password"
             v-model="password"
             :type="showPassword ? 'text' : 'password'"
-            autocomplete="off"
+            autocomplete="current-password"
             required
           />
         </div>
