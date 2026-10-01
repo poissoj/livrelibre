@@ -62,7 +62,7 @@ const pageList = computed(() => createPageList(page.value, props.count));
       >
         <FontAwesomeIcon :icon="faChevronLeft" />
       </RouterLink>
-      <span v-else :class="LINK_STYLES">
+      <span v-else :class="[LINK_STYLES, 'rounded-l-md']">
         <FontAwesomeIcon :icon="faChevronLeft" />
       </span>
     </li>
@@ -89,7 +89,7 @@ const pageList = computed(() => createPageList(page.value, props.count));
       >
         <FontAwesomeIcon :icon="faChevronRight" />
       </RouterLink>
-      <span v-else :class="LINK_STYLES">
+      <span v-else :class="[LINK_STYLES, 'rounded-r-md']">
         <FontAwesomeIcon :icon="faChevronRight" />
       </span>
     </li>
