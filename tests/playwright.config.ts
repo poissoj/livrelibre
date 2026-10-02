@@ -20,7 +20,7 @@ export default defineConfig({
   /* Retry on CI only */
   retries: process.env.CI ? 2 : 0,
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-  reporter: "html",
+  reporter: [["list"], ["html", { open: "never" }]],
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
@@ -75,8 +75,13 @@ export default defineConfig({
   globalSetup: "./e2e-global-setup.ts",
   webServer: [
     {
-      command: "pnpm --filter @livrelibre/server dev",
+      // No `watch`: a startup crash must surface instead of keeping the process
+      // alive and making Playwright wait for the URL forever.
+      command: "pnpm --filter @livrelibre/server exec tsx src/index.ts",
       url: "http://127.0.0.1:3001/api/export",
+      timeout: 120_000,
+      stdout: "pipe",
+      stderr: "pipe",
       // Point the book lookup to an unbound local port: valid URL, no external call.
       env: {
         POSTGRES_URI: e2eDatabaseUrl,
@@ -89,6 +94,9 @@ export default defineConfig({
     {
       command: "pnpm --filter @livrelibre/web dev",
       url: "http://127.0.0.1:5174",
+      timeout: 120_000,
+      stdout: "pipe",
+      stderr: "pipe",
       reuseExistingServer: !process.env.CI,
     },
   ],
