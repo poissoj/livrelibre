@@ -8,7 +8,7 @@ import { env } from "./env";
 const COOKIE_NAME = "livreLibre";
 const ALGORITHM = "HS256";
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 7;
-const IS_PRODUCTION = process.env.NODE_ENV === "production";
+const IS_PRODUCTION = env.NODE_ENV === "production";
 
 export type User = {
   name: string;

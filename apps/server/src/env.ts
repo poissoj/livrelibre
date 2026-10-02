@@ -8,12 +8,20 @@ config({
 
 const envSchema = z.object({
   SESSION_SECRET: z.string().min(32),
-  POSTGRES_URI: z.string().startsWith("postgres://"),
+  POSTGRES_URI: z.string().regex(/^postgres(ql)?:\/\//),
+  NODE_ENV: z
+    .enum(["development", "test", "production"])
+    .default("development"),
   ISBN_SEARCH_URL: z.url().optional(),
   LOG_LEVEL: z
     .enum(["error", "warn", "info", "http", "verbose", "debug", "silly"])
-    .optional(),
-  PORT: z.string().optional(),
+    .default("info"),
+  PORT: z.coerce.number().int().min(1).max(65535).default(3001),
+  // CLI-only variables (see src/cli)
+  SHOP_ID: z.string().optional(),
+  FTP_HOST: z.string().optional(),
+  FTP_USER: z.string().optional(),
+  FTP_PASSWORD: z.string().optional(),
 });
 
 const envParsed = envSchema.safeParse(process.env);

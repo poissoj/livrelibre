@@ -7,9 +7,7 @@
  * Par défaut, le script ne fait qu'afficher ce qui serait fait (dry-run).
  * Ajoutez --apply pour appliquer réellement les fusions.
  */
-import { config } from "dotenv";
 import { inArray, sql } from "drizzle-orm";
-import { fileURLToPath } from "node:url";
 
 import {
   customers,
@@ -18,11 +16,7 @@ import {
   selectedCustomer,
 } from "@livrelibre/shared/schema";
 
-config({
-  path: fileURLToPath(new URL("../../.env.local", import.meta.url)),
-});
-
-const { db } = await import("@server/db/database");
+import { db } from "@server/db/database";
 
 type Customer = typeof customers.$inferSelect;
 

@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url";
 
 import { authMiddleware } from "./auth";
 import { createContext } from "./context";
+import { env } from "./env";
 import { appRouter } from "./router";
 import { bookRoute } from "./routes/book";
 import { exportRoute } from "./routes/export";
@@ -69,7 +70,7 @@ app.use(
 );
 
 // Production static serving (SPA + API in a single process)
-if (process.env.NODE_ENV === "production") {
+if (env.NODE_ENV === "production") {
   const distRoot = fileURLToPath(new URL("../../web/dist", import.meta.url));
   logger.info(`Serving SPA from ${distRoot}`);
   app.use(

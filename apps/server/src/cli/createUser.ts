@@ -1,17 +1,11 @@
 /* Usage: pnpm --filter @livrelibre/server exec tsx src/cli/createUser.ts */
 import * as readline from "node:readline/promises";
 import bcrypt from "bcrypt";
-import { config } from "dotenv";
 import { stdin as input, stdout as output } from "node:process";
-import { fileURLToPath } from "node:url";
 
 import { users } from "@livrelibre/shared/schema";
 
-config({
-  path: fileURLToPath(new URL("../../.env.local", import.meta.url)),
-});
-
-const { db } = await import("@server/db/database");
+import { db } from "@server/db/database";
 
 const rl = readline.createInterface({ input, output });
 

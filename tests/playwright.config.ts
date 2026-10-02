@@ -78,6 +78,7 @@ export default defineConfig({
       env: {
         POSTGRES_URI: e2eDatabaseUrl,
         ISBN_SEARCH_URL: "http://127.0.0.1:9/",
+        SESSION_SECRET: "test-session-secret-test-session-secret",
       },
       reuseExistingServer: !process.env.CI,
     },

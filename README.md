@@ -38,7 +38,9 @@ POSTGRES_URI=postgres://user:password@localhost:5432/livrelibre
 La session est valable **7 jours** ; passé ce délai, la connexion est requise à
 nouveau. Modifier `SESSION_SECRET` invalide immédiatement toutes les sessions.
 
-**Web** — `apps/web/.env.local` (voir `apps/web/.env.example`) :
+**Web** — les valeurs par défaut sont versionnées dans `apps/web/.env`. Pour les
+surcharger en local, créez `apps/web/.env.local` (gitignoré) à partir de
+`apps/web/.env.example` :
 
 ```
 VITE_APP_NAME=Livre Libre
@@ -59,6 +61,10 @@ POSTGRES_URI=postgres://user:password@localhost:5432/livrelibre_test
 Si `tests/.env.test` est absent ou pointe vers la même base que
 `apps/server/.env.local`, les tests échouent immédiatement (ils vident les
 tables et appliquent les migrations).
+
+Aucun `apps/server/.env.local` n'est nécessaire pour lancer les tests : les
+variables non liées à la base (`SESSION_SECRET`, `ISBN_SEARCH_URL`) sont
+fournies par la configuration de test.
 
 ## Base de données
 

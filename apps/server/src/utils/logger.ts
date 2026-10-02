@@ -3,7 +3,7 @@ import { createLogger, format, transports } from "winston";
 import { env } from "@server/env";
 
 export const logger = createLogger({
-  level: env.LOG_LEVEL ?? "info",
+  level: env.LOG_LEVEL,
   format: format.combine(format.timestamp(), format.errors(), format.json()),
   transports: [
     new transports.Console({

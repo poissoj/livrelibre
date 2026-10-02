@@ -3,11 +3,9 @@ import postgres from "postgres";
 
 import * as schema from "@livrelibre/shared/schema";
 
-if (!process.env.POSTGRES_URI) {
-  throw new Error("Please provide POSTGRES_URI env var");
-}
+import { env } from "@server/env";
 
-const queryClient = postgres(process.env.POSTGRES_URI);
+const queryClient = postgres(env.POSTGRES_URI);
 export const db = drizzle(queryClient, { schema });
 
 export type Transaction = Parameters<Parameters<typeof db.transaction>[0]>[0];

@@ -2,20 +2,15 @@
  * run 1/day with cron
  */
 import { Client } from "basic-ftp";
-import { config } from "dotenv";
 import { and, sql } from "drizzle-orm";
 import fs from "fs/promises";
-import { fileURLToPath } from "node:url";
 
 import { items as itemsTable } from "@livrelibre/shared/schema";
 
-config({
-  path: fileURLToPath(new URL("../../.env.local", import.meta.url)),
-});
+import { db } from "@server/db/database";
+import { env } from "@server/env";
 
-const { db } = await import("@server/db/database");
-
-const { SHOP_ID } = process.env;
+const { SHOP_ID } = env;
 
 if (!SHOP_ID) {
   console.error("Please provide SHOP_ID env var");
@@ -41,7 +36,7 @@ const date = new Date().toLocaleDateString("fr-FR");
 const header = `EXTRACTION STOCK DU ${date}`;
 
 const sendToFtp = async () => {
-  const { FTP_HOST, FTP_USER, FTP_PASSWORD } = process.env;
+  const { FTP_HOST, FTP_USER, FTP_PASSWORD } = env;
   if (!FTP_HOST || !FTP_USER || !FTP_PASSWORD) {
     console.info(
       "Env var FTP_HOST, FTP_USER or FTP_PASSWORD is missing, skip ftp send",
