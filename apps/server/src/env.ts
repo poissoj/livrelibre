@@ -17,6 +17,7 @@ const envSchema = z.object({
     .enum(["error", "warn", "info", "http", "verbose", "debug", "silly"])
     .default("info"),
   PORT: z.coerce.number().int().min(1).max(65535).default(3001),
+  TIMEZONE: z.string().min(1).default("Europe/Paris"),
   // CLI-only variables (see src/cli)
   SHOP_ID: z.string().optional(),
   FTP_HOST: z.string().optional(),
@@ -35,3 +36,7 @@ if (!envParsed.success) {
 }
 
 export const env = envParsed.data;
+
+// Align Node date formatting (date-fns, formatDate, toLocaleDateString) with the
+// timezone used by Postgres sessions (see db/database.ts).
+process.env.TZ = env.TIMEZONE;

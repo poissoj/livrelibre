@@ -26,6 +26,9 @@ export default defineConfig({
     /* Base URL to use in actions like `await page.goto('/')`. */
     baseURL: "http://127.0.0.1:5174",
 
+    /* Run the browser in the same timezone as the server. */
+    timezoneId: "Europe/Paris",
+
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: "on-first-retry",
   },
@@ -79,6 +82,7 @@ export default defineConfig({
         POSTGRES_URI: e2eDatabaseUrl,
         ISBN_SEARCH_URL: "http://127.0.0.1:9/",
         SESSION_SECRET: "test-session-secret-test-session-secret",
+        TZ: "Europe/Paris",
       },
       reuseExistingServer: !process.env.CI,
     },

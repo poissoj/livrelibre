@@ -1,3 +1,7 @@
+// Keep dates deterministic regardless of the runner's timezone.
+process.env.TIMEZONE ??= "Europe/Paris";
+process.env.TZ ??= "Europe/Paris";
+
 // Tests must be self-sufficient: never rely on a developer's local
 // `apps/server/.env.local`. `env.ts` requires SESSION_SECRET (min 32 chars).
 process.env.SESSION_SECRET ??= "test-session-secret-test-session-secret";
