@@ -28,6 +28,7 @@ import {
   removeFromCart,
 } from "@server/server/cart";
 import {
+  customerExistsByNmFullname,
   deleteCustomer,
   getCustomer,
   getCustomers,
@@ -235,7 +236,7 @@ export const appRouter = router({
       z.object({
         customerId: zId.optional(),
         customer: z.object({
-          fullname: z.string().min(1, ERROR_CODES.INVALID_NAME),
+          fullname: z.string().trim().min(1, ERROR_CODES.INVALID_NAME),
           phone: z.string().nullable(),
           email: z.string().nullable(),
           contact: z.string(),
@@ -244,11 +245,22 @@ export const appRouter = router({
       }),
     )
     .mutation(async ({ input }) => {
+      const nmFullname = norm(input.customer.fullname);
+      const duplicate = await customerExistsByNmFullname(
+        nmFullname,
+        input.customerId,
+      );
+      if (duplicate) {
+        throw new TRPCError({
+          code: "CONFLICT",
+          message: ERROR_CODES.CUSTOMER_ALREADY_EXISTS,
+        });
+      }
       const customer = {
         ...input.customer,
         phone: input.customer.phone ?? null,
         email: input.customer.email ?? null,
-        nmFullname: norm(input.customer.fullname),
+        nmFullname,
       };
       if (input.customerId) {
         logger.info("Update customer", {

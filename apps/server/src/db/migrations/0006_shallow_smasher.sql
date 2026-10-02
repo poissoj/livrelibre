@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX "customers_nmFullname_unique" ON "customers" USING btree (lower("nmFullname"));

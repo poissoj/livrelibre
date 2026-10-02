@@ -138,15 +138,23 @@ export const sales = pgTable(
   ],
 );
 
-export const customers = pgTable("customers", {
-  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-  fullname: varchar("fullname").notNull(),
-  nmFullname: varchar("nmFullname").notNull(),
-  contact: varchar("contact").notNull(),
-  phone: varchar("phone"),
-  email: varchar("email"),
-  comment: varchar("comment").notNull(),
-});
+export const customers = pgTable(
+  "customers",
+  {
+    id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+    fullname: varchar("fullname").notNull(),
+    nmFullname: varchar("nmFullname").notNull(),
+    contact: varchar("contact").notNull(),
+    phone: varchar("phone"),
+    email: varchar("email"),
+    comment: varchar("comment").notNull(),
+  },
+  (table) => [
+    uniqueIndex("customers_nmFullname_unique").on(
+      sql`lower(${table.nmFullname})`,
+    ),
+  ],
+);
 
 export const purchases = pgTable(
   "purchases",

@@ -6,6 +6,7 @@ import {
   eq,
   getTableColumns,
   isNotNull,
+  ne,
   sql,
   sum,
 } from "drizzle-orm";
@@ -24,6 +25,35 @@ import { norm, sanitize } from "@livrelibre/shared/utils";
 
 import { type Transaction, db } from "@server/db/database";
 import { logger } from "@server/utils/logger";
+
+const isUniqueViolation = (error: unknown): boolean =>
+  typeof error === "object" &&
+  error !== null &&
+  "code" in error &&
+  (error as { code?: unknown }).code === "23505";
+
+const duplicateCustomerError = () =>
+  new TRPCError({
+    code: "CONFLICT",
+    message: ERROR_CODES.CUSTOMER_ALREADY_EXISTS,
+  });
+
+export const customerExistsByNmFullname = async (
+  nmFullname: string,
+  excludeId?: number,
+) => {
+  const rows = await db
+    .select({ id: customers.id })
+    .from(customers)
+    .where(
+      and(
+        sql`lower(${customers.nmFullname}) = ${nmFullname.toLowerCase()}`,
+        excludeId != null ? ne(customers.id, excludeId) : undefined,
+      ),
+    )
+    .limit(1);
+  return rows.length > 0;
+};
 
 export const getCustomers = async ({
   pageNumber = 1,
@@ -185,25 +215,39 @@ export const setCustomer = async (
   customer: typeof customers.$inferInsert,
   id: number,
 ) => {
-  const rows = await db
-    .update(customers)
-    .set(customer)
-    .where(eq(customers.id, id))
-    .returning({ id: customers.id });
-  if (rows.length === 0) {
-    return { type: "error" as const, msg: "Le client n'existe pas" };
+  try {
+    const rows = await db
+      .update(customers)
+      .set(customer)
+      .where(eq(customers.id, id))
+      .returning({ id: customers.id });
+    if (rows.length === 0) {
+      return { type: "error" as const, msg: "Le client n'existe pas" };
+    }
+    return { type: "success" as const, msg: "Le client a été modifié", id };
+  } catch (error) {
+    if (isUniqueViolation(error)) {
+      throw duplicateCustomerError();
+    }
+    throw error;
   }
-  return { type: "success" as const, msg: "Le client a été modifié", id };
 };
 
 export const newCustomer = async (customer: typeof customers.$inferInsert) => {
-  const rows = await db
-    .insert(customers)
-    .values(customer)
-    .returning({ id: customers.id });
-  return {
-    type: "success" as const,
-    msg: "Le client a été ajouté",
-    id: rows[0].id,
-  };
+  try {
+    const rows = await db
+      .insert(customers)
+      .values(customer)
+      .returning({ id: customers.id });
+    return {
+      type: "success" as const,
+      msg: "Le client a été ajouté",
+      id: rows[0].id,
+    };
+  } catch (error) {
+    if (isUniqueViolation(error)) {
+      throw duplicateCustomerError();
+    }
+    throw error;
+  }
 };

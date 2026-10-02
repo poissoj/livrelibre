@@ -78,8 +78,14 @@ describe("selected customer", () => {
 
   it("setSelectedCustomer upserts on userId", async () => {
     const user = await seedUser();
-    const first = await seedCustomer();
-    const second = await seedCustomer();
+    const first = await seedCustomer({
+      fullname: "John Doe",
+      nmFullname: "john doe",
+    });
+    const second = await seedCustomer({
+      fullname: "Jane Doe",
+      nmFullname: "jane doe",
+    });
 
     await setSelectedCustomer({
       asideCart: false,

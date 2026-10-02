@@ -12,6 +12,7 @@ export const ERROR_CODES = {
   // Business errors (tRPC)
   CUSTOMER_NOT_FOUND: "CUSTOMER_NOT_FOUND",
   CUSTOMER_HAS_ORDERS: "CUSTOMER_HAS_ORDERS",
+  CUSTOMER_ALREADY_EXISTS: "CUSTOMER_ALREADY_EXISTS",
   ORDER_NOT_FOUND: "ORDER_NOT_FOUND",
   CART_EMPTY: "CART_EMPTY",
   ITEM_NOT_FOUND: "ITEM_NOT_FOUND",
@@ -54,6 +55,7 @@ export const ERROR_MESSAGES: Record<ErrorCode, string> = {
   CUSTOMER_NOT_FOUND: "Client inconnu.",
   CUSTOMER_HAS_ORDERS:
     "Ce client a des commandes et ne peut pas être supprimé.",
+  CUSTOMER_ALREADY_EXISTS: "Un client avec ce nom existe déjà.",
   ORDER_NOT_FOUND: "La commande n'existe pas.",
   CART_EMPTY: "Le panier est vide.",
   ITEM_NOT_FOUND: "Article introuvable.",
