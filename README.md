@@ -1,5 +1,7 @@
 # Livre Libre
 
+[![CI](https://github.com/poissoj/livrelibre/actions/workflows/ci.yml/badge.svg)](https://github.com/poissoj/livrelibre/actions/workflows/ci.yml)
+
 Livre Libre est un logiciel libre de gestion de librairie.
 Il permet de gérer les stocks, les ventes, les commandes, et fournit des statistiques sur les ventes.
 
@@ -57,6 +59,9 @@ vers une base de test, **différente** du `POSTGRES_URI` de
 ```
 POSTGRES_URI=postgres://user:password@localhost:5432/livrelibre_test
 ```
+
+La variable d'environnement `POSTGRES_URI` peut remplacer ce fichier (utile en
+intégration continue) ; le fichier sert de valeur de repli.
 
 Si `tests/.env.test` est absent ou pointe vers la même base que
 `apps/server/.env.local`, les tests échouent immédiatement (ils vident les

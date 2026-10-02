@@ -8,10 +8,10 @@ export const getTestDatabaseUri = (): string => {
   const testEnv = existsSync(TEST_ENV_FILE)
     ? parse(readFileSync(TEST_ENV_FILE))
     : {};
-  const uri = testEnv.POSTGRES_URI;
+  const uri = process.env.POSTGRES_URI ?? testEnv.POSTGRES_URI;
   if (!uri) {
     throw new Error(
-      "POSTGRES_URI must be set in tests/.env.test to run database tests (see tests/.env.test.example).",
+      "POSTGRES_URI must be set in the environment or in tests/.env.test to run database tests (see tests/.env.test.example).",
     );
   }
   const serverEnv = existsSync(SERVER_ENV_FILE)
