@@ -21,14 +21,16 @@ export const bookRoute = async (c: Context) => {
   try {
     const data = await getBookData(isbn);
     logger.info("Got book data", { isbn, user, data });
+    if (data === null) {
+      return c.json({ error: ERROR_CODES.BOOK_NOT_FOUND }, 404);
+    }
     return c.json(data);
   } catch (error) {
     logger.error(error);
-    if (
-      error instanceof HTTPError &&
-      error.code === "ERR_NON_2XX_3XX_RESPONSE"
-    ) {
-      return c.json({ error: ERROR_CODES.BOOK_NOT_FOUND }, 404);
+    if (error instanceof HTTPError) {
+      return error.response.statusCode === 404
+        ? c.json({ error: ERROR_CODES.BOOK_NOT_FOUND }, 404)
+        : c.json({ error: ERROR_CODES.BOOK_FETCH_FAILED }, 500);
     }
     return c.json({ error: ERROR_CODES.BOOK_FETCH_FAILED }, 500);
   }
