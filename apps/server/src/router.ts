@@ -179,7 +179,13 @@ export const appRouter = router({
   stats: authProcedure.query(getStats),
   user: procedure.query(({ ctx }) => ctx.user),
   isbnSearch: authProcedure
-    .input(z.string().regex(/^\d{10,13}$/))
+    .input(
+      // Barcode scanners sometimes read extra digits; keep the first 13.
+      z
+        .string()
+        .regex(/^\d{10,}$/, ERROR_CODES.INVALID_ISBN)
+        .transform((value) => value.slice(0, 13)),
+    )
     .query(async ({ input }) => {
       return await searchItems({ search: input });
     }),

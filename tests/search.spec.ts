@@ -60,3 +60,16 @@ test("Recherche rapide par ISBN successifs met à jour l'article", async ({
   await expect(page).toHaveURL(new RegExp(`/item/${String(item2.id)}$`));
   await expect(page.getByRole("heading", { name: TITLE_2 })).toBeVisible();
 });
+
+test("Recherche rapide : un ISBN trop long est tronqué à 13 chiffres", async ({
+  page,
+}) => {
+  await login(page);
+
+  const quickSearch = page.getByPlaceholder("ISBN, titre, auteur·ice");
+  await quickSearch.fill(`${item.isbn}999`);
+  await quickSearch.press("Enter");
+
+  await expect(page).toHaveURL(new RegExp(`/item/${String(item.id)}$`));
+  await expect(page.getByRole("heading", { name: TITLE })).toBeVisible();
+});

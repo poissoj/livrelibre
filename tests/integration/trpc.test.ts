@@ -70,6 +70,14 @@ describe("trpc round-trip", () => {
     expect(found.count).toBe(1);
     expect(found.items[0].title).toBe("Éléphant");
   });
+
+  it("truncates an over-long scanned ISBN to 13 digits", async () => {
+    await admin.addItem({ ...baseItem, isbn: "9780000000001" });
+
+    const found = await admin.isbnSearch("9780000000001234");
+    expect(found.count).toBe(1);
+    expect(found.items[0].isbn).toBe("9780000000001");
+  });
 });
 
 describe("trpc rbac", () => {
