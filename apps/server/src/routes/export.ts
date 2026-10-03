@@ -10,9 +10,13 @@ import { type User } from "@server/auth";
 import { db } from "@server/db/database";
 import { logger } from "@server/utils/logger";
 
-const trim = (str: string | undefined) => str?.trim() || "";
-const formatString = (str: string | undefined) =>
-  trim(str).replaceAll('"', '""');
+// Neutralizes spreadsheet formula injection while keeping CSV quoting valid.
+const FORMULA_PREFIX = /^[=+\-@\t\r]/;
+const csvCell = (value: string | number | undefined): string => {
+  const str = value === undefined ? "" : String(value).trim();
+  const safe = FORMULA_PREFIX.test(str) ? `'${str}` : str;
+  return `"${safe.replaceAll('"', '""')}"`;
+};
 const formatNumber = (n: string | undefined) => n?.replace(".", ",") || "";
 
 const makeCSV = async () => {
@@ -29,14 +33,16 @@ const makeCSV = async () => {
     itemsList
       .map((item) =>
         [
-          `"${ITEM_TYPES[item.type]}"`,
-          `"${formatString(item.title)}"`,
-          `"${formatString(item.author)}"`,
-          `"${formatString(item.distributor)}"`,
+          ITEM_TYPES[item.type],
+          item.title,
+          item.author,
+          item.distributor,
           item.isbn,
           item.amount,
-          `"${formatNumber(item.price)}"`,
-        ].join(),
+          formatNumber(item.price),
+        ]
+          .map(csvCell)
+          .join(","),
       )
       .join("\n");
 
@@ -51,7 +57,7 @@ export const exportRoute = async (c: Context) => {
   try {
     const csv = await makeCSV();
     const date = formatDate(new Date());
-    c.header("Content-Type", "text/csv");
+    c.header("Content-Type", "text/csv; charset=utf-8");
     c.header(
       "Content-Disposition",
       `attachment; filename="stocks-${date}.csv"`,

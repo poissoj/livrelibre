@@ -88,6 +88,24 @@ describe("REST routes", () => {
       expect(csv).toContain("Catégorie,Titre");
       expect(csv).toContain("9780000000001");
     });
+
+    it("neutralizes spreadsheet formula injection", async () => {
+      const cookie = await authCookie();
+      await seedItem({
+        isbn: "9780000000002",
+        title: "=SUM(A1:A2)",
+        author: "-2",
+        distributor: "@cmd",
+        amount: 1,
+      });
+
+      const res = await app.request("/api/export", { headers: { cookie } });
+      const csv = await res.text();
+
+      expect(csv).toContain(`"'=SUM(A1:A2)"`);
+      expect(csv).toContain(`"'-2"`);
+      expect(csv).toContain(`"'@cmd"`);
+    });
   });
 
   describe("GET /api/book/:isbn", () => {
