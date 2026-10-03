@@ -56,7 +56,7 @@ const inputStyles = computed(() =>
         :display-value="(value: unknown) => (value as ItemValue)?.title ?? ''"
         @change="
           (event) => {
-            search = (event.target as HTMLInputElement).value;
+            search = event.target.value;
           }
         "
       />

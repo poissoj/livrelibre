@@ -58,7 +58,7 @@ const inputStyles = computed(() =>
         :required="props.required"
         @change="
           (event) => {
-            query = (event.target as HTMLInputElement).value;
+            query = event.target.value;
           }
         "
       />

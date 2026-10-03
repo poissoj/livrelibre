@@ -31,8 +31,9 @@ const isImporting = ref(false);
 const hasFile = computed(() => selectedFile.value !== null);
 
 const onFileChange = (event: Event) => {
-  const input = event.target as HTMLInputElement;
-  selectedFile.value = input.files?.[0] ?? null;
+  if (event.target instanceof HTMLInputElement) {
+    selectedFile.value = event.target.files?.[0] ?? null;
+  }
 };
 
 const resetImport = () => {
