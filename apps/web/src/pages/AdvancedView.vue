@@ -24,16 +24,25 @@ import { getErrorMessage, getRestErrorMessage } from "@/utils/errors";
 type FileData = { filename: string; data: DilicomRowWithId[] };
 
 const file = ref<FileData | null>(null);
-const dilicomInput = ref<HTMLInputElement | null>(null);
+const selectedFile = ref<File | null>(null);
 const isSubmitting = ref(false);
 const isImporting = ref(false);
 
-const hasFile = computed(() => (dilicomInput.value?.files?.length ?? 0) > 0);
+const hasFile = computed(() => selectedFile.value !== null);
+
+const onFileChange = (event: Event) => {
+  const input = event.target as HTMLInputElement;
+  selectedFile.value = input.files?.[0] ?? null;
+};
+
+const resetImport = () => {
+  file.value = null;
+  selectedFile.value = null;
+};
 
 const importFile = async () => {
-  const input = dilicomInput.value;
-  if (!input || input.files?.length !== 1) return;
-  const selected = input.files[0];
+  const selected = selectedFile.value;
+  if (!selected) return;
   isSubmitting.value = true;
   try {
     const formData = new FormData();
@@ -58,6 +67,10 @@ const importFile = async () => {
   }
 };
 
+const nbItems = computed(
+  () => file.value?.data.reduce((nb, row) => nb + row.QTE, 0) ?? 0,
+);
+
 const finalizeImport = async () => {
   if (!file.value) return;
   isImporting.value = true;
@@ -71,21 +84,17 @@ const finalizeImport = async () => {
       toast.error(getRestErrorMessage(body, "Erreur lors de l'import."));
       return;
     }
-    const nb = file.value.data.length;
+    const nb = nbItems.value;
     toast.success(
       `Le fichier a été importé correctement (${String(nb)} article${nb > 1 ? "s" : ""}).`,
     );
-    file.value = null;
+    resetImport();
   } catch (error) {
     toast.error(getErrorMessage(error));
   } finally {
     isImporting.value = false;
   }
 };
-
-const nbItems = computed(
-  () => file.value?.data.reduce((nb, row) => nb + row.QTE, 0) ?? 0,
-);
 </script>
 
 <template>
@@ -132,7 +141,7 @@ const nbItems = computed(
       <AppButton
         type="button"
         class="mr-2 px-md !bg-gray-medium"
-        @click="file = null"
+        @click="resetImport"
       >
         <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
         Annuler
@@ -163,10 +172,10 @@ const nbItems = computed(
           <label>
             Fichier :
             <input
-              ref="dilicomInput"
               type="file"
               class="ml-2"
               accept=".csv, .slk, .xlsx"
+              @change="onFileChange"
             />
           </label>
         </CardBody>

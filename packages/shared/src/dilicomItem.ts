@@ -10,9 +10,9 @@ export const dilicomRowSchema = z.object({
   DISTRIBUTEUR: z.string().catch(""),
   PRIX: z.number().nonnegative(),
   QTE: z.number().int().nonnegative().max(INT4_MAX),
-  DISPO: z.string().optional(),
-  "REF.LIGNE": z.string().optional(),
-  TOTAL: z.number().optional(),
+  DISPO: z.string().nullish(),
+  "REF.LIGNE": z.string().nullish(),
+  TOTAL: z.number().nullish(),
 });
 
 export const dilicomRowWithIdSchema = dilicomRowSchema.extend({

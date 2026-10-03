@@ -39,7 +39,7 @@ const fileToJson = (data: Buffer) => {
   return json;
 };
 
-const parseValue = (value: string | number | undefined) => {
+const parseValue = (value: string | number | null | undefined) => {
   if (typeof value === "number") return value;
   return Number(value?.replace(",", "."));
 };
