@@ -19,7 +19,7 @@ const {
   isPending,
   isError,
   refetch,
-} = useTRPCQuery("lastSales", props.id);
+} = useTRPCQuery("lastSales", () => props.id);
 </script>
 
 <template>

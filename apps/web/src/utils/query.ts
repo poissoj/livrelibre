@@ -5,7 +5,13 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/vue-query";
-import { type MaybeRefOrGetter, computed, toValue } from "vue";
+import {
+  type ComputedRef,
+  type MaybeRefOrGetter,
+  type Ref,
+  computed,
+  toValue,
+} from "vue";
 
 import { type RouterInput, type RouterOutput, trpcClient } from "./trpc";
 
@@ -17,6 +23,12 @@ type MutateCaller = { mutate: (input: unknown) => Promise<unknown> };
 type ExtraQueryOptions<K extends ProcedureName> = Partial<
   UseQueryOptions<RouterOutput[K]>
 >;
+
+type ReactiveQueryInput<T> =
+  | Ref<T>
+  | ComputedRef<T>
+  | (() => T)
+  | (undefined extends T ? undefined : never);
 
 export const trpcKey = <K extends ProcedureName>(
   path: K,
@@ -37,7 +49,7 @@ export const trpcQueryOptions = <K extends ProcedureName>(
 
 export const useTRPCQuery = <K extends ProcedureName>(
   path: K,
-  input: MaybeRefOrGetter<RouterInput[K]>,
+  input: ReactiveQueryInput<RouterInput[K]>,
   options?: MaybeRefOrGetter<ExtraQueryOptions<K>>,
 ) =>
   useQuery(

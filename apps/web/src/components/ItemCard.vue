@@ -39,10 +39,10 @@ const {
   isPending,
   isError,
   refetch,
-} = useTRPCQuery("searchItem", props.id);
+} = useTRPCQuery("searchItem", () => props.id);
 const { data: orders, isError: ordersError } = useTRPCQuery(
   "itemOrders",
-  props.id,
+  () => props.id,
 );
 
 useTitle(() =>
