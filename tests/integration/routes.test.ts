@@ -163,7 +163,7 @@ describe("REST routes", () => {
       expect(rows).toHaveLength(MAX_IMPORT_ROWS);
     });
 
-    it("rolls back every change when one row fails", async () => {
+    it("merges duplicate EANs and updates the existing stock", async () => {
       const cookie = await authCookie();
       const existing = await seedItem({ isbn: "9780000000001", amount: 5 });
 
@@ -193,12 +193,90 @@ describe("REST routes", () => {
         ]),
       });
 
+      expect(res.status).toBe(200);
+
+      const rows = await db
+        .select()
+        .from(items)
+        .where(eq(items.isbn, existing.isbn));
+      expect(rows).toHaveLength(1);
+      expect(rows[0].amount).toBe(9);
+    });
+
+    it("writes by ISBN and ignores a mismatched client id", async () => {
+      const cookie = await authCookie();
+      const target = await seedItem({ isbn: "9780000000011", amount: 2 });
+      const other = await seedItem({ isbn: "9780000000022", amount: 7 });
+
+      const res = await app.request("/api/finalizeImport", {
+        method: "POST",
+        headers: { "content-type": "application/json", cookie },
+        body: JSON.stringify([
+          {
+            id: other.id,
+            EAN: target.isbn,
+            TITRE: "Titre",
+            AUTEUR: "Auteur",
+            EDITEUR: "Éditeur",
+            DISTRIBUTEUR: "Distributeur",
+            PRIX: 10,
+            QTE: 1,
+          },
+        ]),
+      });
+
+      expect(res.status).toBe(200);
+
+      const targetRow = await db.query.items.findFirst({
+        where: eq(items.id, target.id),
+      });
+      const otherRow = await db.query.items.findFirst({
+        where: eq(items.id, other.id),
+      });
+      expect(targetRow?.amount).toBe(3);
+      expect(otherRow?.amount).toBe(7);
+    });
+
+    it("rolls back every change when a row fails at the database level", async () => {
+      const cookie = await authCookie();
+      const existing = await seedItem({ isbn: "9780000000001", amount: 5 });
+
+      const res = await app.request("/api/finalizeImport", {
+        method: "POST",
+        headers: { "content-type": "application/json", cookie },
+        body: JSON.stringify([
+          {
+            EAN: "9780000000033",
+            TITRE: "Nouveau",
+            AUTEUR: "Auteur",
+            EDITEUR: "Éditeur",
+            DISTRIBUTEUR: "Distributeur",
+            PRIX: 10,
+            QTE: 1,
+          },
+          {
+            id: existing.id,
+            EAN: existing.isbn,
+            TITRE: existing.title,
+            AUTEUR: existing.author,
+            EDITEUR: existing.publisher,
+            DISTRIBUTEUR: existing.distributor,
+            PRIX: 1e20,
+            QTE: 1,
+          },
+        ]),
+      });
+
       expect(res.status).toBe(500);
 
       const unchanged = await db.query.items.findFirst({
         where: eq(items.id, existing.id),
       });
       expect(unchanged?.amount).toBe(5);
+      const created = await db.query.items.findFirst({
+        where: eq(items.isbn, "9780000000033"),
+      });
+      expect(created).toBeUndefined();
     });
 
     it("rejects an invalid payload without writing anything", async () => {
@@ -275,6 +353,34 @@ describe("REST routes", () => {
         body: form,
       });
       expect(res.status).toBe(413);
+    });
+
+    it("merges duplicate EANs from the file", async () => {
+      const cookie = await authCookie();
+      const existing = await seedItem({ isbn: "9780000000044", amount: 2 });
+      const csv = [
+        "EAN,TITRE,AUTEUR,EDITEUR,DISTRIBUTEUR,PRIX,DISPO,REF.LIGNE,QTE,TOTAL",
+        "9780000000044,Livre,Auteur,Editeur,Distributeur,12,,,2,",
+        "9780000000044,Livre,Auteur,Editeur,Distributeur,12,,,3,",
+      ].join("\n");
+      const form = new FormData();
+      form.append("dilicom", new File([csv], "data.csv", { type: "text/csv" }));
+
+      const res = await app.request("/api/importFile", {
+        method: "POST",
+        headers: { cookie },
+        body: form,
+      });
+
+      expect(res.status).toBe(200);
+      const rows = (await res.json()) as {
+        id: number | null;
+        QTE: number;
+        amount: number | null;
+      }[];
+      expect(rows).toHaveLength(1);
+      expect(rows[0].id).toBe(existing.id);
+      expect(rows[0].QTE).toBe(5);
     });
 
     it("rejects a file with too many rows", async () => {

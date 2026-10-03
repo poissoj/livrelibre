@@ -1,8 +1,11 @@
-import { eq, sql } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import type { Context } from "hono";
 
 import { formatDate } from "@livrelibre/shared/date";
-import { importPayloadSchema } from "@livrelibre/shared/dilicomItem";
+import {
+  importPayloadSchema,
+  mergeRowsByEan,
+} from "@livrelibre/shared/dilicomItem";
 import { ERROR_CODES } from "@livrelibre/shared/errors";
 import { items } from "@livrelibre/shared/schema";
 import { norm } from "@livrelibre/shared/utils";
@@ -25,53 +28,51 @@ export const finalizeImportRoute = async (c: Context) => {
     });
     return c.json({ error: ERROR_CODES.IMPORT_INVALID }, 400);
   }
-  const data = parsed.data;
-  const books = data.map((row) => ({
-    isbn: row.EAN.trim(),
-    qty: row.QTE,
-    price: row.PRIX,
-  }));
-  logger.info(`Import ${data.length} books`, { user, books });
+  // Merge duplicate EANs: a single INSERT with ON CONFLICT cannot affect the
+  // same row twice, and the quantities must be summed.
+  const data = mergeRowsByEan(parsed.data);
+  logger.info(`Import ${data.length} books`, {
+    user,
+    isbns: data.map((row) => row.EAN),
+  });
   const today = formatDate(new Date()).split("-").reverse().join("/");
-  const booksToAdd: (typeof items.$inferInsert)[] = [];
+  const booksToAdd: (typeof items.$inferInsert)[] = data.map((row) => ({
+    amount: row.QTE,
+    datebought: today,
+    isbn: row.EAN,
+    price: String(row.PRIX),
+    tva: "5.5",
+    type: "book",
+    author: row.AUTEUR,
+    nmAuthor: norm(row.AUTEUR),
+    title: row.TITRE,
+    nmTitle: norm(row.TITRE),
+    publisher: row.EDITEUR,
+    nmPublisher: norm(row.EDITEUR),
+    distributor: row.DISTRIBUTEUR,
+    nmDistributor: norm(row.DISTRIBUTEUR),
+    starred: false,
+    keywords: "",
+    comments: "",
+  }));
   await db.transaction(async (tx) => {
-    for (const row of data) {
-      const price = String(row.PRIX);
-      if (row.id) {
-        await tx
-          .update(items)
-          .set({ amount: sql`${items.amount} + ${row.QTE}`, price })
-          .where(eq(items.id, row.id));
-        continue;
-      }
-      const book: typeof items.$inferInsert = {
-        amount: row.QTE,
-        datebought: today,
-        isbn: row.EAN.trim(),
-        price,
-        tva: "5.5",
-        type: "book",
-        author: row.AUTEUR,
-        nmAuthor: norm(row.AUTEUR),
-        title: row.TITRE,
-        nmTitle: norm(row.TITRE),
-        publisher: row.EDITEUR,
-        nmPublisher: norm(row.EDITEUR),
-        distributor: row.DISTRIBUTEUR,
-        nmDistributor: norm(row.DISTRIBUTEUR),
-        starred: false,
-        keywords: "",
-        comments: "",
-      };
-      booksToAdd.push(book);
-    }
-    if (booksToAdd.length > 0) {
-      await tx.insert(items).values(booksToAdd);
-      logger.info(`Added ${booksToAdd.length} new books`, {
-        user,
-        isbns: booksToAdd.map((book) => book.isbn),
+    // Upsert by ISBN: the write target comes from the imported EAN, never from
+    // a client-provided id. Existing stock is incremented, new books inserted.
+    await tx
+      .insert(items)
+      .values(booksToAdd)
+      .onConflictDoUpdate({
+        target: items.isbn,
+        targetWhere: sql`${items.isbn} != ''`,
+        set: {
+          amount: sql`${items.amount} + excluded.amount`,
+          price: sql`excluded.price`,
+        },
       });
-    }
+    logger.info(`Imported ${booksToAdd.length} books`, {
+      user,
+      isbns: booksToAdd.map((book) => book.isbn),
+    });
   });
   return c.json({ status: "Import ok" });
 };

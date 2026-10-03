@@ -6,6 +6,7 @@ import {
   type DilicomRow,
   type DilicomRowWithId,
   MAX_IMPORT_ROWS,
+  mergeRowsByEan,
 } from "@livrelibre/shared/dilicomItem";
 import { ERROR_CODES } from "@livrelibre/shared/errors";
 import { items } from "@livrelibre/shared/schema";
@@ -124,7 +125,7 @@ export const importFileRoute = async (c: Context) => {
   const buffer = Buffer.from(await file.arrayBuffer());
   let rows: DilicomRow[] = [];
   try {
-    rows = filterRows(fileToJson(buffer));
+    rows = mergeRowsByEan(filterRows(fileToJson(buffer)));
   } catch (error) {
     logger.error(error);
     return c.json({ error: ERROR_CODES.IMPORT_INVALID }, 400);
