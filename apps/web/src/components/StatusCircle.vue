@@ -7,7 +7,10 @@ import {
   STATUS_LABEL,
 } from "@livrelibre/shared/order";
 
-const props = defineProps<{ status: OrderStatus }>();
+const props = withDefaults(
+  defineProps<{ status: OrderStatus; decorative?: boolean }>(),
+  { decorative: false },
+);
 </script>
 
 <template>
@@ -18,6 +21,9 @@ const props = defineProps<{ status: OrderStatus }>();
         STATUS_COLOR[props.status],
       )
     "
+    :role="props.decorative ? undefined : 'img'"
+    :aria-label="props.decorative ? undefined : STATUS_LABEL[props.status]"
+    :aria-hidden="props.decorative ? 'true' : undefined"
     :title="STATUS_LABEL[props.status]"
   />
 </template>

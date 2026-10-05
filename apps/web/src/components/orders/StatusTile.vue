@@ -35,7 +35,7 @@ const id = `chk-${props.status}`;
         )
       "
     >
-      <StatusCircle :status="props.status" class="scale-125" />
+      <StatusCircle :status="props.status" decorative class="scale-125" />
       <span class="text-xs font-medium">{{ STATUS_LABEL[props.status] }}</span>
     </label>
   </div>

@@ -1,6 +1,27 @@
 import { expect, test } from "@playwright/test";
 
-import { login } from "./e2e-helpers";
+import {
+  deleteCustomer,
+  deleteItem,
+  login,
+  seedCustomer,
+  seedItem,
+  seedOrder,
+  unique,
+} from "./e2e-helpers";
+
+let item: Awaited<ReturnType<typeof seedItem>>;
+let customer: Awaited<ReturnType<typeof seedCustomer>>;
+
+test.beforeAll(async () => {
+  item = await seedItem({ title: unique("Article a11y") });
+  customer = await seedCustomer({ fullname: unique("Client a11y") });
+});
+
+test.afterAll(async () => {
+  await deleteCustomer(customer.id);
+  await deleteItem(item.id);
+});
 
 test("les moyens de contact sont sélectionnables au clavier", async ({
   page,
@@ -19,4 +40,20 @@ test("les moyens de contact sont sélectionnables au clavier", async ({
 
   await expect(page.getByRole("radio", { name: "Téléphone" })).toBeVisible();
   await expect(page.getByRole("radio", { name: "Mail" })).toBeVisible();
+});
+
+test("le statut de commande a un nom accessible", async ({ page }) => {
+  await seedOrder({
+    customerId: customer.id,
+    itemId: item.id,
+    itemTitle: unique("Article a11y statut"),
+    ordered: "new",
+  });
+
+  await login(page);
+  await page.goto("/orders");
+
+  await expect(
+    page.getByRole("img", { name: "En cours" }).first(),
+  ).toBeVisible();
 });
