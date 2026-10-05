@@ -142,10 +142,11 @@ const isbnHandler = async () => {
                 </option>
               </AppSelect>
             </FormRow>
-            <FormRow label="ISBN">
+            <FormRow label="ISBN" group>
               <InputWithButton
                 v-model="isbn"
                 type="text"
+                aria-label="ISBN"
                 :maxlength="13"
                 @keydown.enter.prevent="isbnLoading ? undefined : isbnHandler()"
               />

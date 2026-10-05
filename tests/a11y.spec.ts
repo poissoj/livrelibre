@@ -46,6 +46,16 @@ test("les moyens de contact sont sélectionnables au clavier", async ({
   await expect(page.getByRole("radio", { name: "Mail" })).toBeVisible();
 });
 
+test("les groupes de champs ont un nom accessible", async ({ page }) => {
+  await login(page);
+  await page.goto("/order/new");
+
+  await expect(
+    page.getByRole("group", { name: "Contacter par" }),
+  ).toBeVisible();
+  await expect(page.getByRole("group", { name: "Client⋅e" })).toBeVisible();
+});
+
 test("le statut de commande a un nom accessible", async ({ page }) => {
   await seedOrder({
     customerId: customer.id,

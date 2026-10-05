@@ -132,7 +132,7 @@ const submit = async () => {
     <form class="contents" @submit.prevent="submit">
       <CardBody class="flex-col gap-5">
         <div class="flex flex-col">
-          <FormRow label="Client⋅e">
+          <FormRow label="Client⋅e" group>
             <AppInput
               v-if="showCustomerForm"
               type="text"
@@ -162,7 +162,7 @@ const submit = async () => {
             @add="updateCustomer"
             @hide="toggleCustomerForm"
           />
-          <FormRow label="Contacter par" field-class="gap-2">
+          <FormRow label="Contacter par" field-class="gap-2" group>
             <ContactMean
               v-model="contact"
               mean="unknown"

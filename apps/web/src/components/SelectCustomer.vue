@@ -50,6 +50,7 @@ const inputStyles = computed(() =>
     <div :class="clsx('relative', props.fullWidth ? 'w-full' : 'w-fit')">
       <ComboboxInput
         :class="clsx(inputStyles, props.inputClass)"
+        aria-label="Rechercher un⋅e client⋅e"
         :display-value="
           (value: unknown) =>
             (value as CustomerSelection | null)?.fullname ?? ''
