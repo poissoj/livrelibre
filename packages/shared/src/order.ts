@@ -22,6 +22,13 @@ export const CONTACT_MEAN = ["unknown", "in person", "phone", "mail"] as const;
 export type ContactMean = (typeof CONTACT_MEAN)[number];
 export const zContactMean = z.enum(CONTACT_MEAN);
 
+export const CONTACT_MEAN_LABEL: Record<ContactMean, string> = {
+  unknown: "Non renseigné",
+  "in person": "Passera",
+  phone: "Téléphone",
+  mail: "Mail",
+};
+
 export const zOrder = z.object({
   created: zDateString,
   customerId: zId,
