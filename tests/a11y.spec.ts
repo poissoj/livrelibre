@@ -1,11 +1,15 @@
 import { expect, test } from "@playwright/test";
 
+import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
+
 import {
   deleteCustomer,
   deleteItem,
+  deleteItemsByTitleLike,
   login,
   seedCustomer,
   seedItem,
+  seedItems,
   seedOrder,
   unique,
 } from "./e2e-helpers";
@@ -81,4 +85,25 @@ test("un chargement est annoncé (role=status)", async ({ page }) => {
   await expect(
     page.getByRole("main").getByRole("status").first(),
   ).toBeVisible();
+});
+
+test("la pagination expose un landmark et la page courante", async ({
+  page,
+}) => {
+  const titleBase = unique("Article pagination");
+  await seedItems(ITEMS_PER_PAGE + 1, { title: titleBase });
+  try {
+    await login(page);
+    await page.goto("/items");
+
+    await expect(page.locator('nav[aria-label^="Pagination"]')).toBeVisible();
+
+    await page.getByRole("link", { name: "Page 2" }).click();
+    await expect(page).toHaveURL(/page=2/);
+    await expect(
+      page.locator('nav[aria-label^="Pagination"] [aria-current="page"]'),
+    ).toHaveText("2");
+  } finally {
+    await deleteItemsByTitleLike(`${titleBase}%`);
+  }
 });

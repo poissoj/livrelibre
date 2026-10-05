@@ -94,6 +94,43 @@ export const deleteItem = async (id: number): Promise<void> =>
     await db.delete(items).where(eq(items.id, id));
   });
 
+/** Bulk-seeds `count` items (single insert) with unique ISBNs and titles. */
+export const seedItems = async (
+  count: number,
+  overrides: Partial<typeof items.$inferInsert> = {},
+) =>
+  withDb(async (db) => {
+    const author = overrides.author ?? "Auteur E2E";
+    const title = overrides.title ?? "Article E2E";
+    const publisher = overrides.publisher ?? "Éditeur E2E";
+    const distributor = overrides.distributor ?? "Distributeur E2E";
+    const isbnPrefix = String(Date.now()).slice(-10);
+    const values = Array.from({ length: count }, (_, i) => {
+      const rowTitle = `${title} ${String(i)}`;
+      return {
+        type: "book" as const,
+        keywords: null,
+        datebought: "01/01/2024",
+        comments: null,
+        price: "10.00",
+        amount: 5,
+        tva: "5.5" as const,
+        starred: false,
+        author,
+        publisher,
+        distributor,
+        ...overrides,
+        isbn: `${isbnPrefix}${String(i).padStart(3, "0")}`,
+        title: rowTitle,
+        nmAuthor: overrides.nmAuthor ?? norm(author),
+        nmTitle: overrides.nmTitle ?? norm(rowTitle),
+        nmPublisher: overrides.nmPublisher ?? norm(publisher),
+        nmDistributor: overrides.nmDistributor ?? norm(distributor),
+      };
+    });
+    return await db.insert(items).values(values).returning();
+  });
+
 export const deleteItemsByTitleLike = async (pattern: string): Promise<void> =>
   withDb(async (db) => {
     await db.delete(items).where(like(items.title, pattern));

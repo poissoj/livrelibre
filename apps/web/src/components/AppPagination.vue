@@ -52,46 +52,77 @@ const pageList = computed(() => createPageList(page.value, props.count));
 </script>
 
 <template>
-  <ol class="flex">
-    <li>
-      <RouterLink
-        v-if="page > 1"
-        :to="makeHref(page - 1)"
-        :class="[LINK_STYLES, 'rounded-l-md']"
-        title="Page précédente"
-      >
-        <FontAwesomeIcon :icon="faChevronLeft" />
-      </RouterLink>
-      <span v-else :class="[LINK_STYLES, 'rounded-l-md']">
-        <FontAwesomeIcon :icon="faChevronLeft" />
-      </span>
-    </li>
-    <li v-for="n in pageList" :key="n">
-      <span
-        v-if="n === page"
-        :class="
-          LINK_STYLES + ' text-white bg-primary-darker border-primary-darker'
-        "
-      >
-        {{ n }}
-      </span>
-      <RouterLink v-else-if="n > 0" :to="makeHref(n)" :class="LINK_STYLES">
-        {{ n }}
-      </RouterLink>
-      <span v-else :class="LINK_STYLES">…</span>
-    </li>
-    <li>
-      <RouterLink
-        v-if="page < props.count"
-        :to="makeHref(page + 1)"
-        :class="[LINK_STYLES, 'rounded-r-md']"
-        title="Page suivante"
-      >
-        <FontAwesomeIcon :icon="faChevronRight" />
-      </RouterLink>
-      <span v-else :class="[LINK_STYLES, 'rounded-r-md']">
-        <FontAwesomeIcon :icon="faChevronRight" />
-      </span>
-    </li>
-  </ol>
+  <nav :aria-label="`Pagination, page ${page} sur ${props.count}`">
+    <ol class="flex">
+      <li>
+        <RouterLink
+          v-if="page > 1"
+          v-slot="{ href, navigate }"
+          :to="makeHref(page - 1)"
+          custom
+        >
+          <a
+            :href="href"
+            :class="[LINK_STYLES, 'rounded-l-md']"
+            aria-label="Page précédente"
+            title="Page précédente"
+            @click="navigate"
+          >
+            <FontAwesomeIcon :icon="faChevronLeft" aria-hidden="true" />
+          </a>
+        </RouterLink>
+        <span v-else :class="[LINK_STYLES, 'rounded-l-md']" aria-hidden="true">
+          <FontAwesomeIcon :icon="faChevronLeft" />
+        </span>
+      </li>
+      <li v-for="n in pageList" :key="n">
+        <span
+          v-if="n === page"
+          :class="
+            LINK_STYLES + ' text-white bg-primary-darker border-primary-darker'
+          "
+          aria-current="page"
+        >
+          {{ n }}
+        </span>
+        <RouterLink
+          v-else-if="n > 0"
+          v-slot="{ href, navigate }"
+          :to="makeHref(n)"
+          custom
+        >
+          <a
+            :href="href"
+            :class="LINK_STYLES"
+            :aria-label="`Page ${n}`"
+            @click="navigate"
+          >
+            {{ n }}
+          </a>
+        </RouterLink>
+        <span v-else :class="LINK_STYLES" aria-hidden="true">…</span>
+      </li>
+      <li>
+        <RouterLink
+          v-if="page < props.count"
+          v-slot="{ href, navigate }"
+          :to="makeHref(page + 1)"
+          custom
+        >
+          <a
+            :href="href"
+            :class="[LINK_STYLES, 'rounded-r-md']"
+            aria-label="Page suivante"
+            title="Page suivante"
+            @click="navigate"
+          >
+            <FontAwesomeIcon :icon="faChevronRight" aria-hidden="true" />
+          </a>
+        </RouterLink>
+        <span v-else :class="[LINK_STYLES, 'rounded-r-md']" aria-hidden="true">
+          <FontAwesomeIcon :icon="faChevronRight" />
+        </span>
+      </li>
+    </ol>
+  </nav>
 </template>
