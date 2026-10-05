@@ -115,7 +115,7 @@ const filteredOrders = computed(() =>
       <ErrorMessage :on-retry="refetch" />
     </ItemsCard>
     <AppCard v-else class="max-h-full overflow-hidden flex flex-col relative">
-      <CardTitle class="flex items-center">
+      <CardTitle :level="1" class="flex items-center">
         {{ cardTitle }}
         <LinkButton to="/order/new" class="ml-auto">
           <FontAwesomeIcon :icon="faPlus" class="mr-2" />

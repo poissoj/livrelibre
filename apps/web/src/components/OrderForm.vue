@@ -128,7 +128,7 @@ const submit = async () => {
 
 <template>
   <AppCard class="max-h-full flex flex-col">
-    <CardTitle>{{ props.title }}</CardTitle>
+    <CardTitle :level="1">{{ props.title }}</CardTitle>
     <form class="contents" @submit.prevent="submit">
       <CardBody class="flex-col gap-5">
         <div class="flex flex-col">

@@ -42,6 +42,7 @@ const days = computed(() =>
 
 <template>
   <div class="flex flex-1 flex-col gap-lg items-center">
+    <h1 class="sr-only">Statistiques</h1>
     <AppCard>
       <CardTitle>Nombre de ventes par heure</CardTitle>
       <CardBody class="[width:900px]">

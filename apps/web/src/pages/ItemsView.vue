@@ -96,7 +96,7 @@ useTitle(pageTitle);
       </AppSkeleton>
     </ItemsCard>
     <AppCard v-else class="max-h-full overflow-hidden flex flex-col relative">
-      <CardTitle>{{ listTitle }}</CardTitle>
+      <CardTitle :level="1">{{ listTitle }}</CardTitle>
       <p class="mt-sm">{{ pageData?.count ?? 0 }} articles</p>
       <CardBody>
         <LoadingOverlay :loading="showLoading">

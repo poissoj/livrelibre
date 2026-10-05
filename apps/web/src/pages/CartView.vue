@@ -40,13 +40,13 @@ const removeError = (isbn: string) => {
 <template>
   <div class="[margin-left:10%] [margin-right:10%] flex-1 flex flex-col gap-6">
     <AppCard v-if="isError">
-      <CardTitle>Panier</CardTitle>
+      <CardTitle :level="1">Panier</CardTitle>
       <CardBody>
         <ErrorMessage :on-retry="refetch" />
       </CardBody>
     </AppCard>
     <AppCard v-else-if="isPending">
-      <CardTitle>Panier</CardTitle>
+      <CardTitle :level="1">Panier</CardTitle>
       <CardBody>
         <AppSkeleton :height="150">
           <template v-for="n in 5" :key="n">
@@ -89,7 +89,7 @@ const removeError = (isbn: string) => {
     <template v-else-if="(cart?.count ?? 0) === 0">
       <AppCard>
         <div class="flex items-center">
-          <CardTitle class="mr-auto">Panier</CardTitle>
+          <CardTitle :level="1" class="mr-auto">Panier</CardTitle>
           <QuickAdd @error="addError" />
         </div>
         <CardBody class="flex-col">
@@ -102,7 +102,7 @@ const removeError = (isbn: string) => {
     <template v-else>
       <AppCard class="max-h-full flex flex-col">
         <div class="flex items-center">
-          <CardTitle class="mr-auto">
+          <CardTitle :level="1" class="mr-auto">
             Panier - {{ cart?.count }} article{{
               (cart?.count ?? 0) > 1 ? "s" : ""
             }}

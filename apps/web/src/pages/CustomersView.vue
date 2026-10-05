@@ -107,7 +107,7 @@ useTitle(pageTitle);
       </AppSkeleton>
     </ItemsCard>
     <AppCard v-else class="max-h-full overflow-hidden flex flex-col relative">
-      <CardTitle class="flex items-center">
+      <CardTitle :level="1" class="flex items-center">
         {{ listTitle }}
         <AppInput
           v-model="search"

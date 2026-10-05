@@ -56,7 +56,7 @@ const onSubmit = async () => {
 <template>
   <div class="[margin-left:10%] [margin-right:10%] flex-1">
     <AppCard class="mb-lg">
-      <CardTitle>Chercher un article</CardTitle>
+      <CardTitle :level="1">Chercher un article</CardTitle>
       <form class="flex-1" @submit.prevent="onSubmit">
         <CardBody class="flex-col">
           <div class="flex flex-wrap">

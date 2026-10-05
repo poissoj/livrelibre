@@ -71,7 +71,7 @@ const subtitle = computed(
 <template>
   <div class="flex flex-1 flex-col gap-lg">
     <AppCard v-if="isSuccess && searchResult?.count === 0" :class="CARD_STYLES">
-      <CardTitle>{{ cardTitle }}</CardTitle>
+      <CardTitle :level="1">{{ cardTitle }}</CardTitle>
       <label class="self-end cursor-pointer mr-6 ml-auto">
         <span>En stock</span>
         <input
@@ -84,7 +84,7 @@ const subtitle = computed(
       <CardBody>Aucun résultat pour "{{ search }}"</CardBody>
     </AppCard>
     <AppCard v-else :class="CARD_STYLES">
-      <CardTitle>{{ cardTitle }}</CardTitle>
+      <CardTitle :level="1">{{ cardTitle }}</CardTitle>
       <div class="flex flex-1">
         <p>{{ isSuccess ? subtitle : "Recherche en cours…" }}</p>
         <label class="self-end cursor-pointer mr-6 ml-auto">

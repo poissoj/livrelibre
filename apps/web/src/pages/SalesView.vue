@@ -34,7 +34,7 @@ const goToSale = (sale: Sale) => {
   <RestrictedContent role="admin">
     <div class="[margin-left:10%] [margin-right:10%] flex-1">
       <AppCard class="mb-lg max-h-full overflow-hidden flex flex-col">
-        <CardTitle>Liste des ventes par mois</CardTitle>
+        <CardTitle :level="1">Liste des ventes par mois</CardTitle>
         <CardBody>
           <ErrorMessage v-if="isError" :on-retry="refetch" />
           <AppSkeleton v-else-if="isPending" :height="380">

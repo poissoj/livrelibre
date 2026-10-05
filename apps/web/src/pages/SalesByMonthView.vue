@@ -58,7 +58,7 @@ const categories = computed(() =>
   <RestrictedContent role="admin">
     <div class="flex items-start gap-lg flex-1 flex-wrap">
       <AppCard class="flex flex-col flex-1 max-h-full overflow-hidden">
-        <CardTitle>Liste des ventes - {{ monthLabel }}</CardTitle>
+        <CardTitle :level="1">Liste des ventes - {{ monthLabel }}</CardTitle>
         <CardBody>
           <ErrorMessage v-if="isError" :on-retry="refetch" />
           <AppSkeleton v-else-if="isPending" :height="600">

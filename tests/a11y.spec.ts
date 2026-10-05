@@ -107,6 +107,26 @@ test("le champ de recherche de l'en-tête a un nom accessible", async ({
   ).toBeVisible();
 });
 
+test("chaque page a un seul titre principal (h1)", async ({ page }) => {
+  await login(page);
+
+  for (const path of [
+    "/",
+    "/items",
+    "/orders",
+    "/customers",
+    "/cart",
+    "/search",
+    "/advanced",
+    "/stats",
+    "/add",
+    "/order/new",
+  ]) {
+    await page.goto(path);
+    await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
+  }
+});
+
 test("la pagination expose un landmark et la page courante", async ({
   page,
 }) => {

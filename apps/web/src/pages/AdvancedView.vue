@@ -99,6 +99,7 @@ const finalizeImport = async () => {
 </script>
 
 <template>
+  <h1 class="sr-only">Avancé</h1>
   <AppCard v-if="file" class="self-start max-h-full flex flex-col flex-1">
     <CardTitle>Import du fichier {{ file.filename }}</CardTitle>
     <CardBody class="flex flex-col">

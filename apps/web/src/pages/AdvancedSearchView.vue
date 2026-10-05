@@ -104,7 +104,7 @@ const cardTitle = computed(() => {
 <template>
   <div class="flex flex-1 flex-col gap-lg">
     <AppCard v-if="isSuccess && list?.count === 0" :class="CARD_STYLES">
-      <CardTitle>{{ cardTitle }}</CardTitle>
+      <CardTitle :level="1">{{ cardTitle }}</CardTitle>
       <label class="self-end cursor-pointer mr-6 ml-auto">
         <span>En stock</span>
         <input
@@ -122,7 +122,7 @@ const cardTitle = computed(() => {
       </p>
     </AppCard>
     <AppCard v-else :class="CARD_STYLES">
-      <CardTitle>{{ cardTitle }}</CardTitle>
+      <CardTitle :level="1">{{ cardTitle }}</CardTitle>
       <div class="flex flex-1">
         <p>
           Recherche en cours…<template v-if="isSuccess">

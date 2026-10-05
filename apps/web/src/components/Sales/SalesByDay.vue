@@ -83,7 +83,7 @@ const categories = computed(() =>
       </AppCard>
     </div>
     <AppCard class="flex flex-col">
-      <CardTitle>{{ salesTitle }}</CardTitle>
+      <CardTitle :level="1">{{ salesTitle }}</CardTitle>
       <CardBody>
         <ErrorMessage v-if="isError" :on-retry="refetch" />
         <SalesSkeleton v-else-if="isPending" />

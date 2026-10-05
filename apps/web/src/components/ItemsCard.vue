@@ -8,7 +8,7 @@ const props = defineProps<{ title: string }>();
 
 <template>
   <AppCard class="max-h-full overflow-hidden flex flex-col">
-    <CardTitle>{{ props.title }}</CardTitle>
+    <CardTitle :level="1">{{ props.title }}</CardTitle>
     <slot name="subtitle" />
     <CardBody>
       <slot />

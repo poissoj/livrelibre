@@ -126,7 +126,7 @@ const isbnHandler = async () => {
 
 <template>
   <AppCard class="max-h-full flex flex-col">
-    <CardTitle>{{ props.title }}</CardTitle>
+    <CardTitle :level="1">{{ props.title }}</CardTitle>
     <form class="flex-1 flex flex-col h-0" @submit.prevent="submit">
       <CardBody class="flex-col gap-5">
         <div class="flex flex-wrap">

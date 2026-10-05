@@ -63,13 +63,13 @@ const formData = computed<FormFields | undefined>(() => {
 <template>
   <div class="flex-1">
     <AppCard v-if="isError">
-      <CardTitle>{{ CARD_TITLE }}</CardTitle>
+      <CardTitle :level="1">{{ CARD_TITLE }}</CardTitle>
       <CardBody>
         <ErrorMessage :on-retry="refetch" />
       </CardBody>
     </AppCard>
     <AppCard v-else-if="isPending">
-      <CardTitle>{{ CARD_TITLE }}</CardTitle>
+      <CardTitle :level="1">{{ CARD_TITLE }}</CardTitle>
       <CardBody>
         <AppSkeleton :height="410">
           <template v-for="n in 7" :key="n">
@@ -110,7 +110,7 @@ const formData = computed<FormFields | undefined>(() => {
       </CardBody>
     </AppCard>
     <AppCard v-else-if="item == null">
-      <CardTitle>Article introuvable</CardTitle>
+      <CardTitle :level="1">Article introuvable</CardTitle>
       <CardBody>
         <NoResults />
       </CardBody>

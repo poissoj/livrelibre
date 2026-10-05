@@ -20,7 +20,7 @@ const idNum = computed(() => Number(id.value));
 <template>
   <div class="flex items-start gap-lg flex-1 flex-wrap">
     <AppCard v-if="!isValidId" class="flex-1">
-      <CardTitle>Article introuvable</CardTitle>
+      <CardTitle :level="1">Article introuvable</CardTitle>
       <CardBody>
         <NoResults />
       </CardBody>

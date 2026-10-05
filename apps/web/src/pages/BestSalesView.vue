@@ -24,7 +24,7 @@ const {
 <template>
   <div class="[margin-left:10%] [margin-right:10%] flex flex-1 flex-col gap-lg">
     <AppCard class="max-h-full overflow-hidden flex flex-col">
-      <CardTitle>Meilleures ventes</CardTitle>
+      <CardTitle :level="1">Meilleures ventes</CardTitle>
       <CardBody>
         <ErrorMessage v-if="isError" :on-retry="refetch" />
         <AppSkeleton v-else-if="isPending" :height="500">

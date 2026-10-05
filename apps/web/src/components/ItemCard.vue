@@ -72,13 +72,13 @@ const submitAddToCart = () => {
 
 <template>
   <AppCard v-if="isError" class="flex-1">
-    <CardTitle>Article en erreur</CardTitle>
+    <CardTitle :level="1">Article en erreur</CardTitle>
     <CardBody>
       <ErrorMessage :on-retry="refetch" />
     </CardBody>
   </AppCard>
   <AppCard v-else-if="isPending" class="flex-1">
-    <CardTitle>Chargement…</CardTitle>
+    <CardTitle :level="1">Chargement…</CardTitle>
     <CardBody>
       <AppSkeleton :height="500">
         <template v-for="n in 14" :key="n">
@@ -103,14 +103,14 @@ const submitAddToCart = () => {
     </CardBody>
   </AppCard>
   <AppCard v-else-if="item == null" class="flex-1">
-    <CardTitle>Article introuvable</CardTitle>
+    <CardTitle :level="1">Article introuvable</CardTitle>
     <CardBody>
       <NoResults />
     </CardBody>
   </AppCard>
   <AppCard v-else class="flex-1 max-h-full flex flex-col">
     <div class="flex items-center">
-      <CardTitle class="mr-auto">{{ item.title }}</CardTitle>
+      <CardTitle :level="1" class="mr-auto">{{ item.title }}</CardTitle>
       <LinkButton
         :to="`/order/new?item=${String(props.id)}`"
         aria-label="Commander"

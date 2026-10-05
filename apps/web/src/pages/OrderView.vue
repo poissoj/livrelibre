@@ -90,13 +90,13 @@ const data = computed<OrderFormData | undefined>(() => {
 <template>
   <div class="flex-1 max-w-6xl mx-auto">
     <AppCard v-if="isError">
-      <CardTitle>{{ CARD_TITLE }}</CardTitle>
+      <CardTitle :level="1">{{ CARD_TITLE }}</CardTitle>
       <CardBody>
         <ErrorMessage :on-retry="refetch" />
       </CardBody>
     </AppCard>
     <AppCard v-else-if="isPending">
-      <CardTitle>{{ CARD_TITLE }}</CardTitle>
+      <CardTitle :level="1">{{ CARD_TITLE }}</CardTitle>
       <CardBody>
         <AppSkeleton :height="300">
           <template v-for="n in 4" :key="n">
@@ -121,7 +121,7 @@ const data = computed<OrderFormData | undefined>(() => {
       </CardBody>
     </AppCard>
     <AppCard v-else-if="order == null">
-      <CardTitle>Commande introuvable</CardTitle>
+      <CardTitle :level="1">Commande introuvable</CardTitle>
       <CardBody>
         <NoResults />
       </CardBody>
