@@ -55,6 +55,22 @@ function handleError(error: unknown, meta?: Record<string, unknown>) {
 }
 
 const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: (failureCount, error) => {
+        const status = isTRPCClientError<AppRouter>(error)
+          ? error.data?.httpStatus
+          : undefined;
+        // Never retry a client error (4xx): it won't recover on its own.
+        if (typeof status === "number" && status < 500) {
+          return false;
+        }
+        // Network / 5xx / unknown status: retry at most once.
+        return failureCount < 1;
+      },
+      retryDelay: 300,
+    },
+  },
   queryCache: new QueryCache({
     onError: (error, query) => {
       handleError(error, query.meta);
