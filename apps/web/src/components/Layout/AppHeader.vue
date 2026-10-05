@@ -49,6 +49,7 @@ const logout = async () => {
     <RouterLink
       to="/cart"
       :class="clsx(BUTTON_STYLES, 'shrink-0')"
+      aria-label="Voir le panier"
       title="Voir le panier"
     >
       <FontAwesomeIcon :icon="faShoppingCart" />
@@ -69,6 +70,7 @@ const logout = async () => {
     <button
       :class="BUTTON_STYLES"
       type="button"
+      aria-label="Se déconnecter"
       title="Se déconnecter"
       @click="logout"
     >

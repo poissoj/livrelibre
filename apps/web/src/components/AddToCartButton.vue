@@ -24,6 +24,7 @@ const icon = computed(() => {
 <template>
   <button
     class="p-xs mr-xs disabled:(cursor-not-allowed opacity-80) hover:text-primary-darkest"
+    aria-label="Ajouter au panier"
     title="Ajouter au panier"
     type="button"
     :disabled="props.item.amount === 0"

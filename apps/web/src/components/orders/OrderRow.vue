@@ -73,10 +73,20 @@ const stopPropagation = (event: MouseEvent) => {
       <NotifiedCheckbox :order="props.item" />
     </td>
     <td class="p-1 text-center">
-      <input type="checkbox" disabled :checked="props.item.paid" />
+      <input
+        type="checkbox"
+        aria-label="Payé"
+        disabled
+        :checked="props.item.paid"
+      />
     </td>
     <td class="p-1">
-      <span v-if="props.item.comment" :title="props.item.comment">
+      <span
+        v-if="props.item.comment"
+        role="img"
+        :aria-label="props.item.comment"
+        :title="props.item.comment"
+      >
         <FontAwesomeIcon
           :icon="faInfoCircle"
           size="lg"

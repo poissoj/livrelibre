@@ -24,7 +24,7 @@ const salesPage = computed(() =>
 </script>
 
 <template>
-  <nav class="w-56 bg-gray text-white">
+  <nav aria-label="Navigation principale" class="w-56 bg-gray text-white">
     <ul>
       <li>
         <NavLink href="/" :icon="faTachometerAlt">Tableau de bord</NavLink>

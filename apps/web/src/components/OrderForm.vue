@@ -149,6 +149,7 @@ const submit = async () => {
             />
             <AppButton
               class="ml-sm self-center"
+              aria-label="Nouveau client"
               title="Nouveau client"
               type="button"
               @click="toggleCustomerForm"

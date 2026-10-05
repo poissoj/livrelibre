@@ -44,9 +44,11 @@ const submit = async () => {
     class="flex p-sm [width:27rem] relative"
     @submit.prevent="submit"
   >
+    <label for="quicksearch" class="sr-only">Rechercher un article</label>
     <input
+      id="quicksearch"
       v-model="search"
-      type="text"
+      type="search"
       class="flex-1 [padding:5px_10px] rounded bg-white/80 pr-7 focus-visible:ring-2 focus-visible:ring-inset focus-visible:outline-none [--tw-ring-color:#AAA]"
       placeholder="ISBN, titre, auteur·ice"
       name="search"

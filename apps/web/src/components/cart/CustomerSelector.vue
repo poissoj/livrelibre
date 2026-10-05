@@ -48,11 +48,17 @@ const onSelect = (customer: CustomerSelection | null) => {
       <template v-if="selectedCustomer">
         <LinkButton
           :to="`/customer/${String(selectedCustomer.id)}`"
+          aria-label="Modifier"
           title="Modifier"
         >
           <FontAwesomeIcon :icon="faEdit" />
         </LinkButton>
-        <AppButton type="button" title="Dissocier" @click="onSelect(null)">
+        <AppButton
+          type="button"
+          aria-label="Dissocier"
+          title="Dissocier"
+          @click="onSelect(null)"
+        >
           <FontAwesomeIcon :icon="faTimesCircle" />
         </AppButton>
       </template>

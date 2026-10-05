@@ -87,6 +87,16 @@ test("un chargement est annoncé (role=status)", async ({ page }) => {
   ).toBeVisible();
 });
 
+test("le champ de recherche de l'en-tête a un nom accessible", async ({
+  page,
+}) => {
+  await login(page);
+
+  await expect(
+    page.getByRole("searchbox", { name: "Rechercher un article" }),
+  ).toBeVisible();
+});
+
 test("la pagination expose un landmark et la page courante", async ({
   page,
 }) => {

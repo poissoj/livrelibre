@@ -113,6 +113,7 @@ const submitAddToCart = () => {
       <CardTitle class="mr-auto">{{ item.title }}</CardTitle>
       <LinkButton
         :to="`/order/new?item=${String(props.id)}`"
+        aria-label="Commander"
         title="Commander"
         class="rounded-r-none px-md"
       >
@@ -120,6 +121,9 @@ const submitAddToCart = () => {
       </LinkButton>
       <AppButton
         type="button"
+        :aria-label="
+          item.starred ? 'Enlever des favoris' : 'Ajouter aux favoris'
+        "
         :title="item.starred ? 'Enlever des favoris' : 'Ajouter aux favoris'"
         class="rounded-none px-md border-primary-darkest"
         @click="star(props.id, !item.starred)"
@@ -133,6 +137,7 @@ const submitAddToCart = () => {
       </AppButton>
       <LinkButton
         :to="`/update/${String(props.id)}`"
+        aria-label="Modifier"
         title="Modifier"
         class="rounded-l-none px-md"
       >

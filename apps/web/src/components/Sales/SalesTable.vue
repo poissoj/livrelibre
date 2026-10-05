@@ -85,6 +85,8 @@ const saleLinked = (sale: Sale) =>
         <td v-if="index === 0" class="p-sm" :rowspan="cart.sales.length">
           <span
             v-if="saleLinked(sale)"
+            role="img"
+            aria-label="Vente associée à un⋅e client⋅e"
             title="Cette vente est associée à un⋅e client⋅e"
           >
             <FontAwesomeIcon :icon="faUser" />

@@ -38,6 +38,7 @@ const toggle = () => {
 <template>
   <input
     type="checkbox"
+    aria-label="Commande prévenue"
     :checked="props.order.customerNotified"
     :disabled="isUpdating"
     @change="toggle"

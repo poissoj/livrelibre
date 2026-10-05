@@ -19,6 +19,7 @@ const { mutate, isPending } = useTRPCMutation("removeFromCart", {
   <AppButton
     type="button"
     class="!bg-warning"
+    aria-label="Enlever du panier"
     title="Enlever du panier"
     @click="mutate(props.id)"
   >
