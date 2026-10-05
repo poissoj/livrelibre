@@ -1,9 +1,11 @@
+import { eq } from "drizzle-orm";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { db } from "@livrelibre/server/db/database";
 import { addItem } from "@livrelibre/server/server/addItem";
 import { getItem, searchItems } from "@livrelibre/server/server/searchItem";
 import { updateItem } from "@livrelibre/server/server/updateItem";
+import { ERROR_CODES } from "@livrelibre/shared/errors";
 import { items } from "@livrelibre/shared/schema";
 
 import { truncateAll } from "./helpers";
@@ -47,10 +49,23 @@ describe("addItem", () => {
     expect(rows[0].price).toBe("10.50");
   });
 
-  it("warns when the ISBN already exists", async () => {
+  it("rejects a duplicate ISBN", async () => {
     await addItem(baseItem);
-    const res = await addItem(baseItem);
-    expect(res.type).toBe("warning");
+    await expect(addItem(baseItem)).rejects.toMatchObject({
+      code: "CONFLICT",
+      message: ERROR_CODES.ITEM_ALREADY_EXISTS,
+    });
+  });
+
+  it("creates a single row when the same ISBN is added concurrently", async () => {
+    const results = await Promise.allSettled([
+      addItem(baseItem),
+      addItem(baseItem),
+    ]);
+    expect(results.filter((r) => r.status === "fulfilled")).toHaveLength(1);
+
+    const rows = await db.select().from(items);
+    expect(rows).toHaveLength(1);
   });
 
   it("trims whitespace around the ISBN", async () => {
@@ -117,5 +132,27 @@ describe("updateItem", () => {
   it("returns an error for an unknown id", async () => {
     const res = await updateItem(baseItem, 999999);
     expect(res.type).toBe("error");
+  });
+
+  it("rejects updating to an ISBN that already exists", async () => {
+    await addItem(baseItem);
+    await addItem({ ...baseItem, isbn: "9780000000002" });
+    const [second] = await db
+      .select()
+      .from(items)
+      .where(eq(items.isbn, "9780000000002"));
+
+    await expect(
+      updateItem({ ...baseItem, isbn: "9780000000001" }, second.id),
+    ).rejects.toMatchObject({
+      code: "CONFLICT",
+      message: ERROR_CODES.ITEM_ALREADY_EXISTS,
+    });
+
+    const [unchanged] = await db
+      .select()
+      .from(items)
+      .where(eq(items.id, second.id));
+    expect(unchanged.isbn).toBe("9780000000002");
   });
 });

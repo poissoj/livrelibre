@@ -1,20 +1,29 @@
+import { TRPCError } from "@trpc/server";
 import { eq } from "drizzle-orm";
 
+import { ERROR_CODES } from "@livrelibre/shared/errors";
 import type { BaseItem } from "@livrelibre/shared/item";
 import { items as itemsTable } from "@livrelibre/shared/schema";
 import { norm } from "@livrelibre/shared/utils";
 
 import { db } from "@server/db/database";
+import { isUniqueViolation } from "@server/utils/dbErrors";
+
+const duplicateItemError = () =>
+  new TRPCError({
+    code: "CONFLICT",
+    message: ERROR_CODES.ITEM_ALREADY_EXISTS,
+  });
 
 export const addItem = async (
   item: BaseItem,
-): Promise<{ type: "success" | "warning" | "error"; msg: string }> => {
+): Promise<{ type: "success" | "error"; msg: string }> => {
   const isbn = item.isbn.trim();
   const existingItem = await db.query.items.findFirst({
     where: eq(itemsTable.isbn, isbn),
   });
   if (existingItem && existingItem.isbn !== "") {
-    return { type: "warning", msg: "Un article avec cet ISBN existe déjà." };
+    throw duplicateItemError();
   }
   const newItem: typeof itemsTable.$inferInsert = {
     ...item,
@@ -28,6 +37,13 @@ export const addItem = async (
     nmDistributor: norm(item.distributor),
   };
 
-  await db.insert(itemsTable).values(newItem);
+  try {
+    await db.insert(itemsTable).values(newItem);
+  } catch (error) {
+    if (isUniqueViolation(error)) {
+      throw duplicateItemError();
+    }
+    throw error;
+  }
   return { type: "success", msg: `"${item.title}" a été ajouté.` };
 };

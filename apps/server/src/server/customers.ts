@@ -24,13 +24,8 @@ import {
 import { norm, sanitize } from "@livrelibre/shared/utils";
 
 import { type Transaction, db } from "@server/db/database";
+import { isUniqueViolation } from "@server/utils/dbErrors";
 import { logger } from "@server/utils/logger";
-
-const isUniqueViolation = (error: unknown): boolean =>
-  typeof error === "object" &&
-  error !== null &&
-  "code" in error &&
-  (error as { code?: unknown }).code === "23505";
 
 const duplicateCustomerError = () =>
   new TRPCError({

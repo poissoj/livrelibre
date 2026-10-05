@@ -17,6 +17,7 @@ export const ERROR_CODES = {
   CART_EMPTY: "CART_EMPTY",
   ITEM_NOT_FOUND: "ITEM_NOT_FOUND",
   ITEM_UNAVAILABLE: "ITEM_UNAVAILABLE",
+  ITEM_ALREADY_EXISTS: "ITEM_ALREADY_EXISTS",
   ITEM_INVALID: "ITEM_INVALID",
   SALE_NOT_TODAY: "SALE_NOT_TODAY",
   // Validation errors
@@ -60,6 +61,7 @@ export const ERROR_MESSAGES: Record<ErrorCode, string> = {
   CART_EMPTY: "Le panier est vide.",
   ITEM_NOT_FOUND: "Article introuvable.",
   ITEM_UNAVAILABLE: "Article introuvable ou stock insuffisant.",
+  ITEM_ALREADY_EXISTS: "Un article avec cet ISBN existe déjà.",
   ITEM_INVALID: "Article invalide.",
   SALE_NOT_TODAY: "Vous ne pouvez supprimer qu'une vente du jour.",
   INVALID_ID: "Identifiant invalide.",
