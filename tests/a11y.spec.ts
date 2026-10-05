@@ -57,3 +57,28 @@ test("le statut de commande a un nom accessible", async ({ page }) => {
     page.getByRole("img", { name: "En cours" }).first(),
   ).toBeVisible();
 });
+
+test("une erreur de chargement est annoncée (role=alert)", async ({ page }) => {
+  await login(page);
+  await page.route("**/api/trpc/*", (route) =>
+    route.fulfill({ status: 500, body: "Internal Server Error" }),
+  );
+
+  await page.goto("/items");
+
+  await expect(page.getByRole("main").getByRole("alert")).toBeVisible();
+});
+
+test("un chargement est annoncé (role=status)", async ({ page }) => {
+  await login(page);
+  await page.route("**/api/trpc/*", async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await route.continue();
+  });
+
+  await page.goto("/items");
+
+  await expect(
+    page.getByRole("main").getByRole("status").first(),
+  ).toBeVisible();
+});

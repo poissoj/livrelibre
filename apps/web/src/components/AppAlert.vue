@@ -37,10 +37,16 @@ const ICONS = {
 } as const;
 
 const style = computed(() => ALERT_STYLES[props.type]);
+const role = computed(() =>
+  props.type === "error" || props.type === "warning" ? "alert" : "status",
+);
 </script>
 
 <template>
-  <div :class="clsx('p-sm border rounded flex items-center', style)">
+  <div
+    :role="role"
+    :class="clsx('p-sm border rounded flex items-center', style)"
+  >
     <FontAwesomeIcon :icon="ICONS[props.type]" class="mr-sm" />
     <slot />
     <button

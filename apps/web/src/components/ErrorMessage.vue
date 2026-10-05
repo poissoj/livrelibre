@@ -15,6 +15,7 @@ const message = computed(() =>
 
 <template>
   <div
+    role="alert"
     class="p-sm [border:1px_solid_#f5c6cb] [color:#721c24] [background-color:#f8d7da] self-start"
   >
     <p class="mb-sm whitespace-pre-line">
