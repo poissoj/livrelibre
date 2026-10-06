@@ -68,8 +68,29 @@ const inputStyles = computed(() =>
         <li v-if="isError" class="px-2 py-1 text-sm [color:#721c24]">
           Erreur de chargement
         </li>
-        <ComboboxOption v-if="search.length > 0" :value="newItemOption">
-          {{ search }}
+        <ComboboxOption
+          v-if="search.length > 0"
+          v-slot="{ active, selected }"
+          :value="newItemOption"
+          as="template"
+        >
+          <li
+            :aria-label="`Article non répertorié : ${search}`"
+            :class="
+              clsx(
+                'px-2 flex gap-2 items-center',
+                active ? 'bg-gray-light' : 'bg-white',
+              )
+            "
+          >
+            <span :class="!selected && 'invisible'">
+              <FontAwesomeIcon :icon="faCheck" />
+            </span>
+            <div class="flex flex-col grow py-1">
+              <span class="leading-tight">{{ search }}</span>
+              <span class="text-xs italic">Article non répertorié</span>
+            </div>
+          </li>
         </ComboboxOption>
         <ComboboxOption
           v-for="option in filteredItems"

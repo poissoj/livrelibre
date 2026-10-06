@@ -127,6 +127,18 @@ test("chaque page a un seul titre principal (h1)", async ({ page }) => {
   }
 });
 
+test("l'option d'article non répertorié a un nom accessible", async ({
+  page,
+}) => {
+  await login(page);
+  await page.goto("/order/new");
+
+  await page.getByRole("combobox", { name: "Titre" }).fill("MonTitre");
+  await expect(
+    page.getByRole("option", { name: "Article non répertorié : MonTitre" }),
+  ).toBeVisible();
+});
+
 test("le tableau des clients a un nom et une ligne clavier accessible", async ({
   page,
 }) => {
