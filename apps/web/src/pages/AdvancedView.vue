@@ -104,16 +104,19 @@ const finalizeImport = async () => {
     <CardTitle>Import du fichier {{ file.filename }}</CardTitle>
     <CardBody class="flex flex-col">
       <table class="flex-1 border-separate [border-spacing:0.5rem]">
+        <caption class="sr-only">
+          Aperçu de l'import
+        </caption>
         <thead>
           <tr class="sticky top-0 bg-white z-10">
-            <th class="text-left">EAN</th>
-            <th class="text-left">Titre</th>
-            <th class="text-left">Auteur·ice</th>
-            <th class="text-left">Maison d'édition</th>
-            <th class="text-left">Distributeur</th>
-            <th class="text-right">Stock</th>
-            <th class="text-right">Prix</th>
-            <th class="text-right">Quantité</th>
+            <th scope="col" class="text-left">EAN</th>
+            <th scope="col" class="text-left">Titre</th>
+            <th scope="col" class="text-left">Auteur·ice</th>
+            <th scope="col" class="text-left">Maison d'édition</th>
+            <th scope="col" class="text-left">Distributeur</th>
+            <th scope="col" class="text-right">Stock</th>
+            <th scope="col" class="text-right">Prix</th>
+            <th scope="col" class="text-right">Quantité</th>
           </tr>
         </thead>
         <tbody>

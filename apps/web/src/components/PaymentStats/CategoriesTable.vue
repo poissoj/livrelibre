@@ -12,11 +12,18 @@ const COMMON_TH_STYLES = "sticky top-0 bg-white";
 
 <template>
   <table class="flex-1">
+    <caption class="sr-only">
+      Ventes par catégorie
+    </caption>
     <thead>
       <tr>
-        <th :class="clsx(COMMON_TH_STYLES, 'text-left')">Catégorie</th>
-        <th :class="clsx(COMMON_TH_STYLES, 'text-right')">Quantité</th>
-        <th :class="clsx(COMMON_TH_STYLES, 'text-right')">Total</th>
+        <th scope="col" :class="clsx(COMMON_TH_STYLES, 'text-left')">
+          Catégorie
+        </th>
+        <th scope="col" :class="clsx(COMMON_TH_STYLES, 'text-right')">
+          Quantité
+        </th>
+        <th scope="col" :class="clsx(COMMON_TH_STYLES, 'text-right')">Total</th>
       </tr>
     </thead>
     <tbody class="[line-height:1.9rem]">

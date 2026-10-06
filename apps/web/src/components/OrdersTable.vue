@@ -22,6 +22,9 @@ const sortedItems = computed(() =>
 
 <template>
   <table class="flex-1 text-sm">
+    <caption class="sr-only">
+      Liste des commandes
+    </caption>
     <OrderTableHead />
     <tbody class="leading-7">
       <OrderRowCmp

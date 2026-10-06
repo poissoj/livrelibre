@@ -58,16 +58,26 @@ const {
           v-else
           class="flex-1 [border-collapse:separate] [border-spacing:2px_0.5rem]"
         >
+          <caption class="sr-only">
+            Meilleures ventes
+          </caption>
           <thead>
             <tr>
-              <th :class="clsx(TH_STYLES, 'text-left')">#</th>
-              <th :class="clsx(TH_STYLES, 'text-left')">Titre</th>
-              <th :class="clsx(TH_STYLES, 'text-left')">Auteur·ice</th>
-              <th :class="clsx(TH_STYLES, 'text-right')">Vendus</th>
-              <th :class="clsx(TH_STYLES, 'text-right whitespace-nowrap')">
+              <th scope="col" :class="clsx(TH_STYLES, 'text-left')">#</th>
+              <th scope="col" :class="clsx(TH_STYLES, 'text-left')">Titre</th>
+              <th scope="col" :class="clsx(TH_STYLES, 'text-left')">
+                Auteur·ice
+              </th>
+              <th scope="col" :class="clsx(TH_STYLES, 'text-right')">Vendus</th>
+              <th
+                scope="col"
+                :class="clsx(TH_STYLES, 'text-right whitespace-nowrap')"
+              >
                 En stock
               </th>
-              <th :class="TH_STYLES"></th>
+              <th scope="col" :class="TH_STYLES">
+                <span class="sr-only">Actions</span>
+              </th>
             </tr>
           </thead>
           <tbody>

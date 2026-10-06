@@ -11,13 +11,16 @@ const props = defineProps<{ items: Item[] }>();
 
 <template>
   <table class="flex-1 border-separate [border-spacing:2px_0.5rem]">
+    <caption class="sr-only">
+      Liste des articles
+    </caption>
     <thead>
       <tr class="sticky top-0 bg-white z-10">
-        <th class="text-left">Distributeur</th>
-        <th class="text-left">Titre</th>
-        <th class="text-left">Auteur·ice</th>
-        <th class="text-right">Quantité</th>
-        <th></th>
+        <th scope="col" class="text-left">Distributeur</th>
+        <th scope="col" class="text-left">Titre</th>
+        <th scope="col" class="text-left">Auteur·ice</th>
+        <th scope="col" class="text-right">Quantité</th>
+        <th scope="col"><span class="sr-only">Actions</span></th>
       </tr>
     </thead>
     <tbody>

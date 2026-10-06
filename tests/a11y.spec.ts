@@ -127,6 +127,48 @@ test("chaque page a un seul titre principal (h1)", async ({ page }) => {
   }
 });
 
+test("le tableau des clients a un nom et une ligne clavier accessible", async ({
+  page,
+}) => {
+  await login(page);
+  await page.goto("/customers");
+
+  await expect(
+    page.getByRole("table", { name: "Liste des client⋅es" }),
+  ).toBeVisible();
+
+  const link = page.getByRole("link", { name: customer.fullname });
+  await link.focus();
+  await expect(link).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(new RegExp(`/customer/${String(customer.id)}`));
+});
+
+test("le tableau des commandes a un nom et une ligne clavier accessible", async ({
+  page,
+}) => {
+  const itemTitle = unique("Article a11y commande");
+  await seedOrder({
+    customerId: customer.id,
+    itemId: item.id,
+    itemTitle,
+    ordered: "new",
+  });
+
+  await login(page);
+  await page.goto("/orders");
+
+  await expect(
+    page.getByRole("table", { name: "Liste des commandes" }),
+  ).toBeVisible();
+
+  const link = page.getByRole("link", { name: itemTitle });
+  await link.focus();
+  await expect(link).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page).toHaveURL(/\/order\/\d+$/);
+});
+
 test("la pagination expose un landmark et la page courante", async ({
   page,
 }) => {

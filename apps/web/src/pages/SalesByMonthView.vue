@@ -98,11 +98,20 @@ const categories = computed(() =>
             </template>
           </AppSkeleton>
           <table v-else class="flex-1">
+            <caption class="sr-only">
+              Ventes par jour
+            </caption>
             <thead>
               <tr>
-                <th :class="clsx(TH_STYLES, 'text-left pl-2')">Jour</th>
-                <th :class="clsx(TH_STYLES, 'text-right')">Nombre de ventes</th>
-                <th :class="clsx(TH_STYLES, 'text-right')">Recette totale</th>
+                <th scope="col" :class="clsx(TH_STYLES, 'text-left pl-2')">
+                  Jour
+                </th>
+                <th scope="col" :class="clsx(TH_STYLES, 'text-right')">
+                  Nombre de ventes
+                </th>
+                <th scope="col" :class="clsx(TH_STYLES, 'text-right')">
+                  Recette totale
+                </th>
               </tr>
             </thead>
             <tbody class="[line-height:2.3rem]">

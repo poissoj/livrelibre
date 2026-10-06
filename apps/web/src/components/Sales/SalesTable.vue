@@ -30,18 +30,25 @@ const saleLinked = (sale: Sale) =>
 
 <template>
   <table class="flex-1" cellpadding="8">
+    <caption class="sr-only">
+      Détail des ventes
+    </caption>
     <thead>
       <tr>
-        <th :class="clsx(TH_STYLES, 'text-right')">Stock</th>
-        <th :class="clsx(TH_STYLES, 'text-left')">Titre</th>
-        <th :class="clsx(TH_STYLES, 'text-left')">Auteur·ice</th>
-        <th :class="clsx(TH_STYLES, 'text-right')">Quantité</th>
-        <th :class="clsx(TH_STYLES, 'text-right')">Prix total</th>
-        <th :class="clsx(TH_STYLES, 'text-right')">Panier</th>
-        <th :class="clsx(TH_STYLES, 'text-right')">TVA</th>
-        <th :class="clsx(TH_STYLES, 'text-left')">Paiement</th>
-        <th :class="clsx(TH_STYLES, 'w-8')"></th>
-        <th :class="clsx(TH_STYLES, 'w-10')"></th>
+        <th scope="col" :class="clsx(TH_STYLES, 'text-right')">Stock</th>
+        <th scope="col" :class="clsx(TH_STYLES, 'text-left')">Titre</th>
+        <th scope="col" :class="clsx(TH_STYLES, 'text-left')">Auteur·ice</th>
+        <th scope="col" :class="clsx(TH_STYLES, 'text-right')">Quantité</th>
+        <th scope="col" :class="clsx(TH_STYLES, 'text-right')">Prix total</th>
+        <th scope="col" :class="clsx(TH_STYLES, 'text-right')">Panier</th>
+        <th scope="col" :class="clsx(TH_STYLES, 'text-right')">TVA</th>
+        <th scope="col" :class="clsx(TH_STYLES, 'text-left')">Paiement</th>
+        <th scope="col" :class="clsx(TH_STYLES, 'w-8')">
+          <span class="sr-only">Supprimer</span>
+        </th>
+        <th scope="col" :class="clsx(TH_STYLES, 'w-10')">
+          <span class="sr-only">Client⋅e</span>
+        </th>
       </tr>
     </thead>
     <tbody v-for="(cart, i) in props.carts" :key="i" class="odd:bg-gray-light">

@@ -7,7 +7,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { clsx } from "clsx";
-import { useRouter } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
 
 import { formatDateFR } from "@livrelibre/shared/date";
 import type { OrderRow } from "@livrelibre/shared/order";
@@ -58,7 +58,12 @@ const stopPropagation = (event: MouseEvent) => {
     ></td>
     <td class="p-2">
       <div class="leading-4">
-        {{ props.item.itemTitle }}
+        <RouterLink
+          :to="{ path: `/order/${String(props.item.id)}`, query }"
+          @click.stop
+        >
+          {{ props.item.itemTitle }}
+        </RouterLink>
         <span v-if="props.item.nb > 1" class="font-bold ml-2">
           ({{ props.item.nb }} ex)
         </span>

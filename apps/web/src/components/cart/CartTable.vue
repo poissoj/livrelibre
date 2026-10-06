@@ -17,13 +17,20 @@ const TH_STYLES = "sticky top-0 bg-white";
 
 <template>
   <table class="flex-1 border-separate [border-spacing:2px_0.5rem]">
+    <caption class="sr-only">
+      Contenu du panier
+    </caption>
     <thead>
       <tr>
-        <th :class="clsx(TH_STYLES, 'text-left')">Article</th>
-        <th :class="clsx(TH_STYLES, 'text-right')">Prix unitaire</th>
-        <th :class="clsx(TH_STYLES, 'text-right')">Quantité</th>
-        <th :class="clsx(TH_STYLES, 'text-right')">Prix total</th>
-        <th :class="TH_STYLES"></th>
+        <th scope="col" :class="clsx(TH_STYLES, 'text-left')">Article</th>
+        <th scope="col" :class="clsx(TH_STYLES, 'text-right')">
+          Prix unitaire
+        </th>
+        <th scope="col" :class="clsx(TH_STYLES, 'text-right')">Quantité</th>
+        <th scope="col" :class="clsx(TH_STYLES, 'text-right')">Prix total</th>
+        <th scope="col" :class="TH_STYLES">
+          <span class="sr-only">Actions</span>
+        </th>
       </tr>
     </thead>
     <tbody>

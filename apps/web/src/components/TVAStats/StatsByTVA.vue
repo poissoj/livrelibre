@@ -19,12 +19,17 @@ const TH_STYLES = "sticky top-0 bg-white";
 
 <template>
   <table class="flex-1">
+    <caption class="sr-only">
+      Répartition par TVA
+    </caption>
     <thead>
       <tr>
-        <th :class="clsx(TH_STYLES, 'text-left')">Type de paiement</th>
-        <th :class="clsx(TH_STYLES, 'text-right')">TVA</th>
-        <th :class="clsx(TH_STYLES, 'text-right')">Quantité</th>
-        <th :class="clsx(TH_STYLES, 'text-right')">Total</th>
+        <th scope="col" :class="clsx(TH_STYLES, 'text-left')">
+          Type de paiement
+        </th>
+        <th scope="col" :class="clsx(TH_STYLES, 'text-right')">TVA</th>
+        <th scope="col" :class="clsx(TH_STYLES, 'text-right')">Quantité</th>
+        <th scope="col" :class="clsx(TH_STYLES, 'text-right')">Total</th>
       </tr>
     </thead>
     <tbody class="[line-height:1.9rem]">

@@ -143,10 +143,13 @@ const total = computed(
               <table
                 class="w-fit border-separate border-spacing-x-4 border-spacing-y-1"
               >
+                <caption class="sr-only">
+                  Achats du client
+                </caption>
                 <thead>
                   <tr>
-                    <th class="text-left">Date</th>
-                    <th class="text-right">Montant</th>
+                    <th scope="col" class="text-left">Date</th>
+                    <th scope="col" class="text-right">Montant</th>
                   </tr>
                 </thead>
                 <tbody>

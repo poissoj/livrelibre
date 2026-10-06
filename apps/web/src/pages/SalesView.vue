@@ -82,17 +82,24 @@ const goToSale = (sale: Sale) => {
             </template>
           </AppSkeleton>
           <table v-else class="flex-1">
+            <caption class="sr-only">
+              Ventes par mois
+            </caption>
             <thead>
               <tr>
-                <th :class="clsx(TH_STYLES, 'text-left pl-2')">Mois</th>
-                <th :class="clsx(TH_STYLES, 'text-right')">Nombre de ventes</th>
-                <th :class="clsx(TH_STYLES, 'text-right')">
+                <th scope="col" :class="clsx(TH_STYLES, 'text-left pl-2')">
+                  Mois
+                </th>
+                <th scope="col" :class="clsx(TH_STYLES, 'text-right')">
+                  Nombre de ventes
+                </th>
+                <th scope="col" :class="clsx(TH_STYLES, 'text-right')">
                   Recette totale HT
                 </th>
-                <th :class="clsx(TH_STYLES, 'text-right')">
+                <th scope="col" :class="clsx(TH_STYLES, 'text-right')">
                   Recette totale TTC
                 </th>
-                <th :class="clsx(TH_STYLES, 'text-right pr-1')">
+                <th scope="col" :class="clsx(TH_STYLES, 'text-right pr-1')">
                   Panier moyen
                 </th>
               </tr>
