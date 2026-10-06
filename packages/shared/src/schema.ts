@@ -3,6 +3,7 @@ import {
   type AnyPgColumn,
   boolean,
   char,
+  check,
   index,
   integer,
   numeric,
@@ -61,6 +62,7 @@ export const items = pgTable(
     uniqueIndex("items_isbn_unique")
       .on(table.isbn)
       .where(sql`${table.isbn} != ''`),
+    check("items_amount_nonnegative", sql`${table.amount} >= 0`),
   ],
 );
 export type Item = typeof items.$inferSelect;
@@ -93,7 +95,10 @@ export const cart = pgTable(
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     ...cartItemColumns(),
   },
-  (table) => cartIndexes(table, "cart"),
+  (table) => [
+    ...cartIndexes(table, "cart"),
+    check("cart_quantity_positive", sql`${table.quantity} > 0`),
+  ],
 );
 
 export const asideCart = pgTable(
@@ -102,7 +107,10 @@ export const asideCart = pgTable(
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
     ...cartItemColumns(),
   },
-  (table) => cartIndexes(table, "asideCart"),
+  (table) => [
+    ...cartIndexes(table, "asideCart"),
+    check("asideCart_quantity_positive", sql`${table.quantity} > 0`),
+  ],
 );
 
 export const paymentTypeEnum = pgEnum("paymentType", [
@@ -135,6 +143,7 @@ export const sales = pgTable(
     index("sales_itemId_idx").on(table.itemId),
     index("sales_deleted_idx").on(table.deleted),
     index("sales_created_idx").on(table.created),
+    check("sales_quantity_positive", sql`${table.quantity} > 0`),
   ],
 );
 
@@ -205,5 +214,6 @@ export const orders = pgTable(
   (table) => [
     index("orders_customerId_idx").on(table.customerId),
     index("orders_ordered_idx").on(table.ordered),
+    check("orders_nb_positive", sql`${table.nb} > 0`),
   ],
 );
