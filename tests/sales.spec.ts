@@ -25,7 +25,9 @@ test("Ventes, ventes du jour, statistiques et meilleures ventes", async ({
   ).toBeVisible();
   await page.getByRole("row").nth(1).click();
   await expect(page).toHaveURL(/\/sale\/\d{4}\/\d{2}$/);
-  await expect(page.getByText("Répartition par TVA")).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Répartition par TVA" }),
+  ).toBeVisible();
 
   await page.goto("/todaySales");
   await expect(
