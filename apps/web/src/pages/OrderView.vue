@@ -142,7 +142,7 @@ const data = computed<OrderFormData | undefined>(() => {
         class="mr-2 px-md !bg-gray-medium"
       >
         <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
-        Annuler
+        Retour
       </LinkButton>
       <AppButton type="submit" class="px-md" :disabled="updatePending">
         <FontAwesomeIcon :icon="faCheckCircle" class="mr-sm" />

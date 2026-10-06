@@ -122,7 +122,7 @@ const total = computed(
         />
         <LinkButton to="/customers" class="mr-2 px-md !bg-gray-medium">
           <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
-          Annuler
+          Retour
         </LinkButton>
         <AppButton type="submit" class="px-md" :disabled="savePending">
           <FontAwesomeIcon :icon="faCheckCircle" class="mr-sm" />

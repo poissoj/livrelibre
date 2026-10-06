@@ -24,7 +24,7 @@ const submit = async (customer: CustomerFormFields) =>
     <CustomerForm title="Ajouter un client" :on-submit="submit">
       <LinkButton to="/customers" class="mr-2 px-md !bg-gray-medium">
         <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
-        Annuler
+        Retour
       </LinkButton>
       <AppButton type="submit" class="px-md" :disabled="savePending">
         <FontAwesomeIcon :icon="faPlus" class="mr-sm" />
