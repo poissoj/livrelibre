@@ -35,7 +35,7 @@ export const finalizeImportRoute = async (c: Context) => {
     user,
     isbns: data.map((row) => row.EAN),
   });
-  const today = formatDate(new Date()).split("-").reverse().join("/");
+  const today = formatDate(new Date());
   const booksToAdd: (typeof items.$inferInsert)[] = data.map((row) => ({
     amount: row.QTE,
     datebought: today,

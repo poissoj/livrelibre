@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-import { zAmount, zDateFR, zIsbn, zPrice } from "./validation";
+import { zAmount, zDateISO, zIsbn, zPrice } from "./validation";
 
 export const ITEM_TYPES = {
   postcard: "Carte postale",
@@ -36,7 +36,7 @@ export const zItem = z.object({
   publisher: z.string(),
   distributor: z.string(),
   keywords: z.string().nullable(),
-  datebought: zDateFR,
+  datebought: zDateISO,
   comments: z.string().nullable(),
   price: zPrice,
   amount: zAmount,

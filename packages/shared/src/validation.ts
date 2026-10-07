@@ -43,19 +43,6 @@ export const zIsbn = z
 
 export const zDateISO = z.iso.date(ERROR_CODES.INVALID_DATE);
 
-export const zDateFR = z
-  .string(ERROR_CODES.INVALID_DATE)
-  .regex(/^\d{2}\/\d{2}\/\d{4}$/, ERROR_CODES.INVALID_DATE)
-  .refine((value) => {
-    const [day, month, year] = value.split("/").map(Number);
-    const date = new Date(Date.UTC(year, month - 1, day));
-    return (
-      date.getUTCFullYear() === year &&
-      date.getUTCMonth() === month - 1 &&
-      date.getUTCDate() === day
-    );
-  }, ERROR_CODES.INVALID_DATE);
-
 /** Accepts a date-only string or an ISO datetime string. */
 export const zDateString = z
   .string(ERROR_CODES.INVALID_DATE)

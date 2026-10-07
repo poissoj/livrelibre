@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { formatISODateFR } from "@livrelibre/shared/date";
 import {
   formatNumber,
   formatPrice,
@@ -36,7 +37,9 @@ const formatStringPrice = (price: string) =>
     <dt class="[flex-basis:30%] p-sm font-medium">Mots-clés</dt>
     <dd class="[flex:1_0_70%] p-sm">{{ props.item.keywords }}</dd>
     <dt class="[flex-basis:30%] p-sm font-medium">Date d’achat</dt>
-    <dd class="[flex:1_0_70%] p-sm">{{ props.item.datebought }}</dd>
+    <dd class="[flex:1_0_70%] p-sm">
+      {{ formatISODateFR(props.item.datebought) }}
+    </dd>
     <dt class="[flex-basis:30%] p-sm font-medium">Commentaires</dt>
     <dd class="[flex:1_0_70%] p-sm">
       <pre>{{ props.item.comments }}</pre>

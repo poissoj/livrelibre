@@ -69,7 +69,7 @@ export const seedItem = async (
         type: "book",
         isbn: uniqueIsbn(),
         keywords: null,
-        datebought: "01/01/2024",
+        datebought: "2024-01-01",
         comments: null,
         price: "10.00",
         amount: 5,
@@ -110,7 +110,7 @@ export const seedItems = async (
       return {
         type: "book" as const,
         keywords: null,
-        datebought: "01/01/2024",
+        datebought: "2024-01-01",
         comments: null,
         price: "10.00",
         amount: 5,

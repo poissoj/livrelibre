@@ -28,7 +28,7 @@ test.beforeAll(async () => {
       publisher: "Éditeur E2E",
       distributor: "Distributeur E2E",
       keywords: null,
-      datebought: "01/01/2024",
+      datebought: "2024-01-01",
       comments: null,
       price: "10.00",
       amount: 5,

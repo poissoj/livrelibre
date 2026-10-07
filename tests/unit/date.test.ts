@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { formatDate, formatDateFR, toInputDate } from "@livrelibre/shared/date";
+import {
+  formatDate,
+  formatDateFR,
+  formatISODateFR,
+  toInputDate,
+} from "@livrelibre/shared/date";
 
 describe("formatDate", () => {
   it("formats a date as ISO (YYYY-MM-DD)", () => {
@@ -29,5 +34,11 @@ describe("formatDateFR", () => {
 describe("toInputDate", () => {
   it("formats for a datetime-local input", () => {
     expect(toInputDate(new Date(2024, 0, 5, 14, 30))).toBe("2024-01-05T14:30");
+  });
+});
+
+describe("formatISODateFR", () => {
+  it("converts an ISO date to DD/MM/YYYY", () => {
+    expect(formatISODateFR("2024-01-05")).toBe("05/01/2024");
   });
 });

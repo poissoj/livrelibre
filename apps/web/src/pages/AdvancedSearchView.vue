@@ -3,6 +3,7 @@ import { keepPreviousData } from "@tanstack/vue-query";
 import { computed } from "vue";
 import { RouterLink } from "vue-router";
 
+import { formatISODateFR } from "@livrelibre/shared/date";
 import { formatTVA } from "@livrelibre/shared/format";
 import { ITEM_TYPES } from "@livrelibre/shared/item";
 import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
@@ -44,6 +45,8 @@ const formatRow = ([key, value]: [string, string]) => {
     fieldValue = ITEM_TYPES[value];
   } else if (key === "tva") {
     fieldValue = formatTVA(value) || "";
+  } else if (key === "datebought") {
+    fieldValue = formatISODateFR(value);
   }
   return `${fieldName}: ${fieldValue}`;
 };

@@ -13,8 +13,7 @@ const { mutateAsync: addItem, isPending: addPending } = useTRPCMutation(
 );
 
 const submit = async (data: FormFields) => {
-  const datebought = data.datebought.split("-").reverse().join("/");
-  const item = { ...data, amount: Number(data.amount), datebought };
+  const item = { ...data, amount: Number(data.amount) };
   return await addItem(item);
 };
 </script>

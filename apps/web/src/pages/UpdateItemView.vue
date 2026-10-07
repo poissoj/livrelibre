@@ -37,8 +37,7 @@ const { mutateAsync: updateItem } = useTRPCMutation("updateItem", {
 });
 
 const submit = async (data: FormFields) => {
-  const datebought = data.datebought.split("-").reverse().join("/");
-  const payload = { ...data, amount: Number(data.amount), datebought };
+  const payload = { ...data, amount: Number(data.amount) };
   const result = await updateItem({ item: payload, id: id.value });
   if (result.type === "success") {
     await utils.invalidate("searchItem", id.value);
@@ -55,7 +54,6 @@ const formData = computed<FormFields | undefined>(() => {
   return {
     ...loaded,
     amount: String(loaded.amount),
-    datebought: loaded.datebought.split("/").reverse().join("-"),
   };
 });
 </script>

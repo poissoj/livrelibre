@@ -18,7 +18,7 @@ const baseItem = {
   publisher: "Éditeur",
   distributor: "Distributeur",
   keywords: null,
-  datebought: "01/01/2024",
+  datebought: "2024-01-01",
   comments: null,
   price: "10.00",
   amount: 5,
@@ -99,6 +99,12 @@ describe("input validation", () => {
         type: "book",
       }),
     ).resolves.toBeUndefined();
+  });
+
+  it("rejects a non-ISO item date", async () => {
+    await expect(
+      caller.addItem({ ...baseItem, datebought: "01/01/2024" }),
+    ).rejects.toMatchObject(BAD_REQUEST);
   });
 
   it("rejects a negative or decimal amount", async () => {

@@ -41,9 +41,7 @@ const onSubmit = async () => {
     publisher: publisher.value,
     distributor: distributor.value,
     keywords: keywords.value,
-    datebought: datebought.value
-      ? datebought.value.split("-").reverse().join("/")
-      : "",
+    datebought: datebought.value,
     comments: comments.value,
     price: price.value,
     amount: amount.value,
