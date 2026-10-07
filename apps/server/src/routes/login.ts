@@ -8,6 +8,7 @@ import { users } from "@livrelibre/shared/schema";
 
 import { setSessionCookie } from "@server/auth";
 import { db } from "@server/db/database";
+import { logError } from "@server/utils/logError";
 import { logger } from "@server/utils/logger";
 
 const credentialsSchema = z.object({
@@ -16,8 +17,11 @@ const credentialsSchema = z.object({
 });
 
 export const loginRoute = async (c: Context) => {
+  let username: string | undefined;
   try {
-    const { username, password } = credentialsSchema.parse(await c.req.json());
+    const credentials = credentialsSchema.parse(await c.req.json());
+    username = credentials.username;
+    const { password } = credentials;
     if (!username) {
       logger.info("Invalid login attempt - no username");
       return c.json({ error: ERROR_CODES.MISSING_USERNAME }, 400);
@@ -39,7 +43,7 @@ export const loginRoute = async (c: Context) => {
     logger.info("Invalid credentials", { username });
     return c.json({ error: ERROR_CODES.INVALID_CREDENTIALS }, 401);
   } catch (error) {
-    logger.error(error);
+    logError("login", error, { username });
     return c.json({ error: ERROR_CODES.LOGIN_ERROR }, 500);
   }
 };

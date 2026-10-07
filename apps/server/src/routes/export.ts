@@ -8,6 +8,7 @@ import { items } from "@livrelibre/shared/schema";
 
 import { type User } from "@server/auth";
 import { db } from "@server/db/database";
+import { logError } from "@server/utils/logError";
 import { logger } from "@server/utils/logger";
 
 // Neutralizes spreadsheet formula injection while keeping CSV quoting valid.
@@ -64,7 +65,7 @@ export const exportRoute = async (c: Context) => {
     );
     return c.body(csv);
   } catch (error) {
-    logger.error(error);
+    logError("exportStock", error, { user });
     return c.json({ error: ERROR_CODES.EXPORT_FAILED }, 500);
   }
 };

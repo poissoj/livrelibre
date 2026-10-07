@@ -5,6 +5,7 @@ import { ERROR_CODES } from "@livrelibre/shared/errors";
 
 import { type User } from "@server/auth";
 import { getBookData } from "@server/utils/getBookData";
+import { logError, logWarn } from "@server/utils/logError";
 import { logger } from "@server/utils/logger";
 
 export const bookRoute = async (c: Context) => {
@@ -26,12 +27,15 @@ export const bookRoute = async (c: Context) => {
     }
     return c.json(data);
   } catch (error) {
-    logger.error(error);
     if (error instanceof HTTPError) {
-      return error.response.statusCode === 404
-        ? c.json({ error: ERROR_CODES.BOOK_NOT_FOUND }, 404)
-        : c.json({ error: ERROR_CODES.BOOK_FETCH_FAILED }, 500);
+      if (error.response.statusCode === 404) {
+        logWarn("getBookData.notFound", error, { isbn, user });
+        return c.json({ error: ERROR_CODES.BOOK_NOT_FOUND }, 404);
+      }
+      logError("getBookData", error, { isbn, user });
+      return c.json({ error: ERROR_CODES.BOOK_FETCH_FAILED }, 500);
     }
+    logError("getBookData", error, { isbn, user });
     return c.json({ error: ERROR_CODES.BOOK_FETCH_FAILED }, 500);
   }
 };

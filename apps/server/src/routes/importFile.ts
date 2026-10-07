@@ -14,6 +14,7 @@ import { items } from "@livrelibre/shared/schema";
 import { type User } from "@server/auth";
 import { db } from "@server/db/database";
 import { getBookData } from "@server/utils/getBookData";
+import { logError, logWarn } from "@server/utils/logError";
 import { logger } from "@server/utils/logger";
 
 const header = [
@@ -97,7 +98,7 @@ const updateFields = async (rows: DilicomRow[]) => {
         const EDITEUR = bookData?.publisher || row.EDITEUR;
         newRow = { ...row, TITRE, AUTEUR, EDITEUR, id: null, amount: null };
       } catch (error) {
-        logger.error(error);
+        logWarn("importFile.fetchBookData", error, { isbn: row.EAN });
         newRow = { ...row, id: null, amount: null };
       }
     }
@@ -127,7 +128,7 @@ export const importFileRoute = async (c: Context) => {
   try {
     rows = mergeRowsByEan(filterRows(fileToJson(buffer)));
   } catch (error) {
-    logger.error(error);
+    logWarn("importFile.parse", error, { filename: file.name, user });
     return c.json({ error: ERROR_CODES.IMPORT_INVALID }, 400);
   }
   if (rows.length > MAX_IMPORT_ROWS) {
@@ -137,7 +138,7 @@ export const importFileRoute = async (c: Context) => {
     const itemsList = await updateFields(rows);
     return c.json(itemsList);
   } catch (error) {
-    logger.error(error);
+    logError("importFile.updateFields", error, { user });
     return c.json({ error: ERROR_CODES.IMPORT_FAILED }, 500);
   }
 };
