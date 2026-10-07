@@ -6,7 +6,7 @@ import { addToCart, payCart } from "@livrelibre/server/server/cart";
 import { deleteSale } from "@livrelibre/server/server/salesByDay";
 import { sales } from "@livrelibre/shared/schema";
 
-import { seedItem, seedUser, truncateAll } from "./helpers";
+import { TEST_USER, seedItem, seedUser, truncateAll } from "./helpers";
 
 describe("bestSales", () => {
   beforeEach(truncateAll);
@@ -49,7 +49,7 @@ describe("bestSales", () => {
     });
 
     const [sale] = await db.select().from(sales);
-    await deleteSale(sale.id);
+    await deleteSale(sale.id, TEST_USER);
 
     const best = await getBestSales();
     expect(best).toHaveLength(0);

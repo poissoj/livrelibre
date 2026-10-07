@@ -56,6 +56,18 @@ app.use(
     createContext,
     onError({ path, type, error }) {
       if (error.code !== "INTERNAL_SERVER_ERROR") {
+        if (
+          error.code === "CONFLICT" ||
+          error.code === "PRECONDITION_FAILED" ||
+          error.code === "FORBIDDEN"
+        ) {
+          logger.warn("tRPC error", {
+            path,
+            type,
+            code: error.code,
+            message: error.message,
+          });
+        }
         return;
       }
       const cause = error.cause;

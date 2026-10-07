@@ -9,7 +9,7 @@ import {
   setCustomerNotified,
 } from "@livrelibre/server/server/orders";
 
-import { seedCustomer, seedItem, truncateAll } from "./helpers";
+import { TEST_USER, seedCustomer, seedItem, truncateAll } from "./helpers";
 
 const baseOrder = {
   created: "2024-01-05",
@@ -30,14 +30,23 @@ describe("getItemOrders", () => {
     const item = await seedItem();
     const customer = await seedCustomer();
 
-    await newOrder({ ...baseOrder, customerId: customer.id, itemId: item.id });
-    await newOrder({ ...baseOrder, customerId: customer.id, itemId: item.id });
-    await newOrder({
-      ...baseOrder,
-      customerId: customer.id,
-      itemId: item.id,
-      ordered: "done",
-    });
+    await newOrder(
+      { ...baseOrder, customerId: customer.id, itemId: item.id },
+      TEST_USER,
+    );
+    await newOrder(
+      { ...baseOrder, customerId: customer.id, itemId: item.id },
+      TEST_USER,
+    );
+    await newOrder(
+      {
+        ...baseOrder,
+        customerId: customer.id,
+        itemId: item.id,
+        ordered: "done",
+      },
+      TEST_USER,
+    );
 
     const result = await getItemOrders(item.id);
     expect(result).toHaveLength(1);
@@ -51,8 +60,11 @@ describe("getCustomerActiveOrders", () => {
 
   it("returns only non-done orders", async () => {
     const customer = await seedCustomer();
-    await newOrder({ ...baseOrder, customerId: customer.id });
-    await newOrder({ ...baseOrder, customerId: customer.id, ordered: "done" });
+    await newOrder({ ...baseOrder, customerId: customer.id }, TEST_USER);
+    await newOrder(
+      { ...baseOrder, customerId: customer.id, ordered: "done" },
+      TEST_USER,
+    );
 
     const result = await getCustomerActiveOrders(customer.id);
     expect(result).toHaveLength(1);
@@ -65,7 +77,7 @@ describe("setCustomerNotified", () => {
 
   it("updates the customerNotified flag", async () => {
     const customer = await seedCustomer();
-    await newOrder({ ...baseOrder, customerId: customer.id });
+    await newOrder({ ...baseOrder, customerId: customer.id }, TEST_USER);
     const orders = await getOrders(["new"]);
 
     await setCustomerNotified(orders[0].id, true);

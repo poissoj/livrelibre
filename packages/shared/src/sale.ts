@@ -7,3 +7,8 @@ export const PAYMENT_METHODS = {
 } as const;
 
 export type PaymentType = keyof typeof PAYMENT_METHODS;
+
+export const LOYALTY_DISCOUNT_TITLE = "Remise carte de fidélité";
+
+export const CART_ITEM_KINDS = ["standalone", "loyaltyDiscount"] as const;
+export type CartItemKind = (typeof CART_ITEM_KINDS)[number];

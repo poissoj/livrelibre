@@ -8,7 +8,7 @@ import {
   setOrder,
 } from "@livrelibre/server/server/orders";
 
-import { seedCustomer, truncateAll } from "./helpers";
+import { TEST_USER, seedCustomer, truncateAll } from "./helpers";
 
 const baseOrder = {
   created: "2024-01-05",
@@ -27,7 +27,10 @@ describe("orders", () => {
 
   it("newOrder creates an order and getOrders returns it with the customer", async () => {
     const customer = await seedCustomer();
-    const res = await newOrder({ ...baseOrder, customerId: customer.id });
+    const res = await newOrder(
+      { ...baseOrder, customerId: customer.id },
+      TEST_USER,
+    );
     expect(res.type).toBe("success");
 
     const orders = await getOrders(["new"]);
@@ -37,13 +40,13 @@ describe("orders", () => {
   });
 
   it("newOrder rejects an unknown customer", async () => {
-    const res = await newOrder({ ...baseOrder, customerId: 9999 });
+    const res = await newOrder({ ...baseOrder, customerId: 9999 }, TEST_USER);
     expect(res.type).toBe("error");
   });
 
   it("getOrder returns the order with its customer", async () => {
     const customer = await seedCustomer();
-    await newOrder({ ...baseOrder, customerId: customer.id });
+    await newOrder({ ...baseOrder, customerId: customer.id }, TEST_USER);
     const orders = await getOrders(["new"]);
 
     const order = await getOrder(orders[0].id);
@@ -56,12 +59,13 @@ describe("orders", () => {
 
   it("setOrder updates an existing order", async () => {
     const customer = await seedCustomer();
-    await newOrder({ ...baseOrder, customerId: customer.id });
+    await newOrder({ ...baseOrder, customerId: customer.id }, TEST_USER);
     const orders = await getOrders(["new"]);
 
     const res = await setOrder(
       { ...baseOrder, customerId: customer.id, itemTitle: "Titre modifié" },
       orders[0].id,
+      TEST_USER,
     );
     expect(res.type).toBe("success");
 
@@ -71,10 +75,10 @@ describe("orders", () => {
 
   it("deleteOrder removes the order", async () => {
     const customer = await seedCustomer();
-    await newOrder({ ...baseOrder, customerId: customer.id });
+    await newOrder({ ...baseOrder, customerId: customer.id }, TEST_USER);
     const orders = await getOrders(["new"]);
 
-    const res = await deleteOrder(orders[0].id);
+    const res = await deleteOrder(orders[0].id, TEST_USER);
     expect(res.type).toBe("success");
     expect(await getOrders(["new"])).toHaveLength(0);
   });

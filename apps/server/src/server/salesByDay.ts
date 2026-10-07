@@ -7,7 +7,9 @@ import { type PaymentType } from "@livrelibre/shared/sale";
 import { items, sales } from "@livrelibre/shared/schema";
 import { isDefined } from "@livrelibre/shared/utils";
 
+import { type User } from "@server/auth";
 import { db } from "@server/db/database";
+import { logger } from "@server/utils/logger";
 
 type AggregatedSale = Pick<
   typeof sales.$inferSelect,
@@ -197,6 +199,7 @@ export const getSalesByDay = async (
 
 export const deleteSale = async (
   saleId: number,
+  user: User,
   options?: { restrictToToday?: boolean },
 ) => {
   await db.transaction(async (tx) => {
@@ -217,11 +220,21 @@ export const deleteSale = async (
           .from(sales)
           .where(eq(sales.id, saleId));
         if (existing.length > 0) {
+          logger.warn("Sale deletion ignored", {
+            user: user.id,
+            saleId,
+            reason: "not-today",
+          });
           throw new TRPCError({
             code: "FORBIDDEN",
             message: ERROR_CODES.SALE_NOT_TODAY,
           });
         }
+        logger.warn("Sale deletion ignored", {
+          user: user.id,
+          saleId,
+          reason: "not-found",
+        });
         return;
       }
     }
@@ -230,8 +243,17 @@ export const deleteSale = async (
       .set({ deleted: true })
       .where(and(eq(sales.id, saleId), eq(sales.deleted, false)))
       .returning();
+    if (updated.length === 0) {
+      logger.warn("Sale deletion ignored", {
+        user: user.id,
+        saleId,
+        reason: "not-found",
+      });
+      return;
+    }
+    logger.info("Sale deleted", { user: user.id, saleId });
     const sale = updated[0];
-    if (updated.length === 0 || !sale.itemId) {
+    if (!sale.itemId) {
       return;
     }
     const amount = sale.quantity || 1;

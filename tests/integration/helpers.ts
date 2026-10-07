@@ -9,7 +9,11 @@ import {
   users,
 } from "@livrelibre/shared/schema";
 
+import { type User } from "@server/auth";
+
 import { getTestDatabaseUri } from "../test-db.mts";
+
+export const TEST_USER: User = { id: 1, name: "admin", role: "admin" };
 
 export const truncateAll = async () => {
   if (process.env.POSTGRES_URI !== getTestDatabaseUri()) {

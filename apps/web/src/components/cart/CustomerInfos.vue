@@ -4,6 +4,7 @@ import { toast } from "vue-sonner";
 
 import type { CustomerWithPurchase } from "@livrelibre/shared/customer";
 import { formatPrice } from "@livrelibre/shared/format";
+import { LOYALTY_DISCOUNT_TITLE } from "@livrelibre/shared/sale";
 
 import AppButton from "@/components/AppButton.vue";
 import AppInput from "@/components/AppInput.vue";
@@ -36,7 +37,8 @@ const { mutate: addDiscount, isPending: isApplying } = useTRPCMutation(
 const onSubmit = () => {
   addDiscount({
     price: String(-discount.value),
-    title: "Remise carte de fidélité",
+    title: LOYALTY_DISCOUNT_TITLE,
+    kind: "loyaltyDiscount",
     type: "book",
     tva: "5.5",
   });

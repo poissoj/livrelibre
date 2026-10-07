@@ -4,7 +4,11 @@ import { and, eq, isNotNull, sql } from "drizzle-orm";
 import { formatDate } from "@livrelibre/shared/date";
 import { ERROR_CODES } from "@livrelibre/shared/errors";
 import type { ItemType, TVA } from "@livrelibre/shared/item";
-import type { PaymentType } from "@livrelibre/shared/sale";
+import {
+  type CartItemKind,
+  LOYALTY_DISCOUNT_TITLE,
+  type PaymentType,
+} from "@livrelibre/shared/sale";
 import {
   type Item,
   SALES_RECEIPT_ID_SEQ,
@@ -39,6 +43,7 @@ export type NewCartItem = {
   title: string;
   tva: TVA;
   type: ItemType;
+  kind?: CartItemKind;
 };
 
 const sumPrice = (sum: number, item: CartItem) =>
@@ -67,6 +72,7 @@ export const payCart = async (userId: number, data: PaymentFormData) => {
       .returning();
 
     if (cartItems.length === 0) {
+      logger.warn("Payment with empty cart", { userId });
       throw new TRPCError({
         code: "PRECONDITION_FAILED",
         message: ERROR_CODES.CART_EMPTY,
@@ -99,20 +105,36 @@ export const payCart = async (userId: number, data: PaymentFormData) => {
       (t, sale) => t + Number(sale.price) * 100,
       0,
     );
-    if (customer && customer.customerId) {
-      const hasDiscount = cartItems.some(
-        (it) => it.title === "Remise carte de fidélité",
-      );
+    const customerId = customer?.customerId ?? null;
+    const hasDiscount = cartItems.some(
+      (it) => it.title === LOYALTY_DISCOUNT_TITLE,
+    );
+    if (customerId != null) {
       if (hasDiscount) {
-        await resetCustomer(customer.customerId, tx);
+        await resetCustomer(customerId, tx);
+        logger.info("Customer purchases reset", { customerId });
       } else {
-        await addPurchase(customer.customerId, total / 100, tx);
+        await addPurchase(customerId, total / 100, tx);
+        logger.info("Customer purchase recorded", {
+          customerId,
+          amount: total / 100,
+        });
       }
       await setSelectedCustomer(
         { asideCart: false, customerId: null, userId },
         tx,
       );
     }
+    logger.info("Sale completed", {
+      receiptId,
+      userId,
+      customerId,
+      itemCount: salesList.length,
+      total: total / 100,
+      paymentType: data.paymentType,
+      linkedToCustomer: customerId != null,
+      loyaltyDiscount: hasDiscount,
+    });
     return {
       success: true,
     };
@@ -208,8 +230,19 @@ export const addISBNToCart = async (
 };
 
 export const addNewItemToCart = async (userId: number, item: NewCartItem) => {
+  const { kind = "standalone", ...data } = item;
+  if (kind === "loyaltyDiscount") {
+    const customer = await getSelectedCustomer(userId, false);
+    logger.info("Loyalty discount applied", {
+      userId,
+      amount: item.price,
+      customerId: customer?.customerId ?? null,
+    });
+  } else {
+    logger.info("Standalone item added", { userId, type: item.type });
+  }
   const cartItem: CartItem = {
-    ...item,
+    ...data,
     title: item.title || "Article indépendant",
     quantity: 1,
     userId,
@@ -243,8 +276,8 @@ type CartName = "cart" | "asideCart";
 const schema = { cart, asideCart };
 
 const switchCarts = async (userId: number, from: CartName, to: CartName) => {
-  logger.info("Switch cart", { from, userId });
-  await db.transaction(async (tx) => {
+  logger.debug("Switch cart", { from, userId });
+  return await db.transaction(async (tx) => {
     // Delete first to lock the rows and never lose a concurrent insertion:
     // rows added to the source during the switch stay in the source cart.
     const moved = await tx
@@ -273,13 +306,20 @@ const switchCarts = async (userId: number, from: CartName, to: CartName) => {
           isNotNull(selectedCustomerTable.customerId),
         ),
       );
+
+    return moved.length;
   });
 };
 
-export const putCartAside = (userId: number) =>
-  switchCarts(userId, "cart", "asideCart");
-export const reactivateCart = async (userId: number) =>
-  switchCarts(userId, "asideCart", "cart");
+export const putCartAside = async (userId: number) => {
+  const itemCount = await switchCarts(userId, "cart", "asideCart");
+  logger.info("Cart put aside", { userId, itemCount });
+};
+
+export const reactivateCart = async (userId: number) => {
+  const itemCount = await switchCarts(userId, "asideCart", "cart");
+  logger.info("Cart reactivated", { userId, itemCount });
+};
 
 export const getAsideCart = async (userId: number) => {
   const cartItems = await db

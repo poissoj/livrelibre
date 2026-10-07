@@ -10,7 +10,7 @@ import {
 } from "@livrelibre/server/server/salesByDay";
 import { items, sales } from "@livrelibre/shared/schema";
 
-import { seedItem, seedUser, truncateAll } from "./helpers";
+import { TEST_USER, seedItem, seedUser, truncateAll } from "./helpers";
 
 describe("sales", () => {
   beforeEach(truncateAll);
@@ -41,7 +41,7 @@ describe("sales", () => {
     });
 
     const [sale] = await db.select().from(sales);
-    await deleteSale(sale.id);
+    await deleteSale(sale.id, TEST_USER);
 
     const result = await getSalesByDay("2024-01-05");
     expect(result.carts[0].total).toBe(0);
@@ -72,7 +72,7 @@ describe("sales", () => {
     });
 
     const [sale] = await db.select().from(sales);
-    await deleteSale(sale.id);
+    await deleteSale(sale.id, TEST_USER);
 
     const [updatedSale] = await db.select().from(sales);
     expect(updatedSale.deleted).toBe(true);
@@ -93,8 +93,8 @@ describe("sales", () => {
     });
 
     const [sale] = await db.select().from(sales);
-    await deleteSale(sale.id);
-    await deleteSale(sale.id);
+    await deleteSale(sale.id, TEST_USER);
+    await deleteSale(sale.id, TEST_USER);
 
     const restored = await db.query.items.findFirst({
       where: eq(items.id, item.id),

@@ -10,7 +10,9 @@ import {
 } from "@livrelibre/shared/order";
 import { customers, items, orders } from "@livrelibre/shared/schema";
 
+import { type User } from "@server/auth";
 import { db } from "@server/db/database";
+import { logger } from "@server/utils/logger";
 
 export const getOrder = async (id: number) => {
   const rows = await db.select().from(orders).where(eq(orders.id, id));
@@ -68,13 +70,18 @@ export const getCustomerActiveOrders = async (customerId: number) => {
     .where(and(eq(orders.customerId, customerId), ne(orders.ordered, "done")));
 };
 
-export const newOrder = async (order: RawOrder) => {
+export const newOrder = async (order: RawOrder, user: User) => {
   const newOrder = { ...deserializeOrder(order), itemId: order.itemId ?? null };
   const customer = await db
     .select()
     .from(customers)
     .where(eq(customers.id, order.customerId));
   if (customer.length === 0) {
+    logger.warn("New order rejected", {
+      user: user.id,
+      customerId: order.customerId,
+      reason: "CUSTOMER_NOT_FOUND",
+    });
     return { type: "error" as const, msg: "Client inconnu" };
   }
   if (order.itemId) {
@@ -84,6 +91,12 @@ export const newOrder = async (order: RawOrder) => {
       .where(eq(items.id, order.itemId));
     const item = rows.length > 0 ? rows[0] : null;
     if (item == null) {
+      logger.warn("New order rejected", {
+        user: user.id,
+        customerId: order.customerId,
+        itemId: order.itemId,
+        reason: "ITEM_NOT_FOUND",
+      });
       return { type: "error" as const, msg: "Article invalide" };
     }
   } else {
@@ -93,7 +106,7 @@ export const newOrder = async (order: RawOrder) => {
   return { type: "success" as const, msg: "La commande a été ajoutée" };
 };
 
-export const setOrder = async (order: RawOrder, id: number) => {
+export const setOrder = async (order: RawOrder, id: number, user: User) => {
   const newOrder = {
     ...deserializeOrder(order),
     itemId: order.itemId ?? null,
@@ -104,6 +117,11 @@ export const setOrder = async (order: RawOrder, id: number) => {
     .where(eq(orders.id, id))
     .returning();
   if (rows.length === 0) {
+    logger.warn("Order update rejected", {
+      user: user.id,
+      orderId: id,
+      reason: "NOT_FOUND",
+    });
     return { type: "error" as const, msg: "La commande n'existe pas" };
   }
   return { type: "success" as const, msg: "La commande a été modifiée" };
@@ -127,12 +145,17 @@ export const setCustomerNotified = async (
   return { msg: "La commande a été modifiée" };
 };
 
-export const deleteOrder = async (orderId: number) => {
+export const deleteOrder = async (orderId: number, user: User) => {
   const rows = await db
     .delete(orders)
     .where(eq(orders.id, orderId))
     .returning();
   if (rows.length === 0) {
+    logger.warn("Order deletion rejected", {
+      user: user.id,
+      orderId,
+      reason: "NOT_FOUND",
+    });
     return { type: "error" as const, msg: "La commande n'existe pas" };
   }
   return { type: "success" as const, msg: "La commande a été supprimée" };

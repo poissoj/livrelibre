@@ -4,6 +4,7 @@ import { z } from "zod";
 import { ERROR_CODES } from "@livrelibre/shared/errors";
 import { ItemTypes, TVAValues, zItem } from "@livrelibre/shared/item";
 import { zOrder, zOrderStatusArray } from "@livrelibre/shared/order";
+import { CART_ITEM_KINDS } from "@livrelibre/shared/sale";
 import { norm } from "@livrelibre/shared/utils";
 import {
   zDateISO,
@@ -207,10 +208,10 @@ export const appRouter = router({
         title: z.string(),
         tva: z.enum(TVAValues),
         type: z.enum(ItemTypes),
+        kind: z.enum(CART_ITEM_KINDS).default("standalone"),
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      logger.info("Add new item to cart", { user: ctx.user, type: input.type });
       await addNewItemToCart(ctx.user.id, input);
     }),
   addToCart: authProcedure
@@ -231,9 +232,11 @@ export const appRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       logger.info("Delete sale", { user: ctx.user, saleId: input.saleId });
-      await deleteSale(input.saleId, {
-        restrictToToday: ctx.user.role !== "admin",
-      });
+      await deleteSale(
+        input.saleId,
+        ctx.user,
+        { restrictToToday: ctx.user.role !== "admin" },
+      );
     }),
   deleteCustomer: authProcedure
     .input(z.object({ id: zId }))
@@ -335,7 +338,7 @@ export const appRouter = router({
       customerId: input.customerId,
       itemId: input.itemId,
     });
-    return await newOrder(input);
+    return await newOrder(input, ctx.user);
   }),
   updateOrder: authProcedure
     .input(
@@ -346,7 +349,7 @@ export const appRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       logger.info("Update order", { user: ctx.user, orderId: input.id });
-      return await setOrder(input.order, input.id);
+      return await setOrder(input.order, input.id, ctx.user);
     }),
   setCustomerNotified: authProcedure
     .input(
@@ -363,7 +366,7 @@ export const appRouter = router({
     .input(z.object({ id: zId }))
     .mutation(async ({ ctx, input }) => {
       logger.info("Delete order", { user: ctx.user, orderId: input.id });
-      return await deleteOrder(input.id);
+      return await deleteOrder(input.id, ctx.user);
     }),
 });
 
