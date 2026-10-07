@@ -8,6 +8,7 @@ import { computed } from "vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 
+import { formatISODateFR } from "@livrelibre/shared/date";
 import { formatPrice } from "@livrelibre/shared/format";
 
 import AppButton from "@/components/AppButton.vue";
@@ -154,7 +155,7 @@ const total = computed(
                 </thead>
                 <tbody>
                   <tr v-for="(purchase, i) in customer.purchases" :key="i">
-                    <td>{{ purchase.date }}</td>
+                    <td>{{ formatISODateFR(purchase.date) }}</td>
                     <td class="text-right font-number">
                       {{ formatPrice(purchase.amount) }}
                     </td>

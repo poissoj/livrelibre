@@ -31,6 +31,13 @@ describe("customers", () => {
     expect(customer?.fullname).toBe("Jean Dupont");
   });
 
+  it("stores purchases with an ISO date", async () => {
+    const customer = await seedCustomer();
+    await addPurchase(customer.id, 10);
+    const result = await getCustomer(customer.id);
+    expect(result?.purchases[0].date).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
+
   it("paginates customers with getCustomers", async () => {
     await seedCustomer({ fullname: "A", nmFullname: "a" });
     await seedCustomer({ fullname: "B", nmFullname: "b" });

@@ -111,7 +111,7 @@ export const addPurchase = async (
   amount: number,
   tx?: Transaction,
 ) => {
-  const date = formatDate(new Date()).split("-").reverse().join("/");
+  const date = formatDate(new Date());
   return await (tx ?? db)
     .insert(purchases)
     .values({ amount: String(amount), date, customerId });

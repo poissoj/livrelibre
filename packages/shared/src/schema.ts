@@ -170,7 +170,7 @@ export const purchases = pgTable(
   "purchases",
   {
     id: integer("id").primaryKey().generatedByDefaultAsIdentity(),
-    date: varchar("date").notNull(),
+    date: date("date").notNull(),
     amount: numeric("amount", { precision: 12, scale: 2 }).notNull(),
     customerId: integer("customerId")
       .notNull()
