@@ -31,7 +31,7 @@ export const getSales = async (): Promise<Sale[]> => {
       ht: sql`round(sum((${sales.price} * 100) / (100 + ${sales.tva}::TEXT::numeric)), 2)`.mapWith(
         Number,
       ),
-      carts: countDistinct(sales.cartId),
+      carts: countDistinct(sales.receiptId),
     })
     .from(sales)
     .where(eq(sales.deleted, false))

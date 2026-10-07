@@ -71,6 +71,13 @@
       "when": 1791387663925,
       "tag": "0009_graceful_sheva_callister",
       "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1791393029532,
+      "tag": "0010_giant_cloak",
+      "breakpoints": true
     }
   ]
 }

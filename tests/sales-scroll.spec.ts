@@ -19,7 +19,7 @@ const isbn = String(Math.floor(Math.random() * 1e12)).padStart(12, "0");
 const itemTitle = `Livre scroll E2E ${isbn}`;
 const saleDate = `${year}-${month}-${day}`;
 const salePath = `/sale/${year}/${month}/${day}`;
-const cartId = Math.floor(Math.random() * 1e9) + 1;
+const receiptId = Math.floor(Math.random() * 1e9) + 1;
 const salesCount = 60;
 
 let itemId: number | undefined;
@@ -62,7 +62,7 @@ test.beforeAll(async () => {
       tva: "5.5" as const,
       linkedToCustomer: false,
       itemId: item.id,
-      cartId,
+      receiptId,
       deleted: false,
       paymentType: "cash" as const,
     })),
@@ -78,7 +78,7 @@ test.afterAll(async () => {
   await db
     .delete(sales)
     .where(
-      sql`CAST(${sales.created} AS date) = ${saleDate} AND ${sales.cartId} = ${cartId}`,
+      sql`CAST(${sales.created} AS date) = ${saleDate} AND ${sales.receiptId} = ${receiptId}`,
     );
   if (itemId != null) {
     await db.delete(items).where(eq(items.id, itemId));

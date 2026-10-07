@@ -7,6 +7,7 @@ import type { ItemType, TVA } from "@livrelibre/shared/item";
 import type { PaymentType } from "@livrelibre/shared/sale";
 import {
   type Item,
+  SALES_RECEIPT_ID_SEQ,
   asideCart,
   cart,
   items as itemsTable,
@@ -71,14 +72,17 @@ export const payCart = async (userId: number, data: PaymentFormData) => {
         message: ERROR_CODES.CART_EMPTY,
       });
     }
-    const cartId = cartItems[0].id;
+    const [receipt] = await tx.execute<{ receiptId: number }>(
+      sql`SELECT nextval(${sql.raw(`'${SALES_RECEIPT_ID_SEQ}'`)})::int AS "receiptId"`,
+    );
+    const receiptId = receipt.receiptId;
     const customer = await getSelectedCustomer(userId, false, tx);
     const now = new Date();
     // If the date is today, we want to save the time too
     const created =
       formatDate(now) === data.paymentDate ? now : new Date(data.paymentDate);
     const salesList: (typeof sales.$inferInsert)[] = cartItems.map((item) => ({
-      cartId,
+      receiptId,
       created,
       itemId: item.itemId,
       itemType: item.type,

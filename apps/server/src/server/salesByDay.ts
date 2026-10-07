@@ -11,7 +11,7 @@ import { db } from "@server/db/database";
 
 type AggregatedSale = Pick<
   typeof sales.$inferSelect,
-  | "cartId"
+  | "receiptId"
   | "id"
   | "title"
   | "tva"
@@ -31,12 +31,12 @@ type ItemSale = Omit<DBItem, "price" | "type"> & {
   linkedToCustomer: boolean | undefined;
 };
 
-type UnlistedSale = Omit<AggregatedSale, "paymentType" | "id" | "cartId"> & {
+type UnlistedSale = Omit<AggregatedSale, "paymentType" | "id" | "receiptId"> & {
   paymentType: PaymentType;
   itemId: null;
   deleted: boolean;
   id: number;
-  cartId: number | null;
+  receiptId: number | null;
 };
 
 type Sale = ItemSale | UnlistedSale;
@@ -59,7 +59,7 @@ export const getSalesByDay = async (
     .select({
       id: sales.id,
       itemId: sales.itemId,
-      cartId: sales.cartId,
+      receiptId: sales.receiptId,
       price: sql`${sales.price}`.mapWith(Number),
       title: sales.title,
       tva: sales.tva,
@@ -75,7 +75,7 @@ export const getSalesByDay = async (
         sql`${sales.created} < ${effectiveDate}::date + interval '1 day'`,
       ),
     )
-    .orderBy(sales.created, sales.cartId, sales.title);
+    .orderBy(sales.created, sales.receiptId, sales.title);
 
   const itemIds = dbSales.map((s) => s.itemId).filter(isDefined);
   const itemList = await db
@@ -91,19 +91,19 @@ export const getSalesByDay = async (
   >();
   const paymentStats = new Map<PaymentType, { count: number; total: number }>();
   let salesCount = 0;
-  let lastCartId = dbSales[0]?.cartId;
+  let lastReceiptId = dbSales[0]?.receiptId;
   let total = 0;
 
   const carts: { sales: Sale[]; total: number }[] = [];
   let salesList: Sale[] = [];
   let cartTotal = 0;
   for (const sale of dbSales) {
-    if (lastCartId && sale.cartId && sale.cartId !== lastCartId) {
+    if (lastReceiptId && sale.receiptId && sale.receiptId !== lastReceiptId) {
       carts.push({ sales: salesList, total: cartTotal });
       salesList = [];
       cartTotal = 0;
     }
-    lastCartId = sale.cartId;
+    lastReceiptId = sale.receiptId;
 
     const paymentType = sale.paymentType;
     const key = [sale.tva, paymentType].join();
@@ -154,7 +154,7 @@ export const getSalesByDay = async (
         itemId: null,
         deleted,
         id: sale.id,
-        cartId: sale.cartId,
+        receiptId: sale.receiptId,
       });
     }
   }

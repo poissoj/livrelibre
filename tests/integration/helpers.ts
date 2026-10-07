@@ -118,7 +118,7 @@ export const seedSale = async (
       linkedToCustomer: false,
       deleted: false,
       paymentType: "cash",
-      cartId: 0,
+      receiptId: 1,
       ...overrides,
     })
     .returning();

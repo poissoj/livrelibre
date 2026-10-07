@@ -9,6 +9,7 @@ import {
   integer,
   numeric,
   pgEnum,
+  pgSequence,
   pgTable,
   timestamp,
   uniqueIndex,
@@ -122,6 +123,10 @@ export const paymentTypeEnum = pgEnum("paymentType", [
   "transfer",
 ]);
 
+export const SALES_RECEIPT_ID_SEQ = "sales_receipt_id_seq";
+
+export const salesReceiptIdSeq = pgSequence(SALES_RECEIPT_ID_SEQ);
+
 export const sales = pgTable(
   "sales",
   {
@@ -136,7 +141,7 @@ export const sales = pgTable(
     tva: tvaEnum("tva").notNull(),
     linkedToCustomer: boolean("linkedToCustomer").notNull(),
     itemId: integer("itemId").references(() => items.id),
-    cartId: integer("cartId").notNull(), // No reference because cart rows will be deleted
+    receiptId: integer("receiptId").notNull(),
     deleted: boolean("deleted").notNull(),
     paymentType: paymentTypeEnum("paymentType").notNull(),
   },
@@ -144,6 +149,7 @@ export const sales = pgTable(
     index("sales_itemId_idx").on(table.itemId),
     index("sales_deleted_idx").on(table.deleted),
     index("sales_created_idx").on(table.created),
+    index("sales_receiptId_idx").on(table.receiptId),
     check("sales_quantity_positive", sql`${table.quantity} > 0`),
   ],
 );
