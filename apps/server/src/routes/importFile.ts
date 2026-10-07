@@ -92,7 +92,7 @@ const updateFields = async (rows: DilicomRow[]) => {
       logger.info("Import book data", { isbn: row.EAN });
       try {
         const bookData = await getBookData(row.EAN);
-        logger.info("Imported book data", { isbn: row.EAN, bookData });
+        logger.info("Imported book data", { isbn: row.EAN });
         const TITRE = bookData?.title || row.TITRE;
         const AUTEUR = bookData?.author || row.AUTEUR;
         const EDITEUR = bookData?.publisher || row.EDITEUR;

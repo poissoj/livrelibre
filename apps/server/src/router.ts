@@ -197,7 +197,7 @@ export const appRouter = router({
       return await addISBNToCart(ctx.user.id, input);
     }),
   addItem: authProcedure.input(zItem).mutation(async ({ ctx, input }) => {
-    logger.info("Add new item", { user: ctx.user, item: input });
+    logger.info("Add new item", { user: ctx.user, isbn: input.isbn });
     return await addItem(input);
   }),
   addNewItemToCart: authProcedure
@@ -210,7 +210,7 @@ export const appRouter = router({
       }),
     )
     .mutation(async ({ input, ctx }) => {
-      logger.info("Add new item to cart", { user: ctx.user, item: input });
+      logger.info("Add new item to cart", { user: ctx.user, type: input.type });
       await addNewItemToCart(ctx.user.id, input);
     }),
   addToCart: authProcedure
@@ -276,21 +276,17 @@ export const appRouter = router({
         logger.info("Update customer", {
           user: ctx.user,
           customerId: input.customerId,
-          fullname: input.customer.fullname,
         });
         return await setCustomer(customer, input.customerId);
       } else {
-        logger.info("New customer", {
-          user: ctx.user,
-          fullname: input.customer.fullname,
-        });
+        logger.info("New customer", { user: ctx.user });
         return await newCustomer(customer);
       }
     }),
   payCart: authProcedure
     .input(payCartSchema)
     .mutation(async ({ input, ctx }) => {
-      logger.info("Pay cart", { user: ctx.user, cart: input });
+      logger.info("Pay cart", { user: ctx.user, paymentType: input.paymentType });
       return await payCart(ctx.user.id, input);
     }),
   putCartAside: authProcedure.mutation(async ({ ctx }) => {
@@ -316,11 +312,7 @@ export const appRouter = router({
   updateItem: authProcedure
     .input(z.object({ item: zItem, id: zId }))
     .mutation(async ({ ctx, input }) => {
-      logger.info("Update item", {
-        user: ctx.user,
-        item: input.item,
-        itemId: input.id,
-      });
+      logger.info("Update item", { user: ctx.user, itemId: input.id });
       return await updateItem(input.item, input.id);
     }),
   selectCustomer: authProcedure
@@ -338,7 +330,11 @@ export const appRouter = router({
       return await setSelectedCustomer({ ...input, userId: ctx.user.id });
     }),
   newOrder: authProcedure.input(zOrder).mutation(async ({ ctx, input }) => {
-    logger.info("New order", { user: ctx.user, order: input });
+    logger.info("New order", {
+      user: ctx.user,
+      customerId: input.customerId,
+      itemId: input.itemId,
+    });
     return await newOrder(input);
   }),
   updateOrder: authProcedure
@@ -349,11 +345,7 @@ export const appRouter = router({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      logger.info("Update order", {
-        user: ctx.user,
-        order: input.order,
-        orderId: input.id,
-      });
+      logger.info("Update order", { user: ctx.user, orderId: input.id });
       return await setOrder(input.order, input.id);
     }),
   setCustomerNotified: authProcedure

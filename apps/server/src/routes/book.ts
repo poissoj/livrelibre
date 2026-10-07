@@ -21,7 +21,7 @@ export const bookRoute = async (c: Context) => {
   logger.info("Fetch book data", { isbn, user });
   try {
     const data = await getBookData(isbn);
-    logger.info("Book data fetched", { isbn, user, data });
+    logger.info("Book data fetched", { isbn, user });
     if (data === null) {
       return c.json({ error: ERROR_CODES.BOOK_NOT_FOUND }, 404);
     }

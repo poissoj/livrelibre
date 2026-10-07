@@ -24,7 +24,10 @@ export const finalizeImportRoute = async (c: Context) => {
   if (!parsed.success) {
     logger.info("Invalid import payload", {
       user,
-      errors: parsed.error.issues,
+      errors: parsed.error.issues.map((issue) => ({
+        path: issue.path,
+        code: issue.code,
+      })),
     });
     return c.json({ error: ERROR_CODES.IMPORT_INVALID }, 400);
   }

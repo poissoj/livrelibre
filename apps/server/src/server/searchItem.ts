@@ -106,7 +106,7 @@ export const searchItems = async ({
   page?: number;
 }) => {
   const search = input.trim();
-  logger.info("Search", { search, page, inStock });
+  logger.debug("Search", { search, page, inStock });
   const criteria = generateQuickSearchCriteria(search, inStock);
   return await doSearch(criteria, page);
 };
@@ -115,7 +115,7 @@ export const advancedSearch = async (
   query: Record<string, string>,
   pageNumber = 1,
 ) => {
-  logger.info("Advanced search", { query, page: pageNumber });
+  logger.debug("Advanced search", { query, page: pageNumber });
   const criteria = generateSearchCriteria(query);
   return await doSearch(criteria, pageNumber);
 };
