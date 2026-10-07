@@ -53,9 +53,7 @@ test("Grouper, ouvrir et modifier une commande", async ({ page }) => {
   const groupToggle = page.getByLabel("Grouper les commandes par client⋅e");
   await expect(groupToggle).toBeChecked();
   await groupToggle.click();
-  await expect(
-    page.getByRole("row").filter({ hasText: itemTitle }),
-  ).toBeVisible();
+  await expect(page.getByRole("row").filter({ hasText: itemTitle })).toBeVisible();
 
   await page.getByRole("row").filter({ hasText: itemTitle }).click();
   await expect(page).toHaveURL(new RegExp(`/order/${String(order.id)}`));

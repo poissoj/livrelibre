@@ -1,10 +1,8 @@
+import { sales } from "@livrelibre/shared/schema";
+import { db } from "@server/db/database";
 import { format, sub } from "date-fns";
 import { fr } from "date-fns/locale";
 import { and, eq, lt, sql, sum } from "drizzle-orm";
-
-import { sales } from "@livrelibre/shared/schema";
-
-import { db } from "@server/db/database";
 
 export const lastSales = async (id: number) => {
   const lastSales = await db

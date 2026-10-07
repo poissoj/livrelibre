@@ -1,8 +1,7 @@
-import { beforeEach, describe, expect, it } from "vitest";
-
 import { appRouter } from "@livrelibre/server/router";
 import { ERROR_CODES } from "@livrelibre/shared/errors";
 import { norm } from "@livrelibre/shared/utils";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { seedCustomer, truncateAll } from "./helpers";
 
@@ -27,9 +26,9 @@ describe("updateCustomer duplicates", () => {
       nmFullname: norm("José Dupont"),
     });
 
-    await expect(
-      admin.updateCustomer({ customer: customerInput("JOSE DUPONT") }),
-    ).rejects.toThrow(ERROR_CODES.CUSTOMER_ALREADY_EXISTS);
+    await expect(admin.updateCustomer({ customer: customerInput("JOSE DUPONT") })).rejects.toThrow(
+      ERROR_CODES.CUSTOMER_ALREADY_EXISTS,
+    );
   });
 
   it("allows creating a customer with a new name", async () => {
@@ -55,9 +54,9 @@ describe("updateCustomer duplicates", () => {
     const created = await admin.customer(res.id);
     expect(created?.fullname).toBe("Marie Martin");
 
-    await expect(
-      admin.updateCustomer({ customer: customerInput("Marie Martin") }),
-    ).rejects.toThrow(ERROR_CODES.CUSTOMER_ALREADY_EXISTS);
+    await expect(admin.updateCustomer({ customer: customerInput("Marie Martin") })).rejects.toThrow(
+      ERROR_CODES.CUSTOMER_ALREADY_EXISTS,
+    );
   });
 
   it("rejects renaming a customer to an existing name", async () => {

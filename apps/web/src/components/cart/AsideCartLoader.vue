@@ -9,12 +9,7 @@ import { useTRPCQuery } from "@/utils/query";
 
 import ReactivateButton from "./ReactivateButton.vue";
 
-const {
-  data: asideCart,
-  isError,
-  isSuccess,
-  refetch,
-} = useTRPCQuery("asideCart", undefined);
+const { data: asideCart, isError, isSuccess, refetch } = useTRPCQuery("asideCart", undefined);
 </script>
 
 <template>

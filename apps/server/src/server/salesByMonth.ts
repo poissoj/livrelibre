@@ -1,20 +1,14 @@
-import { and, desc, eq, sql, sum } from "drizzle-orm";
-
 import { sales } from "@livrelibre/shared/schema";
-
 import { db } from "@server/db/database";
+import { and, desc, eq, sql, sum } from "drizzle-orm";
 
 export const getSalesByMonth = async (month: string, year: string) => {
   const monthStart = `${year}-${month}-01`;
   const reqSales = db
     .select({
       date: sql<string>`to_char(${sales.created}, 'YYYY-MM-dd')`,
-      count: sum(
-        sql`CASE WHEN ${sales.deleted} THEN 0 ELSE ${sales.quantity} END`,
-      ).mapWith(Number),
-      total: sum(
-        sql`CASE WHEN ${sales.deleted} THEN 0 ELSE ${sales.price} END`,
-      ),
+      count: sum(sql`CASE WHEN ${sales.deleted} THEN 0 ELSE ${sales.quantity} END`).mapWith(Number),
+      total: sum(sql`CASE WHEN ${sales.deleted} THEN 0 ELSE ${sales.price} END`),
     })
     .from(sales)
     .where(
@@ -58,10 +52,6 @@ export const getSalesByMonth = async (month: string, year: string) => {
     )
     .groupBy(sales.itemType)
     .orderBy(({ nb }) => desc(nb));
-  const [salesByDay, stats, itemTypes] = await Promise.all([
-    reqSales,
-    reqStats,
-    reqItems,
-  ]);
+  const [salesByDay, stats, itemTypes] = await Promise.all([reqSales, reqStats, reqItems]);
   return { salesByDay, stats, itemTypes };
 };

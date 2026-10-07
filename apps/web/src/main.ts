@@ -1,17 +1,14 @@
 import { config } from "@fortawesome/fontawesome-svg-core";
+
 import "@fortawesome/fontawesome-svg-core/styles.css";
-import {
-  MutationCache,
-  QueryCache,
-  QueryClient,
-  VueQueryPlugin,
-} from "@tanstack/vue-query";
+import type { AppRouter } from "@livrelibre/server/router";
+import { MutationCache, QueryCache, QueryClient, VueQueryPlugin } from "@tanstack/vue-query";
 import { isTRPCClientError } from "@trpc/client";
 import { createApp } from "vue";
-import { toast } from "vue-sonner";
+
 import "vue-sonner/style.css";
 
-import type { AppRouter } from "@livrelibre/server/router";
+import { toast } from "vue-sonner";
 
 import "@/global.css";
 import { USER_QUERY_OPTIONS } from "@/lib/userQuery";
@@ -24,9 +21,7 @@ import App from "./App.vue";
 config.autoAddCss = false;
 
 const loginRedirect = (fullPath: string) =>
-  fullPath === "/"
-    ? { path: "/login" }
-    : { path: "/login", query: { redirect: fullPath } };
+  fullPath === "/" ? { path: "/login" } : { path: "/login", query: { redirect: fullPath } };
 
 const redirectToLogin = () => {
   const current = router.currentRoute.value;
@@ -36,10 +31,7 @@ const redirectToLogin = () => {
 };
 
 function handleError(error: unknown, meta?: Record<string, unknown>) {
-  if (
-    isTRPCClientError<AppRouter>(error) &&
-    error.data?.code === "UNAUTHORIZED"
-  ) {
+  if (isTRPCClientError<AppRouter>(error) && error.data?.code === "UNAUTHORIZED") {
     // Session expirée pendant un refetch en arrière-plan : annuler les requêtes
     // en cours pour éviter une tempête de refetch avant la redirection.
     void queryClient.cancelQueries();
@@ -58,9 +50,7 @@ const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       retry: (failureCount, error) => {
-        const status = isTRPCClientError<AppRouter>(error)
-          ? error.data?.httpStatus
-          : undefined;
+        const status = isTRPCClientError<AppRouter>(error) ? error.data?.httpStatus : undefined;
         // Never retry a client error (4xx): it won't recover on its own.
         if (typeof status === "number" && status < 500) {
           return false;

@@ -1,5 +1,6 @@
-import { config } from "dotenv";
 import { fileURLToPath } from "node:url";
+
+import { config } from "dotenv";
 import { z } from "zod";
 
 config({
@@ -9,13 +10,9 @@ config({
 const envSchema = z.object({
   SESSION_SECRET: z.string().min(32),
   POSTGRES_URI: z.string().regex(/^postgres(ql)?:\/\//),
-  NODE_ENV: z
-    .enum(["development", "test", "production"])
-    .default("development"),
+  NODE_ENV: z.enum(["development", "test", "production"]).default("development"),
   ISBN_SEARCH_URL: z.url().optional(),
-  LOG_LEVEL: z
-    .enum(["error", "warn", "info", "http", "verbose", "debug", "silly"])
-    .default("info"),
+  LOG_LEVEL: z.enum(["error", "warn", "info", "http", "verbose", "debug", "silly"]).default("info"),
   PORT: z.coerce.number().int().min(1).max(65535).default(3001),
   TIMEZONE: z.string().min(1).default("Europe/Paris"),
   // CLI-only variables (see src/cli)

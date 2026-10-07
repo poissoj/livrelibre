@@ -1,9 +1,5 @@
 <script setup lang="ts">
-import {
-  faSort,
-  faSortAsc,
-  faSortDesc,
-} from "@fortawesome/free-solid-svg-icons";
+import { faSort, faSortAsc, faSortDesc } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { computed } from "vue";
 

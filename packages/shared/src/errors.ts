@@ -54,8 +54,7 @@ export const ERROR_MESSAGES: Record<ErrorCode, string> = {
   FORBIDDEN: "Vous n'êtes pas autorisé·e à effectuer cette action.",
   INTERNAL_ERROR: "Une erreur interne est survenue. Merci de réessayer.",
   CUSTOMER_NOT_FOUND: "Client inconnu.",
-  CUSTOMER_HAS_ORDERS:
-    "Ce client a des commandes et ne peut pas être supprimé.",
+  CUSTOMER_HAS_ORDERS: "Ce client a des commandes et ne peut pas être supprimé.",
   CUSTOMER_ALREADY_EXISTS: "Un client avec ce nom existe déjà.",
   ORDER_NOT_FOUND: "La commande n'existe pas.",
   CART_EMPTY: "Le panier est vide.",

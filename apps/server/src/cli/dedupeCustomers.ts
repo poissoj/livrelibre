@@ -7,16 +7,9 @@
  * Par défaut, le script ne fait qu'afficher ce qui serait fait (dry-run).
  * Ajoutez --apply pour appliquer réellement les fusions.
  */
-import { inArray, sql } from "drizzle-orm";
-
-import {
-  customers,
-  orders,
-  purchases,
-  selectedCustomer,
-} from "@livrelibre/shared/schema";
-
+import { customers, orders, purchases, selectedCustomer } from "@livrelibre/shared/schema";
 import { db } from "@server/db/database";
+import { inArray, sql } from "drizzle-orm";
 
 type Customer = typeof customers.$inferSelect;
 
@@ -26,9 +19,7 @@ const isFilled = (value: string | null | undefined): value is string =>
   value != null && value.trim() !== "";
 
 const countFilledFields = (customer: Customer) =>
-  [customer.phone, customer.email, customer.contact, customer.comment].filter(
-    isFilled,
-  ).length;
+  [customer.phone, customer.email, customer.contact, customer.comment].filter(isFilled).length;
 
 // La fiche la plus complète est conservée ; à égalité, la plus ancienne.
 const pickKeeper = (group: Customer[]) =>
@@ -37,10 +28,7 @@ const pickKeeper = (group: Customer[]) =>
     return scoreDiff !== 0 ? scoreDiff : a.id - b.id;
   })[0];
 
-const firstFilled = (
-  group: Customer[],
-  field: MergeableField,
-): string | null => {
+const firstFilled = (group: Customer[], field: MergeableField): string | null => {
   const found = group.find((customer) => isFilled(customer[field]));
   return found ? found[field] : null;
 };
@@ -59,10 +47,7 @@ const findDuplicateGroups = async () => {
     return [];
   }
 
-  const rows = await db
-    .select()
-    .from(customers)
-    .where(inArray(customers.id, allIds));
+  const rows = await db.select().from(customers).where(inArray(customers.id, allIds));
   const byId = new Map(rows.map((customer) => [customer.id, customer]));
 
   return groups.map((group) =>
@@ -150,9 +135,7 @@ const main = async () => {
         "\nMode prévisualisation (dry-run). Relancer avec --apply pour appliquer les fusions.",
       );
     } else {
-      console.log(
-        `\n${merged} groupe(s) fusionné(s), ${deleted} fiche(s) supprimée(s).`,
-      );
+      console.log(`\n${merged} groupe(s) fusionné(s), ${deleted} fiche(s) supprimée(s).`);
     }
     process.exit(0);
   } catch (error) {

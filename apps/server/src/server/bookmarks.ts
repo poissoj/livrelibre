@@ -1,8 +1,6 @@
-import { eq } from "drizzle-orm";
-
 import { type Item, items } from "@livrelibre/shared/schema";
-
 import { db } from "@server/db/database";
+import { eq } from "drizzle-orm";
 
 export type Bookmark = Pick<Item, "id" | "amount" | "title">;
 

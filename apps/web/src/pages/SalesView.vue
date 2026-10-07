@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { clsx } from "clsx";
-import { RouterLink, useRouter } from "vue-router";
-
 import type { Sale } from "@livrelibre/server/server/sales";
 import { formatNumber, formatPrice } from "@livrelibre/shared/format";
+import { clsx } from "clsx";
+import { RouterLink, useRouter } from "vue-router";
 
 import AppCard from "@/components/AppCard.vue";
 import AppSkeleton from "@/components/AppSkeleton.vue";
@@ -16,15 +15,9 @@ import { useTRPCQuery } from "@/utils/query";
 const TH_STYLES = "sticky top-0 bg-white";
 
 const router = useRouter();
-const {
-  data: sales,
-  isPending,
-  isError,
-  refetch,
-} = useTRPCQuery("sales", undefined);
+const { data: sales, isPending, isError, refetch } = useTRPCQuery("sales", undefined);
 
-const makeSaleURL = (sale: Sale) =>
-  `/sale/${sale.month.split("/").reverse().join("/")}`;
+const makeSaleURL = (sale: Sale) => `/sale/${sale.month.split("/").reverse().join("/")}`;
 const goToSale = (sale: Sale) => {
   void router.push(makeSaleURL(sale));
 };
@@ -39,46 +32,11 @@ const goToSale = (sale: Sale) => {
           <ErrorMessage v-if="isError" :on-retry="refetch" />
           <AppSkeleton v-else-if="isPending" :height="380">
             <template v-for="n in 12" :key="n">
-              <rect
-                x="5%"
-                :y="(n - 1) * 30 + 15"
-                rx="2"
-                ry="2"
-                width="15%"
-                height="10"
-              />
-              <rect
-                x="23%"
-                :y="(n - 1) * 30 + 15"
-                rx="2"
-                ry="2"
-                width="15%"
-                height="10"
-              />
-              <rect
-                x="41%"
-                :y="(n - 1) * 30 + 15"
-                rx="2"
-                ry="2"
-                width="15%"
-                height="10"
-              />
-              <rect
-                x="59%"
-                :y="(n - 1) * 30 + 15"
-                rx="2"
-                ry="2"
-                width="15%"
-                height="10"
-              />
-              <rect
-                x="77%"
-                :y="(n - 1) * 30 + 16"
-                rx="2"
-                ry="2"
-                width="15%"
-                height="12"
-              />
+              <rect x="5%" :y="(n - 1) * 30 + 15" rx="2" ry="2" width="15%" height="10" />
+              <rect x="23%" :y="(n - 1) * 30 + 15" rx="2" ry="2" width="15%" height="10" />
+              <rect x="41%" :y="(n - 1) * 30 + 15" rx="2" ry="2" width="15%" height="10" />
+              <rect x="59%" :y="(n - 1) * 30 + 15" rx="2" ry="2" width="15%" height="10" />
+              <rect x="77%" :y="(n - 1) * 30 + 16" rx="2" ry="2" width="15%" height="12" />
             </template>
           </AppSkeleton>
           <table v-else class="flex-1">
@@ -87,21 +45,11 @@ const goToSale = (sale: Sale) => {
             </caption>
             <thead>
               <tr>
-                <th scope="col" :class="clsx(TH_STYLES, 'text-left pl-2')">
-                  Mois
-                </th>
-                <th scope="col" :class="clsx(TH_STYLES, 'text-right')">
-                  Nombre de ventes
-                </th>
-                <th scope="col" :class="clsx(TH_STYLES, 'text-right')">
-                  Recette totale HT
-                </th>
-                <th scope="col" :class="clsx(TH_STYLES, 'text-right')">
-                  Recette totale TTC
-                </th>
-                <th scope="col" :class="clsx(TH_STYLES, 'text-right pr-1')">
-                  Panier moyen
-                </th>
+                <th scope="col" :class="clsx(TH_STYLES, 'text-left pl-2')">Mois</th>
+                <th scope="col" :class="clsx(TH_STYLES, 'text-right')">Nombre de ventes</th>
+                <th scope="col" :class="clsx(TH_STYLES, 'text-right')">Recette totale HT</th>
+                <th scope="col" :class="clsx(TH_STYLES, 'text-right')">Recette totale TTC</th>
+                <th scope="col" :class="clsx(TH_STYLES, 'text-right pr-1')">Panier moyen</th>
               </tr>
             </thead>
             <tbody class="[line-height:2.3rem]">
@@ -112,9 +60,7 @@ const goToSale = (sale: Sale) => {
                 @click="goToSale(sale)"
               >
                 <td class="pl-2">
-                  <RouterLink :to="makeSaleURL(sale)">{{
-                    sale.month
-                  }}</RouterLink>
+                  <RouterLink :to="makeSaleURL(sale)">{{ sale.month }}</RouterLink>
                 </td>
                 <td class="text-right font-number">
                   {{ formatNumber(sale.count) }}

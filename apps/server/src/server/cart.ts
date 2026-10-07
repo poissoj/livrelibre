@@ -1,6 +1,3 @@
-import { TRPCError } from "@trpc/server";
-import { and, eq, isNotNull, sql } from "drizzle-orm";
-
 import { formatDate } from "@livrelibre/shared/date";
 import { ERROR_CODES } from "@livrelibre/shared/errors";
 import type { ItemType, TVA } from "@livrelibre/shared/item";
@@ -18,7 +15,6 @@ import {
   sales,
   selectedCustomer as selectedCustomerTable,
 } from "@livrelibre/shared/schema";
-
 import { type Transaction, db } from "@server/db/database";
 import {
   addPurchase,
@@ -27,6 +23,8 @@ import {
   setSelectedCustomer,
 } from "@server/server/customers";
 import { logger } from "@server/utils/logger";
+import { TRPCError } from "@trpc/server";
+import { and, eq, isNotNull, sql } from "drizzle-orm";
 
 type CartItem = {
   itemId?: number | null;
@@ -46,8 +44,7 @@ export type NewCartItem = {
   kind?: CartItemKind;
 };
 
-const sumPrice = (sum: number, item: CartItem) =>
-  sum + Number(item.price) * item.quantity * 100;
+const sumPrice = (sum: number, item: CartItem) => sum + Number(item.price) * item.quantity * 100;
 
 export const getCart = async (userId: number) => {
   const cartItems = await db.select().from(cart).where(eq(cart.userId, userId));
@@ -66,10 +63,7 @@ export const payCart = async (userId: number, data: PaymentFormData) => {
   return await db.transaction(async (tx) => {
     // Delete first and lock the rows so concurrent payments cannot sell the
     // same cart twice: a second transaction will block, then see no rows.
-    const cartItems = await tx
-      .delete(cart)
-      .where(eq(cart.userId, userId))
-      .returning();
+    const cartItems = await tx.delete(cart).where(eq(cart.userId, userId)).returning();
 
     if (cartItems.length === 0) {
       logger.warn("Payment with empty cart", { userId });
@@ -85,8 +79,7 @@ export const payCart = async (userId: number, data: PaymentFormData) => {
     const customer = await getSelectedCustomer(userId, false, tx);
     const now = new Date();
     // If the date is today, we want to save the time too
-    const created =
-      formatDate(now) === data.paymentDate ? now : new Date(data.paymentDate);
+    const created = formatDate(now) === data.paymentDate ? now : new Date(data.paymentDate);
     const salesList: (typeof sales.$inferInsert)[] = cartItems.map((item) => ({
       receiptId,
       created,
@@ -101,14 +94,9 @@ export const payCart = async (userId: number, data: PaymentFormData) => {
       deleted: false,
     }));
     await tx.insert(sales).values(salesList);
-    const total = salesList.reduce(
-      (t, sale) => t + Number(sale.price) * 100,
-      0,
-    );
+    const total = salesList.reduce((t, sale) => t + Number(sale.price) * 100, 0);
     const customerId = customer?.customerId ?? null;
-    const hasDiscount = cartItems.some(
-      (it) => it.title === LOYALTY_DISCOUNT_TITLE,
-    );
+    const hasDiscount = cartItems.some((it) => it.title === LOYALTY_DISCOUNT_TITLE);
     if (customerId != null) {
       if (hasDiscount) {
         await resetCustomer(customerId, tx);
@@ -120,10 +108,7 @@ export const payCart = async (userId: number, data: PaymentFormData) => {
           amount: total / 100,
         });
       }
-      await setSelectedCustomer(
-        { asideCart: false, customerId: null, userId },
-        tx,
-      );
+      await setSelectedCustomer({ asideCart: false, customerId: null, userId }, tx);
     }
     logger.info("Sale completed", {
       receiptId,
@@ -141,12 +126,7 @@ export const payCart = async (userId: number, data: PaymentFormData) => {
   });
 };
 
-const addItemToCart = async (
-  item: Item,
-  userId: number,
-  quantity = 1,
-  tx?: Transaction,
-) => {
+const addItemToCart = async (item: Item, userId: number, quantity = 1, tx?: Transaction) => {
   const conn = tx ?? db;
   const cartItem: CartItem = {
     itemId: item.id,
@@ -167,21 +147,12 @@ const addItemToCart = async (
     });
 };
 
-export const addToCart = async (
-  userId: number,
-  itemId: number,
-  quantity = 1,
-) => {
+export const addToCart = async (userId: number, itemId: number, quantity = 1) => {
   await db.transaction(async (tx) => {
     const result = await tx
       .update(itemsTable)
       .set({ amount: sql`${itemsTable.amount} - ${quantity}` })
-      .where(
-        and(
-          eq(itemsTable.id, itemId),
-          sql`${itemsTable.amount} >= ${quantity}`,
-        ),
-      )
+      .where(and(eq(itemsTable.id, itemId), sql`${itemsTable.amount} >= ${quantity}`))
       .returning();
     if (result.length === 0) {
       throw new TRPCError({
@@ -198,10 +169,7 @@ type AddIsbnToCartResult =
   | { errorCode: "NO_STOCK"; title: string; id: number }
   | { errorCode: null };
 
-export const addISBNToCart = async (
-  userId: number,
-  isbn: string,
-): Promise<AddIsbnToCartResult> => {
+export const addISBNToCart = async (userId: number, isbn: string): Promise<AddIsbnToCartResult> => {
   return await db.transaction(async (tx) => {
     const result = await tx
       .update(itemsTable)
@@ -280,10 +248,7 @@ const switchCarts = async (userId: number, from: CartName, to: CartName) => {
   return await db.transaction(async (tx) => {
     // Delete first to lock the rows and never lose a concurrent insertion:
     // rows added to the source during the switch stay in the source cart.
-    const moved = await tx
-      .delete(schema[from])
-      .where(eq(schema[from].userId, userId))
-      .returning();
+    const moved = await tx.delete(schema[from]).where(eq(schema[from].userId, userId)).returning();
 
     if (moved.length > 0) {
       await tx
@@ -322,10 +287,7 @@ export const reactivateCart = async (userId: number) => {
 };
 
 export const getAsideCart = async (userId: number) => {
-  const cartItems = await db
-    .select()
-    .from(asideCart)
-    .where(eq(asideCart.userId, userId));
+  const cartItems = await db.select().from(asideCart).where(eq(asideCart.userId, userId));
 
   const total = cartItems.reduce(sumPrice, 0) / 100;
   const count = cartItems.reduce((sum, item) => sum + item.quantity, 0);

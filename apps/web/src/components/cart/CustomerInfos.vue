@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { toast } from "vue-sonner";
-
 import type { CustomerWithPurchase } from "@livrelibre/shared/customer";
 import { formatPrice } from "@livrelibre/shared/format";
 import { LOYALTY_DISCOUNT_TITLE } from "@livrelibre/shared/sale";
+import { computed, ref } from "vue";
+import { toast } from "vue-sonner";
 
 import AppButton from "@/components/AppButton.vue";
 import AppInput from "@/components/AppInput.vue";
@@ -20,19 +19,16 @@ const amount = computed(() =>
 const discount = ref(Math.round(amount.value * 3) / 100);
 const applied = ref<number | undefined>(undefined);
 
-const { mutate: addDiscount, isPending: isApplying } = useTRPCMutation(
-  "addNewItemToCart",
-  {
-    meta: { errorToast: false },
-    onSuccess() {
-      applied.value = discount.value;
-      void utils.invalidate("cart");
-    },
-    onError(error) {
-      toast.error(getErrorMessage(error));
-    },
+const { mutate: addDiscount, isPending: isApplying } = useTRPCMutation("addNewItemToCart", {
+  meta: { errorToast: false },
+  onSuccess() {
+    applied.value = discount.value;
+    void utils.invalidate("cart");
   },
-);
+  onError(error) {
+    toast.error(getErrorMessage(error));
+  },
+});
 
 const onSubmit = () => {
   addDiscount({
@@ -63,9 +59,7 @@ const onSubmit = () => {
         class="ml-2 !w-28 font-number"
         @update:model-value="(value) => (discount = Number(value))"
       />
-      <AppButton type="submit" class="ml-2" :disabled="isApplying">
-        Appliquer
-      </AppButton>
+      <AppButton type="submit" class="ml-2" :disabled="isApplying"> Appliquer </AppButton>
     </form>
     <div v-else>Remise de {{ formatPrice(applied) }} appliquée</div>
   </div>

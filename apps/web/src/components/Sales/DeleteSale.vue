@@ -23,9 +23,6 @@ const { mutate, isPending } = useTRPCMutation("deleteSale", {
     title="Supprimer"
     @click="mutate({ saleId: props.saleId })"
   >
-    <FontAwesomeIcon
-      :icon="isPending ? faSpinner : faTrashAlt"
-      :spin="isPending"
-    />
+    <FontAwesomeIcon :icon="isPending ? faSpinner : faTrashAlt" :spin="isPending" />
   </AppButton>
 </template>

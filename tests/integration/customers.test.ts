@@ -1,5 +1,3 @@
-import { beforeEach, describe, expect, it } from "vitest";
-
 import { db } from "@livrelibre/server/db/database";
 import {
   addPurchase,
@@ -11,6 +9,7 @@ import {
   setSelectedCustomer,
 } from "@livrelibre/server/server/customers";
 import { purchases } from "@livrelibre/shared/schema";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { seedCustomer, seedOrder, seedUser, truncateAll } from "./helpers";
 
@@ -62,9 +61,7 @@ describe("customers", () => {
     const customer = await seedCustomer();
     await seedOrder({ customerId: customer.id });
 
-    await expect(deleteCustomer(customer.id)).rejects.toThrow(
-      "CUSTOMER_HAS_ORDERS",
-    );
+    await expect(deleteCustomer(customer.id)).rejects.toThrow("CUSTOMER_HAS_ORDERS");
     expect(await getCustomer(customer.id)).not.toBeNull();
   });
 

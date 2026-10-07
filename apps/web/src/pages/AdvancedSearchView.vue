@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { keepPreviousData } from "@tanstack/vue-query";
-import { computed } from "vue";
-import { RouterLink } from "vue-router";
-
 import { formatISODateFR } from "@livrelibre/shared/date";
 import { formatTVA } from "@livrelibre/shared/format";
 import { ITEM_TYPES } from "@livrelibre/shared/item";
 import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
 import { isIn } from "@livrelibre/shared/utils";
+import { keepPreviousData } from "@tanstack/vue-query";
+import { computed } from "vue";
+import { RouterLink } from "vue-router";
 
 import AppCard from "@/components/AppCard.vue";
 import AppPagination from "@/components/AppPagination.vue";
@@ -91,9 +90,7 @@ const {
 );
 const showLoading = useDelayedLoading(isFetching, 500);
 
-const pageCount = computed(() =>
-  list.value ? Math.ceil(list.value.count / ITEMS_PER_PAGE) : 0,
-);
+const pageCount = computed(() => (list.value ? Math.ceil(list.value.count / ITEMS_PER_PAGE) : 0));
 const queryLabel = computed(() => getQueryLabel(searchQuery.value));
 const cardTitle = computed(() => {
   let title = "Recherche avancée";
@@ -119,9 +116,7 @@ const cardTitle = computed(() => {
       </label>
       <CardBody>Aucun résultat pour "{{ queryLabel }}"</CardBody>
       <p class="mt-2">
-        <RouterLink to="/search" class="text-primary-darkest">
-          Nouvelle recherche
-        </RouterLink>
+        <RouterLink to="/search" class="text-primary-darkest"> Nouvelle recherche </RouterLink>
       </p>
     </AppCard>
     <AppCard v-else :class="CARD_STYLES">
@@ -129,10 +124,8 @@ const cardTitle = computed(() => {
       <div class="flex flex-1">
         <p>
           Recherche en cours…<template v-if="isSuccess">
-            : {{ list?.count }} résultat{{
-              (list?.count ?? 0) > 1 ? "s" : ""
-            }}
-            pour {{ queryLabel }}</template
+            : {{ list?.count }} résultat{{ (list?.count ?? 0) > 1 ? "s" : "" }} pour
+            {{ queryLabel }}</template
           >
         </p>
         <label class="self-end cursor-pointer mr-6 ml-auto">
@@ -151,10 +144,7 @@ const cardTitle = computed(() => {
           <ItemsTable :items="list?.items ?? []" />
         </LoadingOverlay>
       </CardBody>
-      <CardFooter
-        v-if="pageCount > 1"
-        class="flex justify-center pt-6 2xl:pt-8"
-      >
+      <CardFooter v-if="pageCount > 1" class="flex justify-center pt-6 2xl:pt-8">
         <AppPagination :count="pageCount" />
       </CardFooter>
     </AppCard>

@@ -9,9 +9,7 @@ const t = initTRPC.context<Context>().create({
     return {
       ...shape,
       message:
-        error.code === "INTERNAL_SERVER_ERROR"
-          ? "Une erreur interne est survenue"
-          : shape.message,
+        error.code === "INTERNAL_SERVER_ERROR" ? "Une erreur interne est survenue" : shape.message,
       data: {
         ...shape.data,
         issues:

@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import type {
-  DefaultLabelFormatterCallbackParams,
-  EChartsOption,
-} from "echarts";
+import type { DefaultLabelFormatterCallbackParams, EChartsOption } from "echarts";
 import { BarChart } from "echarts/charts";
 import { GridComponent } from "echarts/components";
 import { use } from "echarts/core";
@@ -34,9 +31,7 @@ const option = computed<EChartsOption>(() => ({
         position: "insideTop",
         color: "white",
         formatter: (params: DefaultLabelFormatterCallbackParams) =>
-          typeof params.value === "number" && params.value !== 0
-            ? String(params.value)
-            : "",
+          typeof params.value === "number" && params.value !== 0 ? String(params.value) : "",
       },
       animation: false,
     },

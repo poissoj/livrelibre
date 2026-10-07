@@ -1,12 +1,6 @@
 <script setup lang="ts">
 import { faStar as emptyStar } from "@fortawesome/free-regular-svg-icons";
-import {
-  faBook,
-  faCartPlus,
-  faEdit,
-  faSpinner,
-  faStar,
-} from "@fortawesome/free-solid-svg-icons";
+import { faBook, faCartPlus, faEdit, faSpinner, faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -34,20 +28,10 @@ const route = useRoute();
 const router = useRouter();
 const utils = useTRPCUtils();
 
-const {
-  data: item,
-  isPending,
-  isError,
-  refetch,
-} = useTRPCQuery("searchItem", () => props.id);
-const { data: orders, isError: ordersError } = useTRPCQuery(
-  "itemOrders",
-  () => props.id,
-);
+const { data: item, isPending, isError, refetch } = useTRPCQuery("searchItem", () => props.id);
+const { data: orders, isError: ordersError } = useTRPCQuery("itemOrders", () => props.id);
 
-useTitle(() =>
-  item.value ? `${item.value.title} | Voir un article` : "Voir un article",
-);
+useTitle(() => (item.value ? `${item.value.title} | Voir un article` : "Voir un article"));
 
 const { star, mutation: bookmarkMutation } = useBookmark();
 const bookmarkPending = bookmarkMutation.isPending;
@@ -82,22 +66,8 @@ const submitAddToCart = () => {
     <CardBody>
       <AppSkeleton :height="500">
         <template v-for="n in 14" :key="n">
-          <rect
-            x="2%"
-            :y="(n - 1) * 35 + 5"
-            rx="5"
-            ry="5"
-            width="20%"
-            height="12"
-          />
-          <rect
-            x="30%"
-            :y="(n - 1) * 35 + 6"
-            rx="5"
-            ry="5"
-            width="60%"
-            height="10"
-          />
+          <rect x="2%" :y="(n - 1) * 35 + 5" rx="5" ry="5" width="20%" height="12" />
+          <rect x="30%" :y="(n - 1) * 35 + 6" rx="5" ry="5" width="60%" height="10" />
         </template>
       </AppSkeleton>
     </CardBody>
@@ -121,17 +91,13 @@ const submitAddToCart = () => {
       </LinkButton>
       <AppButton
         type="button"
-        :aria-label="
-          item.starred ? 'Enlever des favoris' : 'Ajouter aux favoris'
-        "
+        :aria-label="item.starred ? 'Enlever des favoris' : 'Ajouter aux favoris'"
         :title="item.starred ? 'Enlever des favoris' : 'Ajouter aux favoris'"
         class="rounded-none px-md border-primary-darkest"
         @click="star(props.id, !item.starred)"
       >
         <FontAwesomeIcon
-          :icon="
-            bookmarkPending ? faSpinner : item.starred ? faStar : emptyStar
-          "
+          :icon="bookmarkPending ? faSpinner : item.starred ? faStar : emptyStar"
           :spin="bookmarkPending"
         />
       </AppButton>
@@ -145,11 +111,7 @@ const submitAddToCart = () => {
       </LinkButton>
     </div>
     <CardBody class="flex-col">
-      <AppAlert
-        v-if="route.query.status === 'updated'"
-        type="success"
-        @dismiss="dismissStatus"
-      >
+      <AppAlert v-if="route.query.status === 'updated'" type="success" @dismiss="dismissStatus">
         {{ item.title }} modifié.
       </AppAlert>
       <ItemDetails :item="item" :orders="orders" :orders-error="ordersError" />
@@ -167,11 +129,7 @@ const submitAddToCart = () => {
             class="font-number !w-20"
           />
         </label>
-        <AppButton
-          type="submit"
-          class="ml-2 px-md"
-          :disabled="item.amount === 0"
-        >
+        <AppButton type="submit" class="ml-2 px-md" :disabled="item.amount === 0">
           <FontAwesomeIcon
             :icon="addPending ? faSpinner : faCartPlus"
             :spin="addPending"

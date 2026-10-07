@@ -1,8 +1,7 @@
 <script setup lang="ts">
+import { formatNumber, formatPrice } from "@livrelibre/shared/format";
 import { clsx } from "clsx";
 import { RouterLink } from "vue-router";
-
-import { formatNumber, formatPrice } from "@livrelibre/shared/format";
 
 import type { RouterOutput } from "@/utils/trpc";
 
@@ -23,9 +22,7 @@ const TH_STYLES = "sticky top-0 bg-white";
     <thead>
       <tr>
         <th scope="col" :class="clsx(TH_STYLES, 'text-left')">Article</th>
-        <th scope="col" :class="clsx(TH_STYLES, 'text-right')">
-          Prix unitaire
-        </th>
+        <th scope="col" :class="clsx(TH_STYLES, 'text-right')">Prix unitaire</th>
         <th scope="col" :class="clsx(TH_STYLES, 'text-right')">Quantité</th>
         <th scope="col" :class="clsx(TH_STYLES, 'text-right')">Prix total</th>
         <th scope="col" :class="TH_STYLES">

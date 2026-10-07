@@ -3,15 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "scripts": {
-    "dev": "tsx watch src/index.ts",
-    "build": "tsup",
-    "start": "NODE_ENV=production node dist/index.js",
-    "generate:db": "drizzle-kit generate",
-    "migrate:db": "drizzle-kit migrate",
-    "typecheck": "tsc --noEmit",
-    "lint": "eslint ."
-  },
   "exports": {
     "./app": "./src/app.ts",
     "./db/database": "./src/db/database.ts",
@@ -31,6 +22,15 @@
     "./server/stats": "./src/server/stats.ts",
     "./server/updateItem": "./src/server/updateItem.ts",
     "./utils/getBookData": "./src/utils/getBookData.ts"
+  },
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsup",
+    "start": "NODE_ENV=production node dist/index.js",
+    "generate:db": "drizzle-kit generate",
+    "migrate:db": "drizzle-kit migrate",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint ."
   },
   "dependencies": {
     "@hono/node-server": "2.1.1",

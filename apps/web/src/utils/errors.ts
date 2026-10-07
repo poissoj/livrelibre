@@ -1,10 +1,8 @@
-import { isTRPCClientError } from "@trpc/client";
-
 import type { AppRouter } from "@livrelibre/server/router";
 import { ERROR_MESSAGES } from "@livrelibre/shared/errors";
+import { isTRPCClientError } from "@trpc/client";
 
-const NETWORK_MESSAGE =
-  "Impossible de contacter le serveur. Vérifiez votre connexion.";
+const NETWORK_MESSAGE = "Impossible de contacter le serveur. Vérifiez votre connexion.";
 const INVALID_VALUE_MESSAGE = "Valeur invalide.";
 const TOO_MANY_REQUESTS_MESSAGE = "Trop de requêtes, merci de patienter.";
 const TIMEOUT_MESSAGE = "Le serveur met trop de temps à répondre.";
@@ -33,26 +31,19 @@ export const isNetworkError = (error: unknown): boolean => {
     return true;
   }
   const message = error instanceof Error ? error.message : "";
-  return /failed to fetch|network ?error|load failed|fetch failed/i.test(
-    message,
-  );
+  return /failed to fetch|network ?error|load failed|fetch failed/i.test(message);
 };
 
 /**
  * Normalise une erreur (tRPC, réseau, inconnue) en message utilisateur français.
  * Les messages techniques ne sont jamais exposés.
  */
-export const getErrorMessage = (
-  error: unknown,
-  fallback: string = DEFAULT_FALLBACK,
-): string => {
+export const getErrorMessage = (error: unknown, fallback: string = DEFAULT_FALLBACK): string => {
   if (isTRPCClientError<AppRouter>(error)) {
     const issues = error.data?.issues;
     if (issues && issues.length > 0) {
       return issues
-        .map(
-          (issue) => translateErrorCode(issue.message) ?? INVALID_VALUE_MESSAGE,
-        )
+        .map((issue) => translateErrorCode(issue.message) ?? INVALID_VALUE_MESSAGE)
         .join(" · ");
     }
     const code = error.data?.code;
@@ -60,9 +51,7 @@ export const getErrorMessage = (
     if (structural) {
       return structural;
     }
-    const translated = error.message
-      ? translateErrorCode(error.message)
-      : undefined;
+    const translated = error.message ? translateErrorCode(error.message) : undefined;
     if (translated) {
       return translated;
     }
@@ -78,10 +67,7 @@ export const getErrorMessage = (
 };
 
 /** Extrait et traduit le code d'erreur d'une réponse REST (`{ error: code }`). */
-export const getRestErrorMessage = (
-  body: unknown,
-  fallback: string = DEFAULT_FALLBACK,
-): string => {
+export const getRestErrorMessage = (body: unknown, fallback: string = DEFAULT_FALLBACK): string => {
   if (body && typeof body === "object" && "error" in body) {
     const code = body.error;
     if (typeof code === "string") {

@@ -39,11 +39,7 @@ const submit = async () => {
 </script>
 
 <template>
-  <form
-    role="search"
-    class="flex p-sm [width:27rem] relative"
-    @submit.prevent="submit"
-  >
+  <form role="search" class="flex p-sm [width:27rem] relative" @submit.prevent="submit">
     <label for="quicksearch" class="sr-only">Rechercher un article</label>
     <input
       id="quicksearch"
@@ -59,11 +55,7 @@ const submit = async () => {
       aria-label="Rechercher"
       :disabled="isLoading"
     >
-      <FontAwesomeIcon
-        :icon="isLoading ? faSpinner : faSearch"
-        :spin="isLoading"
-        class="mx-1"
-      />
+      <FontAwesomeIcon :icon="isLoading ? faSpinner : faSearch" :spin="isLoading" class="mx-1" />
     </button>
   </form>
 </template>

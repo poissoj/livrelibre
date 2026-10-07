@@ -1,7 +1,6 @@
+import { appRouter } from "@livrelibre/server/router";
 import { TRPCError } from "@trpc/server";
 import { beforeEach, describe, expect, it } from "vitest";
-
-import { appRouter } from "@livrelibre/server/router";
 
 import { seedSale, truncateAll } from "./helpers";
 
@@ -85,16 +84,14 @@ describe("trpc rbac", () => {
 
   it("rejects cashiers on admin-only procedures", async () => {
     await expect(cashier.sales()).rejects.toMatchObject({ code: "FORBIDDEN" });
-    await expect(
-      cashier.salesByMonth({ month: "01", year: "2024" }),
-    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(cashier.salesByMonth({ month: "01", year: "2024" })).rejects.toMatchObject({
+      code: "FORBIDDEN",
+    });
   });
 
   it("allows admins on admin-only procedures", async () => {
     await expect(admin.sales()).resolves.toBeDefined();
-    await expect(
-      admin.salesByMonth({ month: "01", year: "2024" }),
-    ).resolves.toBeDefined();
+    await expect(admin.salesByMonth({ month: "01", year: "2024" })).resolves.toBeDefined();
   });
 
   it("restricts cashiers to the sales of the current day", async () => {
@@ -113,31 +110,27 @@ describe("trpc rbac", () => {
 
   it("lets a cashier delete a sale of the day but not an older one", async () => {
     const todaySale = await seedSale({ created: new Date() });
-    await expect(
-      cashier.deleteSale({ saleId: todaySale.id }),
-    ).resolves.toBeUndefined();
+    await expect(cashier.deleteSale({ saleId: todaySale.id })).resolves.toBeUndefined();
 
     const oldSale = await seedSale({
       created: new Date("2024-01-05T12:00:00Z"),
     });
-    await expect(
-      cashier.deleteSale({ saleId: oldSale.id }),
-    ).rejects.toMatchObject({ code: "FORBIDDEN" });
+    await expect(cashier.deleteSale({ saleId: oldSale.id })).rejects.toMatchObject({
+      code: "FORBIDDEN",
+    });
   });
 
   it("lets an admin delete an older sale", async () => {
     const oldSale = await seedSale({
       created: new Date("2024-01-05T12:00:00Z"),
     });
-    await expect(
-      admin.deleteSale({ saleId: oldSale.id }),
-    ).resolves.toBeUndefined();
+    await expect(admin.deleteSale({ saleId: oldSale.id })).resolves.toBeUndefined();
   });
 
   it("rejects anonymous on deleteSale", async () => {
     const sale = await seedSale({ created: new Date() });
-    await expect(
-      anonymous.deleteSale({ saleId: sale.id }),
-    ).rejects.toMatchObject({ code: "UNAUTHORIZED" });
+    await expect(anonymous.deleteSale({ saleId: sale.id })).rejects.toMatchObject({
+      code: "UNAUTHORIZED",
+    });
   });
 });

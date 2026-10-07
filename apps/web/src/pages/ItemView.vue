@@ -11,9 +11,7 @@ import NoResults from "@/components/NoResults.vue";
 
 const route = useRoute();
 const id = computed(() => route.params.id);
-const isValidId = computed(
-  () => typeof id.value === "string" && /^\d+$/.test(id.value),
-);
+const isValidId = computed(() => typeof id.value === "string" && /^\d+$/.test(id.value));
 const idNum = computed(() => Number(id.value));
 </script>
 

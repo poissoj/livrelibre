@@ -1,8 +1,7 @@
 <script setup lang="ts">
+import { CONTACT_MEAN_LABEL, type ContactMean } from "@livrelibre/shared/order";
 import { clsx } from "clsx";
 import { useId } from "vue";
-
-import { CONTACT_MEAN_LABEL, type ContactMean } from "@livrelibre/shared/order";
 
 const props = defineProps<{ mean: ContactMean; isActive: boolean }>();
 const model = defineModel<ContactMean>();

@@ -1,7 +1,3 @@
-import * as xlsx from "xlsx";
-import { inArray } from "drizzle-orm";
-import type { Context } from "hono";
-
 import {
   type DilicomRow,
   type DilicomRowWithId,
@@ -10,12 +6,14 @@ import {
 } from "@livrelibre/shared/dilicomItem";
 import { ERROR_CODES } from "@livrelibre/shared/errors";
 import { items } from "@livrelibre/shared/schema";
-
 import { type User } from "@server/auth";
 import { db } from "@server/db/database";
 import { getBookData } from "@server/utils/getBookData";
 import { logError, logWarn } from "@server/utils/logError";
 import { logger } from "@server/utils/logger";
+import { inArray } from "drizzle-orm";
+import type { Context } from "hono";
+import * as xlsx from "xlsx";
 
 const header = [
   "EAN",
@@ -68,10 +66,7 @@ const filterRows = (json: DilicomRow[]) => {
 
 const updateFields = async (rows: DilicomRow[]) => {
   const fileEANs = rows.map((row) => row.EAN);
-  const dbItems = await db
-    .select()
-    .from(items)
-    .where(inArray(items.isbn, fileEANs));
+  const dbItems = await db.select().from(items).where(inArray(items.isbn, fileEANs));
   const itemByIsbn = new Map(dbItems.map((item) => [item.isbn, item]));
 
   const itemsList: DilicomRowWithId[] = [];

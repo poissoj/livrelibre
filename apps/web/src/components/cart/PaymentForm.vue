@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { ref } from "vue";
-import { toast } from "vue-sonner";
-
 import { formatDate } from "@livrelibre/shared/date";
 import { PAYMENT_METHODS, type PaymentType } from "@livrelibre/shared/sale";
+import { ref } from "vue";
+import { toast } from "vue-sonner";
 
 import AppButton from "@/components/AppButton.vue";
 import AppInput from "@/components/AppInput.vue";
@@ -17,21 +16,18 @@ const utils = useTRPCUtils();
 const paymentDate = ref(formatDate(new Date()));
 const paymentType = ref<PaymentType>("cash");
 
-const { mutateAsync: payCart, isPending: isPaying } = useTRPCMutation(
-  "payCart",
-  {
-    meta: { errorToast: false },
-    onSuccess() {
-      void utils.invalidate("cart");
-      void utils.invalidate("customers");
-      void utils.invalidate("selectedCustomer");
-      void utils.invalidate("searchCustomer");
-    },
-    onError(error) {
-      toast.error(getErrorMessage(error));
-    },
+const { mutateAsync: payCart, isPending: isPaying } = useTRPCMutation("payCart", {
+  meta: { errorToast: false },
+  onSuccess() {
+    void utils.invalidate("cart");
+    void utils.invalidate("customers");
+    void utils.invalidate("selectedCustomer");
+    void utils.invalidate("searchCustomer");
   },
-);
+  onError(error) {
+    toast.error(getErrorMessage(error));
+  },
+});
 
 const onSubmit = async () => {
   try {
@@ -48,18 +44,9 @@ const onSubmit = async () => {
 <template>
   <form class="flex justify-end gap-sm" @submit.prevent="onSubmit">
     <label for="paymentDate" class="self-center cursor-pointer">Date</label>
-    <AppInput
-      id="paymentDate"
-      v-model="paymentDate"
-      type="date"
-      class="w-min"
-    />
+    <AppInput id="paymentDate" v-model="paymentDate" type="date" class="w-min" />
     <AppSelect v-model="paymentType" class="w-min">
-      <option
-        v-for="[value, label] in Object.entries(PAYMENT_METHODS)"
-        :key="value"
-        :value="value"
-      >
+      <option v-for="[value, label] in Object.entries(PAYMENT_METHODS)" :key="value" :value="value">
         {{ label }}
       </option>
     </AppSelect>

@@ -1,14 +1,10 @@
 <script setup lang="ts">
 import { formatISODateFR } from "@livrelibre/shared/date";
-import {
-  formatNumber,
-  formatPrice,
-  formatTVA,
-} from "@livrelibre/shared/format";
+import { formatNumber, formatPrice, formatTVA } from "@livrelibre/shared/format";
 import { ITEM_TYPES, type ItemWithCount } from "@livrelibre/shared/item";
 
-import StatusCircle from "./StatusCircle.vue";
 import type { ItemOrder } from "./item";
+import StatusCircle from "./StatusCircle.vue";
 
 const props = defineProps<{
   item: ItemWithCount;
@@ -16,8 +12,7 @@ const props = defineProps<{
   ordersError?: boolean;
 }>();
 
-const formatStringPrice = (price: string) =>
-  price ? formatPrice(Number(price)) : "";
+const formatStringPrice = (price: string) => (price ? formatPrice(Number(price)) : "");
 </script>
 
 <template>

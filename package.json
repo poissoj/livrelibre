@@ -11,7 +11,8 @@
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck",
     "check": "pnpm lint && pnpm typecheck",
-    "format": "prettier --write apps packages tests --cache",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
     "generate:db": "pnpm --filter @livrelibre/server generate:db",
     "migrate:db": "pnpm --filter @livrelibre/server migrate:db",
     "test": "pnpm --filter @livrelibre/tests test",
@@ -21,9 +22,8 @@
     "test-ui": "pnpm --filter @livrelibre/tests test-ui"
   },
   "devDependencies": {
-    "@trivago/prettier-plugin-sort-imports": "6.0.2",
     "concurrently": "10.0.5",
-    "prettier": "3.9.6"
+    "oxfmt": "0.72.0"
   },
   "packageManager": "pnpm@11.20.0+sha512.9a6f330a95b66446ea088faf1521405a8a01f07fde7124cc9958dfed52d4bb436737e65b08f85f37b46fcba375092558ac51262b816844b22f63406ed166bfee"
 }

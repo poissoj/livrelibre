@@ -6,18 +6,14 @@ import { toast } from "vue-sonner";
 import AppAlert from "@/components/AppAlert.vue";
 import AppButton from "@/components/AppButton.vue";
 import LinkButton from "@/components/LinkButton.vue";
-import SelectCustomer from "@/components/SelectCustomer.vue";
 import type { CustomerSelection } from "@/components/orderForm";
+import SelectCustomer from "@/components/SelectCustomer.vue";
 import { getErrorMessage } from "@/utils/errors";
 import { useTRPCMutation, useTRPCQuery, useTRPCUtils } from "@/utils/query";
 
 import CustomerInfos from "./CustomerInfos.vue";
 
-const {
-  data: selectedCustomer,
-  isSuccess,
-  isError,
-} = useTRPCQuery("selectedCustomer", undefined);
+const { data: selectedCustomer, isSuccess, isError } = useTRPCQuery("selectedCustomer", undefined);
 const utils = useTRPCUtils();
 const { mutate: selectCustomer } = useTRPCMutation("selectCustomer", {
   meta: { errorToast: false },
@@ -53,12 +49,7 @@ const onSelect = (customer: CustomerSelection | null) => {
         >
           <FontAwesomeIcon :icon="faEdit" />
         </LinkButton>
-        <AppButton
-          type="button"
-          aria-label="Dissocier"
-          title="Dissocier"
-          @click="onSelect(null)"
-        >
+        <AppButton type="button" aria-label="Dissocier" title="Dissocier" @click="onSelect(null)">
           <FontAwesomeIcon :icon="faTimesCircle" />
         </AppButton>
       </template>

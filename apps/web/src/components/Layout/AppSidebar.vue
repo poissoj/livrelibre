@@ -18,9 +18,7 @@ import useUser from "@/lib/useUser";
 import NavLink from "./NavLink.vue";
 
 const { user } = useUser();
-const salesPage = computed(() =>
-  user.value?.role === "admin" ? "/sales" : "/todaySales",
-);
+const salesPage = computed(() => (user.value?.role === "admin" ? "/sales" : "/todaySales"));
 </script>
 
 <template>
@@ -54,9 +52,7 @@ const salesPage = computed(() =>
         <NavLink href="/items" :icon="faFileAlt">Articles</NavLink>
       </li>
       <li>
-        <NavLink href="/best-sales" :icon="faChartLine"
-          >Meilleures ventes</NavLink
-        >
+        <NavLink href="/best-sales" :icon="faChartLine">Meilleures ventes</NavLink>
       </li>
       <li>
         <NavLink href="/stats" :icon="faChartPie">Statistiques</NavLink>

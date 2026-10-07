@@ -17,5 +17,4 @@ export const formatDateFR = (date: Date) =>
 export const toInputDate = (date: Date) => format(date, "yyyy-MM-dd'T'HH:mm");
 
 /** Converts an ISO date string (`YYYY-MM-DD`) to the French format (`DD/MM/YYYY`). */
-export const formatISODateFR = (date: string) =>
-  date.split("-").reverse().join("/");
+export const formatISODateFR = (date: string) => date.split("-").reverse().join("/");

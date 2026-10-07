@@ -1,12 +1,10 @@
-import { SQL, and, count, eq, gt, or, sql, sum } from "drizzle-orm";
-
 import { type ItemWithCount } from "@livrelibre/shared/item";
 import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
 import { type Item, items, sales } from "@livrelibre/shared/schema";
 import { norm, sanitize } from "@livrelibre/shared/utils";
-
 import { db } from "@server/db/database";
 import { logger } from "@server/utils/logger";
+import { SQL, and, count, eq, gt, or, sql, sum } from "drizzle-orm";
 
 export const getItem = async (id: number): Promise<ItemWithCount | null> => {
   const item = await db.query.items.findFirst({ where: eq(items.id, id) });
@@ -31,10 +29,7 @@ const generateQuickSearchCriteria = (search: string, inStock: boolean) => {
     criteria = or(and(...titleCriteria), and(...authorCriteria));
   } else {
     const crit = sanitize(norm(search));
-    criteria = or(
-      sql`${items.nmTitle} ~* ${crit}`,
-      sql`${items.nmAuthor} ~* ${crit}`,
-    );
+    criteria = or(sql`${items.nmTitle} ~* ${crit}`, sql`${items.nmAuthor} ~* ${crit}`);
   }
   if (inStock) {
     criteria = and(criteria, gt(items.amount, 0));
@@ -43,17 +38,9 @@ const generateQuickSearchCriteria = (search: string, inStock: boolean) => {
 };
 
 const NORMALIZED_FIELDS = ["author", "title", "publisher", "distributor"];
-const IGNORECASE_FIELDS = [
-  "author",
-  "title",
-  "keywords",
-  "comments",
-  "publisher",
-  "distributor",
-];
+const IGNORECASE_FIELDS = ["author", "title", "keywords", "comments", "publisher", "distributor"];
 
-const capitalize = (txt: string) =>
-  txt ? `${txt[0].toUpperCase()}${txt.slice(1)}` : "";
+const capitalize = (txt: string) => (txt ? `${txt[0].toUpperCase()}${txt.slice(1)}` : "");
 
 const generateSearchCriteria = (query: Record<string, string>) => {
   const criteria: SQL[] = [];
@@ -111,10 +98,7 @@ export const searchItems = async ({
   return await doSearch(criteria, page);
 };
 
-export const advancedSearch = async (
-  query: Record<string, string>,
-  pageNumber = 1,
-) => {
+export const advancedSearch = async (query: Record<string, string>, pageNumber = 1) => {
   logger.debug("Advanced search", { query, page: pageNumber });
   const criteria = generateSearchCriteria(query);
   return await doSearch(criteria, pageNumber);

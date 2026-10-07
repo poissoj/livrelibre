@@ -1,8 +1,7 @@
 <script setup lang="ts">
+import { formatNumber } from "@livrelibre/shared/format";
 import { clsx } from "clsx";
 import { RouterLink } from "vue-router";
-
-import { formatNumber } from "@livrelibre/shared/format";
 
 import AppCard from "@/components/AppCard.vue";
 import AppSkeleton from "@/components/AppSkeleton.vue";
@@ -13,12 +12,7 @@ import { useTRPCQuery } from "@/utils/query";
 
 const TH_STYLES = "sticky top-0 bg-white";
 
-const {
-  data: bestSales,
-  isPending,
-  isError,
-  refetch,
-} = useTRPCQuery("bestsales", undefined);
+const { data: bestSales, isPending, isError, refetch } = useTRPCQuery("bestsales", undefined);
 </script>
 
 <template>
@@ -29,35 +23,14 @@ const {
         <ErrorMessage v-if="isError" :on-retry="refetch" />
         <AppSkeleton v-else-if="isPending" :height="500">
           <template v-for="n in 17" :key="n">
-            <rect
-              x="2%"
-              :y="(n - 1) * 30 + 10"
-              width="3%"
-              :height="10"
-              rx="5"
-            />
+            <rect x="2%" :y="(n - 1) * 30 + 10" width="3%" :height="10" rx="5" />
             <rect x="10%" :y="(n - 1) * 30 + 10" width="40%" :height="10" />
             <rect x="60%" :y="(n - 1) * 30 + 10" width="20%" :height="10" />
-            <rect
-              x="83%"
-              :y="(n - 1) * 30 + 10"
-              width="6%"
-              :height="10"
-              rx="5"
-            />
-            <rect
-              x="92%"
-              :y="(n - 1) * 30 + 10"
-              width="6%"
-              :height="10"
-              rx="5"
-            />
+            <rect x="83%" :y="(n - 1) * 30 + 10" width="6%" :height="10" rx="5" />
+            <rect x="92%" :y="(n - 1) * 30 + 10" width="6%" :height="10" rx="5" />
           </template>
         </AppSkeleton>
-        <table
-          v-else
-          class="flex-1 [border-collapse:separate] [border-spacing:2px_0.5rem]"
-        >
+        <table v-else class="flex-1 [border-collapse:separate] [border-spacing:2px_0.5rem]">
           <caption class="sr-only">
             Meilleures ventes
           </caption>
@@ -65,16 +38,9 @@ const {
             <tr>
               <th scope="col" :class="clsx(TH_STYLES, 'text-left')">#</th>
               <th scope="col" :class="clsx(TH_STYLES, 'text-left')">Titre</th>
-              <th scope="col" :class="clsx(TH_STYLES, 'text-left')">
-                Auteur·ice
-              </th>
+              <th scope="col" :class="clsx(TH_STYLES, 'text-left')">Auteur·ice</th>
               <th scope="col" :class="clsx(TH_STYLES, 'text-right')">Vendus</th>
-              <th
-                scope="col"
-                :class="clsx(TH_STYLES, 'text-right whitespace-nowrap')"
-              >
-                En stock
-              </th>
+              <th scope="col" :class="clsx(TH_STYLES, 'text-right whitespace-nowrap')">En stock</th>
               <th scope="col" :class="TH_STYLES">
                 <span class="sr-only">Actions</span>
               </th>

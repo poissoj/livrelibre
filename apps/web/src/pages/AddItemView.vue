@@ -3,14 +3,13 @@ import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 import AppButton from "@/components/AppButton.vue";
-import ItemForm from "@/components/ItemForm.vue";
 import type { FormFields } from "@/components/itemForm";
+import ItemForm from "@/components/ItemForm.vue";
 import { useTRPCMutation } from "@/utils/query";
 
-const { mutateAsync: addItem, isPending: addPending } = useTRPCMutation(
-  "addItem",
-  { meta: { errorToast: false } },
-);
+const { mutateAsync: addItem, isPending: addPending } = useTRPCMutation("addItem", {
+  meta: { errorToast: false },
+});
 
 const submit = async (data: FormFields) => {
   const item = { ...data, amount: Number(data.amount) };

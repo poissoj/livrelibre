@@ -3,10 +3,6 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "scripts": {
-    "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
-  },
   "exports": {
     "./customer": "./src/customer.ts",
     "./date": "./src/date.ts",
@@ -20,6 +16,10 @@
     "./schema": "./src/schema.ts",
     "./utils": "./src/utils.ts",
     "./validation": "./src/validation.ts"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "date-fns": "4.4.0",

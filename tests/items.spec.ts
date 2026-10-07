@@ -14,15 +14,11 @@ test.afterAll(async () => {
   await deleteItem(item.id);
 });
 
-test("Liste des articles vers la fiche article et ajout au panier", async ({
-  page,
-}) => {
+test("Liste des articles vers la fiche article et ajout au panier", async ({ page }) => {
   await login(page);
 
   await page.goto("/items");
-  await expect(
-    page.getByRole("columnheader", { name: "Titre", exact: true }),
-  ).toBeVisible();
+  await expect(page.getByRole("columnheader", { name: "Titre", exact: true })).toBeVisible();
 
   await page.getByRole("link", { name: item.title }).click();
   await expect(page).toHaveURL(`/item/${String(item.id)}`);

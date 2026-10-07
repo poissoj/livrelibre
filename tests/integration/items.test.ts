@@ -1,12 +1,11 @@
-import { eq } from "drizzle-orm";
-import { beforeEach, describe, expect, it } from "vitest";
-
 import { db } from "@livrelibre/server/db/database";
 import { addItem } from "@livrelibre/server/server/addItem";
 import { getItem, searchItems } from "@livrelibre/server/server/searchItem";
 import { updateItem } from "@livrelibre/server/server/updateItem";
 import { ERROR_CODES } from "@livrelibre/shared/errors";
 import { items } from "@livrelibre/shared/schema";
+import { eq } from "drizzle-orm";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { truncateAll } from "./helpers";
 
@@ -58,10 +57,7 @@ describe("addItem", () => {
   });
 
   it("creates a single row when the same ISBN is added concurrently", async () => {
-    const results = await Promise.allSettled([
-      addItem(baseItem),
-      addItem(baseItem),
-    ]);
+    const results = await Promise.allSettled([addItem(baseItem), addItem(baseItem)]);
     expect(results.filter((r) => r.status === "fulfilled")).toHaveLength(1);
 
     const rows = await db.select().from(items);
@@ -137,10 +133,7 @@ describe("updateItem", () => {
   it("rejects updating to an ISBN that already exists", async () => {
     await addItem(baseItem);
     await addItem({ ...baseItem, isbn: "9780000000002" });
-    const [second] = await db
-      .select()
-      .from(items)
-      .where(eq(items.isbn, "9780000000002"));
+    const [second] = await db.select().from(items).where(eq(items.isbn, "9780000000002"));
 
     await expect(
       updateItem({ ...baseItem, isbn: "9780000000001" }, second.id),
@@ -149,10 +142,7 @@ describe("updateItem", () => {
       message: ERROR_CODES.ITEM_ALREADY_EXISTS,
     });
 
-    const [unchanged] = await db
-      .select()
-      .from(items)
-      .where(eq(items.id, second.id));
+    const [unchanged] = await db.select().from(items).where(eq(items.id, second.id));
     expect(unchanged.isbn).toBe("9780000000002");
   });
 });

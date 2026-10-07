@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-
 import { formatPrice } from "@livrelibre/shared/format";
 import { PAYMENT_METHODS } from "@livrelibre/shared/sale";
+import { computed, ref } from "vue";
 
 import AppCard from "@/components/AppCard.vue";
 import CardBody from "@/components/CardBody.vue";

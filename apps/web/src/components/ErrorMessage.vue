@@ -8,9 +8,7 @@ import { getErrorMessage } from "@/utils/errors";
 
 const props = defineProps<{ error?: unknown; onRetry?: () => void }>();
 
-const message = computed(() =>
-  getErrorMessage(props.error, "Impossible de récupérer les données"),
-);
+const message = computed(() => getErrorMessage(props.error, "Impossible de récupérer les données"));
 </script>
 
 <template>
@@ -22,12 +20,7 @@ const message = computed(() =>
       <FontAwesomeIcon :icon="faExclamationCircle" class="mr-sm" />
       {{ message }}
     </p>
-    <AppButton
-      v-if="props.onRetry"
-      type="button"
-      class="mt-sm"
-      @click="props.onRetry()"
-    >
+    <AppButton v-if="props.onRetry" type="button" class="mt-sm" @click="props.onRetry()">
       <FontAwesomeIcon :icon="faRedo" class="mr-sm" />
       Réessayer
     </AppButton>

@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { RouterLink } from "vue-router";
-
 import type { CustomerWithTotal } from "@livrelibre/shared/customer";
 import { formatPrice } from "@livrelibre/shared/format";
+import { RouterLink } from "vue-router";
 
 const props = defineProps<{ items: CustomerWithTotal[] }>();
 </script>

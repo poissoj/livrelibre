@@ -25,9 +25,7 @@ const utils = useTRPCUtils();
 // Chemin interne uniquement, pour éviter une redirection ouverte.
 const redirectTarget = computed(() => {
   const redirect = route.query.redirect;
-  return typeof redirect === "string" &&
-    redirect.startsWith("/") &&
-    !redirect.startsWith("//")
+  return typeof redirect === "string" && redirect.startsWith("/") && !redirect.startsWith("//")
     ? redirect
     : "/";
 });
@@ -55,10 +53,7 @@ const onSubmit = async () => {
       await router.push(redirectTarget.value);
     } else {
       const body: unknown = await res.json().catch(() => null);
-      errorMsg.value = getRestErrorMessage(
-        body,
-        "Impossible de vous connecter.",
-      );
+      errorMsg.value = getRestErrorMessage(body, "Impossible de vous connecter.");
     }
   } catch (error) {
     errorMsg.value = getErrorMessage(error, "Impossible de vous connecter.");
@@ -90,9 +85,7 @@ const onSubmit = async () => {
           {{ errorMsg }}
         </p>
         <div class="mb-5 [color:#666] [font-size:14px]">
-          <label for="username" class="uppercase font-medium"
-            >Identifiant</label
-          >
+          <label for="username" class="uppercase font-medium">Identifiant</label>
           <AppInput
             id="username"
             v-model="username"
@@ -104,9 +97,7 @@ const onSubmit = async () => {
         </div>
         <div class="mb-5 [color:#666] [font-size:14px]">
           <div class="flex">
-            <label for="password" class="uppercase font-medium">
-              Mot de passe
-            </label>
+            <label for="password" class="uppercase font-medium"> Mot de passe </label>
             <button
               type="button"
               class="ml-auto"
@@ -114,10 +105,7 @@ const onSubmit = async () => {
               aria-controls="password"
               @click="showPassword = !showPassword"
             >
-              <FontAwesomeIcon
-                :icon="showPassword ? faEyeSlash : faEye"
-                class="mr-1"
-              />
+              <FontAwesomeIcon :icon="showPassword ? faEyeSlash : faEye" class="mr-1" />
               {{ showPassword ? "Masquer" : "Afficher" }}
             </button>
           </div>

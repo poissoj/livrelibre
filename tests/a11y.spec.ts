@@ -1,6 +1,5 @@
-import { expect, test } from "@playwright/test";
-
 import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
+import { expect, test } from "@playwright/test";
 
 import {
   deleteCustomer,
@@ -27,9 +26,7 @@ test.afterAll(async () => {
   await deleteItem(item.id);
 });
 
-test("les moyens de contact sont sélectionnables au clavier", async ({
-  page,
-}) => {
+test("les moyens de contact sont sélectionnables au clavier", async ({ page }) => {
   await login(page);
   await page.goto("/order/new");
 
@@ -50,9 +47,7 @@ test("les groupes de champs ont un nom accessible", async ({ page }) => {
   await login(page);
   await page.goto("/order/new");
 
-  await expect(
-    page.getByRole("group", { name: "Contacter par" }),
-  ).toBeVisible();
+  await expect(page.getByRole("group", { name: "Contacter par" })).toBeVisible();
   await expect(page.getByRole("group", { name: "Client⋅e" })).toBeVisible();
 });
 
@@ -67,9 +62,7 @@ test("le statut de commande a un nom accessible", async ({ page }) => {
   await login(page);
   await page.goto("/orders");
 
-  await expect(
-    page.getByRole("img", { name: "En cours" }).first(),
-  ).toBeVisible();
+  await expect(page.getByRole("img", { name: "En cours" }).first()).toBeVisible();
 });
 
 test("une erreur de chargement est annoncée (role=alert)", async ({ page }) => {
@@ -92,19 +85,13 @@ test("un chargement est annoncé (role=status)", async ({ page }) => {
 
   await page.goto("/items");
 
-  await expect(
-    page.getByRole("main").getByRole("status").first(),
-  ).toBeVisible();
+  await expect(page.getByRole("main").getByRole("status").first()).toBeVisible();
 });
 
-test("le champ de recherche de l'en-tête a un nom accessible", async ({
-  page,
-}) => {
+test("le champ de recherche de l'en-tête a un nom accessible", async ({ page }) => {
   await login(page);
 
-  await expect(
-    page.getByRole("searchbox", { name: "Rechercher un article" }),
-  ).toBeVisible();
+  await expect(page.getByRole("searchbox", { name: "Rechercher un article" })).toBeVisible();
 });
 
 test("chaque page a un seul titre principal (h1)", async ({ page }) => {
@@ -127,9 +114,7 @@ test("chaque page a un seul titre principal (h1)", async ({ page }) => {
   }
 });
 
-test("l'option d'article non répertorié a un nom accessible", async ({
-  page,
-}) => {
+test("l'option d'article non répertorié a un nom accessible", async ({ page }) => {
   await login(page);
   await page.goto("/order/new");
 
@@ -139,15 +124,11 @@ test("l'option d'article non répertorié a un nom accessible", async ({
   ).toBeVisible();
 });
 
-test("le tableau des clients a un nom et une ligne clavier accessible", async ({
-  page,
-}) => {
+test("le tableau des clients a un nom et une ligne clavier accessible", async ({ page }) => {
   await login(page);
   await page.goto("/customers");
 
-  await expect(
-    page.getByRole("table", { name: "Liste des client⋅es" }),
-  ).toBeVisible();
+  await expect(page.getByRole("table", { name: "Liste des client⋅es" })).toBeVisible();
 
   const link = page.getByRole("link", { name: customer.fullname });
   await link.focus();
@@ -156,9 +137,7 @@ test("le tableau des clients a un nom et une ligne clavier accessible", async ({
   await expect(page).toHaveURL(new RegExp(`/customer/${String(customer.id)}`));
 });
 
-test("le tableau des commandes a un nom et une ligne clavier accessible", async ({
-  page,
-}) => {
+test("le tableau des commandes a un nom et une ligne clavier accessible", async ({ page }) => {
   const itemTitle = unique("Article a11y commande");
   await seedOrder({
     customerId: customer.id,
@@ -170,9 +149,7 @@ test("le tableau des commandes a un nom et une ligne clavier accessible", async 
   await login(page);
   await page.goto("/orders");
 
-  await expect(
-    page.getByRole("table", { name: "Liste des commandes" }),
-  ).toBeVisible();
+  await expect(page.getByRole("table", { name: "Liste des commandes" })).toBeVisible();
 
   const link = page.getByRole("link", { name: itemTitle });
   await link.focus();
@@ -181,9 +158,7 @@ test("le tableau des commandes a un nom et une ligne clavier accessible", async 
   await expect(page).toHaveURL(/\/order\/\d+$/);
 });
 
-test("la pagination expose un landmark et la page courante", async ({
-  page,
-}) => {
+test("la pagination expose un landmark et la page courante", async ({ page }) => {
   const titleBase = unique("Article pagination");
   await seedItems(ITEMS_PER_PAGE + 1, { title: titleBase });
   try {
@@ -194,9 +169,9 @@ test("la pagination expose un landmark et la page courante", async ({
 
     await page.getByRole("link", { name: "Page 2" }).click();
     await expect(page).toHaveURL(/page=2/);
-    await expect(
-      page.locator('nav[aria-label^="Pagination"] [aria-current="page"]'),
-    ).toHaveText("2");
+    await expect(page.locator('nav[aria-label^="Pagination"] [aria-current="page"]')).toHaveText(
+      "2",
+    );
   } finally {
     await deleteItemsByTitleLike(`${titleBase}%`);
   }

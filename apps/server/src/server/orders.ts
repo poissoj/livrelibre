@@ -1,6 +1,3 @@
-import { TRPCError } from "@trpc/server";
-import { and, count, eq, getTableColumns, inArray, ne } from "drizzle-orm";
-
 import { ERROR_CODES } from "@livrelibre/shared/errors";
 import {
   type OrderRow,
@@ -9,19 +6,17 @@ import {
   deserializeOrder,
 } from "@livrelibre/shared/order";
 import { customers, items, orders } from "@livrelibre/shared/schema";
-
 import { type User } from "@server/auth";
 import { db } from "@server/db/database";
 import { logger } from "@server/utils/logger";
+import { TRPCError } from "@trpc/server";
+import { and, count, eq, getTableColumns, inArray, ne } from "drizzle-orm";
 
 export const getOrder = async (id: number) => {
   const rows = await db.select().from(orders).where(eq(orders.id, id));
   const dbOrder = rows.length > 0 ? rows[0] : null;
   if (dbOrder?.customerId) {
-    const customer = await db
-      .select()
-      .from(customers)
-      .where(eq(customers.id, dbOrder.customerId));
+    const customer = await db.select().from(customers).where(eq(customers.id, dbOrder.customerId));
     if (customer.length === 0) {
       throw new TRPCError({
         code: "NOT_FOUND",
@@ -72,10 +67,7 @@ export const getCustomerActiveOrders = async (customerId: number) => {
 
 export const newOrder = async (order: RawOrder, user: User) => {
   const newOrder = { ...deserializeOrder(order), itemId: order.itemId ?? null };
-  const customer = await db
-    .select()
-    .from(customers)
-    .where(eq(customers.id, order.customerId));
+  const customer = await db.select().from(customers).where(eq(customers.id, order.customerId));
   if (customer.length === 0) {
     logger.warn("New order rejected", {
       user: user.id,
@@ -85,10 +77,7 @@ export const newOrder = async (order: RawOrder, user: User) => {
     return { type: "error" as const, msg: "Client inconnu" };
   }
   if (order.itemId) {
-    const rows = await db
-      .select()
-      .from(items)
-      .where(eq(items.id, order.itemId));
+    const rows = await db.select().from(items).where(eq(items.id, order.itemId));
     const item = rows.length > 0 ? rows[0] : null;
     if (item == null) {
       logger.warn("New order rejected", {
@@ -111,11 +100,7 @@ export const setOrder = async (order: RawOrder, id: number, user: User) => {
     ...deserializeOrder(order),
     itemId: order.itemId ?? null,
   };
-  const rows = await db
-    .update(orders)
-    .set(newOrder)
-    .where(eq(orders.id, id))
-    .returning();
+  const rows = await db.update(orders).set(newOrder).where(eq(orders.id, id)).returning();
   if (rows.length === 0) {
     logger.warn("Order update rejected", {
       user: user.id,
@@ -127,10 +112,7 @@ export const setOrder = async (order: RawOrder, id: number, user: User) => {
   return { type: "success" as const, msg: "La commande a été modifiée" };
 };
 
-export const setCustomerNotified = async (
-  orderId: number,
-  customerNotified: boolean,
-) => {
+export const setCustomerNotified = async (orderId: number, customerNotified: boolean) => {
   const rows = await db
     .update(orders)
     .set({ customerNotified })
@@ -146,10 +128,7 @@ export const setCustomerNotified = async (
 };
 
 export const deleteOrder = async (orderId: number, user: User) => {
-  const rows = await db
-    .delete(orders)
-    .where(eq(orders.id, orderId))
-    .returning();
+  const rows = await db.delete(orders).where(eq(orders.id, orderId)).returning();
   if (rows.length === 0) {
     logger.warn("Order deletion rejected", {
       user: user.id,

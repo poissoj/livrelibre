@@ -1,13 +1,8 @@
 <script setup lang="ts">
-import {
-  faCartPlus,
-  faShoppingCart,
-  faSpinner,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCartPlus, faShoppingCart, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { computed } from "vue";
-
 import type { Bookmark } from "@livrelibre/server/server/bookmarks";
+import { computed } from "vue";
 
 import { useAddToCart } from "@/utils/useAddToCart";
 

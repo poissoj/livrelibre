@@ -13,9 +13,7 @@ test.afterAll(async () => {
   await deleteItem(item.id);
 });
 
-test("Import DILICOM : le bouton Envoyer s'active et l'import aboutit", async ({
-  page,
-}) => {
+test("Import DILICOM : le bouton Envoyer s'active et l'import aboutit", async ({ page }) => {
   await login(page);
   await page.goto("/advanced");
 
@@ -36,7 +34,5 @@ test("Import DILICOM : le bouton Envoyer s'active et l'import aboutit", async ({
 
   await expect(page.getByText(TITLE)).toBeVisible();
   await page.getByRole("button", { name: "Valider" }).click();
-  await expect(
-    page.getByText("Le fichier a été importé correctement (2 articles)."),
-  ).toBeVisible();
+  await expect(page.getByText("Le fichier a été importé correctement (2 articles).")).toBeVisible();
 });

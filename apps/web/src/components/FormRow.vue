@@ -12,16 +12,8 @@ const labelId = useId();
 </script>
 
 <template>
-  <div
-    v-if="props.group"
-    role="group"
-    :aria-labelledby="labelId"
-    class="flex mb-md items-center"
-  >
-    <span
-      :id="labelId"
-      class="text-right mr-lg font-medium w-1/4 shrink-0 whitespace-nowrap"
-    >
+  <div v-if="props.group" role="group" :aria-labelledby="labelId" class="flex mb-md items-center">
+    <span :id="labelId" class="text-right mr-lg font-medium w-1/4 shrink-0 whitespace-nowrap">
       {{ props.label }}
     </span>
     <div :class="clsx('flex w-2/3', props.fieldClass)">

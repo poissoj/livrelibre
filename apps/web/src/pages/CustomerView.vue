@@ -1,15 +1,11 @@
 <script setup lang="ts">
-import {
-  faCheckCircle,
-  faTimesCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { formatISODateFR } from "@livrelibre/shared/date";
+import { formatPrice } from "@livrelibre/shared/format";
 import { computed } from "vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
 import { toast } from "vue-sonner";
-
-import { formatISODateFR } from "@livrelibre/shared/date";
-import { formatPrice } from "@livrelibre/shared/format";
 
 import AppButton from "@/components/AppButton.vue";
 import AppCard from "@/components/AppCard.vue";
@@ -17,12 +13,12 @@ import AppSkeleton from "@/components/AppSkeleton.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ConfirmationDialog from "@/components/ConfirmationDialog.vue";
+import type { CustomerFormFields } from "@/components/customerForm";
 import CustomerForm from "@/components/CustomerForm.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import NoResults from "@/components/NoResults.vue";
 import StatusCircle from "@/components/StatusCircle.vue";
-import type { CustomerFormFields } from "@/components/customerForm";
 import { getErrorMessage } from "@/utils/errors";
 import { useTRPCMutation, useTRPCQuery, useTRPCUtils } from "@/utils/query";
 
@@ -44,15 +40,12 @@ const {
   isError: ordersError,
   refetch: refetchOrders,
 } = useTRPCQuery("customerOrders", id);
-const { mutateAsync: saveCustomer, isPending: savePending } = useTRPCMutation(
-  "updateCustomer",
-  {
-    meta: { errorToast: false },
-    onSuccess() {
-      void utils.invalidate("customer");
-    },
+const { mutateAsync: saveCustomer, isPending: savePending } = useTRPCMutation("updateCustomer", {
+  meta: { errorToast: false },
+  onSuccess() {
+    void utils.invalidate("customer");
   },
-);
+});
 const deleteMutation = useTRPCMutation("deleteCustomer", {
   meta: { errorToast: false },
 });
@@ -70,9 +63,7 @@ const deleteCustomer = async () => {
   }
 };
 
-const total = computed(
-  () => customer.value?.purchases.reduce((sum, p) => sum + p.amount, 0) ?? 0,
-);
+const total = computed(() => customer.value?.purchases.reduce((sum, p) => sum + p.amount, 0) ?? 0);
 </script>
 
 <template>
@@ -88,22 +79,8 @@ const total = computed(
       <CardBody>
         <AppSkeleton :height="300">
           <template v-for="n in 4" :key="n">
-            <rect
-              x="5%"
-              :y="(n - 1) * 50"
-              rx="2"
-              ry="2"
-              width="12%"
-              height="30"
-            />
-            <rect
-              x="20%"
-              :y="(n - 1) * 50"
-              rx="2"
-              ry="2"
-              width="30%"
-              height="30"
-            />
+            <rect x="5%" :y="(n - 1) * 50" rx="2" ry="2" width="12%" height="30" />
+            <rect x="20%" :y="(n - 1) * 50" rx="2" ry="2" width="30%" height="30" />
           </template>
         </AppSkeleton>
       </CardBody>
@@ -141,9 +118,7 @@ const total = computed(
                 }}
                 pour un total de {{ formatPrice(total) }}
               </div>
-              <table
-                class="w-fit border-separate border-spacing-x-4 border-spacing-y-1"
-              >
+              <table class="w-fit border-separate border-spacing-x-4 border-spacing-y-1">
                 <caption class="sr-only">
                   Achats du client
                 </caption>
@@ -168,9 +143,7 @@ const total = computed(
         </AppCard>
         <AppCard class="flex-1">
           <CardTitle>
-            Commandes en cours<span v-if="!ordersError"
-              >: {{ customerOrders?.length ?? 0 }}</span
-            >
+            Commandes en cours<span v-if="!ordersError">: {{ customerOrders?.length ?? 0 }}</span>
           </CardTitle>
           <CardBody>
             <ErrorMessage v-if="ordersError" :on-retry="refetchOrders" />
@@ -179,10 +152,7 @@ const total = computed(
             </span>
             <ul v-else>
               <li v-for="order in customerOrders" :key="order.id" class="mb-1">
-                <RouterLink
-                  :to="`/order/${String(order.id)}`"
-                  class="flex gap-2 items-center"
-                >
+                <RouterLink :to="`/order/${String(order.id)}`" class="flex gap-2 items-center">
                   <StatusCircle :status="order.ordered" />
                   {{ order.itemTitle }}
                 </RouterLink>

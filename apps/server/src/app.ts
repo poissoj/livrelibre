@@ -1,8 +1,9 @@
+import { fileURLToPath } from "node:url";
+
 import { serveStatic } from "@hono/node-server/serve-static";
 import { trpcServer } from "@hono/trpc-server";
 import { Hono } from "hono";
 import { bodyLimit } from "hono/body-limit";
-import { fileURLToPath } from "node:url";
 
 import { authMiddleware } from "./auth";
 import { createContext } from "./context";
@@ -27,10 +28,7 @@ app.use("*", async (c, next) => {
   c.header("X-Frame-Options", "DENY");
   c.header("Permissions-Policy", "interest-cohort=()");
   c.header("Referrer-Policy", "no-referrer-when-downgrade");
-  c.header(
-    "Strict-Transport-Security",
-    "max-age=63072000; includeSubDomains; preload",
-  );
+  c.header("Strict-Transport-Security", "max-age=63072000; includeSubDomains; preload");
 });
 
 // Authentication (JWT from cookie)

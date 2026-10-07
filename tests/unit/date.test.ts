@@ -1,11 +1,5 @@
+import { formatDate, formatDateFR, formatISODateFR, toInputDate } from "@livrelibre/shared/date";
 import { describe, expect, it } from "vitest";
-
-import {
-  formatDate,
-  formatDateFR,
-  formatISODateFR,
-  toInputDate,
-} from "@livrelibre/shared/date";
 
 describe("formatDate", () => {
   it("formats a date as ISO (YYYY-MM-DD)", () => {

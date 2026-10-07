@@ -1,8 +1,7 @@
 <script setup lang="ts">
+import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
 import { keepPreviousData } from "@tanstack/vue-query";
 import { computed } from "vue";
-
-import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
 
 import AppCard from "@/components/AppCard.vue";
 import AppPagination from "@/components/AppPagination.vue";
@@ -21,17 +20,13 @@ const CARD_STYLES = "max-h-full overflow-hidden flex flex-col relative";
 
 const { query, push } = useQueryParams();
 
-const search = computed(() =>
-  typeof query.value.search === "string" ? query.value.search : "",
-);
+const search = computed(() => (typeof query.value.search === "string" ? query.value.search : ""));
 useTitle(() => `Recherche de "${search.value}"`);
 const page = usePageParam();
 const inStock = computed(() => query.value.inStock === "1");
 
 const toggleStock = async () => {
-  const next = inStock.value
-    ? { search: search.value }
-    : { search: search.value, inStock: 1 };
+  const next = inStock.value ? { search: search.value } : { search: search.value, inStock: 1 };
   await push({ query: next });
 };
 
@@ -74,12 +69,7 @@ const subtitle = computed(
       <CardTitle :level="1">{{ cardTitle }}</CardTitle>
       <label class="self-end cursor-pointer mr-6 ml-auto">
         <span>En stock</span>
-        <input
-          type="checkbox"
-          class="ml-2"
-          :checked="inStock"
-          @change="toggleStock"
-        />
+        <input type="checkbox" class="ml-2" :checked="inStock" @change="toggleStock" />
       </label>
       <CardBody>Aucun résultat pour "{{ search }}"</CardBody>
     </AppCard>
@@ -89,12 +79,7 @@ const subtitle = computed(
         <p>{{ isSuccess ? subtitle : "Recherche en cours…" }}</p>
         <label class="self-end cursor-pointer mr-6 ml-auto">
           <span>En stock</span>
-          <input
-            type="checkbox"
-            class="ml-2"
-            :checked="inStock"
-            @change="toggleStock"
-          />
+          <input type="checkbox" class="ml-2" :checked="inStock" @change="toggleStock" />
         </label>
       </div>
       <CardBody>
@@ -103,10 +88,7 @@ const subtitle = computed(
           <ItemsTable :items="searchResult?.items ?? []" />
         </LoadingOverlay>
       </CardBody>
-      <CardFooter
-        v-if="pageCount > 1"
-        class="flex justify-center pt-6 2xl:pt-8"
-      >
+      <CardFooter v-if="pageCount > 1" class="flex justify-center pt-6 2xl:pt-8">
         <AppPagination :count="pageCount" />
       </CardFooter>
     </AppCard>

@@ -1,3 +1,12 @@
+import type { CustomerWithPurchase } from "@livrelibre/shared/customer";
+import { formatDate } from "@livrelibre/shared/date";
+import { ERROR_CODES } from "@livrelibre/shared/errors";
+import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
+import { customers, orders, purchases, selectedCustomer } from "@livrelibre/shared/schema";
+import { norm, sanitize } from "@livrelibre/shared/utils";
+import { type Transaction, db } from "@server/db/database";
+import { isUniqueViolation } from "@server/utils/dbErrors";
+import { logger } from "@server/utils/logger";
 import { TRPCError } from "@trpc/server";
 import {
   and,
@@ -11,32 +20,13 @@ import {
   sum,
 } from "drizzle-orm";
 
-import type { CustomerWithPurchase } from "@livrelibre/shared/customer";
-import { formatDate } from "@livrelibre/shared/date";
-import { ERROR_CODES } from "@livrelibre/shared/errors";
-import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
-import {
-  customers,
-  orders,
-  purchases,
-  selectedCustomer,
-} from "@livrelibre/shared/schema";
-import { norm, sanitize } from "@livrelibre/shared/utils";
-
-import { type Transaction, db } from "@server/db/database";
-import { isUniqueViolation } from "@server/utils/dbErrors";
-import { logger } from "@server/utils/logger";
-
 const duplicateCustomerError = () =>
   new TRPCError({
     code: "CONFLICT",
     message: ERROR_CODES.CUSTOMER_ALREADY_EXISTS,
   });
 
-export const customerExistsByNmFullname = async (
-  nmFullname: string,
-  excludeId?: number,
-) => {
+export const customerExistsByNmFullname = async (nmFullname: string, excludeId?: number) => {
   const rows = await db
     .select({ id: customers.id })
     .from(customers)
@@ -59,9 +49,7 @@ export const getCustomers = async ({
   fullname?: string | undefined;
   withPurchases?: boolean;
 }) => {
-  let clause = fullname
-    ? sql`${customers.nmFullname} ~* ${sanitize(norm(fullname))}`
-    : undefined;
+  let clause = fullname ? sql`${customers.nmFullname} ~* ${sanitize(norm(fullname))}` : undefined;
   if (withPurchases) {
     clause = and(clause, isNotNull(purchases.amount));
   }
@@ -106,31 +94,16 @@ export const resetCustomer = async (id: number, tx?: Transaction) => {
   return await (tx ?? db).delete(purchases).where(eq(purchases.customerId, id));
 };
 
-export const addPurchase = async (
-  customerId: number,
-  amount: number,
-  tx?: Transaction,
-) => {
+export const addPurchase = async (customerId: number, amount: number, tx?: Transaction) => {
   const date = formatDate(new Date());
-  return await (tx ?? db)
-    .insert(purchases)
-    .values({ amount: String(amount), date, customerId });
+  return await (tx ?? db).insert(purchases).values({ amount: String(amount), date, customerId });
 };
 
-export const getSelectedCustomer = async (
-  userId: number,
-  asideCart: boolean,
-  tx?: Transaction,
-) => {
+export const getSelectedCustomer = async (userId: number, asideCart: boolean, tx?: Transaction) => {
   const rows = await (tx ?? db)
     .select()
     .from(selectedCustomer)
-    .where(
-      and(
-        eq(selectedCustomer.userId, userId),
-        eq(selectedCustomer.asideCart, asideCart),
-      ),
-    );
+    .where(and(eq(selectedCustomer.userId, userId), eq(selectedCustomer.asideCart, asideCart)));
   return rows.length > 0 ? rows[0] : null;
 };
 
@@ -157,17 +130,12 @@ export const setSelectedCustomer = async (
     .onConflictDoUpdate({ target: selectedCustomer.userId, set: customer });
 };
 
-export const getCustomer = async (
-  id: number,
-): Promise<CustomerWithPurchase | null> => {
+export const getCustomer = async (id: number): Promise<CustomerWithPurchase | null> => {
   const rows = await db.select().from(customers).where(eq(customers.id, id));
   if (rows.length === 0) {
     return null;
   }
-  const purchaseList = await db
-    .select()
-    .from(purchases)
-    .where(eq(purchases.customerId, id));
+  const purchaseList = await db.select().from(purchases).where(eq(purchases.customerId, id));
   return {
     ...rows[0],
     purchases: purchaseList.map((p) => ({ ...p, amount: Number(p.amount) })),
@@ -206,10 +174,7 @@ export const deleteCustomer = async (customerId: number) => {
   });
 };
 
-export const setCustomer = async (
-  customer: typeof customers.$inferInsert,
-  id: number,
-) => {
+export const setCustomer = async (customer: typeof customers.$inferInsert, id: number) => {
   try {
     const rows = await db
       .update(customers)
@@ -230,10 +195,7 @@ export const setCustomer = async (
 
 export const newCustomer = async (customer: typeof customers.$inferInsert) => {
   try {
-    const rows = await db
-      .insert(customers)
-      .values(customer)
-      .returning({ id: customers.id });
+    const rows = await db.insert(customers).values(customer).returning({ id: customers.id });
     return {
       type: "success" as const,
       msg: "Le client a été ajouté",

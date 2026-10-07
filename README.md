@@ -128,4 +128,5 @@ pnpm start
 - `pnpm typecheck` — vérification des types
 - `pnpm lint` — lint
 - `pnpm check` — lint + typecheck
-- `pnpm format` — formatage (Prettier)
+- `pnpm format` — formatage (oxfmt)
+- `pnpm format:check` — vérification du formatage (oxfmt)

@@ -1,6 +1,3 @@
-import { eq } from "drizzle-orm";
-import { beforeEach, describe, expect, it } from "vitest";
-
 import { db } from "@livrelibre/server/db/database";
 import {
   addPurchase,
@@ -12,6 +9,8 @@ import {
   setSelectedCustomer,
 } from "@livrelibre/server/server/customers";
 import { purchases, selectedCustomer } from "@livrelibre/shared/schema";
+import { eq } from "drizzle-orm";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { seedCustomer, seedUser, truncateAll } from "./helpers";
 

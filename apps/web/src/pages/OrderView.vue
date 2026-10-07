@@ -1,14 +1,10 @@
 <script setup lang="ts">
-import {
-  faCheckCircle,
-  faTimesCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import type { RawOrder } from "@livrelibre/shared/order";
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { toast } from "vue-sonner";
-
-import type { RawOrder } from "@livrelibre/shared/order";
 
 import AppButton from "@/components/AppButton.vue";
 import AppCard from "@/components/AppCard.vue";
@@ -19,8 +15,8 @@ import ConfirmationDialog from "@/components/ConfirmationDialog.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import NoResults from "@/components/NoResults.vue";
-import OrderForm from "@/components/OrderForm.vue";
 import type { OrderFormData } from "@/components/orderForm";
+import OrderForm from "@/components/OrderForm.vue";
 import { getErrorMessage } from "@/utils/errors";
 import { useTRPCMutation, useTRPCQuery, useTRPCUtils } from "@/utils/query";
 import { useQueryParams } from "@/utils/useQueryParams";
@@ -35,24 +31,21 @@ const id = computed(() => Number(route.params.orderId));
 
 const { data: order, isPending, isError, refetch } = useTRPCQuery("order", id);
 
-const { mutateAsync: updateOrder, isPending: updatePending } = useTRPCMutation(
-  "updateOrder",
-  {
-    meta: { errorToast: false },
-    onSuccess(result) {
-      if (result.type === "success") {
-        void utils.invalidate("order", id.value);
-        toast.success(result.msg);
-        void router.push({ path: "/orders", query: query.value });
-      } else {
-        toast.error(result.msg);
-      }
-    },
-    onError(error) {
-      toast.error(getErrorMessage(error));
-    },
+const { mutateAsync: updateOrder, isPending: updatePending } = useTRPCMutation("updateOrder", {
+  meta: { errorToast: false },
+  onSuccess(result) {
+    if (result.type === "success") {
+      void utils.invalidate("order", id.value);
+      toast.success(result.msg);
+      void router.push({ path: "/orders", query: query.value });
+    } else {
+      toast.error(result.msg);
+    }
   },
-);
+  onError(error) {
+    toast.error(getErrorMessage(error));
+  },
+});
 
 const deleteMutation = useTRPCMutation("deleteOrder", {
   meta: { errorToast: false },
@@ -100,22 +93,8 @@ const data = computed<OrderFormData | undefined>(() => {
       <CardBody>
         <AppSkeleton :height="300">
           <template v-for="n in 4" :key="n">
-            <rect
-              x="5%"
-              :y="(n - 1) * 50"
-              rx="2"
-              ry="2"
-              width="12%"
-              height="30"
-            />
-            <rect
-              x="20%"
-              :y="(n - 1) * 50"
-              rx="2"
-              ry="2"
-              width="30%"
-              height="30"
-            />
+            <rect x="5%" :y="(n - 1) * 50" rx="2" ry="2" width="12%" height="30" />
+            <rect x="20%" :y="(n - 1) * 50" rx="2" ry="2" width="30%" height="30" />
           </template>
         </AppSkeleton>
       </CardBody>
@@ -126,21 +105,13 @@ const data = computed<OrderFormData | undefined>(() => {
         <NoResults />
       </CardBody>
     </AppCard>
-    <OrderForm
-      v-else-if="data"
-      :title="CARD_TITLE"
-      :data="data"
-      @submit="submit"
-    >
+    <OrderForm v-else-if="data" :title="CARD_TITLE" :data="data" @submit="submit">
       <ConfirmationDialog
         title="Supprimer une commande"
         message="Êtes-vous sûr⋅e de vouloir supprimer cette commande ? Cette action ne peut pas être annulée."
         @confirm="deleteOrder"
       />
-      <LinkButton
-        :to="{ path: '/orders', query: query }"
-        class="mr-2 px-md !bg-gray-medium"
-      >
+      <LinkButton :to="{ path: '/orders', query: query }" class="mr-2 px-md !bg-gray-medium">
         <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
         Retour
       </LinkButton>

@@ -1,7 +1,6 @@
+import { env } from "@server/env";
 import * as cheerio from "cheerio";
 import got from "got";
-
-import { env } from "@server/env";
 
 export type BookData = { title: string; author: string; publisher: string };
 

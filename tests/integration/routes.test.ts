@@ -1,20 +1,16 @@
-import bcrypt from "bcrypt";
-import { eq } from "drizzle-orm";
-import { beforeEach, describe, expect, it } from "vitest";
-
 import { app } from "@livrelibre/server/app";
 import { db } from "@livrelibre/server/db/database";
 import { MAX_IMPORT_ROWS } from "@livrelibre/shared/dilicomItem";
 import { items, users } from "@livrelibre/shared/schema";
+import bcrypt from "bcrypt";
+import { eq } from "drizzle-orm";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { seedItem, truncateAll } from "./helpers";
 
 const seedUserWithPassword = async (name: string, password: string) => {
   const hash = await bcrypt.hash(password, 4);
-  const rows = await db
-    .insert(users)
-    .values({ name, hash, role: "admin" })
-    .returning();
+  const rows = await db.insert(users).values({ name, hash, role: "admin" }).returning();
   return rows[0];
 };
 
@@ -213,10 +209,7 @@ describe("REST routes", () => {
 
       expect(res.status).toBe(200);
 
-      const rows = await db
-        .select()
-        .from(items)
-        .where(eq(items.isbn, existing.isbn));
+      const rows = await db.select().from(items).where(eq(items.isbn, existing.isbn));
       expect(rows).toHaveLength(1);
       expect(rows[0].amount).toBe(9);
     });
@@ -344,10 +337,7 @@ describe("REST routes", () => {
     it("rejects an unsupported file extension", async () => {
       const cookie = await authCookie();
       const form = new FormData();
-      form.append(
-        "dilicom",
-        new File(["EAN,TITRE"], "data.txt", { type: "text/plain" }),
-      );
+      form.append("dilicom", new File(["EAN,TITRE"], "data.txt", { type: "text/plain" }));
       const res = await app.request("/api/importFile", {
         method: "POST",
         headers: { cookie },

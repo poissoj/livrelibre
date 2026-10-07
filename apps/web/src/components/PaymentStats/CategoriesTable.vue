@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { clsx } from "clsx";
-
 import { formatNumber, formatPrice } from "@livrelibre/shared/format";
+import { clsx } from "clsx";
 
 type Category = { label: string; nb: number; total: string | null };
 
@@ -17,12 +16,8 @@ const COMMON_TH_STYLES = "sticky top-0 bg-white";
     </caption>
     <thead>
       <tr>
-        <th scope="col" :class="clsx(COMMON_TH_STYLES, 'text-left')">
-          Catégorie
-        </th>
-        <th scope="col" :class="clsx(COMMON_TH_STYLES, 'text-right')">
-          Quantité
-        </th>
+        <th scope="col" :class="clsx(COMMON_TH_STYLES, 'text-left')">Catégorie</th>
+        <th scope="col" :class="clsx(COMMON_TH_STYLES, 'text-right')">Quantité</th>
         <th scope="col" :class="clsx(COMMON_TH_STYLES, 'text-right')">Total</th>
       </tr>
     </thead>

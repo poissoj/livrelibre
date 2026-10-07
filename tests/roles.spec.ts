@@ -15,9 +15,10 @@ test.afterAll(async () => {
 test("Rôle caissier : accès restreint aux ventes", async ({ page }) => {
   await login(page, cashier);
 
-  await expect(
-    page.getByRole("link", { name: "Ventes", exact: true }),
-  ).toHaveAttribute("href", "/todaySales");
+  await expect(page.getByRole("link", { name: "Ventes", exact: true })).toHaveAttribute(
+    "href",
+    "/todaySales",
+  );
 
   await page.goto("/sales");
   await expect(page.getByText(/autorisé à accéder/)).toBeVisible();
@@ -26,7 +27,5 @@ test("Rôle caissier : accès restreint aux ventes", async ({ page }) => {
   await expect(page.getByText(/autorisé à accéder/)).toBeVisible();
 
   await page.goto("/todaySales");
-  await expect(
-    page.getByRole("heading", { name: "Répartition par TVA" }),
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Répartition par TVA" })).toBeVisible();
 });

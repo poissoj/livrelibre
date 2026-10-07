@@ -40,9 +40,7 @@ const option = computed<EChartsOption>(() => ({
         position: "insideTop",
         color: "white",
         formatter: (params: DefaultLabelFormatterCallbackParams) =>
-          typeof params.value === "number" && params.value !== 0
-            ? String(params.value)
-            : "",
+          typeof params.value === "number" && params.value !== 0 ? String(params.value) : "",
       },
       animation: false,
     },

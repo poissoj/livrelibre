@@ -1,12 +1,10 @@
-import { HTTPError } from "got";
-import type { Context } from "hono";
-
 import { ERROR_CODES } from "@livrelibre/shared/errors";
-
 import { type User } from "@server/auth";
 import { getBookData } from "@server/utils/getBookData";
 import { logError, logWarn } from "@server/utils/logError";
 import { logger } from "@server/utils/logger";
+import { HTTPError } from "got";
+import type { Context } from "hono";
 
 export const bookRoute = async (c: Context) => {
   const isbn = c.req.param("isbn");

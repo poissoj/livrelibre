@@ -1,13 +1,7 @@
 <script setup lang="ts">
 import { faTimesCircle, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import {
-  Dialog,
-  DialogPanel,
-  DialogTitle,
-  TransitionChild,
-  TransitionRoot,
-} from "@headlessui/vue";
+import { Dialog, DialogPanel, DialogTitle, TransitionChild, TransitionRoot } from "@headlessui/vue";
 import { ref } from "vue";
 
 import AppButton from "./AppButton.vue";
@@ -53,9 +47,7 @@ const confirm = () => {
           leave-from="scale-100"
           leave-to="scale-95"
         >
-          <DialogPanel
-            class="w-full max-w-lg space-y-4 bg-white p-8 rounded-xl"
-          >
+          <DialogPanel class="w-full max-w-lg space-y-4 bg-white p-8 rounded-xl">
             <DialogTitle class="font-bold">{{ props.title }}</DialogTitle>
             <p>{{ props.message }}</p>
             <div class="flex">
@@ -63,11 +55,7 @@ const confirm = () => {
                 <FontAwesomeIcon :icon="faTrash" class="mr-sm" />
                 Oui, supprimer
               </AppButton>
-              <AppButton
-                type="button"
-                class="ml-auto !bg-gray-medium"
-                @click="close"
-              >
+              <AppButton type="button" class="ml-auto !bg-gray-medium" @click="close">
                 <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
                 Non, annuler
               </AppButton>

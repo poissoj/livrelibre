@@ -15,20 +15,11 @@ export default tseslint.config(
   },
   {
     rules: {
-      "@typescript-eslint/no-misused-promises": [
-        "error",
-        { checksVoidReturn: false },
-      ],
+      "@typescript-eslint/no-misused-promises": ["error", { checksVoidReturn: false }],
       "@typescript-eslint/no-unnecessary-condition": "warn",
-      "@typescript-eslint/restrict-template-expressions": [
-        "warn",
-        { allowNumber: true },
-      ],
+      "@typescript-eslint/restrict-template-expressions": ["warn", { allowNumber: true }],
       "@typescript-eslint/method-signature-style": "error",
-      "@typescript-eslint/no-unused-vars": [
-        "warn",
-        { ignoreRestSiblings: true },
-      ],
+      "@typescript-eslint/no-unused-vars": ["warn", { ignoreRestSiblings: true }],
     },
   },
 );

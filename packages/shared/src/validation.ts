@@ -46,7 +46,4 @@ export const zDateISO = z.iso.date(ERROR_CODES.INVALID_DATE);
 /** Accepts a date-only string or an ISO datetime string. */
 export const zDateString = z
   .string(ERROR_CODES.INVALID_DATE)
-  .refine(
-    (value) => !Number.isNaN(Date.parse(value)),
-    ERROR_CODES.INVALID_DATE,
-  );
+  .refine((value) => !Number.isNaN(Date.parse(value)), ERROR_CODES.INVALID_DATE);

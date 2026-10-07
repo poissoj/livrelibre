@@ -1,10 +1,9 @@
 <script setup lang="ts">
+import { formatPrice } from "@livrelibre/shared/format";
+import { ITEM_TYPES } from "@livrelibre/shared/item";
 import { clsx } from "clsx";
 import { computed } from "vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
-
-import { formatPrice } from "@livrelibre/shared/format";
-import { ITEM_TYPES } from "@livrelibre/shared/item";
 
 import AppCard from "@/components/AppCard.vue";
 import AppSkeleton from "@/components/AppSkeleton.vue";
@@ -27,12 +26,7 @@ const year = computed(() => String(route.params.year));
 const month = computed(() => String(route.params.month));
 const params = computed(() => ({ month: month.value, year: year.value }));
 
-const {
-  data: monthStats,
-  isPending,
-  isError,
-  refetch,
-} = useTRPCQuery("salesByMonth", params);
+const { data: monthStats, isPending, isError, refetch } = useTRPCQuery("salesByMonth", params);
 
 const formatDate = (date: string) => date.split("-").reverse().join("/");
 const makeSaleURL = (date: string) => `/sale/${date.split("-").join("/")}`;
@@ -41,10 +35,10 @@ const goToSale = (date: string) => {
 };
 
 const monthLabel = computed(() =>
-  new Date(Number(year.value), Number(month.value) - 1).toLocaleDateString(
-    "fr",
-    { month: "long", year: "numeric" },
-  ),
+  new Date(Number(year.value), Number(month.value) - 1).toLocaleDateString("fr", {
+    month: "long",
+    year: "numeric",
+  }),
 );
 const categories = computed(() =>
   (monthStats.value?.itemTypes ?? []).map((item) => ({
@@ -63,38 +57,10 @@ const categories = computed(() =>
           <ErrorMessage v-if="isError" :on-retry="refetch" />
           <AppSkeleton v-else-if="isPending" :height="600">
             <template v-for="n in 20" :key="n">
-              <rect
-                x="5%"
-                :y="(n - 1) * 30 + 15"
-                rx="2"
-                ry="2"
-                width="19%"
-                height="10"
-              />
-              <rect
-                x="27%"
-                :y="(n - 1) * 30 + 15"
-                rx="2"
-                ry="2"
-                width="19%"
-                height="10"
-              />
-              <rect
-                x="49%"
-                :y="(n - 1) * 30 + 15"
-                rx="2"
-                ry="2"
-                width="19%"
-                height="10"
-              />
-              <rect
-                x="71%"
-                :y="(n - 1) * 30 + 13"
-                rx="2"
-                ry="2"
-                width="19%"
-                height="14"
-              />
+              <rect x="5%" :y="(n - 1) * 30 + 15" rx="2" ry="2" width="19%" height="10" />
+              <rect x="27%" :y="(n - 1) * 30 + 15" rx="2" ry="2" width="19%" height="10" />
+              <rect x="49%" :y="(n - 1) * 30 + 15" rx="2" ry="2" width="19%" height="10" />
+              <rect x="71%" :y="(n - 1) * 30 + 13" rx="2" ry="2" width="19%" height="14" />
             </template>
           </AppSkeleton>
           <table v-else class="flex-1">
@@ -103,15 +69,9 @@ const categories = computed(() =>
             </caption>
             <thead>
               <tr>
-                <th scope="col" :class="clsx(TH_STYLES, 'text-left pl-2')">
-                  Jour
-                </th>
-                <th scope="col" :class="clsx(TH_STYLES, 'text-right')">
-                  Nombre de ventes
-                </th>
-                <th scope="col" :class="clsx(TH_STYLES, 'text-right')">
-                  Recette totale
-                </th>
+                <th scope="col" :class="clsx(TH_STYLES, 'text-left pl-2')">Jour</th>
+                <th scope="col" :class="clsx(TH_STYLES, 'text-right')">Nombre de ventes</th>
+                <th scope="col" :class="clsx(TH_STYLES, 'text-right')">Recette totale</th>
               </tr>
             </thead>
             <tbody class="[line-height:2.3rem]">

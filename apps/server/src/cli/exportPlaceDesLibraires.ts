@@ -1,14 +1,13 @@
 /* Usage: pnpm --filter @livrelibre/server exec tsx src/cli/exportPlaceDesLibraires.ts
  * run 1/day with cron
  */
-import { Client } from "basic-ftp";
-import { and, sql } from "drizzle-orm";
 import fs from "fs/promises";
 
 import { items as itemsTable } from "@livrelibre/shared/schema";
-
 import { db } from "@server/db/database";
 import { env } from "@server/env";
+import { Client } from "basic-ftp";
+import { and, sql } from "drizzle-orm";
 
 const { SHOP_ID } = env;
 
@@ -38,9 +37,7 @@ const header = `EXTRACTION STOCK DU ${date}`;
 const sendToFtp = async () => {
   const { FTP_HOST, FTP_USER, FTP_PASSWORD } = env;
   if (!FTP_HOST || !FTP_USER || !FTP_PASSWORD) {
-    console.info(
-      "Env var FTP_HOST, FTP_USER or FTP_PASSWORD is missing, skip ftp send",
-    );
+    console.info("Env var FTP_HOST, FTP_USER or FTP_PASSWORD is missing, skip ftp send");
     return;
   }
   const client = new Client();
@@ -66,10 +63,7 @@ const main = async () => {
         isbn: true,
         price: true,
       },
-      where: and(
-        sql`${itemsTable.amount} > 0`,
-        sql`${itemsTable.isbn} ~ '^\\d{10,13}$'`,
-      ),
+      where: and(sql`${itemsTable.amount} > 0`, sql`${itemsTable.isbn} ~ '^\\d{10,13}$'`),
       orderBy: itemsTable.id, // TODO: remove
     });
     const fileContent = [header, ...items.map(formatItem)].join("\r\n");

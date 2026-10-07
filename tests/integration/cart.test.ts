@@ -1,6 +1,3 @@
-import { eq } from "drizzle-orm";
-import { beforeEach, describe, expect, it } from "vitest";
-
 import { db } from "@livrelibre/server/db/database";
 import {
   addISBNToCart,
@@ -10,11 +7,10 @@ import {
   payCart,
   removeFromCart,
 } from "@livrelibre/server/server/cart";
-import {
-  addPurchase,
-  setSelectedCustomer,
-} from "@livrelibre/server/server/customers";
+import { addPurchase, setSelectedCustomer } from "@livrelibre/server/server/customers";
 import { items, purchases, sales } from "@livrelibre/shared/schema";
+import { eq } from "drizzle-orm";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { seedCustomer, seedItem, seedUser, truncateAll } from "./helpers";
 
@@ -41,10 +37,7 @@ describe("cart", () => {
     const user = await seedUser();
     const item = await seedItem({ amount: 5, price: "10.00" });
 
-    await Promise.all([
-      addToCart(user.id, item.id),
-      addToCart(user.id, item.id),
-    ]);
+    await Promise.all([addToCart(user.id, item.id), addToCart(user.id, item.id)]);
 
     const cartData = await getCart(user.id);
     expect(cartData.items).toHaveLength(1);
@@ -166,10 +159,7 @@ describe("cart", () => {
       paymentType: "cash",
     });
 
-    const rows = await db
-      .select()
-      .from(purchases)
-      .where(eq(purchases.customerId, customer.id));
+    const rows = await db.select().from(purchases).where(eq(purchases.customerId, customer.id));
     expect(rows).toHaveLength(1);
     expect(rows[0].amount).toBe("10.00");
 

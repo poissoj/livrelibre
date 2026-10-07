@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { clsx } from "clsx";
-
 import { type OrderStatus, STATUS_LABEL } from "@livrelibre/shared/order";
+import { clsx } from "clsx";
 
 import StatusCircle from "@/components/StatusCircle.vue";
 

@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import { ref } from "vue";
-
 import { formatPrice } from "@livrelibre/shared/format";
+import { ref } from "vue";
 
 import AppCard from "@/components/AppCard.vue";
 import AppSkeleton from "@/components/AppSkeleton.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardFooter from "@/components/CardFooter.vue";
 import CardTitle from "@/components/CardTitle.vue";
-import ErrorMessage from "@/components/ErrorMessage.vue";
 import AsideButton from "@/components/cart/AsideButton.vue";
 import AsideCartLoader from "@/components/cart/AsideCartLoader.vue";
 import CartTable from "@/components/cart/CartTable.vue";
@@ -17,20 +15,14 @@ import ErrorList from "@/components/cart/ErrorList.vue";
 import PaymentForm from "@/components/cart/PaymentForm.vue";
 import QuickAdd from "@/components/cart/QuickAdd.vue";
 import type { ISBNError } from "@/components/cart/types";
+import ErrorMessage from "@/components/ErrorMessage.vue";
 import { useTRPCQuery } from "@/utils/query";
 
-const {
-  data: cart,
-  isPending,
-  isError,
-  refetch,
-} = useTRPCQuery("cart", undefined);
+const { data: cart, isPending, isError, refetch } = useTRPCQuery("cart", undefined);
 const errors = ref<ISBNError[]>([]);
 
 const addError = (error: ISBNError) => {
-  errors.value = errors.value
-    .filter((old) => old.isbn !== error.isbn)
-    .concat(error);
+  errors.value = errors.value.filter((old) => old.isbn !== error.isbn).concat(error);
 };
 const removeError = (isbn: string) => {
   errors.value = errors.value.filter((old) => old.isbn !== isbn);
@@ -50,38 +42,10 @@ const removeError = (isbn: string) => {
       <CardBody>
         <AppSkeleton :height="150">
           <template v-for="n in 5" :key="n">
-            <rect
-              x="2%"
-              :y="(n - 1) * 30"
-              rx="2"
-              ry="2"
-              width="25%"
-              height="10"
-            />
-            <rect
-              x="32%"
-              :y="(n - 1) * 30"
-              rx="2"
-              ry="2"
-              width="25%"
-              height="10"
-            />
-            <rect
-              x="62%"
-              :y="(n - 1) * 30"
-              rx="2"
-              ry="2"
-              width="25%"
-              height="10"
-            />
-            <rect
-              x="92%"
-              :y="(n - 1) * 30"
-              rx="2"
-              ry="2"
-              width="6%"
-              height="10"
-            />
+            <rect x="2%" :y="(n - 1) * 30" rx="2" ry="2" width="25%" height="10" />
+            <rect x="32%" :y="(n - 1) * 30" rx="2" ry="2" width="25%" height="10" />
+            <rect x="62%" :y="(n - 1) * 30" rx="2" ry="2" width="25%" height="10" />
+            <rect x="92%" :y="(n - 1) * 30" rx="2" ry="2" width="6%" height="10" />
           </template>
         </AppSkeleton>
       </CardBody>
@@ -103,9 +67,7 @@ const removeError = (isbn: string) => {
       <AppCard class="max-h-full flex flex-col">
         <div class="flex items-center">
           <CardTitle :level="1" class="mr-auto">
-            Panier - {{ cart?.count }} article{{
-              (cart?.count ?? 0) > 1 ? "s" : ""
-            }}
+            Panier - {{ cart?.count }} article{{ (cart?.count ?? 0) > 1 ? "s" : "" }}
           </CardTitle>
           <QuickAdd @error="addError" />
         </div>

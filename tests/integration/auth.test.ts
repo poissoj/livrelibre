@@ -1,10 +1,9 @@
-import bcrypt from "bcrypt";
-import { sign } from "hono/jwt";
-import { beforeEach, describe, expect, it } from "vitest";
-
 import { app } from "@livrelibre/server/app";
 import { db } from "@livrelibre/server/db/database";
 import { users } from "@livrelibre/shared/schema";
+import bcrypt from "bcrypt";
+import { sign } from "hono/jwt";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { truncateAll } from "./helpers";
 
@@ -19,12 +18,8 @@ const seedUserWithPassword = async (name: string, password: string) => {
   await db.insert(users).values({ name, hash, role: "admin" });
 };
 
-const signToken = (payload: {
-  sub: string;
-  name: string;
-  role: string;
-  exp: number;
-}) => sign(payload, SECRET, ALGORITHM);
+const signToken = (payload: { sub: string; name: string; role: string; exp: number }) =>
+  sign(payload, SECRET, ALGORITHM);
 
 const exportWithCookie = (token: string) =>
   app.request("/api/export", { headers: { cookie: `livreLibre=${token}` } });

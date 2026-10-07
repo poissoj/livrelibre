@@ -1,11 +1,11 @@
+import { fileURLToPath } from "node:url";
+
+import { users } from "@livrelibre/shared/schema";
 import bcrypt from "bcrypt";
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { migrate } from "drizzle-orm/postgres-js/migrator";
-import { fileURLToPath } from "node:url";
 import postgres from "postgres";
-
-import { users } from "@livrelibre/shared/schema";
 
 import { E2E_USER } from "./e2e-user";
 import { getTestDatabaseUri } from "./test-db.mts";

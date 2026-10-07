@@ -1,15 +1,10 @@
 <script setup lang="ts">
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { formatNumber, formatPrice, formatTVA } from "@livrelibre/shared/format";
+import { PAYMENT_METHODS } from "@livrelibre/shared/sale";
 import { clsx } from "clsx";
 import { RouterLink } from "vue-router";
-
-import {
-  formatNumber,
-  formatPrice,
-  formatTVA,
-} from "@livrelibre/shared/format";
-import { PAYMENT_METHODS } from "@livrelibre/shared/sale";
 
 import type { RouterOutput } from "@/utils/trpc";
 
@@ -24,8 +19,7 @@ const TH_STYLES = "sticky top-0 bg-white";
 
 const saleAmount = (sale: Sale) => ("amount" in sale ? sale.amount : undefined);
 const saleAuthor = (sale: Sale) => ("author" in sale ? sale.author : undefined);
-const saleLinked = (sale: Sale) =>
-  "linkedToCustomer" in sale ? sale.linkedToCustomer : false;
+const saleLinked = (sale: Sale) => ("linkedToCustomer" in sale ? sale.linkedToCustomer : false);
 </script>
 
 <template>
@@ -58,11 +52,7 @@ const saleLinked = (sale: Sale) =>
         :class="clsx(sale.deleted && 'line-through italic')"
       >
         <td class="p-sm text-right font-number">
-          {{
-            saleAmount(sale) !== undefined
-              ? formatNumber(saleAmount(sale)!)
-              : ""
-          }}
+          {{ saleAmount(sale) !== undefined ? formatNumber(saleAmount(sale)!) : "" }}
         </td>
         <td class="p-sm">
           <RouterLink

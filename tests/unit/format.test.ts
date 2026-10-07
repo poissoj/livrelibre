@@ -1,11 +1,5 @@
+import { formatNumber, formatPercent, formatPrice, formatTVA } from "@livrelibre/shared/format";
 import { describe, expect, it } from "vitest";
-
-import {
-  formatNumber,
-  formatPercent,
-  formatPrice,
-  formatTVA,
-} from "@livrelibre/shared/format";
 
 // Note: these functions use `Intl.NumberFormat` with the runtime default
 // locale, so assertions on exact strings are locale-dependent. The tests below

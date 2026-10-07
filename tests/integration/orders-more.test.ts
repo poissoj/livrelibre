@@ -1,5 +1,3 @@
-import { beforeEach, describe, expect, it } from "vitest";
-
 import {
   getCustomerActiveOrders,
   getItemOrders,
@@ -8,6 +6,7 @@ import {
   newOrder,
   setCustomerNotified,
 } from "@livrelibre/server/server/orders";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { TEST_USER, seedCustomer, seedItem, truncateAll } from "./helpers";
 
@@ -30,14 +29,8 @@ describe("getItemOrders", () => {
     const item = await seedItem();
     const customer = await seedCustomer();
 
-    await newOrder(
-      { ...baseOrder, customerId: customer.id, itemId: item.id },
-      TEST_USER,
-    );
-    await newOrder(
-      { ...baseOrder, customerId: customer.id, itemId: item.id },
-      TEST_USER,
-    );
+    await newOrder({ ...baseOrder, customerId: customer.id, itemId: item.id }, TEST_USER);
+    await newOrder({ ...baseOrder, customerId: customer.id, itemId: item.id }, TEST_USER);
     await newOrder(
       {
         ...baseOrder,
@@ -61,10 +54,7 @@ describe("getCustomerActiveOrders", () => {
   it("returns only non-done orders", async () => {
     const customer = await seedCustomer();
     await newOrder({ ...baseOrder, customerId: customer.id }, TEST_USER);
-    await newOrder(
-      { ...baseOrder, customerId: customer.id, ordered: "done" },
-      TEST_USER,
-    );
+    await newOrder({ ...baseOrder, customerId: customer.id, ordered: "done" }, TEST_USER);
 
     const result = await getCustomerActiveOrders(customer.id);
     expect(result).toHaveLength(1);

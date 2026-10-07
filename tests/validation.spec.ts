@@ -2,9 +2,7 @@ import { expect, test } from "@playwright/test";
 
 import { E2E_USER } from "./e2e-user";
 
-test("affiche le message d'erreur de validation du serveur", async ({
-  page,
-}) => {
+test("affiche le message d'erreur de validation du serveur", async ({ page }) => {
   await page.goto("/login");
   await page.getByLabel("Identifiant").fill(E2E_USER.name);
   await page.getByLabel("Mot de passe").fill(E2E_USER.password);

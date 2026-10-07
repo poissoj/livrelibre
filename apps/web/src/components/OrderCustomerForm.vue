@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import {
-  faCheckCircle,
-  faTimesCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
@@ -10,11 +7,8 @@ import { toast } from "vue-sonner";
 import AppButton from "@/components/AppButton.vue";
 import AppInput from "@/components/AppInput.vue";
 import AppTextarea from "@/components/AppTextarea.vue";
+import type { CustomerFormFields, SelectedCustomer } from "@/components/customerForm";
 import FormRow from "@/components/FormRow.vue";
-import type {
-  CustomerFormFields,
-  SelectedCustomer,
-} from "@/components/customerForm";
 import { getErrorMessage } from "@/utils/errors";
 import { useTRPCMutation } from "@/utils/query";
 
@@ -29,10 +23,9 @@ const email = ref("");
 const contact = ref("");
 const comment = ref("");
 
-const { mutateAsync: createCustomer, isPending: isSubmitting } =
-  useTRPCMutation("updateCustomer", {
-    meta: { errorToast: false },
-  });
+const { mutateAsync: createCustomer, isPending: isSubmitting } = useTRPCMutation("updateCustomer", {
+  meta: { errorToast: false },
+});
 
 const submit = async () => {
   if (!fullname.value.trim()) {
@@ -79,20 +72,11 @@ const submit = async () => {
       <AppTextarea v-model="comment" />
     </FormRow>
     <div class="flex justify-end mb-4 mr-20">
-      <AppButton
-        type="button"
-        class="px-md mr-4 !bg-gray-medium"
-        @click="emit('hide')"
-      >
+      <AppButton type="button" class="px-md mr-4 !bg-gray-medium" @click="emit('hide')">
         <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
         Annuler
       </AppButton>
-      <AppButton
-        type="button"
-        class="px-md"
-        :disabled="isSubmitting"
-        @click="submit"
-      >
+      <AppButton type="button" class="px-md" :disabled="isSubmitting" @click="submit">
         <FontAwesomeIcon :icon="faCheckCircle" class="mr-sm" />
         Ajouter
       </AppButton>

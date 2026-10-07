@@ -1,13 +1,11 @@
-import { TRPCError } from "@trpc/server";
-import { eq } from "drizzle-orm";
-
 import { ERROR_CODES } from "@livrelibre/shared/errors";
 import type { BaseItem } from "@livrelibre/shared/item";
 import { items } from "@livrelibre/shared/schema";
 import { norm } from "@livrelibre/shared/utils";
-
 import { db } from "@server/db/database";
 import { isUniqueViolation } from "@server/utils/dbErrors";
+import { TRPCError } from "@trpc/server";
+import { eq } from "drizzle-orm";
 
 export const updateItem = async (
   item: BaseItem,
@@ -24,11 +22,7 @@ export const updateItem = async (
   };
   let rows: { id: number }[];
   try {
-    rows = await db
-      .update(items)
-      .set(newItem)
-      .where(eq(items.id, id))
-      .returning({ id: items.id });
+    rows = await db.update(items).set(newItem).where(eq(items.id, id)).returning({ id: items.id });
   } catch (error) {
     if (isUniqueViolation(error)) {
       throw new TRPCError({

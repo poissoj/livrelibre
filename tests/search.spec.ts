@@ -43,9 +43,7 @@ test("Recherche rapide depuis l'en-tête", async ({ page }) => {
   await expect(page.getByRole("link", { name: TITLE })).toBeVisible();
 });
 
-test("Recherche rapide par ISBN successifs met à jour l'article", async ({
-  page,
-}) => {
+test("Recherche rapide par ISBN successifs met à jour l'article", async ({ page }) => {
   await login(page);
 
   const quickSearch = page.getByPlaceholder("ISBN, titre, auteur·ice");
@@ -61,9 +59,7 @@ test("Recherche rapide par ISBN successifs met à jour l'article", async ({
   await expect(page.getByRole("heading", { name: TITLE_2 })).toBeVisible();
 });
 
-test("Recherche rapide : un ISBN trop long est tronqué à 13 chiffres", async ({
-  page,
-}) => {
+test("Recherche rapide : un ISBN trop long est tronqué à 13 chiffres", async ({ page }) => {
   await login(page);
 
   const quickSearch = page.getByPlaceholder("ISBN, titre, auteur·ice");

@@ -10,18 +10,11 @@ import { useTRPCQuery } from "@/utils/query";
 
 import BookmarksSkeleton from "./BookmarksSkeleton.vue";
 
-const {
-  data: bookmarks,
-  isPending,
-  isError,
-  refetch,
-} = useTRPCQuery("bookmarks", undefined);
+const { data: bookmarks, isPending, isError, refetch } = useTRPCQuery("bookmarks", undefined);
 </script>
 
 <template>
-  <AppCard
-    class="flex-1 max-h-full overflow-hidden flex flex-col [min-width:24rem]"
-  >
+  <AppCard class="flex-1 max-h-full overflow-hidden flex flex-col [min-width:24rem]">
     <CardTitle>Favoris</CardTitle>
     <CardBody>
       <ErrorMessage v-if="isError" :on-retry="refetch" />

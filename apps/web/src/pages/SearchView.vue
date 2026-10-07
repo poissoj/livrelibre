@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { ref } from "vue";
-import { useRouter } from "vue-router";
-
 import { formatTVA } from "@livrelibre/shared/format";
 import { ITEM_TYPES, TVAValues } from "@livrelibre/shared/item";
+import { ref } from "vue";
+import { useRouter } from "vue-router";
 
 import AppButton from "@/components/AppButton.vue";
 import AppCard from "@/components/AppCard.vue";
@@ -98,30 +97,15 @@ const onSubmit = async () => {
                 <AppTextarea v-model="comments" />
               </FormRow>
               <FormRow label="Prix de vente">
-                <AppInput
-                  v-model="price"
-                  type="number"
-                  :min="0"
-                  :step="0.01"
-                  class="font-number"
-                />
+                <AppInput v-model="price" type="number" :min="0" :step="0.01" class="font-number" />
               </FormRow>
               <FormRow label="Quantité">
-                <AppInput
-                  v-model="amount"
-                  type="number"
-                  :min="0"
-                  class="font-number"
-                />
+                <AppInput v-model="amount" type="number" :min="0" class="font-number" />
               </FormRow>
               <FormRow label="TVA">
                 <AppSelect v-model="tva" class="font-number">
                   <option value="">--ignorer--</option>
-                  <option
-                    v-for="value in TVAValues"
-                    :key="value"
-                    :value="value"
-                  >
+                  <option v-for="value in TVAValues" :key="value" :value="value">
                     {{ formatTVA(value) }}
                   </option>
                 </AppSelect>

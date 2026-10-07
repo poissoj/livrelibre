@@ -1,11 +1,10 @@
 /* Usage: pnpm --filter @livrelibre/server exec tsx src/cli/createUser.ts */
-import * as readline from "node:readline/promises";
-import bcrypt from "bcrypt";
 import { stdin as input, stdout as output } from "node:process";
+import * as readline from "node:readline/promises";
 
 import { users } from "@livrelibre/shared/schema";
-
 import { db } from "@server/db/database";
+import bcrypt from "bcrypt";
 
 const rl = readline.createInterface({ input, output });
 

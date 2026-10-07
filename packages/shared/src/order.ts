@@ -38,10 +38,7 @@ export const zOrder = z.object({
   customerNotified: z.boolean(),
   paid: z.boolean(),
   comment: z.string(),
-  nb: z
-    .number(ERROR_CODES.INVALID_NB)
-    .int(ERROR_CODES.INVALID_NB)
-    .positive(ERROR_CODES.INVALID_NB),
+  nb: z.number(ERROR_CODES.INVALID_NB).int(ERROR_CODES.INVALID_NB).positive(ERROR_CODES.INVALID_NB),
   contact: zContactMean,
 });
 

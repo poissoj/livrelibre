@@ -26,9 +26,7 @@ test("Identifiants valides", async ({ page }) => {
   await page.getByRole("button", { name: "Connexion" }).click();
   await expect(page).toHaveURL("/");
   await expect(page.getByRole("link", { name: "Livre Libre" })).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: "Se déconnecter" }),
-  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "Se déconnecter" })).toBeVisible();
 });
 
 test("Redirige un utilisateur connecté hors de /login", async ({ page }) => {

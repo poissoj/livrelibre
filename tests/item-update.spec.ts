@@ -1,9 +1,8 @@
+import { items } from "@livrelibre/shared/schema";
 import { expect, test } from "@playwright/test";
 import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-
-import { items } from "@livrelibre/shared/schema";
 
 import { E2E_USER } from "./e2e-user";
 import { getTestDatabaseUri } from "./test-db.mts";
@@ -72,7 +71,5 @@ test("met à jour un article", async ({ page }) => {
 
   await expect(page).toHaveURL(`/item/${itemId}?status=updated`);
   await expect(page.getByText(`${updatedTitle} modifié.`)).toBeVisible();
-  await expect(
-    page.getByText(updatedTitle, { exact: true }).first(),
-  ).toBeVisible();
+  await expect(page.getByText(updatedTitle, { exact: true }).first()).toBeVisible();
 });

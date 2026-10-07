@@ -1,9 +1,3 @@
-import { type Page, expect } from "@playwright/test";
-import bcrypt from "bcrypt";
-import { eq, inArray, like } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
-
 import {
   asideCart,
   cart,
@@ -16,6 +10,11 @@ import {
   users,
 } from "@livrelibre/shared/schema";
 import { norm } from "@livrelibre/shared/utils";
+import { type Page, expect } from "@playwright/test";
+import bcrypt from "bcrypt";
+import { eq, inArray, like } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 
 import { E2E_USER } from "./e2e-user";
 import { getTestDatabaseUri } from "./test-db.mts";
@@ -24,9 +23,7 @@ const databaseUrl = getTestDatabaseUri();
 
 let isbnSequence = 0;
 
-const withDb = async <T>(
-  fn: (db: ReturnType<typeof drizzle>) => Promise<T>,
-): Promise<T> => {
+const withDb = async <T>(fn: (db: ReturnType<typeof drizzle>) => Promise<T>): Promise<T> => {
   const client = postgres(databaseUrl);
   try {
     return await fn(drizzle(client));
@@ -36,8 +33,7 @@ const withDb = async <T>(
 };
 
 /** Unique, sortable prefix (leading "000" keeps seeded rows on the first page). */
-export const unique = (prefix: string): string =>
-  `000 ${prefix} ${String(Date.now())}`;
+export const unique = (prefix: string): string => `000 ${prefix} ${String(Date.now())}`;
 
 export const uniqueIsbn = (): string => {
   isbnSequence = (isbnSequence + 1) % 10;
@@ -55,9 +51,7 @@ export const login = async (
   await expect(page).toHaveURL("/");
 };
 
-export const seedItem = async (
-  overrides: Partial<typeof items.$inferInsert> = {},
-) =>
+export const seedItem = async (overrides: Partial<typeof items.$inferInsert> = {}) =>
   withDb(async (db) => {
     const author = overrides.author ?? "Auteur E2E";
     const title = overrides.title ?? "Article E2E";
@@ -136,9 +130,7 @@ export const deleteItemsByTitleLike = async (pattern: string): Promise<void> =>
     await db.delete(items).where(like(items.title, pattern));
   });
 
-export const seedCustomer = async (
-  overrides: Partial<typeof customers.$inferInsert> = {},
-) =>
+export const seedCustomer = async (overrides: Partial<typeof customers.$inferInsert> = {}) =>
   withDb(async (db) => {
     const fullname = overrides.fullname ?? "Client E2E";
     const [row] = await db
@@ -158,17 +150,13 @@ export const seedCustomer = async (
 
 export const deleteCustomer = async (id: number): Promise<void> =>
   withDb(async (db) => {
-    await db
-      .delete(selectedCustomer)
-      .where(eq(selectedCustomer.customerId, id));
+    await db.delete(selectedCustomer).where(eq(selectedCustomer.customerId, id));
     await db.delete(purchases).where(eq(purchases.customerId, id));
     await db.delete(orders).where(eq(orders.customerId, id));
     await db.delete(customers).where(eq(customers.id, id));
   });
 
-export const deleteCustomersByFullnameLike = async (
-  pattern: string,
-): Promise<void> =>
+export const deleteCustomersByFullnameLike = async (pattern: string): Promise<void> =>
   withDb(async (db) => {
     const rows = await db
       .select({ id: customers.id })
@@ -176,17 +164,13 @@ export const deleteCustomersByFullnameLike = async (
       .where(like(customers.fullname, pattern));
     const ids = rows.map((row) => row.id);
     if (ids.length === 0) return;
-    await db
-      .delete(selectedCustomer)
-      .where(inArray(selectedCustomer.customerId, ids));
+    await db.delete(selectedCustomer).where(inArray(selectedCustomer.customerId, ids));
     await db.delete(purchases).where(inArray(purchases.customerId, ids));
     await db.delete(orders).where(inArray(orders.customerId, ids));
     await db.delete(customers).where(inArray(customers.id, ids));
   });
 
-export const seedOrder = async (
-  overrides: Partial<typeof orders.$inferInsert> = {},
-) =>
+export const seedOrder = async (overrides: Partial<typeof orders.$inferInsert> = {}) =>
   withDb(async (db) => {
     const [row] = await db
       .insert(orders)
@@ -210,9 +194,7 @@ export const deleteOrder = async (id: number): Promise<void> =>
     await db.delete(orders).where(eq(orders.id, id));
   });
 
-export const seedSale = async (
-  overrides: Partial<typeof sales.$inferInsert> = {},
-) =>
+export const seedSale = async (overrides: Partial<typeof sales.$inferInsert> = {}) =>
   withDb(async (db) => {
     const [row] = await db
       .insert(sales)
@@ -270,16 +252,11 @@ export const seedCashier = async (): Promise<{
 
 export const deleteUser = async (name: string): Promise<void> =>
   withDb(async (db) => {
-    const rows = await db
-      .select({ id: users.id })
-      .from(users)
-      .where(eq(users.name, name));
+    const rows = await db.select({ id: users.id }).from(users).where(eq(users.name, name));
     const ids = rows.map((row) => row.id);
     if (ids.length === 0) return;
     await db.delete(cart).where(inArray(cart.userId, ids));
     await db.delete(asideCart).where(inArray(asideCart.userId, ids));
-    await db
-      .delete(selectedCustomer)
-      .where(inArray(selectedCustomer.userId, ids));
+    await db.delete(selectedCustomer).where(inArray(selectedCustomer.userId, ids));
     await db.delete(users).where(inArray(users.id, ids));
   });

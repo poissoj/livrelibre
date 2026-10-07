@@ -11,8 +11,7 @@ import { useTRPCQuery, useTRPCUtils } from "@/utils/query";
 
 import QuickSearch from "./QuickSearch.vue";
 
-const BUTTON_STYLES =
-  "text-white [padding:14px_16px] hover:[background-color:rgba(0,0,0,0.1)]";
+const BUTTON_STYLES = "text-white [padding:14px_16px] hover:[background-color:rgba(0,0,0,0.1)]";
 
 const { user } = useUser();
 const router = useRouter();
@@ -43,9 +42,7 @@ const logout = async () => {
       {{ APP_NAME }}
     </RouterLink>
     <QuickSearch />
-    <span :class="clsx('text-white', 'ml-md mr-sm')">{{
-      user?.name || ""
-    }}</span>
+    <span :class="clsx('text-white', 'ml-md mr-sm')">{{ user?.name || "" }}</span>
     <RouterLink
       to="/cart"
       :class="clsx(BUTTON_STYLES, 'shrink-0')"

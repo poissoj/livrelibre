@@ -25,10 +25,7 @@ const submit = () => {
       class="[padding:10px_15px] mb-2"
       :disabled="(cart?.count ?? 0) > 0 || isPending"
     >
-      <FontAwesomeIcon
-        :icon="isPending ? faSpinner : faShareSquare"
-        :spin="isPending"
-      />
+      <FontAwesomeIcon :icon="isPending ? faSpinner : faShareSquare" :spin="isPending" />
       <span class="ml-sm">Réactiver</span>
     </AppButton>
   </form>

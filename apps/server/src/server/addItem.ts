@@ -1,13 +1,11 @@
-import { TRPCError } from "@trpc/server";
-import { eq } from "drizzle-orm";
-
 import { ERROR_CODES } from "@livrelibre/shared/errors";
 import type { BaseItem } from "@livrelibre/shared/item";
 import { items as itemsTable } from "@livrelibre/shared/schema";
 import { norm } from "@livrelibre/shared/utils";
-
 import { db } from "@server/db/database";
 import { isUniqueViolation } from "@server/utils/dbErrors";
+import { TRPCError } from "@trpc/server";
+import { eq } from "drizzle-orm";
 
 const duplicateItemError = () =>
   new TRPCError({

@@ -1,7 +1,6 @@
+import { lastSales } from "@livrelibre/server/server/lastSales";
 import { format } from "date-fns";
 import { beforeEach, describe, expect, it } from "vitest";
-
-import { lastSales } from "@livrelibre/server/server/lastSales";
 
 import { seedItem, seedSale, truncateAll } from "./helpers";
 

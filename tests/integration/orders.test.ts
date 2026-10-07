@@ -1,5 +1,3 @@
-import { beforeEach, describe, expect, it } from "vitest";
-
 import {
   deleteOrder,
   getOrder,
@@ -7,6 +5,7 @@ import {
   newOrder,
   setOrder,
 } from "@livrelibre/server/server/orders";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { TEST_USER, seedCustomer, truncateAll } from "./helpers";
 
@@ -27,10 +26,7 @@ describe("orders", () => {
 
   it("newOrder creates an order and getOrders returns it with the customer", async () => {
     const customer = await seedCustomer();
-    const res = await newOrder(
-      { ...baseOrder, customerId: customer.id },
-      TEST_USER,
-    );
+    const res = await newOrder({ ...baseOrder, customerId: customer.id }, TEST_USER);
     expect(res.type).toBe("success");
 
     const orders = await getOrders(["new"]);

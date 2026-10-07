@@ -1,26 +1,17 @@
-import { TRPCError } from "@trpc/server";
-import { and, eq, inArray, sql } from "drizzle-orm";
-
 import { ERROR_CODES } from "@livrelibre/shared/errors";
 import type { DBItem, TVA } from "@livrelibre/shared/item";
 import { type PaymentType } from "@livrelibre/shared/sale";
 import { items, sales } from "@livrelibre/shared/schema";
 import { isDefined } from "@livrelibre/shared/utils";
-
 import { type User } from "@server/auth";
 import { db } from "@server/db/database";
 import { logger } from "@server/utils/logger";
+import { TRPCError } from "@trpc/server";
+import { and, eq, inArray, sql } from "drizzle-orm";
 
 type AggregatedSale = Pick<
   typeof sales.$inferSelect,
-  | "receiptId"
-  | "id"
-  | "title"
-  | "tva"
-  | "paymentType"
-  | "quantity"
-  | "deleted"
-  | "linkedToCustomer"
+  "receiptId" | "id" | "title" | "tva" | "paymentType" | "quantity" | "deleted" | "linkedToCustomer"
 > & { price: number };
 
 type ItemSale = Omit<DBItem, "price" | "type"> & {
@@ -50,13 +41,8 @@ const getCurrentDate = async () => {
   return rows[0].today;
 };
 
-export const getSalesByDay = async (
-  date: string,
-  options?: { restrictToToday?: boolean },
-) => {
-  const effectiveDate = options?.restrictToToday
-    ? await getCurrentDate()
-    : date;
+export const getSalesByDay = async (date: string, options?: { restrictToToday?: boolean }) => {
+  const effectiveDate = options?.restrictToToday ? await getCurrentDate() : date;
   const dbSales = await db
     .select({
       id: sales.id,
@@ -80,17 +66,11 @@ export const getSalesByDay = async (
     .orderBy(sales.created, sales.receiptId, sales.title);
 
   const itemIds = dbSales.map((s) => s.itemId).filter(isDefined);
-  const itemList = await db
-    .select()
-    .from(items)
-    .where(inArray(items.id, itemIds));
+  const itemList = await db.select().from(items).where(inArray(items.id, itemIds));
 
   const itemById = new Map(itemList.map((item) => [item.id, item]));
 
-  const tvaStats = new Map<
-    string,
-    { count: number; total: number; type: PaymentType }
-  >();
+  const tvaStats = new Map<string, { count: number; total: number; type: PaymentType }>();
   const paymentStats = new Map<PaymentType, { count: number; total: number }>();
   let salesCount = 0;
   let lastReceiptId = dbSales[0]?.receiptId;
@@ -174,11 +154,7 @@ export const getSalesByDay = async (
         total: tvaStat.total.toFixed(2),
       };
     })
-    .sort(
-      (a, b) =>
-        Number(b.tva) - Number(a.tva) ||
-        a.paymentType.localeCompare(b.paymentType),
-    );
+    .sort((a, b) => Number(b.tva) - Number(a.tva) || a.paymentType.localeCompare(b.paymentType));
 
   const paymentMethods = [...paymentStats.entries()]
     .map(([type, data]) => ({
@@ -215,10 +191,7 @@ export const deleteSale = async (
           ),
         );
       if (todaySales.length === 0) {
-        const existing = await tx
-          .select({ id: sales.id })
-          .from(sales)
-          .where(eq(sales.id, saleId));
+        const existing = await tx.select({ id: sales.id }).from(sales).where(eq(sales.id, saleId));
         if (existing.length > 0) {
           logger.warn("Sale deletion ignored", {
             user: user.id,

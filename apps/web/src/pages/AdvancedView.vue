@@ -7,11 +7,10 @@ import {
   faUpload,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { computed, ref } from "vue";
-import { toast } from "vue-sonner";
-
 import type { DilicomRowWithId } from "@livrelibre/shared/dilicomItem";
 import { formatNumber, formatPrice } from "@livrelibre/shared/format";
+import { computed, ref } from "vue";
+import { toast } from "vue-sonner";
 
 import AppButton from "@/components/AppButton.vue";
 import AppCard from "@/components/AppCard.vue";
@@ -54,9 +53,7 @@ const importFile = async () => {
     });
     if (!response.ok) {
       const body: unknown = await response.json().catch(() => null);
-      toast.error(
-        getRestErrorMessage(body, "Erreur lors de l'import du fichier."),
-      );
+      toast.error(getRestErrorMessage(body, "Erreur lors de l'import du fichier."));
       return;
     }
     const data = (await response.json()) as DilicomRowWithId[];
@@ -68,9 +65,7 @@ const importFile = async () => {
   }
 };
 
-const nbItems = computed(
-  () => file.value?.data.reduce((nb, row) => nb + row.QTE, 0) ?? 0,
-);
+const nbItems = computed(() => file.value?.data.reduce((nb, row) => nb + row.QTE, 0) ?? 0);
 
 const finalizeImport = async () => {
   if (!file.value) return;
@@ -143,53 +138,28 @@ const finalizeImport = async () => {
         Total: <span class="font-number">{{ formatNumber(nbItems) }}</span>
         articles
       </span>
-      <AppButton
-        type="button"
-        class="mr-2 px-md !bg-gray-medium"
-        @click="resetImport"
-      >
+      <AppButton type="button" class="mr-2 px-md !bg-gray-medium" @click="resetImport">
         <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
         Annuler
       </AppButton>
-      <AppButton
-        type="button"
-        class="px-md"
-        :disabled="isImporting"
-        @click="finalizeImport"
-      >
+      <AppButton type="button" class="px-md" :disabled="isImporting" @click="finalizeImport">
         <FontAwesomeIcon :icon="faCheckCircle" class="mr-sm" />
         Valider
       </AppButton>
     </CardFooter>
   </AppCard>
-  <div
-    v-else
-    class="[margin-left:10%] [margin-right:10%] flex flex-1 flex-col gap-lg"
-  >
+  <div v-else class="[margin-left:10%] [margin-right:10%] flex flex-1 flex-col gap-lg">
     <AppCard>
       <CardTitle>Importer un fichier DILICOM</CardTitle>
-      <form
-        class="flex flex-col w-full"
-        method="post"
-        @submit.prevent="importFile"
-      >
+      <form class="flex flex-col w-full" method="post" @submit.prevent="importFile">
         <CardBody class="flex flex-col gap-sm">
           <label>
             Fichier :
-            <input
-              type="file"
-              class="ml-2"
-              accept=".csv, .slk, .xlsx"
-              @change="onFileChange"
-            />
+            <input type="file" class="ml-2" accept=".csv, .slk, .xlsx" @change="onFileChange" />
           </label>
         </CardBody>
         <CardFooter>
-          <AppButton
-            class="px-4"
-            type="submit"
-            :disabled="isSubmitting || !hasFile"
-          >
+          <AppButton class="px-4" type="submit" :disabled="isSubmitting || !hasFile">
             <FontAwesomeIcon
               :icon="isSubmitting ? faSpinner : faUpload"
               :spin="isSubmitting"

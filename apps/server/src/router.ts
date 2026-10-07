@@ -1,19 +1,9 @@
-import { TRPCError } from "@trpc/server";
-import { z } from "zod";
-
 import { ERROR_CODES } from "@livrelibre/shared/errors";
 import { ItemTypes, TVAValues, zItem } from "@livrelibre/shared/item";
 import { zOrder, zOrderStatusArray } from "@livrelibre/shared/order";
 import { CART_ITEM_KINDS } from "@livrelibre/shared/sale";
 import { norm } from "@livrelibre/shared/utils";
-import {
-  zDateISO,
-  zId,
-  zPage,
-  zPrice,
-  zQuantity,
-} from "@livrelibre/shared/validation";
-
+import { zDateISO, zId, zPage, zPrice, zQuantity } from "@livrelibre/shared/validation";
 import { addItem } from "@server/server/addItem";
 import { getBestSales } from "@server/server/bestSales";
 import { getBookmarks, starItem } from "@server/server/bookmarks";
@@ -53,15 +43,12 @@ import {
 import { getSales } from "@server/server/sales";
 import { deleteSale, getSalesByDay } from "@server/server/salesByDay";
 import { getSalesByMonth } from "@server/server/salesByMonth";
-import {
-  advancedSearch,
-  getItem,
-  getItems,
-  searchItems,
-} from "@server/server/searchItem";
+import { advancedSearch, getItem, getItems, searchItems } from "@server/server/searchItem";
 import { getStats } from "@server/server/stats";
 import { updateItem } from "@server/server/updateItem";
 import { logger } from "@server/utils/logger";
+import { TRPCError } from "@trpc/server";
+import { z } from "zod";
 
 import { middleware, procedure, router } from "./trpc";
 
@@ -95,8 +82,7 @@ export const appRouter = router({
         .superRefine(({ search }, ctx) => {
           for (const key of ["price", "amount"] as const) {
             const value = search[key];
-            const pattern =
-              key === "price" ? /^-?\d+([.,]\d+)?$/ : /^\d+([.,]\d+)?$/;
+            const pattern = key === "price" ? /^-?\d+([.,]\d+)?$/ : /^\d+([.,]\d+)?$/;
             if (value !== "" && !pattern.test(value)) {
               ctx.addIssue({
                 code: "custom",
@@ -108,18 +94,14 @@ export const appRouter = router({
         }),
     )
     .query(async ({ input }) => await advancedSearch(input.search, input.page)),
-  asideCart: authProcedure.query(
-    async ({ ctx }) => await getAsideCart(ctx.user.id),
-  ),
+  asideCart: authProcedure.query(async ({ ctx }) => await getAsideCart(ctx.user.id)),
   bestsales: authProcedure.query(getBestSales),
   bookmarks: authProcedure.query(getBookmarks),
   cart: authProcedure.query(async ({ ctx }) => await getCart(ctx.user.id)),
   items: authProcedure
     .input(zPage)
     .query(async ({ input }) => await getItems({ pageNumber: input })),
-  customer: authProcedure
-    .input(zId)
-    .query(async ({ input }) => await getCustomer(input)),
+  customer: authProcedure.input(zId).query(async ({ input }) => await getCustomer(input)),
   customers: authProcedure
     .input(
       z.object({
@@ -136,21 +118,13 @@ export const appRouter = router({
     const customer = await getSelectedCustomer(ctx.user.id, false);
     return customer?.customerId ? await getCustomer(customer.customerId) : null;
   }),
-  order: authProcedure
-    .input(zId)
-    .query(async ({ input }) => await getOrder(input)),
-  itemOrders: authProcedure
-    .input(zId)
-    .query(async ({ input }) => await getItemOrders(input)),
-  orders: authProcedure
-    .input(zOrderStatusArray)
-    .query(async ({ input }) => await getOrders(input)),
+  order: authProcedure.input(zId).query(async ({ input }) => await getOrder(input)),
+  itemOrders: authProcedure.input(zId).query(async ({ input }) => await getItemOrders(input)),
+  orders: authProcedure.input(zOrderStatusArray).query(async ({ input }) => await getOrders(input)),
   customerOrders: authProcedure
     .input(zId)
     .query(async ({ input }) => await getCustomerActiveOrders(input)),
-  lastSales: authProcedure
-    .input(zId)
-    .query(async ({ input }) => await lastSales(input)),
+  lastSales: authProcedure.input(zId).query(async ({ input }) => await lastSales(input)),
   quicksearch: authProcedure
     .input(
       z.object({
@@ -174,9 +148,7 @@ export const appRouter = router({
       }),
     )
     .query(async ({ input }) => await getSalesByMonth(input.month, input.year)),
-  searchItem: authProcedure
-    .input(zId)
-    .query(async ({ input }) => await getItem(input)),
+  searchItem: authProcedure.input(zId).query(async ({ input }) => await getItem(input)),
   stats: authProcedure.query(getStats),
   user: procedure.query(({ ctx }) => ctx.user),
   isbnSearch: authProcedure
@@ -232,18 +204,12 @@ export const appRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       logger.info("Delete sale", { user: ctx.user, saleId: input.saleId });
-      await deleteSale(
-        input.saleId,
-        ctx.user,
-        { restrictToToday: ctx.user.role !== "admin" },
-      );
+      await deleteSale(input.saleId, ctx.user, { restrictToToday: ctx.user.role !== "admin" });
     }),
-  deleteCustomer: authProcedure
-    .input(z.object({ id: zId }))
-    .mutation(async ({ ctx, input }) => {
-      logger.info("Delete customer", { user: ctx.user, customerId: input.id });
-      return await deleteCustomer(input.id);
-    }),
+  deleteCustomer: authProcedure.input(z.object({ id: zId })).mutation(async ({ ctx, input }) => {
+    logger.info("Delete customer", { user: ctx.user, customerId: input.id });
+    return await deleteCustomer(input.id);
+  }),
   updateCustomer: authProcedure
     .input(
       z.object({
@@ -259,10 +225,7 @@ export const appRouter = router({
     )
     .mutation(async ({ input, ctx }) => {
       const nmFullname = norm(input.customer.fullname);
-      const duplicate = await customerExistsByNmFullname(
-        nmFullname,
-        input.customerId,
-      );
+      const duplicate = await customerExistsByNmFullname(nmFullname, input.customerId);
       if (duplicate) {
         throw new TRPCError({
           code: "CONFLICT",
@@ -286,12 +249,10 @@ export const appRouter = router({
         return await newCustomer(customer);
       }
     }),
-  payCart: authProcedure
-    .input(payCartSchema)
-    .mutation(async ({ input, ctx }) => {
-      logger.info("Pay cart", { user: ctx.user, paymentType: input.paymentType });
-      return await payCart(ctx.user.id, input);
-    }),
+  payCart: authProcedure.input(payCartSchema).mutation(async ({ input, ctx }) => {
+    logger.info("Pay cart", { user: ctx.user, paymentType: input.paymentType });
+    return await payCart(ctx.user.id, input);
+  }),
   putCartAside: authProcedure.mutation(async ({ ctx }) => {
     await putCartAside(ctx.user.id);
   }),
@@ -362,12 +323,10 @@ export const appRouter = router({
       logger.info("Set customer notified", { user: ctx.user, ...input });
       return await setCustomerNotified(input.orderId, input.customerNotified);
     }),
-  deleteOrder: authProcedure
-    .input(z.object({ id: zId }))
-    .mutation(async ({ ctx, input }) => {
-      logger.info("Delete order", { user: ctx.user, orderId: input.id });
-      return await deleteOrder(input.id, ctx.user);
-    }),
+  deleteOrder: authProcedure.input(z.object({ id: zId })).mutation(async ({ ctx, input }) => {
+    logger.info("Delete order", { user: ctx.user, orderId: input.id });
+    return await deleteOrder(input.id, ctx.user);
+  }),
 });
 
 export type AppRouter = typeof appRouter;

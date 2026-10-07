@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { computed, ref, watch } from "vue";
-
 import {
   ORDER_STATUS,
   type OrderRow,
@@ -10,6 +8,7 @@ import {
   zOrderStatus,
   zOrderStatusArray,
 } from "@livrelibre/shared/order";
+import { computed, ref, watch } from "vue";
 
 import AppCard from "@/components/AppCard.vue";
 import AppInput from "@/components/AppInput.vue";
@@ -18,14 +17,10 @@ import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import ItemsCard from "@/components/ItemsCard.vue";
 import LinkButton from "@/components/LinkButton.vue";
+import { filterGroups, filterOrders, groupOrdersByCustomer } from "@/components/orders/group";
+import StatusTile from "@/components/orders/StatusTile.vue";
 import OrdersTable from "@/components/OrdersTable.vue";
 import OrdersTableByCustomer from "@/components/OrdersTableByCustomer.vue";
-import StatusTile from "@/components/orders/StatusTile.vue";
-import {
-  filterGroups,
-  filterOrders,
-  groupOrdersByCustomer,
-} from "@/components/orders/group";
 import { useTRPCQuery } from "@/utils/query";
 import { useDebouncedValue } from "@/utils/useDebouncedValue";
 import { useQueryParams } from "@/utils/useQueryParams";
@@ -45,12 +40,7 @@ const getStatus = (query: string | string[] | undefined): OrderStatus[] => {
 const { query, push } = useQueryParams();
 
 const orderStatus = computed(() => getStatus(query.value.status));
-const {
-  data: ordersData,
-  isPending,
-  isError,
-  refetch,
-} = useTRPCQuery("orders", orderStatus);
+const { data: ordersData, isPending, isError, refetch } = useTRPCQuery("orders", orderStatus);
 const orderRows = computed<OrderRow[]>(() =>
   (ordersData.value ?? []).map((order) => ({
     ...order,
@@ -68,9 +58,7 @@ const updateStatus = (status: OrderStatus) => () => {
   setOrderStatus(newStatus);
 };
 
-const search = computed(() =>
-  typeof query.value.search === "string" ? query.value.search : "",
-);
+const search = computed(() => (typeof query.value.search === "string" ? query.value.search : ""));
 const searchInput = ref(search.value);
 const debouncedSearch = useDebouncedValue(searchInput, 300);
 
@@ -99,14 +87,9 @@ const cardTitle = computed(() =>
 );
 
 const groupedOrders = computed(() =>
-  filterGroups(
-    groupOrdersByCustomer(orderRows.value, invertInnerSort.value),
-    search.value,
-  ),
+  filterGroups(groupOrdersByCustomer(orderRows.value, invertInnerSort.value), search.value),
 );
-const filteredOrders = computed(() =>
-  filterOrders(orderRows.value, search.value),
-);
+const filteredOrders = computed(() => filterOrders(orderRows.value, search.value));
 </script>
 
 <template>
@@ -153,10 +136,7 @@ const filteredOrders = computed(() =>
           </div>
         </div>
         <div class="overflow-auto flex mt-2">
-          <OrdersTableByCustomer
-            v-if="groupByCustomer"
-            :items="groupedOrders"
-          />
+          <OrdersTableByCustomer v-if="groupByCustomer" :items="groupedOrders" />
           <OrdersTable v-else :items="filteredOrders" />
         </div>
       </CardBody>

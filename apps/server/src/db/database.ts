@@ -1,9 +1,7 @@
+import * as schema from "@livrelibre/shared/schema";
+import { env } from "@server/env";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-
-import * as schema from "@livrelibre/shared/schema";
-
-import { env } from "@server/env";
 
 const queryClient = postgres(env.POSTGRES_URI, {
   connection: { timezone: env.TIMEZONE },

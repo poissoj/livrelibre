@@ -8,10 +8,7 @@ const compareOrders = (reverse: boolean) => (a: Order, b: Order) => {
   return direction * (b.created.getTime() - a.created.getTime() || b.id - a.id);
 };
 
-export const groupOrdersByCustomer = (
-  orders: OrderRow[],
-  reverse: boolean,
-): CustomerOrders[] => {
+export const groupOrdersByCustomer = (orders: OrderRow[], reverse: boolean): CustomerOrders[] => {
   const groups = new Map<
     number,
     {
@@ -53,8 +50,7 @@ export const filterGroups = (orders: CustomerOrders[], search: string) =>
           norm(order.customer.name).toLowerCase().includes(norm(search)) ||
           order.orders.some(
             (o) =>
-              o.isbn?.includes(search) ||
-              norm(o.itemTitle.toLowerCase()).includes(norm(search)),
+              o.isbn?.includes(search) || norm(o.itemTitle.toLowerCase()).includes(norm(search)),
           ),
       );
 

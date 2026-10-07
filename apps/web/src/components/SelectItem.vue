@@ -1,17 +1,11 @@
 <script setup lang="ts">
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import {
-  Combobox,
-  ComboboxInput,
-  ComboboxOption,
-  ComboboxOptions,
-} from "@headlessui/vue";
+import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions } from "@headlessui/vue";
+import { formatPrice } from "@livrelibre/shared/format";
 import { keepPreviousData } from "@tanstack/vue-query";
 import { clsx } from "clsx";
 import { computed, ref } from "vue";
-
-import { formatPrice } from "@livrelibre/shared/format";
 
 import { COMMON_STYLES } from "@/components/formControls";
 import type { ItemValue, NewItem } from "@/components/selectItem";
@@ -65,9 +59,7 @@ const inputStyles = computed(() =>
         as="ul"
       >
         <li v-if="showLoading" class="px-2 py-1 text-sm italic">Chargement…</li>
-        <li v-if="isError" class="px-2 py-1 text-sm [color:#721c24]">
-          Erreur de chargement
-        </li>
+        <li v-if="isError" class="px-2 py-1 text-sm [color:#721c24]">Erreur de chargement</li>
         <ComboboxOption
           v-if="search.length > 0"
           v-slot="{ active, selected }"
@@ -76,12 +68,7 @@ const inputStyles = computed(() =>
         >
           <li
             :aria-label="`Article non répertorié : ${search}`"
-            :class="
-              clsx(
-                'px-2 flex gap-2 items-center',
-                active ? 'bg-gray-light' : 'bg-white',
-              )
-            "
+            :class="clsx('px-2 flex gap-2 items-center', active ? 'bg-gray-light' : 'bg-white')"
           >
             <span :class="!selected && 'invisible'">
               <FontAwesomeIcon :icon="faCheck" />
@@ -99,14 +86,7 @@ const inputStyles = computed(() =>
           :value="option"
           as="template"
         >
-          <li
-            :class="
-              clsx(
-                'px-2 flex gap-2 items-center',
-                active ? 'bg-gray-light' : 'bg-white',
-              )
-            "
-          >
+          <li :class="clsx('px-2 flex gap-2 items-center', active ? 'bg-gray-light' : 'bg-white')">
             <span :class="clsx(!selected && 'invisible')">
               <FontAwesomeIcon :icon="faCheck" />
             </span>

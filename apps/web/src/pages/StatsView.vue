@@ -8,29 +8,12 @@ import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import { useTRPCQuery } from "@/utils/query";
 
-const SalesByHour = defineAsyncComponent(
-  () => import("@/components/Charts/SalesByHour.vue"),
-);
-const SalesByDay = defineAsyncComponent(
-  () => import("@/components/Charts/SalesByDay.vue"),
-);
+const SalesByHour = defineAsyncComponent(() => import("@/components/Charts/SalesByHour.vue"));
+const SalesByDay = defineAsyncComponent(() => import("@/components/Charts/SalesByDay.vue"));
 
-const DAYS = [
-  "Dimanche",
-  "Lundi",
-  "Mardi",
-  "Mercredi",
-  "Jeudi",
-  "Vendredi",
-  "Samedi",
-];
+const DAYS = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
 
-const {
-  data: stats,
-  isPending,
-  isError,
-  refetch,
-} = useTRPCQuery("stats", undefined);
+const { data: stats, isPending, isError, refetch } = useTRPCQuery("stats", undefined);
 
 const days = computed(() =>
   (stats.value?.days ?? []).map(({ day, count }) => ({
@@ -47,12 +30,7 @@ const days = computed(() =>
       <CardTitle>Nombre de ventes par heure</CardTitle>
       <CardBody class="[width:900px]">
         <ErrorMessage v-if="isError" :on-retry="refetch" />
-        <ContentLoader
-          v-else-if="isPending"
-          viewBox="0 0 900 320"
-          :width="900"
-          :height="320"
-        >
+        <ContentLoader v-else-if="isPending" viewBox="0 0 900 320" :width="900" :height="320">
           <rect :x="84" :y="257" :width="53" :height="33" />
           <rect :x="151" :y="137" :width="53" :height="153" />
           <rect :x="218" :y="3" :width="53" :height="287" />
@@ -72,12 +50,7 @@ const days = computed(() =>
       <CardTitle>Nombre de ventes par jour</CardTitle>
       <CardBody class="[width:900px] justify-center">
         <ErrorMessage v-if="isError" :on-retry="refetch" />
-        <ContentLoader
-          v-else-if="isPending"
-          viewBox="0 0 800 300"
-          :width="800"
-          :height="300"
-        >
+        <ContentLoader v-else-if="isPending" viewBox="0 0 800 300" :width="800" :height="300">
           <rect :x="16" :y="11" :width="90" :height="254" />
           <rect :x="129" :y="217" :width="90" :height="48" />
           <rect :x="242" :y="121" :width="90" :height="144" />

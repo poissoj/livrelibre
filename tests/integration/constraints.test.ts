@@ -1,17 +1,9 @@
+import { db } from "@livrelibre/server/db/database";
+import { asideCart, cart, items, sales } from "@livrelibre/shared/schema";
 import { eq } from "drizzle-orm";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { db } from "@livrelibre/server/db/database";
-import { asideCart, cart, items, sales } from "@livrelibre/shared/schema";
-
-import {
-  seedCustomer,
-  seedItem,
-  seedOrder,
-  seedSale,
-  seedUser,
-  truncateAll,
-} from "./helpers";
+import { seedCustomer, seedItem, seedOrder, seedSale, seedUser, truncateAll } from "./helpers";
 
 describe("check constraints", () => {
   beforeEach(truncateAll);
@@ -54,9 +46,7 @@ describe("check constraints", () => {
 
   it("rejects a non-positive order quantity", async () => {
     const customer = await seedCustomer();
-    await expect(
-      seedOrder({ customerId: customer.id, nb: 0 }),
-    ).rejects.toThrow();
+    await expect(seedOrder({ customerId: customer.id, nb: 0 })).rejects.toThrow();
   });
 });
 

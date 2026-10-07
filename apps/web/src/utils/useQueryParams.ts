@@ -11,9 +11,7 @@ export function useQueryParams() {
     const result: Record<string, string | string[]> = {};
     for (const [key, value] of Object.entries(route.query)) {
       if (value === null) continue;
-      result[key] = Array.isArray(value)
-        ? value.filter((v): v is string => v !== null)
-        : value;
+      result[key] = Array.isArray(value) ? value.filter((v): v is string => v !== null) : value;
     }
     return result;
   });

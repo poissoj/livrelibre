@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import {
-  faCheckCircle,
-  faTimesCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
@@ -13,10 +10,10 @@ import AppSkeleton from "@/components/AppSkeleton.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
+import type { FormFields } from "@/components/itemForm";
 import ItemForm from "@/components/ItemForm.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import NoResults from "@/components/NoResults.vue";
-import type { FormFields } from "@/components/itemForm";
 import { useTRPCMutation, useTRPCQuery, useTRPCUtils } from "@/utils/query";
 
 const CARD_TITLE = "Modifier un article";
@@ -26,12 +23,7 @@ const router = useRouter();
 const utils = useTRPCUtils();
 const id = computed(() => Number(route.params.itemId));
 
-const {
-  data: item,
-  isPending,
-  isError,
-  refetch,
-} = useTRPCQuery("searchItem", id);
+const { data: item, isPending, isError, refetch } = useTRPCQuery("searchItem", id);
 const { mutateAsync: updateItem } = useTRPCMutation("updateItem", {
   meta: { errorToast: false },
 });
@@ -71,38 +63,10 @@ const formData = computed<FormFields | undefined>(() => {
       <CardBody>
         <AppSkeleton :height="410">
           <template v-for="n in 7" :key="n">
-            <rect
-              x="5%"
-              :y="(n - 1) * 50"
-              rx="2"
-              ry="2"
-              width="12%"
-              height="30"
-            />
-            <rect
-              x="20%"
-              :y="(n - 1) * 50"
-              rx="2"
-              ry="2"
-              width="30%"
-              height="30"
-            />
-            <rect
-              x="53%"
-              :y="(n - 1) * 50"
-              rx="2"
-              ry="2"
-              width="12%"
-              height="30"
-            />
-            <rect
-              x="68%"
-              :y="(n - 1) * 50"
-              rx="2"
-              ry="2"
-              width="30%"
-              height="30"
-            />
+            <rect x="5%" :y="(n - 1) * 50" rx="2" ry="2" width="12%" height="30" />
+            <rect x="20%" :y="(n - 1) * 50" rx="2" ry="2" width="30%" height="30" />
+            <rect x="53%" :y="(n - 1) * 50" rx="2" ry="2" width="12%" height="30" />
+            <rect x="68%" :y="(n - 1) * 50" rx="2" ry="2" width="30%" height="30" />
           </template>
         </AppSkeleton>
       </CardBody>
@@ -114,10 +78,7 @@ const formData = computed<FormFields | undefined>(() => {
       </CardBody>
     </AppCard>
     <ItemForm v-else :title="CARD_TITLE" :data="formData" :on-submit="submit">
-      <LinkButton
-        :to="`/item/${String(id)}`"
-        class="mr-2 px-md !bg-gray-medium"
-      >
+      <LinkButton :to="`/item/${String(id)}`" class="mr-2 px-md !bg-gray-medium">
         <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
         Retour
       </LinkButton>

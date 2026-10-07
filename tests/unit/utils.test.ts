@@ -1,6 +1,5 @@
-import { describe, expect, it } from "vitest";
-
 import { isDefined, isIn, norm, sanitize } from "@livrelibre/shared/utils";
+import { describe, expect, it } from "vitest";
 
 describe("norm", () => {
   it("removes diacritics", () => {

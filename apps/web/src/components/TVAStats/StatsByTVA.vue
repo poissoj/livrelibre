@@ -1,12 +1,7 @@
 <script setup lang="ts">
-import { clsx } from "clsx";
-
-import {
-  formatNumber,
-  formatPrice,
-  formatTVA,
-} from "@livrelibre/shared/format";
+import { formatNumber, formatPrice, formatTVA } from "@livrelibre/shared/format";
 import { PAYMENT_METHODS } from "@livrelibre/shared/sale";
+import { clsx } from "clsx";
 
 import type { RouterOutput } from "@/utils/trpc";
 
@@ -24,9 +19,7 @@ const TH_STYLES = "sticky top-0 bg-white";
     </caption>
     <thead>
       <tr>
-        <th scope="col" :class="clsx(TH_STYLES, 'text-left')">
-          Type de paiement
-        </th>
+        <th scope="col" :class="clsx(TH_STYLES, 'text-left')">Type de paiement</th>
         <th scope="col" :class="clsx(TH_STYLES, 'text-right')">TVA</th>
         <th scope="col" :class="clsx(TH_STYLES, 'text-right')">Quantité</th>
         <th scope="col" :class="clsx(TH_STYLES, 'text-right')">Total</th>

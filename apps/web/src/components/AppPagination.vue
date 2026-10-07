@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import {
-  faChevronLeft,
-  faChevronRight,
-} from "@fortawesome/free-solid-svg-icons";
+import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { computed } from "vue";
 import { RouterLink } from "vue-router";
@@ -11,8 +8,7 @@ import { usePageParam, useQueryParams } from "@/utils/useQueryParams";
 
 const props = defineProps<{ count: number }>();
 
-const LINK_STYLES =
-  "border px-md py-sm text-primary-darker [border-color:#AAA]";
+const LINK_STYLES = "border px-md py-sm text-primary-darker [border-color:#AAA]";
 
 const range = (start: number, end: number) => {
   const length = end - start + 1;
@@ -55,12 +51,7 @@ const pageList = computed(() => createPageList(page.value, props.count));
   <nav :aria-label="`Pagination, page ${page} sur ${props.count}`">
     <ol class="flex">
       <li>
-        <RouterLink
-          v-if="page > 1"
-          v-slot="{ href, navigate }"
-          :to="makeHref(page - 1)"
-          custom
-        >
+        <RouterLink v-if="page > 1" v-slot="{ href, navigate }" :to="makeHref(page - 1)" custom>
           <a
             :href="href"
             :class="[LINK_STYLES, 'rounded-l-md']"
@@ -78,25 +69,13 @@ const pageList = computed(() => createPageList(page.value, props.count));
       <li v-for="n in pageList" :key="n">
         <span
           v-if="n === page"
-          :class="
-            LINK_STYLES + ' text-white bg-primary-darker border-primary-darker'
-          "
+          :class="LINK_STYLES + ' text-white bg-primary-darker border-primary-darker'"
           aria-current="page"
         >
           {{ n }}
         </span>
-        <RouterLink
-          v-else-if="n > 0"
-          v-slot="{ href, navigate }"
-          :to="makeHref(n)"
-          custom
-        >
-          <a
-            :href="href"
-            :class="LINK_STYLES"
-            :aria-label="`Page ${n}`"
-            @click="navigate"
-          >
+        <RouterLink v-else-if="n > 0" v-slot="{ href, navigate }" :to="makeHref(n)" custom>
+          <a :href="href" :class="LINK_STYLES" :aria-label="`Page ${n}`" @click="navigate">
             {{ n }}
           </a>
         </RouterLink>

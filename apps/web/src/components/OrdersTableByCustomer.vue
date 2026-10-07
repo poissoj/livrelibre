@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { computed } from "vue";
-
 import type { CustomerOrders } from "@livrelibre/shared/order";
+import { computed } from "vue";
 
 import { useQueryParams } from "@/utils/useQueryParams";
 
@@ -15,9 +14,7 @@ const { query } = useQueryParams();
 const sortBy = computed(() =>
   typeof query.value.sortBy === "string" ? query.value.sortBy : DEFAULT_SORTBY,
 );
-const sortedItems = computed(() =>
-  props.items.toSorted(sortGroups(sortBy.value)),
-);
+const sortedItems = computed(() => props.items.toSorted(sortGroups(sortBy.value)));
 </script>
 
 <template>

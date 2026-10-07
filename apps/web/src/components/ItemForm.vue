@@ -1,18 +1,12 @@
 <script setup lang="ts">
 import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { ref } from "vue";
-import { toast } from "vue-sonner";
-
 import type { BookData } from "@livrelibre/server/utils/getBookData";
 import { formatDate } from "@livrelibre/shared/date";
 import { formatTVA } from "@livrelibre/shared/format";
-import {
-  ITEM_TYPES,
-  type ItemType,
-  type TVA,
-  TVAValues,
-} from "@livrelibre/shared/item";
+import { ITEM_TYPES, type ItemType, type TVA, TVAValues } from "@livrelibre/shared/item";
+import { ref } from "vue";
+import { toast } from "vue-sonner";
 
 import AppAlert from "@/components/AppAlert.vue";
 import AppCard from "@/components/AppCard.vue";
@@ -84,8 +78,7 @@ const buildPayload = (): FormFields => ({
 
 const submit = async () => {
   try {
-    const { type: resultType, msg: message } =
-      await props.onSubmit(buildPayload());
+    const { type: resultType, msg: message } = await props.onSubmit(buildPayload());
     alert.value = { type: resultType, message };
     if (resultType === "success" && props.data === undefined) {
       reset();
@@ -133,11 +126,7 @@ const isbnHandler = async () => {
           <div class="flex-1 [min-width:20rem] ml-md">
             <FormRow label="Type">
               <AppSelect v-model="type">
-                <option
-                  v-for="[key, label] in Object.entries(ITEM_TYPES)"
-                  :key="key"
-                  :value="key"
-                >
+                <option v-for="[key, label] in Object.entries(ITEM_TYPES)" :key="key" :value="key">
                   {{ label }}
                 </option>
               </AppSelect>
@@ -186,21 +175,10 @@ const isbnHandler = async () => {
               <AppTextarea v-model="comments" />
             </FormRow>
             <FormRow label="Prix de vente">
-              <AppInput
-                v-model="price"
-                type="number"
-                :step="0.01"
-                required
-                class="font-number"
-              />
+              <AppInput v-model="price" type="number" :step="0.01" required class="font-number" />
             </FormRow>
             <FormRow label="Quantité">
-              <AppInput
-                v-model="amount"
-                type="number"
-                :min="0"
-                class="font-number"
-              />
+              <AppInput v-model="amount" type="number" :min="0" class="font-number" />
             </FormRow>
             <FormRow label="TVA">
               <AppSelect v-model="tva" class="font-number">

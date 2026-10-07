@@ -81,10 +81,7 @@ const cartItemColumns = () => ({
     .references(() => users.id),
 });
 
-const cartIndexes = (
-  table: { itemId: AnyPgColumn; userId: AnyPgColumn },
-  prefix: string,
-) => [
+const cartIndexes = (table: { itemId: AnyPgColumn; userId: AnyPgColumn }, prefix: string) => [
   index(`${prefix}_userId_idx`).on(table.userId),
   uniqueIndex(`${prefix}_item_user_unique`)
     .on(table.itemId, table.userId)
@@ -135,9 +132,7 @@ export const sales = pgTable(
     price: numeric("price", { precision: 12, scale: 2 }).notNull(),
     quantity: integer("quantity").notNull(),
     title: varchar("title"),
-    created: timestamp("created", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
+    created: timestamp("created", { withTimezone: true }).notNull().defaultNow(),
     tva: tvaEnum("tva").notNull(),
     linkedToCustomer: boolean("linkedToCustomer").notNull(),
     itemId: integer("itemId").references(() => items.id),
@@ -165,11 +160,7 @@ export const customers = pgTable(
     email: varchar("email"),
     comment: varchar("comment").notNull(),
   },
-  (table) => [
-    uniqueIndex("customers_nmFullname_unique").on(
-      sql`lower(${table.nmFullname})`,
-    ),
-  ],
+  (table) => [uniqueIndex("customers_nmFullname_unique").on(sql`lower(${table.nmFullname})`)],
 );
 
 export const purchases = pgTable(
@@ -203,9 +194,7 @@ export const orders = pgTable(
   "orders",
   {
     id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-    created: timestamp("created", { withTimezone: true })
-      .notNull()
-      .defaultNow(),
+    created: timestamp("created", { withTimezone: true }).notNull().defaultNow(),
     customerId: integer("customerId")
       .notNull()
       .references(() => customers.id),

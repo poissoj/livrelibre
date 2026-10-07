@@ -12,9 +12,7 @@ test.afterAll(async () => {
   await deleteSalesByTitleLike(`${TITLE}%`);
 });
 
-test("Ventes, ventes du jour, statistiques et meilleures ventes", async ({
-  page,
-}) => {
+test("Ventes, ventes du jour, statistiques et meilleures ventes", async ({ page }) => {
   await seedSale({ title: TITLE });
   await login(page);
 
@@ -25,27 +23,17 @@ test("Ventes, ventes du jour, statistiques et meilleures ventes", async ({
   ).toBeVisible();
   await page.getByRole("row").nth(1).click();
   await expect(page).toHaveURL(/\/sale\/\d{4}\/\d{2}$/);
-  await expect(
-    page.getByRole("heading", { name: "Répartition par TVA" }),
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Répartition par TVA" })).toBeVisible();
 
   await page.goto("/todaySales");
-  await expect(
-    page.getByText("Répartition par type de paiement"),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("columnheader", { name: "Panier", exact: true }),
-  ).toBeVisible();
-  await expect(
-    page.getByRole("button", { name: "Supprimer la vente" }).first(),
-  ).toBeVisible();
+  await expect(page.getByText("Répartition par type de paiement")).toBeVisible();
+  await expect(page.getByRole("columnheader", { name: "Panier", exact: true })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Supprimer la vente" }).first()).toBeVisible();
 
   await page.goto("/stats");
   await expect(page.getByText("Nombre de ventes par heure")).toBeVisible();
   await expect(page.getByText("Nombre de ventes par jour")).toBeVisible();
 
   await page.goto("/best-sales");
-  await expect(
-    page.getByRole("heading", { name: "Meilleures ventes" }),
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Meilleures ventes" })).toBeVisible();
 });

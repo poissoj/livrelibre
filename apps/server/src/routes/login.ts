@@ -1,15 +1,13 @@
-import bcrypt from "bcrypt";
-import { eq } from "drizzle-orm";
-import type { Context } from "hono";
-import { z } from "zod";
-
 import { ERROR_CODES } from "@livrelibre/shared/errors";
 import { users } from "@livrelibre/shared/schema";
-
 import { setSessionCookie } from "@server/auth";
 import { db } from "@server/db/database";
 import { logError } from "@server/utils/logError";
 import { logger } from "@server/utils/logger";
+import bcrypt from "bcrypt";
+import { eq } from "drizzle-orm";
+import type { Context } from "hono";
+import { z } from "zod";
 
 const credentialsSchema = z.object({
   username: z.string(),

@@ -1,15 +1,7 @@
-import { sql } from "drizzle-orm";
-
 import { db } from "@livrelibre/server/db/database";
-import {
-  customers,
-  items,
-  orders,
-  sales,
-  users,
-} from "@livrelibre/shared/schema";
-
+import { customers, items, orders, sales, users } from "@livrelibre/shared/schema";
 import { type User } from "@server/auth";
+import { sql } from "drizzle-orm";
 
 import { getTestDatabaseUri } from "../test-db.mts";
 
@@ -26,9 +18,7 @@ export const truncateAll = async () => {
   );
 };
 
-export const seedUser = async (
-  overrides: Partial<typeof users.$inferInsert> = {},
-) => {
+export const seedUser = async (overrides: Partial<typeof users.$inferInsert> = {}) => {
   const rows = await db
     .insert(users)
     .values({
@@ -41,9 +31,7 @@ export const seedUser = async (
   return rows[0];
 };
 
-export const seedItem = async (
-  overrides: Partial<typeof items.$inferInsert> = {},
-) => {
+export const seedItem = async (overrides: Partial<typeof items.$inferInsert> = {}) => {
   const rows = await db
     .insert(items)
     .values({
@@ -70,9 +58,7 @@ export const seedItem = async (
   return rows[0];
 };
 
-export const seedCustomer = async (
-  overrides: Partial<typeof customers.$inferInsert> = {},
-) => {
+export const seedCustomer = async (overrides: Partial<typeof customers.$inferInsert> = {}) => {
   const rows = await db
     .insert(customers)
     .values({
@@ -88,9 +74,7 @@ export const seedCustomer = async (
   return rows[0];
 };
 
-export const seedOrder = async (
-  overrides: Partial<typeof orders.$inferInsert> = {},
-) => {
+export const seedOrder = async (overrides: Partial<typeof orders.$inferInsert> = {}) => {
   const rows = await db
     .insert(orders)
     .values({
@@ -108,9 +92,7 @@ export const seedOrder = async (
   return rows[0];
 };
 
-export const seedSale = async (
-  overrides: Partial<typeof sales.$inferInsert> = {},
-) => {
+export const seedSale = async (overrides: Partial<typeof sales.$inferInsert> = {}) => {
   const rows = await db
     .insert(sales)
     .values({

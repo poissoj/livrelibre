@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { RouterLink } from "vue-router";
-
 import { formatNumber } from "@livrelibre/shared/format";
 import type { Item } from "@livrelibre/shared/item";
+import { RouterLink } from "vue-router";
 
 import AddToCartButton from "./AddToCartButton.vue";
 

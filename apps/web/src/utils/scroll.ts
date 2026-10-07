@@ -3,10 +3,7 @@ import { onBeforeRouteLeave, useRoute } from "vue-router";
 
 const saveScrollPos = (path: string, elt: HTMLElement | null) => {
   if (!elt) return;
-  sessionStorage.setItem(
-    `scrollPos:${path}`,
-    JSON.stringify({ top: elt.scrollTop }),
-  );
+  sessionStorage.setItem(`scrollPos:${path}`, JSON.stringify({ top: elt.scrollTop }));
 };
 
 const restoreScrollPos = (path: string, elt: HTMLElement | null) => {

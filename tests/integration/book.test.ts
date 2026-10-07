@@ -1,12 +1,11 @@
-import bcrypt from "bcrypt";
 import { type Server, createServer } from "node:http";
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { app } from "@livrelibre/server/app";
 import { db } from "@livrelibre/server/db/database";
 import { users } from "@livrelibre/shared/schema";
-
 import { env } from "@server/env";
+import bcrypt from "bcrypt";
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
 
 import { truncateAll } from "./helpers";
 
@@ -65,10 +64,7 @@ afterAll(async () => {
 
 const seedUserWithPassword = async (name: string, password: string) => {
   const hash = await bcrypt.hash(password, 4);
-  const rows = await db
-    .insert(users)
-    .values({ name, hash, role: "admin" })
-    .returning();
+  const rows = await db.insert(users).values({ name, hash, role: "admin" }).returning();
   return rows[0];
 };
 

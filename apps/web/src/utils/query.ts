@@ -5,13 +5,7 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/vue-query";
-import {
-  type ComputedRef,
-  type MaybeRefOrGetter,
-  type Ref,
-  computed,
-  toValue,
-} from "vue";
+import { type ComputedRef, type MaybeRefOrGetter, type Ref, computed, toValue } from "vue";
 
 import { type RouterInput, type RouterOutput, trpcClient } from "./trpc";
 
@@ -20,9 +14,7 @@ type ProcedureName = keyof RouterInput;
 type QueryCaller = { query: (input: unknown) => Promise<unknown> };
 type MutateCaller = { mutate: (input: unknown) => Promise<unknown> };
 
-type ExtraQueryOptions<K extends ProcedureName> = Partial<
-  UseQueryOptions<RouterOutput[K]>
->;
+type ExtraQueryOptions<K extends ProcedureName> = Partial<UseQueryOptions<RouterOutput[K]>>;
 
 type ReactiveQueryInput<T> =
   | Ref<T>
@@ -35,15 +27,11 @@ export const trpcKey = <K extends ProcedureName>(
   input: RouterInput[K],
 ): readonly [K, RouterInput[K]] => [path, input];
 
-export const trpcQueryOptions = <K extends ProcedureName>(
-  path: K,
-  input: RouterInput[K],
-) => {
+export const trpcQueryOptions = <K extends ProcedureName>(path: K, input: RouterInput[K]) => {
   const caller = trpcClient[path] as unknown as QueryCaller;
   return {
     queryKey: trpcKey(path, input),
-    queryFn: (): Promise<RouterOutput[K]> =>
-      caller.query(input) as Promise<RouterOutput[K]>,
+    queryFn: (): Promise<RouterOutput[K]> => caller.query(input) as Promise<RouterOutput[K]>,
   };
 };
 
@@ -76,8 +64,7 @@ export const useTRPCMutation = <K extends ProcedureName>(
 const invalidationKey = (
   path: ProcedureName,
   input: unknown,
-): [ProcedureName] | [ProcedureName, unknown] =>
-  input === undefined ? [path] : [path, input];
+): [ProcedureName] | [ProcedureName, unknown] => (input === undefined ? [path] : [path, input]);
 
 export const useTRPCUtils = () => {
   const queryClient = useQueryClient();
@@ -86,8 +73,7 @@ export const useTRPCUtils = () => {
       queryClient.invalidateQueries({
         queryKey: invalidationKey(path, input),
       }),
-    reset: (path: ProcedureName) =>
-      queryClient.resetQueries({ queryKey: [path] }),
+    reset: (path: ProcedureName) => queryClient.resetQueries({ queryKey: [path] }),
     fetch: <K extends ProcedureName>(path: K, input: RouterInput[K]) =>
       queryClient.query(trpcQueryOptions(path, input)),
     setData: <K extends ProcedureName>(
@@ -95,9 +81,7 @@ export const useTRPCUtils = () => {
       input: RouterInput[K],
       updater:
         | RouterOutput[K]
-        | ((
-            oldData: RouterOutput[K] | undefined,
-          ) => RouterOutput[K] | undefined),
+        | ((oldData: RouterOutput[K] | undefined) => RouterOutput[K] | undefined),
     ) => queryClient.setQueryData(trpcKey(path, input), updater),
     clear: () => {
       queryClient.clear();

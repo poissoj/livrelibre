@@ -8,11 +8,7 @@ const props = defineProps<{ href: string; icon: IconDefinition }>();
 </script>
 
 <template>
-  <RouterLink
-    v-slot="{ href: resolvedHref, navigate, isExactActive }"
-    :to="props.href"
-    custom
-  >
+  <RouterLink v-slot="{ href: resolvedHref, navigate, isExactActive }" :to="props.href" custom>
     <a
       :href="resolvedHref"
       :aria-current="isExactActive ? 'page' : undefined"

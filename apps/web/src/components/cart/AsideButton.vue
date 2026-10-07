@@ -6,10 +6,7 @@ import AppButton from "@/components/AppButton.vue";
 import { useTRPCMutation, useTRPCQuery, useTRPCUtils } from "@/utils/query";
 
 const utils = useTRPCUtils();
-const { data: asideCart, isSuccess: asideCartSuccess } = useTRPCQuery(
-  "asideCart",
-  undefined,
-);
+const { data: asideCart, isSuccess: asideCartSuccess } = useTRPCQuery("asideCart", undefined);
 const { mutate, isPending } = useTRPCMutation("putCartAside", {
   onSuccess() {
     void Promise.all([utils.invalidate("cart"), utils.invalidate("asideCart")]);
@@ -29,10 +26,7 @@ const submit = () => {
       value="put-aside"
       :disabled="isPending || (asideCart?.count ?? 0) > 0"
     >
-      <FontAwesomeIcon
-        :icon="isPending ? faSpinner : faHourglassStart"
-        :spin="isPending"
-      />
+      <FontAwesomeIcon :icon="isPending ? faSpinner : faHourglassStart" :spin="isPending" />
       <span class="ml-sm">Mettre de côté</span>
     </AppButton>
   </form>

@@ -1,5 +1,3 @@
-import { beforeEach, describe, expect, it } from "vitest";
-
 import {
   addNewItemToCart,
   addToCart,
@@ -8,6 +6,7 @@ import {
   putCartAside,
   reactivateCart,
 } from "@livrelibre/server/server/cart";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { seedItem, seedUser, truncateAll } from "./helpers";
 
@@ -60,10 +59,7 @@ describe("aside cart", () => {
     const itemB = await seedItem({ isbn: "9780000000002", amount: 5 });
     await addToCart(user.id, itemA.id);
 
-    await Promise.allSettled([
-      putCartAside(user.id),
-      addToCart(user.id, itemB.id),
-    ]);
+    await Promise.allSettled([putCartAside(user.id), addToCart(user.id, itemB.id)]);
 
     const cartData = await getCart(user.id);
     const asideData = await getAsideCart(user.id);

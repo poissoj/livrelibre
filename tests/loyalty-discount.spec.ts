@@ -1,8 +1,3 @@
-import { expect, test } from "@playwright/test";
-import { eq, inArray, like } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/postgres-js";
-import postgres from "postgres";
-
 import {
   cart,
   customers,
@@ -11,6 +6,10 @@ import {
   selectedCustomer,
   users,
 } from "@livrelibre/shared/schema";
+import { expect, test } from "@playwright/test";
+import { eq, inArray, like } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
 
 import { E2E_USER } from "./e2e-user";
 import { getTestDatabaseUri } from "./test-db.mts";
@@ -32,9 +31,7 @@ test.beforeAll(async () => {
   const userId = userRows[0]?.id;
   if (userId) {
     await db.delete(cart).where(eq(cart.userId, userId));
-    await db
-      .delete(selectedCustomer)
-      .where(eq(selectedCustomer.userId, userId));
+    await db.delete(selectedCustomer).where(eq(selectedCustomer.userId, userId));
   }
 
   // Remove leftovers from previous runs so the combobox stays unambiguous.
@@ -44,9 +41,7 @@ test.beforeAll(async () => {
     .where(like(customers.fullname, `${customerName}%`));
   const staleIds = stale.map((row) => row.id);
   if (staleIds.length > 0) {
-    await db
-      .delete(selectedCustomer)
-      .where(inArray(selectedCustomer.customerId, staleIds));
+    await db.delete(selectedCustomer).where(inArray(selectedCustomer.customerId, staleIds));
     await db.delete(purchases).where(inArray(purchases.customerId, staleIds));
     await db.delete(customers).where(inArray(customers.id, staleIds));
   }
@@ -106,9 +101,7 @@ test.afterAll(async () => {
   const userId = userRows[0]?.id;
   if (userId) {
     await db.delete(cart).where(eq(cart.userId, userId));
-    await db
-      .delete(selectedCustomer)
-      .where(eq(selectedCustomer.userId, userId));
+    await db.delete(selectedCustomer).where(eq(selectedCustomer.userId, userId));
   }
   if (customerId != null) {
     await db.delete(purchases).where(eq(purchases.customerId, customerId));

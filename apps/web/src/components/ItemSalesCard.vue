@@ -10,16 +10,9 @@ import { useTRPCQuery } from "@/utils/query";
 
 const props = defineProps<{ id: number }>();
 
-const SalesByMonth = defineAsyncComponent(
-  () => import("@/components/Charts/SalesByMonth.vue"),
-);
+const SalesByMonth = defineAsyncComponent(() => import("@/components/Charts/SalesByMonth.vue"));
 
-const {
-  data: sales,
-  isPending,
-  isError,
-  refetch,
-} = useTRPCQuery("lastSales", () => props.id);
+const { data: sales, isPending, isError, refetch } = useTRPCQuery("lastSales", () => props.id);
 </script>
 
 <template>

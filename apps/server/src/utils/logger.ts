@@ -1,6 +1,5 @@
-import { createLogger, format, transports } from "winston";
-
 import { env } from "@server/env";
+import { createLogger, format, transports } from "winston";
 
 const isProduction = env.NODE_ENV === "production";
 
@@ -22,8 +21,7 @@ const devFormat = format.combine(
     delete meta.level;
     delete meta.message;
     delete meta.stack;
-    const extra =
-      Object.keys(meta).length > 0 ? ` ${JSON.stringify(meta)}` : "";
+    const extra = Object.keys(meta).length > 0 ? ` ${JSON.stringify(meta)}` : "";
     const trace = stack ? `\n${stack}` : "";
     return `${String(timestamp)} ${level}: ${String(message)}${extra}${trace}`;
   }),

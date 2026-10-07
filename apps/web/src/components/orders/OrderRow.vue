@@ -1,16 +1,10 @@
 <script setup lang="ts">
-import {
-  faAt,
-  faInfoCircle,
-  faPersonWalking,
-  faPhone,
-} from "@fortawesome/free-solid-svg-icons";
+import { faAt, faInfoCircle, faPersonWalking, faPhone } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { clsx } from "clsx";
-import { RouterLink, useRouter } from "vue-router";
-
 import { formatDateFR } from "@livrelibre/shared/date";
 import type { OrderRow } from "@livrelibre/shared/order";
+import { clsx } from "clsx";
+import { RouterLink, useRouter } from "vue-router";
 
 import StatusCircle from "@/components/StatusCircle.vue";
 import { useQueryParams } from "@/utils/useQueryParams";
@@ -53,20 +47,13 @@ const stopPropagation = (event: MouseEvent) => {
         </template>
       </div>
     </td>
-    <td
-      :class="clsx('w-2', { 'bg-[rgba(245,0,0,0.5)]': props.item.paid })"
-    ></td>
+    <td :class="clsx('w-2', { 'bg-[rgba(245,0,0,0.5)]': props.item.paid })"></td>
     <td class="p-2">
       <div class="leading-4">
-        <RouterLink
-          :to="{ path: `/order/${String(props.item.id)}`, query }"
-          @click.stop
-        >
+        <RouterLink :to="{ path: `/order/${String(props.item.id)}`, query }" @click.stop>
           {{ props.item.itemTitle }}
         </RouterLink>
-        <span v-if="props.item.nb > 1" class="font-bold ml-2">
-          ({{ props.item.nb }} ex)
-        </span>
+        <span v-if="props.item.nb > 1" class="font-bold ml-2"> ({{ props.item.nb }} ex) </span>
       </div>
       <div class="italic font-number leading-5">{{ props.item.isbn }}</div>
     </td>
@@ -78,12 +65,7 @@ const stopPropagation = (event: MouseEvent) => {
       <NotifiedCheckbox :order="props.item" />
     </td>
     <td class="p-1 text-center">
-      <input
-        type="checkbox"
-        aria-label="Payé"
-        disabled
-        :checked="props.item.paid"
-      />
+      <input type="checkbox" aria-label="Payé" disabled :checked="props.item.paid" />
     </td>
     <td class="p-1">
       <span
@@ -92,11 +74,7 @@ const stopPropagation = (event: MouseEvent) => {
         :aria-label="props.item.comment"
         :title="props.item.comment"
       >
-        <FontAwesomeIcon
-          :icon="faInfoCircle"
-          size="lg"
-          :style="{ color: '#23a3b9' }"
-        />
+        <FontAwesomeIcon :icon="faInfoCircle" size="lg" :style="{ color: '#23a3b9' }" />
       </span>
     </td>
   </tr>

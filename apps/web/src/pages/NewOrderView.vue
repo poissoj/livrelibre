@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import type { RawOrder } from "@livrelibre/shared/order";
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 
-import type { RawOrder } from "@livrelibre/shared/order";
-
 import AppButton from "@/components/AppButton.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
-import OrderForm from "@/components/OrderForm.vue";
 import type { OrderFormData } from "@/components/orderForm";
+import OrderForm from "@/components/OrderForm.vue";
 import { getErrorMessage } from "@/utils/errors";
 import { useTRPCMutation, useTRPCQuery } from "@/utils/query";
 
@@ -31,23 +30,20 @@ const {
   computed(() => ({ enabled: itemIdStr !== "" })),
 );
 
-const { mutateAsync: createOrder, isPending: createPending } = useTRPCMutation(
-  "newOrder",
-  {
-    meta: { errorToast: false },
-    onSuccess(result) {
-      if (result.type === "success") {
-        toast.success(result.msg);
-        void router.push("/orders");
-      } else {
-        toast.error(result.msg);
-      }
-    },
-    onError(error) {
-      toast.error(getErrorMessage(error));
-    },
+const { mutateAsync: createOrder, isPending: createPending } = useTRPCMutation("newOrder", {
+  meta: { errorToast: false },
+  onSuccess(result) {
+    if (result.type === "success") {
+      toast.success(result.msg);
+      void router.push("/orders");
+    } else {
+      toast.error(result.msg);
+    }
   },
-);
+  onError(error) {
+    toast.error(getErrorMessage(error));
+  },
+});
 
 const submit = async (order: RawOrder) => {
   try {

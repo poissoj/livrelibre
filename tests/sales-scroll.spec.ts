@@ -1,9 +1,8 @@
+import { items, sales } from "@livrelibre/shared/schema";
 import { expect, test } from "@playwright/test";
 import { eq, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
-
-import { items, sales } from "@livrelibre/shared/schema";
 
 import { E2E_USER } from "./e2e-user";
 import { getTestDatabaseUri } from "./test-db.mts";
@@ -77,9 +76,7 @@ test.afterAll(async () => {
 
   await db
     .delete(sales)
-    .where(
-      sql`CAST(${sales.created} AS date) = ${saleDate} AND ${sales.receiptId} = ${receiptId}`,
-    );
+    .where(sql`CAST(${sales.created} AS date) = ${saleDate} AND ${sales.receiptId} = ${receiptId}`);
   if (itemId != null) {
     await db.delete(items).where(eq(items.id, itemId));
   }
@@ -87,9 +84,7 @@ test.afterAll(async () => {
   await client.end();
 });
 
-test("conserve la position de scroll de la liste des ventes du jour", async ({
-  page,
-}) => {
+test("conserve la position de scroll de la liste des ventes du jour", async ({ page }) => {
   await page.goto("/login");
   await page.getByLabel("Identifiant").fill(E2E_USER.name);
   await page.getByLabel("Mot de passe").fill(E2E_USER.password);
@@ -118,7 +113,5 @@ test("conserve la position de scroll de la liste des ventes du jour", async ({
   await expect(page).toHaveURL(salePath);
   await expect(itemLinks).toHaveCount(salesCount);
 
-  await expect
-    .poll(() => scroller.evaluate((el) => el.scrollTop))
-    .toBe(expectedTop);
+  await expect.poll(() => scroller.evaluate((el) => el.scrollTop)).toBe(expectedTop);
 });

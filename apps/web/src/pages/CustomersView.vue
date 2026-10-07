@@ -71,49 +71,17 @@ useTitle(pageTitle);
     <ItemsCard v-else-if="isPending" title="Liste des client⋅es">
       <AppSkeleton :height="300">
         <template v-for="n in 10" :key="n">
-          <rect
-            x="2%"
-            :y="(n - 1) * 30 + 15"
-            rx="2"
-            ry="2"
-            width="25%"
-            height="10"
-          />
-          <rect
-            x="32%"
-            :y="(n - 1) * 30 + 15"
-            rx="2"
-            ry="2"
-            width="25%"
-            height="10"
-          />
-          <rect
-            x="62%"
-            :y="(n - 1) * 30 + 15"
-            rx="2"
-            ry="2"
-            width="25%"
-            height="10"
-          />
-          <rect
-            x="92%"
-            :y="(n - 1) * 30 + 15"
-            rx="2"
-            ry="2"
-            width="6%"
-            height="10"
-          />
+          <rect x="2%" :y="(n - 1) * 30 + 15" rx="2" ry="2" width="25%" height="10" />
+          <rect x="32%" :y="(n - 1) * 30 + 15" rx="2" ry="2" width="25%" height="10" />
+          <rect x="62%" :y="(n - 1) * 30 + 15" rx="2" ry="2" width="25%" height="10" />
+          <rect x="92%" :y="(n - 1) * 30 + 15" rx="2" ry="2" width="6%" height="10" />
         </template>
       </AppSkeleton>
     </ItemsCard>
     <AppCard v-else class="max-h-full overflow-hidden flex flex-col relative">
       <CardTitle :level="1" class="flex items-center">
         {{ listTitle }}
-        <AppInput
-          v-model="search"
-          class="mx-auto !w-[13rem] text-base"
-          placeholder="Nom, prénom"
-        />
+        <AppInput v-model="search" class="mx-auto !w-[13rem] text-base" placeholder="Nom, prénom" />
         <label class="text-base cursor-pointer">
           <span>Avec achats</span>
           <input v-model="withPurchases" type="checkbox" class="ml-2" />
@@ -128,10 +96,7 @@ useTitle(pageTitle);
           <CustomersTable :items="pageData?.items ?? []" />
         </LoadingOverlay>
       </CardBody>
-      <CardFooter
-        v-if="pageCount > 1"
-        class="flex justify-center pt-6 2xl:pt-8"
-      >
+      <CardFooter v-if="pageCount > 1" class="flex justify-center pt-6 2xl:pt-8">
         <AppPagination :count="pageCount" />
       </CardFooter>
     </AppCard>

@@ -23,9 +23,6 @@ const { mutate, isPending } = useTRPCMutation("removeFromCart", {
     title="Enlever du panier"
     @click="mutate(props.id)"
   >
-    <FontAwesomeIcon
-      :icon="isPending ? faSpinner : faTrashAlt"
-      :spin="isPending"
-    />
+    <FontAwesomeIcon :icon="isPending ? faSpinner : faTrashAlt" :spin="isPending" />
   </AppButton>
 </template>

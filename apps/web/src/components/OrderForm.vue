@@ -1,14 +1,6 @@
 <script setup lang="ts">
-import {
-  faAt,
-  faPhone,
-  faUserPlus,
-  faWalking,
-} from "@fortawesome/free-solid-svg-icons";
+import { faAt, faPhone, faUserPlus, faWalking } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { ref } from "vue";
-import { toast } from "vue-sonner";
-
 import { toInputDate } from "@livrelibre/shared/date";
 import type { Item } from "@livrelibre/shared/item";
 import {
@@ -17,6 +9,8 @@ import {
   type RawOrder,
   STATUS_LABEL,
 } from "@livrelibre/shared/order";
+import { ref } from "vue";
+import { toast } from "vue-sonner";
 
 import AppButton from "@/components/AppButton.vue";
 import AppCard from "@/components/AppCard.vue";
@@ -29,10 +23,10 @@ import CardTitle from "@/components/CardTitle.vue";
 import ContactMean from "@/components/ContactMean.vue";
 import FormRow from "@/components/FormRow.vue";
 import OrderCustomerForm from "@/components/OrderCustomerForm.vue";
-import SelectCustomer from "@/components/SelectCustomer.vue";
-import SelectItem from "@/components/SelectItem.vue";
 import type { CustomerSelection, OrderFormData } from "@/components/orderForm";
+import SelectCustomer from "@/components/SelectCustomer.vue";
 import type { NewItem } from "@/components/selectItem";
+import SelectItem from "@/components/SelectItem.vue";
 import { getErrorMessage } from "@/utils/errors";
 import { useTRPCUtils } from "@/utils/query";
 
@@ -61,9 +55,7 @@ const nb = ref<number | string>(props.data.nb ?? 1);
 const ordered = ref<OrderStatus>(props.data.ordered ?? "new");
 const paid = ref(props.data.paid ?? false);
 const customerNotified = ref(props.data.customerNotified ?? false);
-const customerId = ref<number | null>(
-  props.data.customerId ?? props.data.customer?.id ?? null,
-);
+const customerId = ref<number | null>(props.data.customerId ?? props.data.customer?.id ?? null);
 
 const toggleCustomerForm = () => {
   showCustomerForm.value = !showCustomerForm.value;
@@ -163,34 +155,18 @@ const submit = async () => {
             @hide="toggleCustomerForm"
           />
           <FormRow label="Contacter par" field-class="gap-2" group>
-            <ContactMean
-              v-model="contact"
-              mean="unknown"
-              :is-active="contact === 'unknown'"
-            >
+            <ContactMean v-model="contact" mean="unknown" :is-active="contact === 'unknown'">
               Non renseigné
             </ContactMean>
-            <ContactMean
-              v-model="contact"
-              mean="in person"
-              :is-active="contact === 'in person'"
-            >
+            <ContactMean v-model="contact" mean="in person" :is-active="contact === 'in person'">
               <FontAwesomeIcon :icon="faWalking" class="mr-1" />
               <span>Passera</span>
             </ContactMean>
-            <ContactMean
-              v-model="contact"
-              mean="phone"
-              :is-active="contact === 'phone'"
-            >
+            <ContactMean v-model="contact" mean="phone" :is-active="contact === 'phone'">
               <FontAwesomeIcon :icon="faPhone" class="mr-1" />
               <em>{{ customer?.phone }}</em>
             </ContactMean>
-            <ContactMean
-              v-model="contact"
-              mean="mail"
-              :is-active="contact === 'mail'"
-            >
+            <ContactMean v-model="contact" mean="mail" :is-active="contact === 'mail'">
               <FontAwesomeIcon :icon="faAt" class="mr-1" />
               <em>{{ customer?.email }}</em>
             </ContactMean>
@@ -212,22 +188,14 @@ const submit = async () => {
           </FormRow>
           <FormRow label="État">
             <AppSelect v-model="ordered">
-              <option
-                v-for="[key, label] in Object.entries(STATUS_LABEL)"
-                :key="key"
-                :value="key"
-              >
+              <option v-for="[key, label] in Object.entries(STATUS_LABEL)" :key="key" :value="key">
                 {{ label }}
               </option>
             </AppSelect>
           </FormRow>
           <FormRow
             label="Payé"
-            :field-class="
-              paid
-                ? 'border-r-8 border-[rgba(245,0,0,0.5)] pr-2 min-h-6 w-fit'
-                : ''
-            "
+            :field-class="paid ? 'border-r-8 border-[rgba(245,0,0,0.5)] pr-2 min-h-6 w-fit' : ''"
           >
             <input v-model="paid" type="checkbox" />
           </FormRow>

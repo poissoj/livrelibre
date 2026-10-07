@@ -1,6 +1,5 @@
-import { beforeEach, describe, expect, it } from "vitest";
-
 import { appRouter } from "@livrelibre/server/router";
+import { beforeEach, describe, expect, it } from "vitest";
 
 import { seedUser, truncateAll } from "./helpers";
 
@@ -42,15 +41,9 @@ describe("input validation", () => {
   beforeEach(truncateAll);
 
   it("rejects a non-positive or non-integer quantity", async () => {
-    await expect(
-      caller.addToCart({ id: 1, quantity: -1 }),
-    ).rejects.toMatchObject(BAD_REQUEST);
-    await expect(
-      caller.addToCart({ id: 1, quantity: 0 }),
-    ).rejects.toMatchObject(BAD_REQUEST);
-    await expect(
-      caller.addToCart({ id: 1, quantity: 1.5 }),
-    ).rejects.toMatchObject(BAD_REQUEST);
+    await expect(caller.addToCart({ id: 1, quantity: -1 })).rejects.toMatchObject(BAD_REQUEST);
+    await expect(caller.addToCart({ id: 1, quantity: 0 })).rejects.toMatchObject(BAD_REQUEST);
+    await expect(caller.addToCart({ id: 1, quantity: 1.5 })).rejects.toMatchObject(BAD_REQUEST);
   });
 
   it("rejects an invalid page number", async () => {
@@ -62,27 +55,19 @@ describe("input validation", () => {
   });
 
   it("rejects an invalid date", async () => {
-    await expect(caller.salesByDay("2024-99-99")).rejects.toMatchObject(
-      BAD_REQUEST,
-    );
-    await expect(caller.salesByDay("not-a-date")).rejects.toMatchObject(
-      BAD_REQUEST,
-    );
+    await expect(caller.salesByDay("2024-99-99")).rejects.toMatchObject(BAD_REQUEST);
+    await expect(caller.salesByDay("not-a-date")).rejects.toMatchObject(BAD_REQUEST);
   });
 
   it("rejects an invalid item price", async () => {
-    await expect(
-      caller.addItem({ ...baseItem, price: "abc" }),
-    ).rejects.toMatchObject(BAD_REQUEST);
-    await expect(
-      caller.addItem({ ...baseItem, price: "1.234" }),
-    ).rejects.toMatchObject(BAD_REQUEST);
+    await expect(caller.addItem({ ...baseItem, price: "abc" })).rejects.toMatchObject(BAD_REQUEST);
+    await expect(caller.addItem({ ...baseItem, price: "1.234" })).rejects.toMatchObject(
+      BAD_REQUEST,
+    );
   });
 
   it("accepts a negative price (deposits)", async () => {
-    await expect(
-      caller.addItem({ ...baseItem, price: "-5.00" }),
-    ).resolves.toBeDefined();
+    await expect(caller.addItem({ ...baseItem, price: "-5.00" })).resolves.toBeDefined();
   });
 
   it("accepts a negative price for a standalone cart item (loyalty discount)", async () => {
@@ -102,27 +87,21 @@ describe("input validation", () => {
   });
 
   it("rejects a non-ISO item date", async () => {
-    await expect(
-      caller.addItem({ ...baseItem, datebought: "01/01/2024" }),
-    ).rejects.toMatchObject(BAD_REQUEST);
+    await expect(caller.addItem({ ...baseItem, datebought: "01/01/2024" })).rejects.toMatchObject(
+      BAD_REQUEST,
+    );
   });
 
   it("rejects a negative or decimal amount", async () => {
-    await expect(
-      caller.addItem({ ...baseItem, amount: -1 }),
-    ).rejects.toMatchObject(BAD_REQUEST);
-    await expect(
-      caller.addItem({ ...baseItem, amount: 1.5 }),
-    ).rejects.toMatchObject(BAD_REQUEST);
+    await expect(caller.addItem({ ...baseItem, amount: -1 })).rejects.toMatchObject(BAD_REQUEST);
+    await expect(caller.addItem({ ...baseItem, amount: 1.5 })).rejects.toMatchObject(BAD_REQUEST);
   });
 
   it("rejects invalid order values", async () => {
-    await expect(
-      caller.newOrder({ ...baseOrder, created: "nope" }),
-    ).rejects.toMatchObject(BAD_REQUEST);
-    await expect(
-      caller.newOrder({ ...baseOrder, nb: 1.5 }),
-    ).rejects.toMatchObject(BAD_REQUEST);
+    await expect(caller.newOrder({ ...baseOrder, created: "nope" })).rejects.toMatchObject(
+      BAD_REQUEST,
+    );
+    await expect(caller.newOrder({ ...baseOrder, nb: 1.5 })).rejects.toMatchObject(BAD_REQUEST);
   });
 
   it("rejects a non-numeric advanced search price", async () => {

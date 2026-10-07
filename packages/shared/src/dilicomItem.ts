@@ -22,10 +22,7 @@ export const dilicomRowWithIdSchema = dilicomRowSchema.extend({
 
 export const MAX_IMPORT_ROWS = 1000;
 
-export const importPayloadSchema = z
-  .array(dilicomRowWithIdSchema)
-  .min(1)
-  .max(MAX_IMPORT_ROWS);
+export const importPayloadSchema = z.array(dilicomRowWithIdSchema).min(1).max(MAX_IMPORT_ROWS);
 
 export type DilicomRow = z.infer<typeof dilicomRowSchema>;
 
@@ -36,9 +33,7 @@ export type DilicomRowWithId = z.infer<typeof dilicomRowWithIdSchema>;
  * occurrence wins for the other fields. Prevents duplicate EANs from breaking
  * an import (unique index violation) or from being counted twice.
  */
-export const mergeRowsByEan = <T extends { EAN: string; QTE: number }>(
-  rows: T[],
-): T[] => {
+export const mergeRowsByEan = <T extends { EAN: string; QTE: number }>(rows: T[]): T[] => {
   const byEan = new Map<string, T>();
   for (const row of rows) {
     const ean = row.EAN.trim();

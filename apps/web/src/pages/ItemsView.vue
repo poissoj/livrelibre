@@ -1,8 +1,7 @@
 <script setup lang="ts">
+import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
 import { keepPreviousData } from "@tanstack/vue-query";
 import { computed } from "vue";
-
-import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
 
 import AppCard from "@/components/AppCard.vue";
 import AppPagination from "@/components/AppPagination.vue";
@@ -60,38 +59,10 @@ useTitle(pageTitle);
     <ItemsCard v-else-if="isPending" title="Liste des articles">
       <AppSkeleton :height="300">
         <template v-for="n in 10" :key="n">
-          <rect
-            x="2%"
-            :y="(n - 1) * 30 + 15"
-            rx="2"
-            ry="2"
-            width="25%"
-            height="10"
-          />
-          <rect
-            x="32%"
-            :y="(n - 1) * 30 + 15"
-            rx="2"
-            ry="2"
-            width="25%"
-            height="10"
-          />
-          <rect
-            x="62%"
-            :y="(n - 1) * 30 + 15"
-            rx="2"
-            ry="2"
-            width="25%"
-            height="10"
-          />
-          <rect
-            x="92%"
-            :y="(n - 1) * 30 + 15"
-            rx="2"
-            ry="2"
-            width="6%"
-            height="10"
-          />
+          <rect x="2%" :y="(n - 1) * 30 + 15" rx="2" ry="2" width="25%" height="10" />
+          <rect x="32%" :y="(n - 1) * 30 + 15" rx="2" ry="2" width="25%" height="10" />
+          <rect x="62%" :y="(n - 1) * 30 + 15" rx="2" ry="2" width="25%" height="10" />
+          <rect x="92%" :y="(n - 1) * 30 + 15" rx="2" ry="2" width="6%" height="10" />
         </template>
       </AppSkeleton>
     </ItemsCard>
@@ -103,10 +74,7 @@ useTitle(pageTitle);
           <ItemsTable :items="pageData?.items ?? []" />
         </LoadingOverlay>
       </CardBody>
-      <CardFooter
-        v-if="pageCount > 1"
-        class="flex justify-center pt-6 2xl:pt-8"
-      >
+      <CardFooter v-if="pageCount > 1" class="flex justify-center pt-6 2xl:pt-8">
         <AppPagination :count="pageCount" />
       </CardFooter>
     </AppCard>

@@ -9,9 +9,7 @@ test("Tableau de bord : vendre un article non répertorié", async ({ page }) =>
   await login(page);
 
   await expect(page.getByText("Favoris")).toBeVisible();
-  await expect(
-    page.getByText("Vendre un article non répertorié"),
-  ).toBeVisible();
+  await expect(page.getByText("Vendre un article non répertorié")).toBeVisible();
 
   await page.getByLabel("Prix").fill("5");
   await page.getByLabel("Titre").fill(unique("Article libre"));
