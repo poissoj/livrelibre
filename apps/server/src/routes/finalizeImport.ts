@@ -31,8 +31,9 @@ export const finalizeImportRoute = async (c: Context) => {
   // Merge duplicate EANs: a single INSERT with ON CONFLICT cannot affect the
   // same row twice, and the quantities must be summed.
   const data = mergeRowsByEan(parsed.data);
-  logger.info(`Import ${data.length} books`, {
+  logger.info("Import books", {
     user,
+    count: data.length,
     isbns: data.map((row) => row.EAN),
   });
   const today = formatDate(new Date());
@@ -69,8 +70,9 @@ export const finalizeImportRoute = async (c: Context) => {
           price: sql`excluded.price`,
         },
       });
-    logger.info(`Imported ${booksToAdd.length} books`, {
+    logger.info("Imported books", {
       user,
+      count: booksToAdd.length,
       isbns: booksToAdd.map((book) => book.isbn),
     });
   });

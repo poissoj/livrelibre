@@ -26,7 +26,7 @@ const makeCSV = async () => {
     .from(items)
     .where(ne(items.amount, 0))
     .orderBy(items.distributor, items.author, items.title);
-  logger.info("Export stock", { nbItems: itemsList.length });
+  logger.info("Export stock", { count: itemsList.length });
   const HEADER =
     "Catégorie,Titre,Auteur·ice,Distributeur,ISBN,Qté,Valeur TTC\n";
   const csv =

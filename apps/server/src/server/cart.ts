@@ -192,10 +192,10 @@ export const addISBNToCart = async (
       });
 
       if (!item) {
-        logger.info("ISBN non trouvé", { userId, isbn });
+        logger.info("Book not found", { userId, isbn });
         return { errorCode: "ITEM_NOT_FOUND" };
       }
-      logger.info("Plus de stock", { userId, isbn });
+      logger.info("Out of stock", { userId, isbn });
       return {
         errorCode: "NO_STOCK",
         title: item.title,

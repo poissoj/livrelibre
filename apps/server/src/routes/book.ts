@@ -15,13 +15,13 @@ export const bookRoute = async (c: Context) => {
     return c.json({ error: ERROR_CODES.UNAUTHENTICATED }, 401);
   }
   if (!isbn || !/^\d{10,13}$/.test(isbn)) {
-    logger.info("Get book data: invalid parameter", { isbn, user });
+    logger.info("Invalid ISBN parameter", { isbn, user });
     return c.json({ error: ERROR_CODES.INVALID_PARAMETER }, 400);
   }
   logger.info("Fetch book data", { isbn, user });
   try {
     const data = await getBookData(isbn);
-    logger.info("Got book data", { isbn, user, data });
+    logger.info("Book data fetched", { isbn, user, data });
     if (data === null) {
       return c.json({ error: ERROR_CODES.BOOK_NOT_FOUND }, 404);
     }

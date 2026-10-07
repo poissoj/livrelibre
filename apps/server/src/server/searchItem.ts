@@ -115,7 +115,7 @@ export const advancedSearch = async (
   query: Record<string, string>,
   pageNumber = 1,
 ) => {
-  logger.info("Advanced search", { query, pageNumber });
+  logger.info("Advanced search", { query, page: pageNumber });
   const criteria = generateSearchCriteria(query);
   return await doSearch(criteria, pageNumber);
 };

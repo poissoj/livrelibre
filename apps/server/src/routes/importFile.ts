@@ -89,10 +89,10 @@ const updateFields = async (rows: DilicomRow[]) => {
         amount: item.amount,
       };
     } else {
-      logger.info("Import - Fetch book data", { isbn: row.EAN });
+      logger.info("Import book data", { isbn: row.EAN });
       try {
         const bookData = await getBookData(row.EAN);
-        logger.info("Import - Got book data", { isbn: row.EAN, bookData });
+        logger.info("Imported book data", { isbn: row.EAN, bookData });
         const TITRE = bookData?.title || row.TITRE;
         const AUTEUR = bookData?.author || row.AUTEUR;
         const EDITEUR = bookData?.publisher || row.EDITEUR;
@@ -122,7 +122,7 @@ export const importFileRoute = async (c: Context) => {
   if (!ALLOWED_EXTENSIONS.includes(extension)) {
     return c.json({ error: ERROR_CODES.UNSUPPORTED_FORMAT }, 400);
   }
-  logger.info("import file", { filename: file.name, user });
+  logger.info("Import file", { filename: file.name, user });
   const buffer = Buffer.from(await file.arrayBuffer());
   let rows: DilicomRow[] = [];
   try {

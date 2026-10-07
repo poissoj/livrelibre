@@ -216,7 +216,11 @@ export const appRouter = router({
   addToCart: authProcedure
     .input(z.object({ id: zId, quantity: zQuantity.optional() }))
     .mutation(async ({ input, ctx }) => {
-      logger.info("Add to cart", { user: ctx.user, item: input });
+      logger.info("Add to cart", {
+        user: ctx.user,
+        itemId: input.id,
+        quantity: input.quantity,
+      });
       await addToCart(ctx.user.id, input.id, input.quantity);
     }),
   deleteSale: authProcedure
@@ -226,7 +230,7 @@ export const appRouter = router({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      logger.info("Delete sale", { user: ctx.user, input });
+      logger.info("Delete sale", { user: ctx.user, saleId: input.saleId });
       await deleteSale(input.saleId, {
         restrictToToday: ctx.user.role !== "admin",
       });
@@ -234,7 +238,7 @@ export const appRouter = router({
   deleteCustomer: authProcedure
     .input(z.object({ id: zId }))
     .mutation(async ({ ctx, input }) => {
-      logger.info("Delete customer", { user: ctx.user, input });
+      logger.info("Delete customer", { user: ctx.user, customerId: input.id });
       return await deleteCustomer(input.id);
     }),
   updateCustomer: authProcedure
@@ -250,7 +254,7 @@ export const appRouter = router({
         }),
       }),
     )
-    .mutation(async ({ input }) => {
+    .mutation(async ({ input, ctx }) => {
       const nmFullname = norm(input.customer.fullname);
       const duplicate = await customerExistsByNmFullname(
         nmFullname,
@@ -270,12 +274,16 @@ export const appRouter = router({
       };
       if (input.customerId) {
         logger.info("Update customer", {
+          user: ctx.user,
           customerId: input.customerId,
           fullname: input.customer.fullname,
         });
         return await setCustomer(customer, input.customerId);
       } else {
-        logger.info("New customer", { fullname: input.customer.fullname });
+        logger.info("New customer", {
+          user: ctx.user,
+          fullname: input.customer.fullname,
+        });
         return await newCustomer(customer);
       }
     }),
@@ -298,15 +306,21 @@ export const appRouter = router({
   star: authProcedure
     .input(z.object({ id: zId, starred: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
-      logger.info(`${input.starred ? "Star" : "Unstar"} item ${input.id}`, {
+      logger.info("Star item", {
         user: ctx.user,
+        itemId: input.id,
+        starred: input.starred,
       });
       return await starItem(input.id, input.starred);
     }),
   updateItem: authProcedure
     .input(z.object({ item: zItem, id: zId }))
     .mutation(async ({ ctx, input }) => {
-      logger.info("Update item", { user: ctx.user, item: input });
+      logger.info("Update item", {
+        user: ctx.user,
+        item: input.item,
+        itemId: input.id,
+      });
       return await updateItem(input.item, input.id);
     }),
   selectCustomer: authProcedure
@@ -317,7 +331,10 @@ export const appRouter = router({
       }),
     )
     .mutation(async ({ ctx, input }) => {
-      logger.info(`${ctx.user.name} - Select customer ${input.customerId}`);
+      logger.info("Select customer", {
+        user: ctx.user,
+        customerId: input.customerId,
+      });
       return await setSelectedCustomer({ ...input, userId: ctx.user.id });
     }),
   newOrder: authProcedure.input(zOrder).mutation(async ({ ctx, input }) => {
@@ -353,7 +370,7 @@ export const appRouter = router({
   deleteOrder: authProcedure
     .input(z.object({ id: zId }))
     .mutation(async ({ ctx, input }) => {
-      logger.info("Delete order", { user: ctx.user, input });
+      logger.info("Delete order", { user: ctx.user, orderId: input.id });
       return await deleteOrder(input.id);
     }),
 });

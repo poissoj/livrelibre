@@ -23,7 +23,7 @@ export const loginRoute = async (c: Context) => {
     username = credentials.username;
     const { password } = credentials;
     if (!username) {
-      logger.info("Invalid login attempt - no username");
+      logger.info("Login attempt without username");
       return c.json({ error: ERROR_CODES.MISSING_USERNAME }, 400);
     }
     const dbUser = await db.query.users.findFirst({

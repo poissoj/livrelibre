@@ -59,10 +59,10 @@ app.use(
         return;
       }
       const cause = error.cause;
-      logger.error(`tRPC internal error on ${path ?? "unknown"}`, {
+      logger.error("tRPC internal error", {
         path,
         type,
-        message: error.message,
+        errorMessage: error.message,
         stack: cause instanceof Error ? cause.stack : error.stack,
       });
     },
@@ -72,7 +72,7 @@ app.use(
 // Production static serving (SPA + API in a single process)
 if (env.NODE_ENV === "production") {
   const distRoot = fileURLToPath(new URL("../../web/dist", import.meta.url));
-  logger.info(`Serving SPA from ${distRoot}`);
+  logger.info("Serving SPA", { distRoot });
   app.use(
     "*",
     serveStatic({
