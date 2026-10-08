@@ -1,0 +1,16 @@
+node_modules
+**/node_modules
+**/dist
+.git
+.gitignore
+.github
+.vscode
+coverage
+**/coverage
+**/test-results
+**/playwright-report
+**/blob-report
+**/.env.local
+**/.env.test
+**/.env.*.local
+docs

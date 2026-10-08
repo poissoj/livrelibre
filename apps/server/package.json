@@ -29,6 +29,7 @@
     "start": "NODE_ENV=production node dist/index.js",
     "generate:db": "drizzle-kit generate",
     "migrate:db": "drizzle-kit migrate",
+    "seed": "tsx src/cli/seed.ts",
     "typecheck": "tsc --noEmit",
     "lint": "eslint ."
   },

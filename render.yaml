@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: livrelibre
+    runtime: docker
+    plan: free
+    region: frankfurt
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: SESSION_SECRET
+        sync: false
+      - key: POSTGRES_URI
+        sync: false
+      - key: SEED_DEMO
+        value: "true"

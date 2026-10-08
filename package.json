@@ -15,6 +15,7 @@
     "format:check": "oxfmt --check .",
     "generate:db": "pnpm --filter @livrelibre/server generate:db",
     "migrate:db": "pnpm --filter @livrelibre/server migrate:db",
+    "seed": "pnpm --filter @livrelibre/server seed",
     "test": "pnpm --filter @livrelibre/tests test",
     "test:unit": "pnpm --filter @livrelibre/tests test:unit",
     "test:integration": "pnpm --filter @livrelibre/tests test:integration",
