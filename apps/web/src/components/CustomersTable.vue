@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { CustomerWithTotal } from "@livrelibre/shared/customer";
 import { formatPrice } from "@livrelibre/shared/format";
+import { loyaltyDiscount } from "@livrelibre/shared/sale";
 import { RouterLink } from "vue-router";
 
 const props = defineProps<{ items: CustomerWithTotal[] }>();
@@ -41,7 +42,7 @@ const props = defineProps<{ items: CustomerWithTotal[] }>();
         <td>{{ item.contact }}</td>
         <td>{{ item.comment }}</td>
         <td class="text-right font-number pr-2">
-          {{ formatPrice(Math.round(Number(item.total) * 3) / 100) }}
+          {{ formatPrice(loyaltyDiscount(Number(item.total))) }}
         </td>
         <td class="text-right font-number pr-2">
           {{ formatPrice(Number(item.total)) }}

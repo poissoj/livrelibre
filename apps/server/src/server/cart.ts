@@ -44,12 +44,16 @@ export type NewCartItem = {
   kind?: CartItemKind;
 };
 
-const sumPrice = (sum: number, item: CartItem) => sum + Number(item.price) * item.quantity * 100;
+const roundMoney = (value: number): number => Math.round(value * 100) / 100;
+
+const toMoneyString = (value: number): string => roundMoney(value).toFixed(2);
+
+const sumPrice = (sum: number, item: CartItem) => sum + Number(item.price) * item.quantity;
 
 export const getCart = async (userId: number) => {
   const cartItems = await db.select().from(cart).where(eq(cart.userId, userId));
 
-  const total = cartItems.reduce(sumPrice, 0) / 100;
+  const total = roundMoney(cartItems.reduce(sumPrice, 0));
   const count = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   return { items: cartItems, count, total };
 };
@@ -85,7 +89,7 @@ export const payCart = async (userId: number, data: PaymentFormData) => {
       created,
       itemId: item.itemId,
       itemType: item.type,
-      price: String(Math.round(Number(item.price) * item.quantity * 100) / 100),
+      price: toMoneyString(Number(item.price) * item.quantity),
       quantity: item.quantity,
       title: item.title,
       tva: item.tva,
@@ -94,7 +98,7 @@ export const payCart = async (userId: number, data: PaymentFormData) => {
       deleted: false,
     }));
     await tx.insert(sales).values(salesList);
-    const total = salesList.reduce((t, sale) => t + Number(sale.price) * 100, 0);
+    const total = roundMoney(salesList.reduce((t, sale) => t + Number(sale.price), 0));
     const customerId = customer?.customerId ?? null;
     const hasDiscount = cartItems.some((it) => it.title === LOYALTY_DISCOUNT_TITLE);
     if (customerId != null) {
@@ -102,10 +106,10 @@ export const payCart = async (userId: number, data: PaymentFormData) => {
         await resetCustomer(customerId, tx);
         logger.info("Customer purchases reset", { customerId });
       } else {
-        await addPurchase(customerId, total / 100, tx);
+        await addPurchase(customerId, total, tx);
         logger.info("Customer purchase recorded", {
           customerId,
-          amount: total / 100,
+          amount: total,
         });
       }
       await setSelectedCustomer({ asideCart: false, customerId: null, userId }, tx);
@@ -115,7 +119,7 @@ export const payCart = async (userId: number, data: PaymentFormData) => {
       userId,
       customerId,
       itemCount: salesList.length,
-      total: total / 100,
+      total,
       paymentType: data.paymentType,
       linkedToCustomer: customerId != null,
       loyaltyDiscount: hasDiscount,
@@ -289,7 +293,7 @@ export const reactivateCart = async (userId: number) => {
 export const getAsideCart = async (userId: number) => {
   const cartItems = await db.select().from(asideCart).where(eq(asideCart.userId, userId));
 
-  const total = cartItems.reduce(sumPrice, 0) / 100;
+  const total = roundMoney(cartItems.reduce(sumPrice, 0));
   const count = cartItems.reduce((sum, item) => sum + item.quantity, 0);
   return { count, total };
 };

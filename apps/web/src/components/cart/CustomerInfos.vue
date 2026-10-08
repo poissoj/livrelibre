@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { CustomerWithPurchase } from "@livrelibre/shared/customer";
 import { formatPrice } from "@livrelibre/shared/format";
-import { LOYALTY_DISCOUNT_TITLE } from "@livrelibre/shared/sale";
+import { LOYALTY_DISCOUNT_TITLE, loyaltyDiscount } from "@livrelibre/shared/sale";
 import { computed, ref } from "vue";
 import { toast } from "vue-sonner";
 
@@ -16,7 +16,7 @@ const utils = useTRPCUtils();
 const amount = computed(() =>
   props.customer.purchases.reduce((sum, purchase) => sum + purchase.amount, 0),
 );
-const discount = ref(Math.round(amount.value * 3) / 100);
+const discount = ref(loyaltyDiscount(amount.value));
 const applied = ref<number | undefined>(undefined);
 
 const { mutate: addDiscount, isPending: isApplying } = useTRPCMutation("addNewItemToCart", {
