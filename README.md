@@ -9,7 +9,7 @@ Il permet de gérer les stocks, les ventes, les commandes, et fournit des statis
 
 ## Démo
 
-Une [démo en ligne](https://livrelibre.vercel.app) est accessible.
+Une [démo en ligne](https://livrelibre.onrender.com/) est accessible.
 
 Pour se connecter, utiliser les identifiants `admin/admin`
 
