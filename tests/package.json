@@ -15,19 +15,19 @@
   "devDependencies": {
     "@livrelibre/server": "workspace:*",
     "@livrelibre/shared": "workspace:*",
-    "@playwright/test": "1.62.1",
-    "@trpc/server": "11.18.0",
+    "@playwright/test": "1.64.0",
+    "@trpc/server": "11.19.0",
     "@types/bcrypt": "6.0.0",
-    "@types/node": "26.2.0",
+    "@types/node": "26.6.4",
     "bcrypt": "6.0.0",
     "date-fns": "4.4.0",
-    "dotenv": "17.4.2",
+    "dotenv": "18.0.6",
     "drizzle-orm": "0.45.2",
-    "eslint": "9.39.5",
-    "hono": "4.13.7",
+    "eslint": "10.12.0",
+    "hono": "4.13.13",
     "postgres": "3.4.9",
     "typescript": "6.0.3",
-    "typescript-eslint": "8.67.0",
-    "vitest": "4.1.11"
+    "typescript-eslint": "8.71.1",
+    "vitest": "5.0.3"
   }
 }
