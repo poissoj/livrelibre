@@ -19,6 +19,7 @@ import CardBody from "@/components/CardBody.vue";
 import CardFooter from "@/components/CardFooter.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import { getErrorMessage, getRestErrorMessage } from "@/utils/errors";
+import { isDilicomRows } from "@/utils/guards";
 
 type FileData = { filename: string; data: DilicomRowWithId[] };
 
@@ -56,8 +57,12 @@ const importFile = async () => {
       toast.error(getRestErrorMessage(body, "Erreur lors de l'import du fichier."));
       return;
     }
-    const data = (await response.json()) as DilicomRowWithId[];
-    file.value = { filename: selected.name, data };
+    const parsed: unknown = await response.json();
+    if (!isDilicomRows(parsed)) {
+      toast.error("Réponse du serveur invalide.");
+      return;
+    }
+    file.value = { filename: selected.name, data: parsed };
   } catch (error) {
     toast.error(getErrorMessage(error));
   } finally {

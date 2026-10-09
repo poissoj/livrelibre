@@ -6,12 +6,15 @@ const saveScrollPos = (path: string, elt: HTMLElement | null) => {
   sessionStorage.setItem(`scrollPos:${path}`, JSON.stringify({ top: elt.scrollTop }));
 };
 
+const isScrollPosition = (value: unknown): value is { top: number } =>
+  typeof value === "object" && value !== null && "top" in value && typeof value.top === "number";
+
 const restoreScrollPos = (path: string, elt: HTMLElement | null) => {
   if (!elt) return;
   const json = sessionStorage.getItem(`scrollPos:${path}`);
-  const scrollPos = json ? (JSON.parse(json) as { top: number }) : undefined;
-  if (scrollPos) {
-    elt.scrollTo({ top: scrollPos.top });
+  const parsed: unknown = json ? JSON.parse(json) : undefined;
+  if (isScrollPosition(parsed)) {
+    elt.scrollTo({ top: parsed.top });
   }
 };
 

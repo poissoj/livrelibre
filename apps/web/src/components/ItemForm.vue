@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import type { BookData } from "@livrelibre/server/utils/getBookData";
 import { formatDate } from "@livrelibre/shared/date";
 import { formatTVA } from "@livrelibre/shared/format";
 import { ITEM_TYPES, type ItemType, type TVA, TVAValues } from "@livrelibre/shared/item";
@@ -20,6 +19,7 @@ import CardTitle from "@/components/CardTitle.vue";
 import FormRow from "@/components/FormRow.vue";
 import InputWithButton from "@/components/InputWithButton.vue";
 import { getErrorMessage } from "@/utils/errors";
+import { isBookData } from "@/utils/guards";
 
 import type { AlertMessage } from "./form";
 import type { FormFields, ItemFormResult } from "./itemForm";
@@ -95,10 +95,13 @@ const isbnSearch = async () => {
   if (!response.ok) {
     throw new Error(String(response.status));
   }
-  const data = (await response.json()) as BookData;
-  title.value = data.title;
-  author.value = data.author;
-  publisher.value = data.publisher;
+  const parsed: unknown = await response.json();
+  if (!isBookData(parsed)) {
+    throw new Error("Réponse serveur invalide");
+  }
+  title.value = parsed.title;
+  author.value = parsed.author;
+  publisher.value = parsed.publisher;
 };
 
 const isbnHandler = async () => {

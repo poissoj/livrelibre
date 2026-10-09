@@ -59,6 +59,7 @@ export default defineConfig(
       "@typescript-eslint/switch-exhaustiveness-check": "error",
       "@typescript-eslint/no-deprecated": "error",
       "@typescript-eslint/no-unnecessary-template-expression": "error",
+      "@typescript-eslint/consistent-type-assertions": ["error", { assertionStyle: "never" }],
       "@typescript-eslint/consistent-type-definitions": ["error", "type"],
       "@typescript-eslint/array-type": ["error", { default: "array-simple" }],
     },

@@ -15,8 +15,8 @@ import AppButton from "@/components/AppButton.vue";
 import AppInput from "@/components/AppInput.vue";
 import { APP_NAME } from "@/lib/config";
 import { getErrorMessage, getRestErrorMessage } from "@/utils/errors";
+import { isUser } from "@/utils/guards";
 import { useTRPCUtils } from "@/utils/query";
-import type { RouterOutput } from "@/utils/trpc";
 
 const router = useRouter();
 const route = useRoute();
@@ -48,8 +48,12 @@ const onSubmit = async () => {
       }),
     });
     if (res.ok) {
-      const user = (await res.json()) as RouterOutput["user"];
-      utils.setData("user", undefined, user);
+      const parsed: unknown = await res.json();
+      if (!isUser(parsed)) {
+        errorMsg.value = getRestErrorMessage(parsed, "Impossible de vous connecter.");
+        return;
+      }
+      utils.setData("user", undefined, parsed);
       await router.push(redirectTarget.value);
     } else {
       const body: unknown = await res.json().catch(() => null);

@@ -11,8 +11,22 @@ import { type RouterInput, type RouterOutput, trpcClient } from "./trpc";
 
 type ProcedureName = keyof RouterInput;
 
-type QueryCaller = { query: (input: unknown) => Promise<unknown> };
-type MutateCaller = { mutate: (input: unknown) => Promise<unknown> };
+type QueryCaller<K extends ProcedureName> = {
+  query: (input: RouterInput[K]) => Promise<RouterOutput[K]>;
+};
+type MutateCaller<K extends ProcedureName> = {
+  mutate: (input: RouterInput[K]) => Promise<RouterOutput[K]>;
+};
+
+const isQueryCaller = <K extends ProcedureName>(value: unknown): value is QueryCaller<K> =>
+  (typeof value === "object" || typeof value === "function") &&
+  value !== null &&
+  typeof Reflect.get(value, "query") === "function";
+
+const isMutateCaller = <K extends ProcedureName>(value: unknown): value is MutateCaller<K> =>
+  (typeof value === "object" || typeof value === "function") &&
+  value !== null &&
+  typeof Reflect.get(value, "mutate") === "function";
 
 type ExtraQueryOptions<K extends ProcedureName> = Partial<UseQueryOptions<RouterOutput[K]>>;
 
@@ -28,10 +42,13 @@ export const trpcKey = <K extends ProcedureName>(
 ): readonly [K, RouterInput[K]] => [path, input];
 
 export const trpcQueryOptions = <K extends ProcedureName>(path: K, input: RouterInput[K]) => {
-  const caller = trpcClient[path] as unknown as QueryCaller;
+  const caller: unknown = trpcClient[path];
+  if (!isQueryCaller<K>(caller)) {
+    throw new Error(`tRPC procedure "${path}" is not a query`);
+  }
   return {
     queryKey: trpcKey(path, input),
-    queryFn: (): Promise<RouterOutput[K]> => caller.query(input) as Promise<RouterOutput[K]>,
+    queryFn: (): Promise<RouterOutput[K]> => caller.query(input),
   };
 };
 
@@ -51,11 +68,13 @@ export const useTRPCMutation = <K extends ProcedureName>(
   path: K,
   options?: UseMutationOptions<RouterOutput[K], Error, RouterInput[K]>,
 ) => {
-  const caller = trpcClient[path] as unknown as MutateCaller;
+  const caller: unknown = trpcClient[path];
+  if (!isMutateCaller<K>(caller)) {
+    throw new Error(`tRPC procedure "${path}" is not a mutation`);
+  }
   return useMutation(
     computed(() => ({
-      mutationFn: (input: RouterInput[K]): Promise<RouterOutput[K]> =>
-        caller.mutate(input) as Promise<RouterOutput[K]>,
+      mutationFn: (input: RouterInput[K]): Promise<RouterOutput[K]> => caller.mutate(input),
       ...toValue(options),
     })),
   );

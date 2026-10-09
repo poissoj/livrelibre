@@ -16,14 +16,13 @@ const STRUCTURAL_MESSAGES: Record<string, string> = {
   TIMEOUT: TIMEOUT_MESSAGE,
 };
 
+const MESSAGE_BY_CODE = new Map(Object.entries(ERROR_MESSAGES));
+
 /**
  * Traduit un identifiant d'erreur émis par l'API en message utilisateur.
  * Retourne `undefined` si le code est inconnu.
  */
-export const translateErrorCode = (code: string): string | undefined =>
-  Object.hasOwn(ERROR_MESSAGES, code)
-    ? ERROR_MESSAGES[code as keyof typeof ERROR_MESSAGES]
-    : undefined;
+export const translateErrorCode = (code: string): string | undefined => MESSAGE_BY_CODE.get(code);
 
 /** Détecte un échec réseau (fetch/offline), par opposition à une erreur serveur. */
 export const isNetworkError = (error: unknown): boolean => {
