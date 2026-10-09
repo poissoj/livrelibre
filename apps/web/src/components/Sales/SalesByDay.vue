@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { formatPrice } from "@livrelibre/shared/format";
 import { PAYMENT_METHODS } from "@livrelibre/shared/sale";
-import { computed, ref } from "vue";
+import { computed, useTemplateRef } from "vue";
 
 import AppCard from "@/components/AppCard.vue";
 import CardBody from "@/components/CardBody.vue";
@@ -19,7 +19,7 @@ import { useScrollRestoration } from "@/utils/scroll";
 
 const props = defineProps<{ date: string }>();
 
-const root = ref<HTMLElement | null>(null);
+const root = useTemplateRef<HTMLElement>("root");
 useScrollRestoration(root);
 
 const {

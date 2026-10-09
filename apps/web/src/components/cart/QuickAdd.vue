@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, onMounted, ref } from "vue";
+import { nextTick, onMounted, ref, useTemplateRef } from "vue";
 
 import AppInput from "@/components/AppInput.vue";
 import { refreshCartRelated } from "@/utils/invalidations";
@@ -11,7 +11,7 @@ const emit = defineEmits<{ error: [value: ISBNError] }>();
 
 const utils = useTRPCUtils();
 const isbn = ref("");
-const inputRef = ref<InstanceType<typeof AppInput> | null>(null);
+const inputRef = useTemplateRef<InstanceType<typeof AppInput>>("inputRef");
 
 const focusInput = () => {
   void nextTick(() => {

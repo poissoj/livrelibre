@@ -25,11 +25,23 @@ const createPageList = (pageNumber: number, count: number) => {
     endPages.length > 0 ? endPages[0] - 2 : count - 1,
   );
 
+  const startGap = () => {
+    if (siblingsStart > 3) return [0];
+    if (count > 3) return [2];
+    return [];
+  };
+
+  const endGap = () => {
+    if (siblingsEnd < count - 2) return [0];
+    if (count > 2) return [count - 1];
+    return [];
+  };
+
   return [
     ...startPages,
-    ...(siblingsStart > 3 ? [0] : count > 3 ? [2] : []),
+    ...startGap(),
     ...range(siblingsStart, siblingsEnd),
-    ...(siblingsEnd < count - 2 ? [0] : count > 2 ? [count - 1] : []),
+    ...endGap(),
     ...endPages,
   ];
 };

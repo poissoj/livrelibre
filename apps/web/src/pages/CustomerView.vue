@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { faCheckCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { formatISODateFR } from "@livrelibre/shared/date";
 import { formatPrice } from "@livrelibre/shared/format";
 import { computed } from "vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
@@ -18,6 +17,7 @@ import CustomerForm from "@/components/CustomerForm.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import NoResults from "@/components/NoResults.vue";
+import PurchasesTable from "@/components/PurchasesTable.vue";
 import StatusCircle from "@/components/StatusCircle.vue";
 import { getErrorMessage } from "@/utils/errors";
 import { useTRPCMutation, useTRPCQuery, useTRPCUtils } from "@/utils/query";
@@ -118,25 +118,7 @@ const total = computed(() => customer.value?.purchases.reduce((sum, p) => sum + 
                 }}
                 pour un total de {{ formatPrice(total) }}
               </div>
-              <table class="w-fit border-separate border-spacing-x-4 border-spacing-y-1">
-                <caption class="sr-only">
-                  Achats du client
-                </caption>
-                <thead>
-                  <tr>
-                    <th scope="col" class="text-left">Date</th>
-                    <th scope="col" class="text-right">Montant</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(purchase, i) in customer.purchases" :key="i">
-                    <td>{{ formatISODateFR(purchase.date) }}</td>
-                    <td class="text-right font-number">
-                      {{ formatPrice(purchase.amount) }}
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+              <PurchasesTable :purchases="customer.purchases" />
             </template>
             <span v-else>Aucun achat pour ce⋅tte client⋅e</span>
           </CardBody>

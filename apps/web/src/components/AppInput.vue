@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { useTemplateRef } from "vue";
 
 import { COMMON_STYLES } from "./formControls";
 
 const model = defineModel<string | number | null | undefined>();
 
-const input = ref<HTMLInputElement | null>(null);
+const input = useTemplateRef<HTMLInputElement>("input");
 const focus = () => input.value?.focus();
 defineExpose({ focus });
 </script>

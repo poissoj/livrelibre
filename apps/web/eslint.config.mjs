@@ -1,9 +1,10 @@
 import prettierConfig from "eslint-config-prettier/flat";
 import pluginVue from "eslint-plugin-vue";
+import { defineConfig } from "eslint/config";
 import tseslint from "typescript-eslint";
 import vueParser from "vue-eslint-parser";
 
-export default tseslint.config(
+export default defineConfig(
   {
     ignores: ["dist/**", "vite.config.ts", "eslint.config.mjs"],
   },
@@ -21,11 +22,16 @@ export default tseslint.config(
     rules: {
       "vue/define-macros-order": "error",
       "vue/component-name-in-template-casing": ["error", "PascalCase"],
+      "vue/max-template-depth": ["error", { maxDepth: 9 }],
+      "vue/max-props": ["error", { maxProps: 6 }],
       "vue/no-undef-components": "error",
       "vue/no-unused-properties": ["warn", { groups: ["props"] }],
+      "vue/no-unused-refs": "error",
+      "vue/no-unused-emit-declarations": "error",
       "vue/require-typed-ref": "error",
       "vue/no-export-in-script-setup": "error",
       "vue/prefer-import-from-vue": "error",
+      "vue/prefer-use-template-ref": "error",
     },
   },
   {
@@ -38,6 +44,15 @@ export default tseslint.config(
       },
     },
     rules: {
+      complexity: ["warn", { max: 15 }],
+      "no-nested-ternary": "error",
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "TSEnumDeclaration",
+          message: "use literal unions or `as const` objects instead of enums",
+        },
+      ],
       "@typescript-eslint/no-unused-vars": ["warn", { ignoreRestSiblings: true }],
       "@typescript-eslint/consistent-type-imports": "error",
       "@typescript-eslint/no-import-type-side-effects": "error",
