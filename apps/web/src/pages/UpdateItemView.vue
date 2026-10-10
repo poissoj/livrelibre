@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { faCheckCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
@@ -14,17 +15,26 @@ import type { FormFields } from "@/components/itemForm";
 import ItemForm from "@/components/ItemForm.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import NoResults from "@/components/NoResults.vue";
-import { useTRPCMutation, useTRPCQuery, useTRPCUtils } from "@/utils/query";
+import { type RouterInput, trpcClient } from "@/utils/trpc";
 
 const CARD_TITLE = "Modifier un article";
 
 const route = useRoute();
 const router = useRouter();
-const utils = useTRPCUtils();
+const queryClient = useQueryClient();
 const id = computed(() => Number(route.params.itemId));
 
-const { data: item, isPending, isError, refetch } = useTRPCQuery("searchItem", id);
-const { mutateAsync: updateItem } = useTRPCMutation("updateItem", {
+const {
+  data: item,
+  isPending,
+  isError,
+  refetch,
+} = useQuery({
+  queryKey: ["searchItem", id],
+  queryFn: () => trpcClient.searchItem.query(id.value),
+});
+const { mutateAsync: updateItem } = useMutation({
+  mutationFn: (input: RouterInput["updateItem"]) => trpcClient.updateItem.mutate(input),
   meta: { errorToast: false },
 });
 
@@ -32,9 +42,9 @@ const submit = async (data: FormFields) => {
   const payload = { ...data, amount: Number(data.amount) };
   const result = await updateItem({ item: payload, id: id.value });
   if (result.type === "success") {
-    await utils.invalidate("searchItem", id.value);
-    void utils.invalidate("items");
-    void utils.invalidate("advancedSearch");
+    await queryClient.invalidateQueries({ queryKey: ["searchItem", id.value] });
+    void queryClient.invalidateQueries({ queryKey: ["items"] });
+    void queryClient.invalidateQueries({ queryKey: ["advancedSearch"] });
     void router.push(`/item/${String(id.value)}?status=updated`);
   }
   return result;

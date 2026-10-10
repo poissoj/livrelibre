@@ -2,6 +2,7 @@
 import { faCheckCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import type { RawOrder } from "@livrelibre/shared/order";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { toast } from "vue-sonner";
@@ -18,24 +19,33 @@ import NoResults from "@/components/NoResults.vue";
 import type { OrderFormData } from "@/components/orderForm";
 import OrderForm from "@/components/OrderForm.vue";
 import { getErrorMessage } from "@/utils/errors";
-import { useTRPCMutation, useTRPCQuery, useTRPCUtils } from "@/utils/query";
+import { type RouterInput, trpcClient } from "@/utils/trpc";
 import { useQueryParams } from "@/utils/useQueryParams";
 
 const CARD_TITLE = "Modifier une commande";
 
 const route = useRoute();
 const router = useRouter();
-const utils = useTRPCUtils();
+const queryClient = useQueryClient();
 const { query } = useQueryParams();
 const id = computed(() => Number(route.params.orderId));
 
-const { data: order, isPending, isError, refetch } = useTRPCQuery("order", id);
+const {
+  data: order,
+  isPending,
+  isError,
+  refetch,
+} = useQuery({
+  queryKey: ["order", id],
+  queryFn: () => trpcClient.order.query(id.value),
+});
 
-const { mutateAsync: updateOrder, isPending: updatePending } = useTRPCMutation("updateOrder", {
+const { mutateAsync: updateOrder, isPending: updatePending } = useMutation({
+  mutationFn: (input: RouterInput["updateOrder"]) => trpcClient.updateOrder.mutate(input),
   meta: { errorToast: false },
   onSuccess(result) {
     if (result.type === "success") {
-      void utils.invalidate("order", id.value);
+      void queryClient.invalidateQueries({ queryKey: ["order", id.value] });
       toast.success(result.msg);
       void router.push({ path: "/orders", query: query.value });
     } else {
@@ -47,7 +57,8 @@ const { mutateAsync: updateOrder, isPending: updatePending } = useTRPCMutation("
   },
 });
 
-const deleteMutation = useTRPCMutation("deleteOrder", {
+const deleteMutation = useMutation({
+  mutationFn: (input: RouterInput["deleteOrder"]) => trpcClient.deleteOrder.mutate(input),
   meta: { errorToast: false },
 });
 

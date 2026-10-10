@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useQuery } from "@tanstack/vue-query";
 import { defineAsyncComponent } from "vue";
 
 import AppCard from "@/components/AppCard.vue";
@@ -6,13 +7,21 @@ import AppSkeleton from "@/components/AppSkeleton.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
-import { useTRPCQuery } from "@/utils/query";
+import { trpcClient } from "@/utils/trpc";
 
 const props = defineProps<{ id: number }>();
 
 const SalesByMonth = defineAsyncComponent(() => import("@/components/Charts/SalesByMonth.vue"));
 
-const { data: sales, isPending, isError, refetch } = useTRPCQuery("lastSales", () => props.id);
+const {
+  data: sales,
+  isPending,
+  isError,
+  refetch,
+} = useQuery({
+  queryKey: ["lastSales", () => props.id],
+  queryFn: () => trpcClient.lastSales.query(props.id),
+});
 </script>
 
 <template>

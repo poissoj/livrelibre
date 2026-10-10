@@ -1,23 +1,26 @@
 <script setup lang="ts">
 import type { OrderRow } from "@livrelibre/shared/order";
+import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { toast } from "vue-sonner";
 
-import { useTRPCMutation, useTRPCUtils } from "@/utils/query";
+import { type RouterInput, type RouterOutput, trpcClient } from "@/utils/trpc";
 
 const props = defineProps<{ order: OrderRow }>();
 
-const utils = useTRPCUtils();
-const { mutate: setNotified, isPending: isUpdating } = useTRPCMutation("setCustomerNotified", {
+const queryClient = useQueryClient();
+const { mutate: setNotified, isPending: isUpdating } = useMutation({
+  mutationFn: (input: RouterInput["setCustomerNotified"]) =>
+    trpcClient.setCustomerNotified.mutate(input),
   onSuccess(_data, variables) {
     toast.success(
       `La commande de "${props.order.itemTitle}" a été marquée comme ${
         variables.customerNotified ? "" : "non "
       }prévenue.`,
     );
-    utils.setData("order", props.order.id, (oldData) =>
+    queryClient.setQueryData<RouterOutput["order"]>(["order", props.order.id], (oldData) =>
       oldData ? { ...oldData, customerNotified: variables.customerNotified } : undefined,
     );
-    void utils.invalidate("orders");
+    void queryClient.invalidateQueries({ queryKey: ["orders"] });
   },
 });
 

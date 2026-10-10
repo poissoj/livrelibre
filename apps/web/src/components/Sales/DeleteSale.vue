@@ -1,16 +1,18 @@
 <script setup lang="ts">
 import { faSpinner, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useMutation, useQueryClient } from "@tanstack/vue-query";
 
 import AppButton from "@/components/AppButton.vue";
-import { useTRPCMutation, useTRPCUtils } from "@/utils/query";
+import { type RouterInput, trpcClient } from "@/utils/trpc";
 
 const props = defineProps<{ saleId: number }>();
 
-const utils = useTRPCUtils();
-const { mutate, isPending } = useTRPCMutation("deleteSale", {
+const queryClient = useQueryClient();
+const { mutate, isPending } = useMutation({
+  mutationFn: (input: RouterInput["deleteSale"]) => trpcClient.deleteSale.mutate(input),
   onSuccess() {
-    void utils.invalidate("salesByDay");
+    void queryClient.invalidateQueries({ queryKey: ["salesByDay"] });
   },
 });
 </script>

@@ -3,13 +3,13 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions } from "@headlessui/vue";
 import { formatPrice } from "@livrelibre/shared/format";
-import { keepPreviousData } from "@tanstack/vue-query";
+import { keepPreviousData, useQuery } from "@tanstack/vue-query";
 import { clsx } from "clsx";
 import { computed, ref } from "vue";
 
 import { COMMON_STYLES } from "@/components/formControls";
 import type { ItemValue, NewItem } from "@/components/selectItem";
-import { useTRPCQuery } from "@/utils/query";
+import { trpcClient } from "@/utils/trpc";
 import { useDebouncedValue } from "@/utils/useDebouncedValue";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
 
@@ -26,11 +26,12 @@ const {
   data: searchResults,
   isError,
   isFetching,
-} = useTRPCQuery(
-  "quicksearch",
-  computed(() => ({ search: debouncedSearch.value })),
-  { staleTime: 60000, placeholderData: keepPreviousData },
-);
+} = useQuery({
+  queryKey: ["quicksearch", () => ({ search: debouncedSearch.value })],
+  queryFn: () => trpcClient.quicksearch.query({ search: debouncedSearch.value }),
+  staleTime: 60000,
+  placeholderData: keepPreviousData,
+});
 const showLoading = useDelayedLoading(isFetching, 500);
 const filteredItems = computed(() => searchResults.value?.items || []);
 const newItemOption = computed<NewItem>(() => ({

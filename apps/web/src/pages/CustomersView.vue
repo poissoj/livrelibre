@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { faUserPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { keepPreviousData } from "@tanstack/vue-query";
+import { keepPreviousData, useQuery } from "@tanstack/vue-query";
 import { computed, ref } from "vue";
 
 import AppCard from "@/components/AppCard.vue";
@@ -17,7 +17,7 @@ import ItemsCard from "@/components/ItemsCard.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import { useTitle } from "@/lib/useTitle";
-import { useTRPCQuery } from "@/utils/query";
+import { trpcClient } from "@/utils/trpc";
 import { useDebouncedValue } from "@/utils/useDebouncedValue";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
 import { usePageParam } from "@/utils/useQueryParams";
@@ -40,7 +40,9 @@ const {
   isError,
   isFetching,
   refetch,
-} = useTRPCQuery("customers", query, {
+} = useQuery({
+  queryKey: ["customers", query],
+  queryFn: () => trpcClient.customers.query(query.value),
   placeholderData: keepPreviousData,
 });
 const showLoading = useDelayedLoading(isFetching, 500);

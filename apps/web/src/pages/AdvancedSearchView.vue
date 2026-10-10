@@ -4,7 +4,7 @@ import { formatTVA } from "@livrelibre/shared/format";
 import { ITEM_TYPES } from "@livrelibre/shared/item";
 import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
 import { isIn } from "@livrelibre/shared/utils";
-import { keepPreviousData } from "@tanstack/vue-query";
+import { keepPreviousData, useQuery } from "@tanstack/vue-query";
 import { computed } from "vue";
 import { RouterLink } from "vue-router";
 
@@ -16,7 +16,7 @@ import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import ItemsTable from "@/components/ItemsTable.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
-import { useTRPCQuery } from "@/utils/query";
+import { trpcClient } from "@/utils/trpc";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
 import { usePageParam, useQueryParams } from "@/utils/useQueryParams";
 
@@ -83,11 +83,11 @@ const {
   isError,
   isFetching,
   refetch,
-} = useTRPCQuery(
-  "advancedSearch",
-  computed(() => ({ search: searchQuery.value, page: page.value })),
-  { placeholderData: keepPreviousData },
-);
+} = useQuery({
+  queryKey: ["advancedSearch", () => ({ search: searchQuery.value, page: page.value })],
+  queryFn: () => trpcClient.advancedSearch.query({ search: searchQuery.value, page: page.value }),
+  placeholderData: keepPreviousData,
+});
 const showLoading = useDelayedLoading(isFetching, 500);
 
 const pageCount = computed(() => (list.value ? Math.ceil(list.value.count / ITEMS_PER_PAGE) : 0));

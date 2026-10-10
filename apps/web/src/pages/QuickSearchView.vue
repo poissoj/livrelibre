@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
-import { keepPreviousData } from "@tanstack/vue-query";
+import { keepPreviousData, useQuery } from "@tanstack/vue-query";
 import { computed } from "vue";
 
 import AppCard from "@/components/AppCard.vue";
@@ -12,7 +12,7 @@ import ErrorMessage from "@/components/ErrorMessage.vue";
 import ItemsTable from "@/components/ItemsTable.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import { useTitle } from "@/lib/useTitle";
-import { useTRPCQuery } from "@/utils/query";
+import { trpcClient } from "@/utils/trpc";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
 import { usePageParam, useQueryParams } from "@/utils/useQueryParams";
 
@@ -36,15 +36,19 @@ const {
   isSuccess,
   isFetching,
   refetch,
-} = useTRPCQuery(
-  "quicksearch",
-  computed(() => ({
-    search: search.value,
-    page: page.value,
-    inStock: inStock.value,
-  })),
-  { placeholderData: keepPreviousData },
-);
+} = useQuery({
+  queryKey: [
+    "quicksearch",
+    () => ({ search: search.value, page: page.value, inStock: inStock.value }),
+  ],
+  queryFn: () =>
+    trpcClient.quicksearch.query({
+      search: search.value,
+      page: page.value,
+      inStock: inStock.value,
+    }),
+  placeholderData: keepPreviousData,
+});
 const showLoading = useDelayedLoading(isFetching, 500);
 
 const pageCount = computed(() =>

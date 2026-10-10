@@ -1,15 +1,24 @@
 <script setup lang="ts">
 import { formatPrice } from "@livrelibre/shared/format";
+import { useQuery } from "@tanstack/vue-query";
 
 import AppCard from "@/components/AppCard.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
-import { useTRPCQuery } from "@/utils/query";
+import { trpcClient } from "@/utils/trpc";
 
 import ReactivateButton from "./ReactivateButton.vue";
 
-const { data: asideCart, isError, isSuccess, refetch } = useTRPCQuery("asideCart", undefined);
+const {
+  data: asideCart,
+  isError,
+  isSuccess,
+  refetch,
+} = useQuery({
+  queryKey: ["asideCart"],
+  queryFn: () => trpcClient.asideCart.query(),
+});
 </script>
 
 <template>

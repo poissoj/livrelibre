@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useQuery } from "@tanstack/vue-query";
 import { RouterLink } from "vue-router";
 
 import AddToCartButton from "@/components/AddToCartButton.vue";
@@ -6,11 +7,19 @@ import AppCard from "@/components/AppCard.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
-import { useTRPCQuery } from "@/utils/query";
+import { trpcClient } from "@/utils/trpc";
 
 import BookmarksSkeleton from "./BookmarksSkeleton.vue";
 
-const { data: bookmarks, isPending, isError, refetch } = useTRPCQuery("bookmarks", undefined);
+const {
+  data: bookmarks,
+  isPending,
+  isError,
+  refetch,
+} = useQuery({
+  queryKey: ["bookmarks"],
+  queryFn: () => trpcClient.bookmarks.query(),
+});
 </script>
 
 <template>

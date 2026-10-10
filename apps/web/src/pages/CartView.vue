@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { formatPrice } from "@livrelibre/shared/format";
+import { useQuery } from "@tanstack/vue-query";
 import { ref } from "vue";
 
 import AppCard from "@/components/AppCard.vue";
@@ -16,9 +17,17 @@ import PaymentForm from "@/components/cart/PaymentForm.vue";
 import QuickAdd from "@/components/cart/QuickAdd.vue";
 import type { ISBNError } from "@/components/cart/types";
 import ErrorMessage from "@/components/ErrorMessage.vue";
-import { useTRPCQuery } from "@/utils/query";
+import { trpcClient } from "@/utils/trpc";
 
-const { data: cart, isPending, isError, refetch } = useTRPCQuery("cart", undefined);
+const {
+  data: cart,
+  isPending,
+  isError,
+  refetch,
+} = useQuery({
+  queryKey: ["cart"],
+  queryFn: () => trpcClient.cart.query(),
+});
 const errors = ref<ISBNError[]>([]);
 
 const addError = (error: ISBNError) => {

@@ -1,15 +1,16 @@
 <script setup lang="ts">
+import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { nextTick, onMounted, ref, useTemplateRef } from "vue";
 
 import AppInput from "@/components/AppInput.vue";
 import { refreshCartRelated } from "@/utils/invalidations";
-import { useTRPCMutation, useTRPCUtils } from "@/utils/query";
+import { type RouterInput, trpcClient } from "@/utils/trpc";
 
 import type { ISBNError } from "./types";
 
 const emit = defineEmits<{ error: [value: ISBNError] }>();
 
-const utils = useTRPCUtils();
+const queryClient = useQueryClient();
 const isbn = ref("");
 const inputRef = useTemplateRef<InstanceType<typeof AppInput>>("inputRef");
 
@@ -20,7 +21,8 @@ const focusInput = () => {
 };
 onMounted(focusInput);
 
-const { mutate: addIsbn } = useTRPCMutation("addISBNToCart", {
+const { mutate: addIsbn } = useMutation({
+  mutationFn: (input: RouterInput["addISBNToCart"]) => trpcClient.addISBNToCart.mutate(input),
   meta: { errorToast: false },
   onError(_error, isbnInput) {
     emit("error", { message: "INTERNAL_ERROR", isbn: isbnInput });
@@ -31,7 +33,7 @@ const { mutate: addIsbn } = useTRPCMutation("addISBNToCart", {
       emit("error", { message, isbn: isbnInput, ...rest });
       return;
     }
-    await refreshCartRelated(utils);
+    await refreshCartRelated(queryClient);
   },
 });
 

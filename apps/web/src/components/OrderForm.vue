@@ -9,6 +9,7 @@ import {
   type RawOrder,
   STATUS_LABEL,
 } from "@livrelibre/shared/order";
+import { useQueryClient } from "@tanstack/vue-query";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
 
@@ -28,7 +29,7 @@ import SelectCustomer from "@/components/SelectCustomer.vue";
 import type { NewItem } from "@/components/selectItem";
 import SelectItem from "@/components/SelectItem.vue";
 import { getErrorMessage } from "@/utils/errors";
-import { useTRPCUtils } from "@/utils/query";
+import { trpcClient } from "@/utils/trpc";
 
 const props = defineProps<{
   title: string;
@@ -37,7 +38,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{ submit: [order: RawOrder] }>();
 
-const utils = useTRPCUtils();
+const queryClient = useQueryClient();
 
 const customer = ref<CustomerSelection | null>(props.data.customer ?? null);
 const item = ref<Item | NewItem | null>(
@@ -80,7 +81,10 @@ const submit = async () => {
         toast.error("ISBN invalide");
         return;
       }
-      const result = await utils.fetch("isbnSearch", isbn.value);
+      const result = await queryClient.query({
+        queryKey: ["isbnSearch", isbn.value],
+        queryFn: () => trpcClient.isbnSearch.query(isbn.value),
+      });
       if (result.count === 0) {
         toast.info("Aucun article trouvé pour cet ISBN");
       }

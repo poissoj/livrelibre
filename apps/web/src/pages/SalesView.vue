@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Sale } from "@livrelibre/server/server/sales";
 import { formatNumber, formatPrice } from "@livrelibre/shared/format";
+import { useQuery } from "@tanstack/vue-query";
 import { clsx } from "clsx";
 import { RouterLink, useRouter } from "vue-router";
 
@@ -10,12 +11,20 @@ import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import RestrictedContent from "@/components/RestrictedContent.vue";
-import { useTRPCQuery } from "@/utils/query";
+import { trpcClient } from "@/utils/trpc";
 
 const TH_STYLES = "sticky top-0 bg-white";
 
 const router = useRouter();
-const { data: sales, isPending, isError, refetch } = useTRPCQuery("sales", undefined);
+const {
+  data: sales,
+  isPending,
+  isError,
+  refetch,
+} = useQuery({
+  queryKey: ["sales"],
+  queryFn: () => trpcClient.sales.query(),
+});
 
 const makeSaleURL = (sale: Sale) => `/sale/${sale.month.split("/").reverse().join("/")}`;
 const goToSale = (sale: Sale) => {

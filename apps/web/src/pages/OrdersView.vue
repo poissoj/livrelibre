@@ -8,6 +8,7 @@ import {
   zOrderStatus,
   zOrderStatusArray,
 } from "@livrelibre/shared/order";
+import { useQuery } from "@tanstack/vue-query";
 import { computed, ref, watch } from "vue";
 
 import AppCard from "@/components/AppCard.vue";
@@ -21,7 +22,7 @@ import { filterGroups, filterOrders, groupOrdersByCustomer } from "@/components/
 import StatusTile from "@/components/orders/StatusTile.vue";
 import OrdersTable from "@/components/OrdersTable.vue";
 import OrdersTableByCustomer from "@/components/OrdersTableByCustomer.vue";
-import { useTRPCQuery } from "@/utils/query";
+import { trpcClient } from "@/utils/trpc";
 import { useDebouncedValue } from "@/utils/useDebouncedValue";
 import { useQueryParams } from "@/utils/useQueryParams";
 
@@ -40,7 +41,15 @@ const getStatus = (query: string | string[] | undefined): OrderStatus[] => {
 const { query, push } = useQueryParams();
 
 const orderStatus = computed(() => getStatus(query.value.status));
-const { data: ordersData, isPending, isError, refetch } = useTRPCQuery("orders", orderStatus);
+const {
+  data: ordersData,
+  isPending,
+  isError,
+  refetch,
+} = useQuery({
+  queryKey: ["orders", orderStatus],
+  queryFn: () => trpcClient.orders.query(orderStatus.value),
+});
 const orderRows = computed<OrderRow[]>(() =>
   (ordersData.value ?? []).map((order) => ({
     ...order,

@@ -1,14 +1,16 @@
 <script setup lang="ts">
 import { faPlus, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useMutation } from "@tanstack/vue-query";
 
 import AppButton from "@/components/AppButton.vue";
 import type { CustomerFormFields } from "@/components/customerForm";
 import CustomerForm from "@/components/CustomerForm.vue";
 import LinkButton from "@/components/LinkButton.vue";
-import { useTRPCMutation } from "@/utils/query";
+import { type RouterInput, trpcClient } from "@/utils/trpc";
 
-const { mutateAsync: saveCustomer, isPending: savePending } = useTRPCMutation("updateCustomer", {
+const { mutateAsync: saveCustomer, isPending: savePending } = useMutation({
+  mutationFn: (input: RouterInput["updateCustomer"]) => trpcClient.updateCustomer.mutate(input),
   meta: { errorToast: false },
 });
 

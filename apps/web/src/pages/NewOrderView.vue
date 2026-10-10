@@ -2,6 +2,7 @@
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import type { RawOrder } from "@livrelibre/shared/order";
+import { useMutation, useQuery } from "@tanstack/vue-query";
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { toast } from "vue-sonner";
@@ -11,7 +12,7 @@ import ErrorMessage from "@/components/ErrorMessage.vue";
 import type { OrderFormData } from "@/components/orderForm";
 import OrderForm from "@/components/OrderForm.vue";
 import { getErrorMessage } from "@/utils/errors";
-import { useTRPCMutation, useTRPCQuery } from "@/utils/query";
+import { type RouterInput, trpcClient } from "@/utils/trpc";
 
 const route = useRoute();
 const router = useRouter();
@@ -24,13 +25,14 @@ const {
   isPending: itemPending,
   isError: itemError,
   refetch: refetchItem,
-} = useTRPCQuery(
-  "searchItem",
-  computed(() => Number(itemIdStr)),
-  computed(() => ({ enabled: itemIdStr !== "" })),
-);
+} = useQuery({
+  queryKey: ["searchItem", Number(itemIdStr)],
+  queryFn: () => trpcClient.searchItem.query(Number(itemIdStr)),
+  enabled: itemIdStr !== "",
+});
 
-const { mutateAsync: createOrder, isPending: createPending } = useTRPCMutation("newOrder", {
+const { mutateAsync: createOrder, isPending: createPending } = useMutation({
+  mutationFn: (input: RouterInput["newOrder"]) => trpcClient.newOrder.mutate(input),
   meta: { errorToast: false },
   onSuccess(result) {
     if (result.type === "success") {

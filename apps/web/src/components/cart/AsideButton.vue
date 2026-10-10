@@ -1,15 +1,23 @@
 <script setup lang="ts">
 import { faHourglassStart, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 
 import AppButton from "@/components/AppButton.vue";
-import { useTRPCMutation, useTRPCQuery, useTRPCUtils } from "@/utils/query";
+import { trpcClient } from "@/utils/trpc";
 
-const utils = useTRPCUtils();
-const { data: asideCart, isSuccess: asideCartSuccess } = useTRPCQuery("asideCart", undefined);
-const { mutate, isPending } = useTRPCMutation("putCartAside", {
+const queryClient = useQueryClient();
+const { data: asideCart, isSuccess: asideCartSuccess } = useQuery({
+  queryKey: ["asideCart"],
+  queryFn: () => trpcClient.asideCart.query(),
+});
+const { mutate, isPending } = useMutation({
+  mutationFn: () => trpcClient.putCartAside.mutate(),
   onSuccess() {
-    void Promise.all([utils.invalidate("cart"), utils.invalidate("asideCart")]);
+    void Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["cart"] }),
+      queryClient.invalidateQueries({ queryKey: ["asideCart"] }),
+    ]);
   },
 });
 

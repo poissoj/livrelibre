@@ -3,6 +3,7 @@ import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { formatDate } from "@livrelibre/shared/date";
 import { PAYMENT_METHODS, type PaymentType } from "@livrelibre/shared/sale";
+import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
 
@@ -10,19 +11,20 @@ import AppButton from "@/components/AppButton.vue";
 import AppInput from "@/components/AppInput.vue";
 import AppSelect from "@/components/AppSelect.vue";
 import { getErrorMessage } from "@/utils/errors";
-import { useTRPCMutation, useTRPCUtils } from "@/utils/query";
+import { type RouterInput, trpcClient } from "@/utils/trpc";
 
-const utils = useTRPCUtils();
+const queryClient = useQueryClient();
 const paymentDate = ref(formatDate(new Date()));
 const paymentType = ref<PaymentType>("cash");
 
-const { mutateAsync: payCart, isPending: isPaying } = useTRPCMutation("payCart", {
+const { mutateAsync: payCart, isPending: isPaying } = useMutation({
+  mutationFn: (input: RouterInput["payCart"]) => trpcClient.payCart.mutate(input),
   meta: { errorToast: false },
   onSuccess() {
-    void utils.invalidate("cart");
-    void utils.invalidate("customers");
-    void utils.invalidate("selectedCustomer");
-    void utils.invalidate("searchCustomer");
+    void queryClient.invalidateQueries({ queryKey: ["cart"] });
+    void queryClient.invalidateQueries({ queryKey: ["customers"] });
+    void queryClient.invalidateQueries({ queryKey: ["selectedCustomer"] });
+    void queryClient.invalidateQueries({ queryKey: ["searchCustomer"] });
   },
   onError(error) {
     toast.error(getErrorMessage(error));

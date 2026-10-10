@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useQuery } from "@tanstack/vue-query";
 import { computed, defineAsyncComponent } from "vue";
 import { ContentLoader } from "vue-content-loader";
 
@@ -6,14 +7,22 @@ import AppCard from "@/components/AppCard.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
-import { useTRPCQuery } from "@/utils/query";
+import { trpcClient } from "@/utils/trpc";
 
 const SalesByHour = defineAsyncComponent(() => import("@/components/Charts/SalesByHour.vue"));
 const SalesByDay = defineAsyncComponent(() => import("@/components/Charts/SalesByDay.vue"));
 
 const DAYS = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
 
-const { data: stats, isPending, isError, refetch } = useTRPCQuery("stats", undefined);
+const {
+  data: stats,
+  isPending,
+  isError,
+  refetch,
+} = useQuery({
+  queryKey: ["stats"],
+  queryFn: () => trpcClient.stats.query(),
+});
 
 const days = computed(() =>
   (stats.value?.days ?? []).map(({ day, count }) => ({

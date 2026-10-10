@@ -2,28 +2,30 @@
 import type { CustomerWithPurchase } from "@livrelibre/shared/customer";
 import { formatPrice } from "@livrelibre/shared/format";
 import { LOYALTY_DISCOUNT_TITLE, loyaltyDiscount } from "@livrelibre/shared/sale";
+import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { computed, ref } from "vue";
 import { toast } from "vue-sonner";
 
 import AppButton from "@/components/AppButton.vue";
 import AppInput from "@/components/AppInput.vue";
 import { getErrorMessage } from "@/utils/errors";
-import { useTRPCMutation, useTRPCUtils } from "@/utils/query";
+import { type RouterInput, trpcClient } from "@/utils/trpc";
 
 const props = defineProps<{ customer: CustomerWithPurchase }>();
 
-const utils = useTRPCUtils();
+const queryClient = useQueryClient();
 const amount = computed(() =>
   props.customer.purchases.reduce((sum, purchase) => sum + purchase.amount, 0),
 );
 const discount = ref(loyaltyDiscount(amount.value));
 const applied = ref<number | undefined>(undefined);
 
-const { mutate: addDiscount, isPending: isApplying } = useTRPCMutation("addNewItemToCart", {
+const { mutate: addDiscount, isPending: isApplying } = useMutation({
+  mutationFn: (input: RouterInput["addNewItemToCart"]) => trpcClient.addNewItemToCart.mutate(input),
   meta: { errorToast: false },
   onSuccess() {
     applied.value = discount.value;
-    void utils.invalidate("cart");
+    void queryClient.invalidateQueries({ queryKey: ["cart"] });
   },
   onError(error) {
     toast.error(getErrorMessage(error));

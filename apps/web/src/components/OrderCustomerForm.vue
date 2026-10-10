@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { faCheckCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useMutation } from "@tanstack/vue-query";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
 
@@ -10,7 +11,7 @@ import AppTextarea from "@/components/AppTextarea.vue";
 import type { CustomerFormFields, SelectedCustomer } from "@/components/customerForm";
 import FormRow from "@/components/FormRow.vue";
 import { getErrorMessage } from "@/utils/errors";
-import { useTRPCMutation } from "@/utils/query";
+import { type RouterInput, trpcClient } from "@/utils/trpc";
 
 const emit = defineEmits<{
   add: [customer: SelectedCustomer];
@@ -23,7 +24,8 @@ const email = ref("");
 const contact = ref("");
 const comment = ref("");
 
-const { mutateAsync: createCustomer, isPending: isSubmitting } = useTRPCMutation("updateCustomer", {
+const { mutateAsync: createCustomer, isPending: isSubmitting } = useMutation({
+  mutationFn: (input: RouterInput["updateCustomer"]) => trpcClient.updateCustomer.mutate(input),
   meta: { errorToast: false },
 });
 

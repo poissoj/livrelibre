@@ -2,6 +2,7 @@
 import { faStar as emptyStar } from "@fortawesome/free-regular-svg-icons";
 import { faBook, faCartPlus, faEdit, faSpinner, faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
@@ -18,7 +19,7 @@ import ItemDetails from "@/components/ItemDetails.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import NoResults from "@/components/NoResults.vue";
 import { useTitle } from "@/lib/useTitle";
-import { useTRPCQuery, useTRPCUtils } from "@/utils/query";
+import { trpcClient } from "@/utils/trpc";
 import { useAddToCart } from "@/utils/useAddToCart";
 import { useBookmark } from "@/utils/useBookmark";
 
@@ -26,10 +27,21 @@ const props = defineProps<{ id: number }>();
 
 const route = useRoute();
 const router = useRouter();
-const utils = useTRPCUtils();
+const queryClient = useQueryClient();
 
-const { data: item, isPending, isError, refetch } = useTRPCQuery("searchItem", () => props.id);
-const { data: orders, isError: ordersError } = useTRPCQuery("itemOrders", () => props.id);
+const {
+  data: item,
+  isPending,
+  isError,
+  refetch,
+} = useQuery({
+  queryKey: ["searchItem", () => props.id],
+  queryFn: () => trpcClient.searchItem.query(props.id),
+});
+const { data: orders, isError: ordersError } = useQuery({
+  queryKey: ["itemOrders", () => props.id],
+  queryFn: () => trpcClient.itemOrders.query(props.id),
+});
 
 useTitle(() => (item.value ? `${item.value.title} | Voir un article` : "Voir un article"));
 
@@ -47,7 +59,7 @@ const submitAddToCart = () => {
     { id: props.id, quantity: Number(quantity.value) },
     {
       onSuccess() {
-        void utils.invalidate("searchItem");
+        void queryClient.invalidateQueries({ queryKey: ["searchItem"] });
       },
     },
   );

@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { faShoppingCart, faUser } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useQuery, useQueryClient } from "@tanstack/vue-query";
 import { clsx } from "clsx";
 import { computed } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 
 import { APP_NAME } from "@/lib/config";
 import useUser from "@/lib/useUser";
-import { useTRPCQuery, useTRPCUtils } from "@/utils/query";
+import { trpcClient } from "@/utils/trpc";
 
 import QuickSearch from "./QuickSearch.vue";
 
@@ -15,8 +16,11 @@ const BUTTON_STYLES = "text-white [padding:14px_16px] hover:[background-color:rg
 
 const { user } = useUser();
 const router = useRouter();
-const utils = useTRPCUtils();
-const cart = useTRPCQuery("cart", undefined);
+const queryClient = useQueryClient();
+const cart = useQuery({
+  queryKey: ["cart"],
+  queryFn: () => trpcClient.cart.query(),
+});
 
 const cartError = computed(() => cart.isError.value);
 const cartCount = computed(() => cart.data.value?.count ?? 0);
@@ -27,7 +31,7 @@ const logout = async () => {
   } catch {
     // Déconnexion locale même si l'appel serveur échoue.
   } finally {
-    await utils.reset("user");
+    await queryClient.resetQueries({ queryKey: ["user"] });
     await router.push("/login");
   }
 };

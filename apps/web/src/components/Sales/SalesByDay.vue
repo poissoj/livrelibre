@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { formatPrice } from "@livrelibre/shared/format";
 import { PAYMENT_METHODS } from "@livrelibre/shared/sale";
+import { useQuery } from "@tanstack/vue-query";
 import { computed, useTemplateRef } from "vue";
 
 import AppCard from "@/components/AppCard.vue";
@@ -14,8 +15,8 @@ import SalesTable from "@/components/Sales/SalesTable.vue";
 import StatsByTVA from "@/components/TVAStats/StatsByTVA.vue";
 import TVASkeleton from "@/components/TVAStats/TVASkeleton.vue";
 import { useTitle } from "@/lib/useTitle";
-import { useTRPCQuery } from "@/utils/query";
 import { useScrollRestoration } from "@/utils/scroll";
+import { trpcClient } from "@/utils/trpc";
 
 const props = defineProps<{ date: string }>();
 
@@ -27,10 +28,10 @@ const {
   isPending,
   isError,
   refetch,
-} = useTRPCQuery(
-  "salesByDay",
-  computed(() => props.date),
-);
+} = useQuery({
+  queryKey: ["salesByDay", () => props.date],
+  queryFn: () => trpcClient.salesByDay.query(props.date),
+});
 
 const formatDate = (date: string) => date.split("-").reverse().join("/");
 

@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useQueryClient } from "@tanstack/vue-query";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 
 import { getErrorMessage } from "@/utils/errors";
-import { useTRPCUtils } from "@/utils/query";
+import { trpcClient } from "@/utils/trpc";
 
 const router = useRouter();
-const utils = useTRPCUtils();
+const queryClient = useQueryClient();
 const isLoading = ref(false);
 const search = ref("");
 
@@ -21,7 +22,10 @@ const submit = async () => {
   if (/^\d{10,}$/.test(value)) {
     isLoading.value = true;
     try {
-      const result = await utils.fetch("isbnSearch", value);
+      const result = await queryClient.query({
+        queryKey: ["isbnSearch", value],
+        queryFn: () => trpcClient.isbnSearch.query(value),
+      });
       if (result.count === 0) {
         toast.info("Aucun article trouvé pour cet ISBN");
         return;

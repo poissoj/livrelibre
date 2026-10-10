@@ -2,6 +2,7 @@
 import { faCheckCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { formatPrice } from "@livrelibre/shared/format";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed } from "vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
 import { toast } from "vue-sonner";
@@ -20,13 +21,13 @@ import NoResults from "@/components/NoResults.vue";
 import PurchasesTable from "@/components/PurchasesTable.vue";
 import StatusCircle from "@/components/StatusCircle.vue";
 import { getErrorMessage } from "@/utils/errors";
-import { useTRPCMutation, useTRPCQuery, useTRPCUtils } from "@/utils/query";
+import { type RouterInput, trpcClient } from "@/utils/trpc";
 
 const CARD_TITLE = "Modifier un⋅e client⋅e";
 
 const route = useRoute();
 const router = useRouter();
-const utils = useTRPCUtils();
+const queryClient = useQueryClient();
 const id = computed(() => Number(route.params.customerId));
 
 const {
@@ -34,19 +35,27 @@ const {
   isPending,
   isError,
   refetch: refetchCustomer,
-} = useTRPCQuery("customer", id);
+} = useQuery({
+  queryKey: ["customer", id],
+  queryFn: () => trpcClient.customer.query(id.value),
+});
 const {
   data: customerOrders,
   isError: ordersError,
   refetch: refetchOrders,
-} = useTRPCQuery("customerOrders", id);
-const { mutateAsync: saveCustomer, isPending: savePending } = useTRPCMutation("updateCustomer", {
+} = useQuery({
+  queryKey: ["customerOrders", id],
+  queryFn: () => trpcClient.customerOrders.query(id.value),
+});
+const { mutateAsync: saveCustomer, isPending: savePending } = useMutation({
+  mutationFn: (input: RouterInput["updateCustomer"]) => trpcClient.updateCustomer.mutate(input),
   meta: { errorToast: false },
   onSuccess() {
-    void utils.invalidate("customer");
+    void queryClient.invalidateQueries({ queryKey: ["customer"] });
   },
 });
-const deleteMutation = useTRPCMutation("deleteCustomer", {
+const deleteMutation = useMutation({
+  mutationFn: (input: RouterInput["deleteCustomer"]) => trpcClient.deleteCustomer.mutate(input),
   meta: { errorToast: false },
 });
 

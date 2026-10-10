@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { formatPrice } from "@livrelibre/shared/format";
 import { ITEM_TYPES } from "@livrelibre/shared/item";
+import { useQuery } from "@tanstack/vue-query";
 import { clsx } from "clsx";
 import { computed } from "vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
@@ -15,7 +16,7 @@ import CategorySkeleton from "@/components/PaymentStats/CategorySkeleton.vue";
 import RestrictedContent from "@/components/RestrictedContent.vue";
 import StatsByTVA from "@/components/TVAStats/StatsByTVA.vue";
 import TVASkeleton from "@/components/TVAStats/TVASkeleton.vue";
-import { useTRPCQuery } from "@/utils/query";
+import { trpcClient } from "@/utils/trpc";
 
 const TH_STYLES = "sticky top-0 bg-white";
 
@@ -26,7 +27,15 @@ const year = computed(() => String(route.params.year));
 const month = computed(() => String(route.params.month));
 const params = computed(() => ({ month: month.value, year: year.value }));
 
-const { data: monthStats, isPending, isError, refetch } = useTRPCQuery("salesByMonth", params);
+const {
+  data: monthStats,
+  isPending,
+  isError,
+  refetch,
+} = useQuery({
+  queryKey: ["salesByMonth", params],
+  queryFn: () => trpcClient.salesByMonth.query(params.value),
+});
 
 const formatDate = (date: string) => date.split("-").reverse().join("/");
 const makeSaleURL = (date: string) => `/sale/${date.split("-").join("/")}`;

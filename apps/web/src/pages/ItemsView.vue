@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
-import { keepPreviousData } from "@tanstack/vue-query";
+import { keepPreviousData, useQuery } from "@tanstack/vue-query";
 import { computed } from "vue";
 
 import AppCard from "@/components/AppCard.vue";
@@ -14,7 +14,7 @@ import ItemsCard from "@/components/ItemsCard.vue";
 import ItemsTable from "@/components/ItemsTable.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import { useTitle } from "@/lib/useTitle";
-import { useTRPCQuery } from "@/utils/query";
+import { trpcClient } from "@/utils/trpc";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
 import { usePageParam } from "@/utils/useQueryParams";
 
@@ -26,7 +26,9 @@ const {
   isError,
   isFetching,
   refetch,
-} = useTRPCQuery("items", page, {
+} = useQuery({
+  queryKey: ["items", page],
+  queryFn: () => trpcClient.items.query(page.value),
   placeholderData: keepPreviousData,
 });
 const showLoading = useDelayedLoading(isFetching, 500);

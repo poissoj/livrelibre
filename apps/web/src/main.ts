@@ -14,7 +14,7 @@ import "@/global.css";
 import { USER_QUERY_OPTIONS } from "@/lib/userQuery";
 import { router } from "@/router";
 import { getErrorMessage, logUnexpectedError } from "@/utils/errors";
-import { trpcQueryOptions } from "@/utils/query";
+import { trpcClient } from "@/utils/trpc";
 
 import App from "./App.vue";
 
@@ -75,7 +75,8 @@ const queryClient = new QueryClient({
 
 const fetchUser = () =>
   queryClient.query({
-    ...trpcQueryOptions("user", undefined),
+    queryKey: ["user"],
+    queryFn: () => trpcClient.user.query(),
     ...USER_QUERY_OPTIONS,
   });
 

@@ -8,6 +8,7 @@ import {
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { useQueryClient } from "@tanstack/vue-query";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
@@ -16,11 +17,10 @@ import AppInput from "@/components/AppInput.vue";
 import { APP_NAME } from "@/lib/config";
 import { getErrorMessage, getRestErrorMessage } from "@/utils/errors";
 import { isUser } from "@/utils/guards";
-import { useTRPCUtils } from "@/utils/query";
 
 const router = useRouter();
 const route = useRoute();
-const utils = useTRPCUtils();
+const queryClient = useQueryClient();
 
 // Chemin interne uniquement, pour éviter une redirection ouverte.
 const redirectTarget = computed(() => {
@@ -53,7 +53,7 @@ const onSubmit = async () => {
         errorMsg.value = getRestErrorMessage(parsed, "Impossible de vous connecter.");
         return;
       }
-      utils.setData("user", undefined, parsed);
+      queryClient.setQueryData(["user"], parsed);
       await router.push(redirectTarget.value);
     } else {
       const body: unknown = await res.json().catch(() => null);

@@ -3,6 +3,7 @@ import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { formatTVA } from "@livrelibre/shared/format";
 import { ITEM_TYPES, type ItemType, type TVA, TVAValues } from "@livrelibre/shared/item";
+import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { ref } from "vue";
 
 import AppAlert from "@/components/AppAlert.vue";
@@ -15,19 +16,20 @@ import CardTitle from "@/components/CardTitle.vue";
 import type { AlertMessage } from "@/components/form";
 import FormRow from "@/components/FormRow.vue";
 import { getErrorMessage } from "@/utils/errors";
-import { useTRPCMutation, useTRPCUtils } from "@/utils/query";
+import { type RouterInput, trpcClient } from "@/utils/trpc";
 
-const utils = useTRPCUtils();
+const queryClient = useQueryClient();
 const price = ref<string | number>("");
 const title = ref("");
 const type = ref<ItemType>("book");
 const tva = ref<TVA>("5.5");
 const alert = ref<AlertMessage | null>(null);
 
-const { mutateAsync: addItem, isPending: addPending } = useTRPCMutation("addNewItemToCart", {
+const { mutateAsync: addItem, isPending: addPending } = useMutation({
+  mutationFn: (input: RouterInput["addNewItemToCart"]) => trpcClient.addNewItemToCart.mutate(input),
   meta: { errorToast: false },
   async onSuccess() {
-    await utils.invalidate("cart");
+    await queryClient.invalidateQueries({ queryKey: ["cart"] });
   },
   onError(error) {
     alert.value = { type: "error", message: getErrorMessage(error) };

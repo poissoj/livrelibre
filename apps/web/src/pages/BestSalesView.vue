@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { formatNumber } from "@livrelibre/shared/format";
+import { useQuery } from "@tanstack/vue-query";
 import { clsx } from "clsx";
 import { RouterLink } from "vue-router";
 
@@ -8,11 +9,19 @@ import AppSkeleton from "@/components/AppSkeleton.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
-import { useTRPCQuery } from "@/utils/query";
+import { trpcClient } from "@/utils/trpc";
 
 const TH_STYLES = "sticky top-0 bg-white";
 
-const { data: bestSales, isPending, isError, refetch } = useTRPCQuery("bestsales", undefined);
+const {
+  data: bestSales,
+  isPending,
+  isError,
+  refetch,
+} = useQuery({
+  queryKey: ["bestsales"],
+  queryFn: () => trpcClient.bestsales.query(),
+});
 </script>
 
 <template>

@@ -2,13 +2,13 @@
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions } from "@headlessui/vue";
-import { keepPreviousData } from "@tanstack/vue-query";
+import { keepPreviousData, useQuery } from "@tanstack/vue-query";
 import { clsx } from "clsx";
 import { computed, ref } from "vue";
 
 import { COMMON_STYLES } from "@/components/formControls";
 import type { CustomerSelection } from "@/components/orderForm";
-import { useTRPCQuery } from "@/utils/query";
+import { trpcClient } from "@/utils/trpc";
 import { useDebouncedValue } from "@/utils/useDebouncedValue";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
 
@@ -29,7 +29,9 @@ const {
   data: results,
   isError,
   isFetching,
-} = useTRPCQuery("searchCustomer", debouncedQuery, {
+} = useQuery({
+  queryKey: ["searchCustomer", debouncedQuery],
+  queryFn: () => trpcClient.searchCustomer.query(debouncedQuery.value),
   staleTime: 60000,
   placeholderData: keepPreviousData,
 });
