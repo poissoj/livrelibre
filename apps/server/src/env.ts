@@ -15,6 +15,10 @@ const envSchema = z.object({
   LOG_LEVEL: z.enum(["error", "warn", "info", "http", "verbose", "debug", "silly"]).default("info"),
   PORT: z.coerce.number().int().min(1).max(65535).default(3001),
   TIMEZONE: z.string().min(1).default("Europe/Paris"),
+  DB_POOL_MAX: z.coerce.number().int().positive().default(5),
+  DB_IDLE_TIMEOUT: z.coerce.number().int().nonnegative().default(30),
+  DB_CONNECT_TIMEOUT: z.coerce.number().int().positive().default(5),
+  DB_MAX_LIFETIME: z.coerce.number().int().nonnegative().default(0),
   // CLI-only variables (see src/cli)
   SHOP_ID: z.string().optional(),
   FTP_HOST: z.string().optional(),
