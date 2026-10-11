@@ -6,6 +6,30 @@ import { db } from "@server/db/database";
 import { logger } from "@server/utils/logger";
 import { SQL, and, count, eq, gt, or, sql, sum } from "drizzle-orm";
 
+/** Fields accepted by the advanced search, plus the "in stock" filter. */
+export const ADVANCED_SEARCH_FIELDS = [
+  "type",
+  "isbn",
+  "author",
+  "title",
+  "publisher",
+  "distributor",
+  "keywords",
+  "datebought",
+  "comments",
+  "price",
+  "amount",
+  "tva",
+  "inStock",
+] as const;
+
+export type AdvancedSearchField = (typeof ADVANCED_SEARCH_FIELDS)[number];
+
+const ADVANCED_SEARCH_FIELD_SET: ReadonlySet<string> = new Set(ADVANCED_SEARCH_FIELDS);
+
+export const isAdvancedSearchField = (field: string): field is AdvancedSearchField =>
+  ADVANCED_SEARCH_FIELD_SET.has(field);
+
 export const getItem = async (id: number): Promise<ItemWithCount | null> => {
   const item = await db.query.items.findFirst({ where: eq(items.id, id) });
   const salesCount = await db
@@ -45,6 +69,7 @@ const capitalize = (txt: string) => (txt ? `${txt[0].toUpperCase()}${txt.slice(1
 const generateSearchCriteria = (query: Record<string, string>) => {
   const criteria: SQL[] = [];
   for (const field in query) {
+    if (!isAdvancedSearchField(field)) continue;
     let key = field as keyof Item | "inStock";
     let value: string | RegExp | number = query[field];
     if (value === "" || key === "inStock") continue;

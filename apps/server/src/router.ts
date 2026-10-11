@@ -3,7 +3,7 @@ import { ItemTypes, TVAValues, zItem } from "@livrelibre/shared/item";
 import { zOrder, zOrderStatusArray } from "@livrelibre/shared/order";
 import { CART_ITEM_KINDS } from "@livrelibre/shared/sale";
 import { norm } from "@livrelibre/shared/utils";
-import { zDateISO, zId, zPage, zPrice, zQuantity } from "@livrelibre/shared/validation";
+import { zDateISO, zId, zIsbn, zPage, zPrice, zQuantity } from "@livrelibre/shared/validation";
 import { addItem } from "@server/server/addItem";
 import { getBestSales } from "@server/server/bestSales";
 import { getBookmarks, starItem } from "@server/server/bookmarks";
@@ -43,7 +43,14 @@ import {
 import { getSales } from "@server/server/sales";
 import { deleteSale, getSalesByDay } from "@server/server/salesByDay";
 import { getSalesByMonth } from "@server/server/salesByMonth";
-import { advancedSearch, getItem, getItems, searchItems } from "@server/server/searchItem";
+import {
+  type AdvancedSearchField,
+  advancedSearch,
+  getItem,
+  getItems,
+  isAdvancedSearchField,
+  searchItems,
+} from "@server/server/searchItem";
 import { getStats } from "@server/server/stats";
 import { updateItem } from "@server/server/updateItem";
 import { logger } from "@server/utils/logger";
@@ -56,6 +63,35 @@ const payCartSchema = z.object({
   paymentDate: zDateISO,
   paymentType: z.enum(["cash", "card", "check", "check-lire", "transfer"]),
 });
+
+type AdvancedSearchValueRule = { isValid: (value: string) => boolean; message: string };
+
+const ADVANCED_SEARCH_VALUE_RULES: Partial<Record<AdvancedSearchField, AdvancedSearchValueRule>> = {
+  type: {
+    isValid: (value) => z.enum(ItemTypes).safeParse(value).success,
+    message: ERROR_CODES.INVALID_TYPE,
+  },
+  tva: {
+    isValid: (value) => z.enum(TVAValues).safeParse(value).success,
+    message: ERROR_CODES.INVALID_TVA,
+  },
+  datebought: {
+    isValid: (value) => zDateISO.safeParse(value).success,
+    message: ERROR_CODES.INVALID_DATE,
+  },
+  isbn: {
+    isValid: (value) => zIsbn.safeParse(value).success,
+    message: ERROR_CODES.INVALID_ISBN,
+  },
+  price: {
+    isValid: (value) => /^-?\d+([.,]\d+)?$/.test(value),
+    message: ERROR_CODES.INVALID_NUMBER,
+  },
+  amount: {
+    isValid: (value) => /^\d+([.,]\d+)?$/.test(value),
+    message: ERROR_CODES.INVALID_NUMBER,
+  },
+};
 
 const checkAuth = middleware(({ ctx, next }) => {
   if (ctx.user.role === "anonymous") {
@@ -80,13 +116,21 @@ export const appRouter = router({
       z
         .object({ search: z.record(z.string(), z.string()), page: zPage })
         .superRefine(({ search }, ctx) => {
-          for (const key of ["price", "amount"] as const) {
-            const value = search[key];
-            const pattern = key === "price" ? /^-?\d+([.,]\d+)?$/ : /^\d+([.,]\d+)?$/;
-            if (value !== "" && !pattern.test(value)) {
+          for (const [key, value] of Object.entries(search)) {
+            if (!isAdvancedSearchField(key)) {
               ctx.addIssue({
                 code: "custom",
-                message: ERROR_CODES.INVALID_NUMBER,
+                message: ERROR_CODES.INVALID_SEARCH_FIELD,
+                path: ["search", key],
+              });
+              continue;
+            }
+            if (value === "") continue;
+            const rule = ADVANCED_SEARCH_VALUE_RULES[key];
+            if (rule && !rule.isValid(value)) {
+              ctx.addIssue({
+                code: "custom",
+                message: rule.message,
                 path: ["search", key],
               });
             }
