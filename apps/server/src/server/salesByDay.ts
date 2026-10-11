@@ -1,5 +1,5 @@
 import { ERROR_CODES } from "@livrelibre/shared/errors";
-import type { DBItem, TVA } from "@livrelibre/shared/item";
+import type { TVA } from "@livrelibre/shared/item";
 import { type PaymentType } from "@livrelibre/shared/sale";
 import { items, sales } from "@livrelibre/shared/schema";
 import { isDefined } from "@livrelibre/shared/utils";
@@ -9,30 +9,8 @@ import { logger } from "@server/utils/logger";
 import { TRPCError } from "@trpc/server";
 import { and, eq, inArray, sql } from "drizzle-orm";
 
-type AggregatedSale = Pick<
-  typeof sales.$inferSelect,
-  "receiptId" | "id" | "title" | "tva" | "paymentType" | "quantity" | "deleted" | "linkedToCustomer"
-> & { price: number };
-
-type ItemSale = Omit<DBItem, "price" | "type"> & {
-  itemId: number;
-  price: number;
-  paymentType: PaymentType;
-  quantity: number;
-  deleted: boolean;
-  id: number;
-  linkedToCustomer: boolean | undefined;
-};
-
-type UnlistedSale = Omit<AggregatedSale, "paymentType" | "id" | "receiptId"> & {
-  paymentType: PaymentType;
-  itemId: null;
-  deleted: boolean;
-  id: number;
-  receiptId: number | null;
-};
-
-type Sale = ItemSale | UnlistedSale;
+import { resolveSale } from "./sales/resolveSale";
+import type { Sale } from "./sales/types";
 
 const getCurrentDate = async () => {
   const rows = await db.execute<{ today: string }>(
@@ -69,6 +47,10 @@ export const getSalesByDay = async (date: string, options?: { restrictToToday?: 
   const itemList = await db.select().from(items).where(inArray(items.id, itemIds));
 
   const itemById = new Map(itemList.map((item) => [item.id, item]));
+  const missingItemIds = itemIds.filter((id) => !itemById.has(id));
+  if (missingItemIds.length > 0) {
+    logger.warn("Sales reference missing items", { itemIds: missingItemIds });
+  }
 
   const tvaStats = new Map<string, { count: number; total: number; type: PaymentType }>();
   const paymentStats = new Map<PaymentType, { count: number; total: number }>();
@@ -110,35 +92,7 @@ export const getSalesByDay = async (date: string, options?: { restrictToToday?: 
       cartTotal += sale.price;
     }
 
-    const deleted = sale.deleted;
-    if (sale.itemId) {
-      const item = itemById.get(sale.itemId);
-      if (!item) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: ERROR_CODES.ITEM_NOT_FOUND,
-        });
-      }
-      salesList.push({
-        ...item,
-        itemId: sale.itemId,
-        price: sale.price,
-        paymentType,
-        quantity: sale.quantity,
-        deleted,
-        id: sale.id,
-        linkedToCustomer: sale.linkedToCustomer,
-      });
-    } else {
-      salesList.push({
-        ...sale,
-        paymentType,
-        itemId: null,
-        deleted,
-        id: sale.id,
-        receiptId: sale.receiptId,
-      });
-    }
+    salesList.push(resolveSale(sale, itemById));
   }
   if (salesList.length > 0) {
     carts.push({ sales: salesList, total: cartTotal });
