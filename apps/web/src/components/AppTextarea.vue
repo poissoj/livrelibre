@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { COMMON_STYLES } from "./formControls";
+import { TEXTAREA_STYLES } from "./formControls";
 
 const model = defineModel<string | number | null | undefined>();
 </script>
 
 <template>
-  <textarea v-model="model" :class="COMMON_STYLES" />
+  <textarea v-model="model" :class="TEXTAREA_STYLES" />
 </template>

@@ -48,6 +48,7 @@ session en cours reste valide, il n'est pas nécessaire de se reconnecter.
 - `Meilleures ventes` (`/best-sales`)
 - `Statistiques` (`/stats`)
 - `Import/Export` (`/import-export`)
+- `Utilisateurs` (`/users`) — administrateur uniquement
 
 **En-tête** :
 
@@ -212,11 +213,26 @@ Page `Import/Export` (`/import-export`) :
 
 ![Import / export](./screenshots/import-export.png)
 
+## Gérer les utilisateurs
+
+Page `Utilisateurs` (`/users`), réservée aux administrateurs :
+
+- **Créer** — renseigner `Identifiant`, `Mot de passe` (au moins 8 caractères) et
+  `Rôle` (`Administrateur` ou `Caissier⋅ère`), puis `Ajouter`.
+- **Modifier** — bouton `Éditer` sur une ligne : changer l'`Identifiant` et le
+  `Rôle`, et éventuellement saisir un `Nouveau mot de passe` (laisser vide pour ne
+  pas le changer), puis `Enregistrer`.
+- **Supprimer** — bouton `Supprimer` sur une ligne, avec confirmation.
+
+Il est impossible de supprimer son propre compte, ni de supprimer ou rétrograder le
+dernier administrateur.
+
 ## Rôles et permissions
 
 | Fonction                                                                   | `admin`     | `cashier`                      |
 | -------------------------------------------------------------------------- | ----------- | ------------------------------ |
 | Ensemble des écrans (articles, client⋅es, commandes, stats, import/export) | Oui         | Oui                            |
+| Gestion des utilisateurs (`/users`)                                        | Oui         | Non                            |
 | Ventes par mois (`/sales`)                                                 | Oui         | Non                            |
 | Ventes du jour (`/todaySales`)                                             | Oui         | Oui                            |
 | Consulter une vente passée                                                 | Oui         | Non (jour en cours uniquement) |

@@ -28,6 +28,7 @@ const SearchView = () => import("@/pages/SearchView.vue");
 const StatsView = () => import("@/pages/StatsView.vue");
 const TodaySalesView = () => import("@/pages/TodaySalesView.vue");
 const UpdateItemView = () => import("@/pages/UpdateItemView.vue");
+const UsersView = () => import("@/pages/UsersView.vue");
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -173,6 +174,12 @@ export const router = createRouter({
           name: "import-export",
           component: ImportExportView,
           meta: { title: "Import/Export" },
+        },
+        {
+          path: "users",
+          name: "users",
+          component: UsersView,
+          meta: { title: "Utilisateurs" },
         },
         {
           path: "quicksearch",

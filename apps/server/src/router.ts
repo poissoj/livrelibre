@@ -61,7 +61,14 @@ import {
 } from "@server/server/searchItem";
 import { getStats } from "@server/server/stats";
 import { updateItem } from "@server/server/updateItem";
-import { changePassword } from "@server/server/users";
+import {
+  changePassword,
+  createUser,
+  deleteUser,
+  getUsers,
+  resetUserPassword,
+  updateUser,
+} from "@server/server/users";
 import { logger } from "@server/utils/logger";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -391,6 +398,41 @@ export const appRouter = router({
       await changePassword(ctx.user.id, input.currentPassword, input.newPassword);
       logger.info("Password changed", { user: ctx.user });
     }),
+  users: adminProcedure.query(getUsers),
+  createUser: adminProcedure
+    .input(
+      z.object({
+        name: z.string().trim().min(1, ERROR_CODES.INVALID_NAME),
+        password: zPassword,
+        role: z.enum(["admin", "cashier"]),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await createUser(input.name, input.password, input.role);
+      logger.info("User created", { user: ctx.user, name: input.name, role: input.role });
+    }),
+  updateUser: adminProcedure
+    .input(
+      z.object({
+        id: zId,
+        name: z.string().trim().min(1, ERROR_CODES.INVALID_NAME),
+        role: z.enum(["admin", "cashier"]),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await updateUser(input.id, input.name, input.role);
+      logger.info("User updated", { user: ctx.user, userId: input.id, role: input.role });
+    }),
+  resetUserPassword: adminProcedure
+    .input(z.object({ id: zId, password: zPassword }))
+    .mutation(async ({ ctx, input }) => {
+      await resetUserPassword(input.id, input.password);
+      logger.info("User password reset", { user: ctx.user, userId: input.id });
+    }),
+  deleteUser: adminProcedure.input(zId).mutation(async ({ ctx, input }) => {
+    await deleteUser(input, ctx.user.id);
+    logger.info("User deleted", { user: ctx.user, userId: input });
+  }),
 });
 
 export type AppRouter = typeof appRouter;

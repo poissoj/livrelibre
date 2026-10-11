@@ -9,6 +9,7 @@ import {
   faSearchPlus,
   faTachometerAlt,
   faThList,
+  faUserGear,
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import { computed } from "vue";
@@ -59,6 +60,9 @@ const salesPage = computed(() => (user.value?.role === "admin" ? "/sales" : "/to
       </li>
       <li>
         <NavLink href="/import-export" :icon="faLaptop">Import/Export</NavLink>
+      </li>
+      <li v-if="user?.role === 'admin'">
+        <NavLink href="/users" :icon="faUserGear">Utilisateurs</NavLink>
       </li>
     </ul>
   </nav>
