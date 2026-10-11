@@ -21,6 +21,19 @@ Pour se **déconnecter**, cliquer sur l'icône utilisateur en haut à droite
 
 ![Page de connexion](./screenshots/connexion.png)
 
+## Changer son mot de passe
+
+Depuis n'importe quelle page connectée, cliquer sur son **nom d'utilisateur** en
+haut à droite (ou aller sur `/account/password`) :
+
+1. Saisir le `Mot de passe actuel`.
+2. Saisir le `Nouveau mot de passe` (au moins 8 caractères).
+3. Confirmer le nouveau mot de passe (les deux saisies doivent être identiques).
+4. Cliquer sur `Modifier`.
+
+Le mot de passe actuel est vérifié ; en cas d'erreur un message s'affiche. La
+session en cours reste valide, il n'est pas nécessaire de se reconnecter.
+
 ## L'interface
 
 **Barre latérale** (navigation principale) :
@@ -41,7 +54,8 @@ Pour se **déconnecter**, cliquer sur l'icône utilisateur en haut à droite
 - `Rechercher` — recherche rapide (`ISBN, titre, auteur·ice`) ; un ISBN (10 chiffres
   ou plus) ouvre directement la fiche de l'article, sinon une recherche texte.
 - Icône panier (`Voir le panier`) avec un badge indiquant le nombre d'articles.
-- Nom de l'utilisateur et bouton `Se déconnecter`.
+- Nom de l'utilisateur (lien vers `/account/password` pour changer son mot de passe)
+  et bouton `Se déconnecter`.
 
 ## Tableau de bord
 

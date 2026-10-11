@@ -3,7 +3,15 @@ import { ItemTypes, TVAValues, zItem } from "@livrelibre/shared/item";
 import { zOrder, zOrderStatusArray } from "@livrelibre/shared/order";
 import { CART_ITEM_KINDS } from "@livrelibre/shared/sale";
 import { norm } from "@livrelibre/shared/utils";
-import { zDateISO, zId, zIsbn, zPage, zPrice, zQuantity } from "@livrelibre/shared/validation";
+import {
+  zDateISO,
+  zId,
+  zIsbn,
+  zPage,
+  zPassword,
+  zPrice,
+  zQuantity,
+} from "@livrelibre/shared/validation";
 import { addItem } from "@server/server/addItem";
 import { getBestSales } from "@server/server/bestSales";
 import { getBookmarks, starItem } from "@server/server/bookmarks";
@@ -53,6 +61,7 @@ import {
 } from "@server/server/searchItem";
 import { getStats } from "@server/server/stats";
 import { updateItem } from "@server/server/updateItem";
+import { changePassword } from "@server/server/users";
 import { logger } from "@server/utils/logger";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -371,6 +380,17 @@ export const appRouter = router({
     logger.info("Delete order", { user: ctx.user, orderId: input.id });
     return await deleteOrder(input.id, ctx.user);
   }),
+  changePassword: authProcedure
+    .input(
+      z.object({
+        currentPassword: z.string().min(1),
+        newPassword: zPassword,
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await changePassword(ctx.user.id, input.currentPassword, input.newPassword);
+      logger.info("Password changed", { user: ctx.user });
+    }),
 });
 
 export type AppRouter = typeof appRouter;

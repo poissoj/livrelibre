@@ -20,6 +20,8 @@ export const ERROR_CODES = {
   ITEM_ALREADY_EXISTS: "ITEM_ALREADY_EXISTS",
   ITEM_INVALID: "ITEM_INVALID",
   SALE_NOT_TODAY: "SALE_NOT_TODAY",
+  INVALID_PASSWORD: "INVALID_PASSWORD",
+  INVALID_NEW_PASSWORD: "INVALID_NEW_PASSWORD",
   // Validation errors
   INVALID_ID: "INVALID_ID",
   INVALID_PAGE: "INVALID_PAGE",
@@ -66,6 +68,8 @@ export const ERROR_MESSAGES: Record<ErrorCode, string> = {
   ITEM_ALREADY_EXISTS: "Un article avec cet ISBN existe déjà.",
   ITEM_INVALID: "Article invalide.",
   SALE_NOT_TODAY: "Vous ne pouvez supprimer qu'une vente du jour.",
+  INVALID_PASSWORD: "Mot de passe actuel incorrect.",
+  INVALID_NEW_PASSWORD: "Le nouveau mot de passe doit contenir au moins 8 caractères.",
   INVALID_ID: "Identifiant invalide.",
   INVALID_PAGE: "Numéro de page invalide.",
   INVALID_QUANTITY: "Quantité invalide.",

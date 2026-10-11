@@ -259,6 +259,23 @@ export const clearCart = async (): Promise<void> =>
     await db.delete(selectedCustomer);
   });
 
+/** Creates a user with a known password, for authentication flows. */
+export const seedUser = async ({
+  name,
+  password,
+  role = "cashier",
+}: {
+  name: string;
+  password: string;
+  role?: "admin" | "cashier";
+}): Promise<{ name: string; password: string }> => {
+  const hash = await bcrypt.hash(password, 12);
+  await withDb(async (db) => {
+    await db.insert(users).values({ name, hash, role });
+  });
+  return { name, password };
+};
+
 export const seedCashier = async (): Promise<{
   name: string;
   password: string;

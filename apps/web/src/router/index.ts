@@ -9,6 +9,7 @@ const AdvancedView = () => import("@/pages/AdvancedView.vue");
 const AdvancedSearchView = () => import("@/pages/AdvancedSearchView.vue");
 const BestSalesView = () => import("@/pages/BestSalesView.vue");
 const CartView = () => import("@/pages/CartView.vue");
+const ChangePasswordView = () => import("@/pages/ChangePasswordView.vue");
 const CustomerView = () => import("@/pages/CustomerView.vue");
 const NewCustomerView = () => import("@/pages/NewCustomerView.vue");
 const CustomersView = () => import("@/pages/CustomersView.vue");
@@ -118,6 +119,12 @@ export const router = createRouter({
           name: "cart",
           component: CartView,
           meta: { title: "Panier" },
+        },
+        {
+          path: "account/password",
+          name: "change-password",
+          component: ChangePasswordView,
+          meta: { title: "Changer mon mot de passe" },
         },
         {
           path: "sales",

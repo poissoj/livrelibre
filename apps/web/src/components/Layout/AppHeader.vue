@@ -46,7 +46,14 @@ const logout = async () => {
       {{ APP_NAME }}
     </RouterLink>
     <QuickSearch />
-    <span :class="clsx('text-white', 'ml-md mr-sm')">{{ user?.name || "" }}</span>
+    <RouterLink
+      to="/account/password"
+      :class="clsx('text-white', 'ml-md mr-sm', 'hover:underline')"
+      aria-label="Changer mon mot de passe"
+      title="Changer mon mot de passe"
+    >
+      {{ user?.name || "" }}
+    </RouterLink>
     <RouterLink
       to="/cart"
       :class="clsx(BUTTON_STYLES, 'shrink-0')"

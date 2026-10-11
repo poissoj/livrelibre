@@ -47,3 +47,6 @@ export const zDateISO = z.iso.date(ERROR_CODES.INVALID_DATE);
 export const zDateString = z
   .string(ERROR_CODES.INVALID_DATE)
   .refine((value) => !Number.isNaN(Date.parse(value)), ERROR_CODES.INVALID_DATE);
+
+/** New account password: at least 8 characters. */
+export const zPassword = z.string().min(8, ERROR_CODES.INVALID_NEW_PASSWORD);
