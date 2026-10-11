@@ -1,6 +1,8 @@
 #!/bin/sh
 set -e
 
+export NODE_ENV=production
+
 echo "Applying database migrations..."
 pnpm --filter @livrelibre/server migrate:db
 
@@ -10,4 +12,4 @@ if [ "$SEED_DEMO" = "true" ]; then
 fi
 
 echo "Starting server..."
-exec pnpm --filter @livrelibre/server start
+exec node apps/server/dist/index.js
