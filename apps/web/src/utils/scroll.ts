@@ -1,5 +1,7 @@
-import { type Ref, computed, onMounted } from "vue";
+import { type Ref, computed, onMounted, watch } from "vue";
 import { onBeforeRouteLeave, useRoute } from "vue-router";
+
+import { usePageParam } from "@/utils/useQueryParams";
 
 const saveScrollPos = (path: string, elt: HTMLElement | null) => {
   if (!elt) return;
@@ -30,5 +32,13 @@ export function useScrollRestoration(ref: Ref<HTMLElement | null>) {
 
   onBeforeRouteLeave(() => {
     saveScrollPos(path.value, ref.value);
+  });
+}
+
+export function useScrollToTopOnPageChange(ref: Ref<HTMLElement | null>) {
+  const page = usePageParam();
+
+  watch(page, () => {
+    ref.value?.scrollTo({ top: 0 });
   });
 }

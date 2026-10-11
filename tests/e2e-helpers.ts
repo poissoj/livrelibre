@@ -148,6 +148,28 @@ export const seedCustomer = async (overrides: Partial<typeof customers.$inferIns
     return row;
   });
 
+/** Bulk-seeds `count` customers (single insert) with unique fullnames. */
+export const seedCustomers = async (
+  count: number,
+  overrides: Partial<typeof customers.$inferInsert> = {},
+) =>
+  withDb(async (db) => {
+    const fullname = overrides.fullname ?? "Client E2E";
+    const values = Array.from({ length: count }, (_, i) => {
+      const rowFullname = `${fullname} ${String(i).padStart(3, "0")}`;
+      return {
+        contact: "",
+        phone: null,
+        email: null,
+        comment: "",
+        ...overrides,
+        fullname: rowFullname,
+        nmFullname: norm(rowFullname),
+      };
+    });
+    return await db.insert(customers).values(values).returning();
+  });
+
 export const deleteCustomer = async (id: number): Promise<void> =>
   withDb(async (db) => {
     await db.delete(selectedCustomer).where(eq(selectedCustomer.customerId, id));

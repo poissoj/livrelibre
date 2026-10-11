@@ -1,9 +1,16 @@
 <script setup lang="ts">
+import { useTemplateRef } from "vue";
+
+import { useScrollToTopOnPageChange } from "@/utils/scroll";
+
 import ErrorBoundary from "./ErrorBoundary.vue";
+
+const body = useTemplateRef<HTMLElement>("body");
+useScrollToTopOnPageChange(body);
 </script>
 
 <template>
-  <div class="mt-md overflow-auto flex">
+  <div ref="body" class="mt-md overflow-auto flex">
     <ErrorBoundary>
       <slot />
     </ErrorBoundary>
