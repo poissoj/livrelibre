@@ -15,7 +15,7 @@ test.afterAll(async () => {
 
 test("Import DILICOM : le bouton Envoyer s'active et l'import aboutit", async ({ page }) => {
   await login(page);
-  await page.goto("/advanced");
+  await page.goto("/import-export");
 
   const csv = [
     "EAN,TITRE,AUTEUR,EDITEUR,DISTRIBUTEUR,PRIX,DISPO,REF.LIGNE,QTE,TOTAL",

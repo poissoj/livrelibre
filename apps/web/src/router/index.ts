@@ -5,7 +5,7 @@ import { APP_NAME } from "@/lib/config";
 
 const NotFoundView = () => import("@/pages/NotFoundView.vue");
 const AddItemView = () => import("@/pages/AddItemView.vue");
-const AdvancedView = () => import("@/pages/AdvancedView.vue");
+const ImportExportView = () => import("@/pages/ImportExportView.vue");
 const AdvancedSearchView = () => import("@/pages/AdvancedSearchView.vue");
 const BestSalesView = () => import("@/pages/BestSalesView.vue");
 const CartView = () => import("@/pages/CartView.vue");
@@ -169,10 +169,10 @@ export const router = createRouter({
           meta: { title: "Recherche avancée" },
         },
         {
-          path: "advanced",
-          name: "advanced",
-          component: AdvancedView,
-          meta: { title: "Avancé" },
+          path: "import-export",
+          name: "import-export",
+          component: ImportExportView,
+          meta: { title: "Import/Export" },
         },
         {
           path: "quicksearch",

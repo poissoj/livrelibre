@@ -47,7 +47,7 @@ session en cours reste valide, il n'est pas nécessaire de se reconnecter.
 - `Articles` (`/items`)
 - `Meilleures ventes` (`/best-sales`)
 - `Statistiques` (`/stats`)
-- `Avancé…` (`/advanced`)
+- `Import/Export` (`/import-export`)
 
 **En-tête** :
 
@@ -201,9 +201,9 @@ d'une vente passée est réservée aux administrateurs.
 
 ![Statistiques](./screenshots/stats.png)
 
-## Avancé : import / export
+## Import / export
 
-Page `Avancé…` (`/advanced`) :
+Page `Import/Export` (`/import-export`) :
 
 - **Importer un fichier DILICOM** — sélectionner un fichier `.csv`, `.slk` ou
   `.xlsx` puis `Envoyer`. Un aperçu s'affiche ; cliquer sur `Valider` pour

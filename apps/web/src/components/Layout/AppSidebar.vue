@@ -58,7 +58,7 @@ const salesPage = computed(() => (user.value?.role === "admin" ? "/sales" : "/to
         <NavLink href="/stats" :icon="faChartPie">Statistiques</NavLink>
       </li>
       <li>
-        <NavLink href="/advanced" :icon="faLaptop">Avancé…</NavLink>
+        <NavLink href="/import-export" :icon="faLaptop">Import/Export</NavLink>
       </li>
     </ul>
   </nav>

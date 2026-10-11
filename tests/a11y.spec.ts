@@ -104,7 +104,7 @@ test("chaque page a un seul titre principal (h1)", async ({ page }) => {
     "/customers",
     "/cart",
     "/search",
-    "/advanced",
+    "/import-export",
     "/stats",
     "/add",
     "/order/new",
