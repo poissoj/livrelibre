@@ -1,5 +1,4 @@
 import type { CustomerOrders, OrderRow } from "@livrelibre/shared/order";
-import { norm } from "@livrelibre/shared/utils";
 
 type Order = CustomerOrders["orders"][number];
 
@@ -41,25 +40,3 @@ export const groupOrdersByCustomer = (orders: OrderRow[], reverse: boolean): Cus
     return group;
   });
 };
-
-export const filterGroups = (orders: CustomerOrders[], search: string) =>
-  search === ""
-    ? orders
-    : orders.filter(
-        (order) =>
-          norm(order.customer.name).toLowerCase().includes(norm(search)) ||
-          order.orders.some(
-            (o) =>
-              o.isbn?.includes(search) || norm(o.itemTitle.toLowerCase()).includes(norm(search)),
-          ),
-      );
-
-export const filterOrders = (orders: OrderRow[], search: string) =>
-  search === ""
-    ? orders
-    : orders.filter(
-        (order) =>
-          norm(order.customerName).toLowerCase().includes(norm(search)) ||
-          order.isbn?.includes(search) ||
-          norm(order.itemTitle.toLowerCase()).includes(norm(search)),
-      );

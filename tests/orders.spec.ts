@@ -7,6 +7,7 @@ import {
   seedCustomer,
   seedItem,
   seedOrder,
+  seedOrders,
   unique,
 } from "./e2e-helpers";
 
@@ -71,4 +72,23 @@ test("Supprimer une commande", async ({ page }) => {
   await page.getByRole("button", { name: "Supprimer", exact: true }).click();
   await page.getByRole("button", { name: "Oui, supprimer" }).click();
   await expect(page).toHaveURL("/orders");
+});
+
+test("Pagination de la liste des commandes", async ({ page }) => {
+  const customer = await seedCustomer({ fullname: unique("Client pagination") });
+  await seedOrders(51, { customerId: customer.id, itemTitle: unique("Commande pagination") });
+
+  try {
+    await login(page);
+    await page.goto("/orders");
+
+    await page.getByLabel("Grouper les commandes par client⋅e").uncheck();
+    await expect(page.getByRole("link", { name: "Page 2" })).toBeVisible();
+
+    await page.getByRole("link", { name: "Page 2" }).click();
+    await expect(page).toHaveURL(/page=2/);
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("Page 2");
+  } finally {
+    await deleteCustomer(customer.id);
+  }
 });

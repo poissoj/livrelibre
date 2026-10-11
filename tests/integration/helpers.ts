@@ -1,5 +1,6 @@
 import { db } from "@livrelibre/server/db/database";
 import { customers, items, orders, sales, users } from "@livrelibre/shared/schema";
+import { norm } from "@livrelibre/shared/utils";
 import { type User } from "@server/auth";
 import { sql } from "drizzle-orm";
 
@@ -75,11 +76,13 @@ export const seedCustomer = async (overrides: Partial<typeof customers.$inferIns
 };
 
 export const seedOrder = async (overrides: Partial<typeof orders.$inferInsert> = {}) => {
+  const itemTitle = overrides.itemTitle ?? "Title";
   const rows = await db
     .insert(orders)
     .values({
       customerId: 1,
-      itemTitle: "Title",
+      itemTitle,
+      nmTitle: norm(itemTitle),
       ordered: "new",
       customerNotified: false,
       paid: false,

@@ -8,7 +8,7 @@ import {
 } from "@livrelibre/server/server/orders";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { TEST_USER, seedCustomer, seedItem, truncateAll } from "./helpers";
+import { TEST_USER, seedCustomer, seedItem, seedOrder, truncateAll } from "./helpers";
 
 const baseOrder = {
   created: "2024-01-05",
@@ -68,7 +68,7 @@ describe("setCustomerNotified", () => {
   it("updates the customerNotified flag", async () => {
     const customer = await seedCustomer();
     await newOrder({ ...baseOrder, customerId: customer.id }, TEST_USER);
-    const orders = await getOrders(["new"]);
+    const { items: orders } = await getOrders({ statuses: ["new"] });
 
     await setCustomerNotified(orders[0].id, true);
 
@@ -78,5 +78,73 @@ describe("setCustomerNotified", () => {
 
   it("throws for an unknown order", async () => {
     await expect(setCustomerNotified(9999, true)).rejects.toThrow();
+  });
+});
+
+describe("getOrders pagination", () => {
+  beforeEach(truncateAll);
+
+  it("paginates flat results and counts all matches", async () => {
+    const customer = await seedCustomer();
+    for (let i = 0; i < 55; i++) {
+      await seedOrder({ customerId: customer.id, itemTitle: `Livre ${String(i)}` });
+    }
+
+    const first = await getOrders({ statuses: ["new"], grouped: false });
+    expect(first.count).toBe(55);
+    expect(first.pageCount).toBe(2);
+    expect(first.items).toHaveLength(50);
+
+    const second = await getOrders({ statuses: ["new"], grouped: false, pageNumber: 2 });
+    expect(second.items).toHaveLength(5);
+  });
+
+  it("keeps a customer group on a single page", async () => {
+    const customerA = await seedCustomer({ fullname: "Alice", nmFullname: "alice" });
+    const customerB = await seedCustomer({ fullname: "Bob", nmFullname: "bob" });
+    await seedOrder({ customerId: customerA.id, itemTitle: "A1" });
+    await seedOrder({ customerId: customerA.id, itemTitle: "A2" });
+    await seedOrder({ customerId: customerB.id, itemTitle: "B1" });
+
+    const result = await getOrders({ statuses: ["new"] });
+    expect(result.count).toBe(3);
+    expect(result.pageCount).toBe(1);
+    expect(result.items).toHaveLength(3);
+  });
+
+  it("pages groups by customer without splitting a group", async () => {
+    for (let i = 0; i < 51; i++) {
+      const customer = await seedCustomer({
+        fullname: `Client ${String(i)}`,
+        nmFullname: `client ${String(i)}`,
+      });
+      await seedOrder({ customerId: customer.id, itemTitle: `Livre ${String(i)}` });
+    }
+
+    const first = await getOrders({ statuses: ["new"] });
+    expect(first.count).toBe(51);
+    expect(first.pageCount).toBe(3);
+    expect(first.items).toHaveLength(20);
+
+    const second = await getOrders({ statuses: ["new"], pageNumber: 2 });
+    expect(second.items).toHaveLength(20);
+
+    const third = await getOrders({ statuses: ["new"], pageNumber: 3 });
+    expect(third.items).toHaveLength(11);
+  });
+
+  it("searches on the normalized item title", async () => {
+    const customer = await seedCustomer();
+    await seedOrder({ customerId: customer.id, itemTitle: "Été" });
+    await seedOrder({ customerId: customer.id, itemTitle: "Hiver" });
+
+    const result = await getOrders({ statuses: ["new"], grouped: false, search: "ete" });
+    expect(result.count).toBe(1);
+    expect(result.items[0].itemTitle).toBe("Été");
+  });
+
+  it("returns no result when no status is selected", async () => {
+    const result = await getOrders({ statuses: [] });
+    expect(result).toEqual({ items: [], count: 0, pageCount: 0 });
   });
 });

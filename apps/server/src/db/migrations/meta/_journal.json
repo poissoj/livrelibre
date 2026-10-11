@@ -78,6 +78,13 @@
       "when": 1791393029532,
       "tag": "0010_giant_cloak",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1791754666503,
+      "tag": "0011_greedy_human_robot",
+      "breakpoints": true
     }
   ]
 }

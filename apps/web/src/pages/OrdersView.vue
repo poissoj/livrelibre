@@ -4,27 +4,33 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import {
   ORDER_STATUS,
   type OrderRow,
+  type OrderSort,
   type OrderStatus,
+  zOrderSort,
   zOrderStatus,
   zOrderStatusArray,
 } from "@livrelibre/shared/order";
-import { useQuery } from "@tanstack/vue-query";
+import { keepPreviousData, useQuery } from "@tanstack/vue-query";
 import { computed, ref, watch } from "vue";
 
 import AppCard from "@/components/AppCard.vue";
 import AppInput from "@/components/AppInput.vue";
+import AppPagination from "@/components/AppPagination.vue";
 import CardBody from "@/components/CardBody.vue";
+import CardFooter from "@/components/CardFooter.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import ItemsCard from "@/components/ItemsCard.vue";
 import LinkButton from "@/components/LinkButton.vue";
-import { filterGroups, filterOrders, groupOrdersByCustomer } from "@/components/orders/group";
+import LoadingOverlay from "@/components/LoadingOverlay.vue";
+import { groupOrdersByCustomer } from "@/components/orders/group";
 import StatusTile from "@/components/orders/StatusTile.vue";
 import OrdersTable from "@/components/OrdersTable.vue";
 import OrdersTableByCustomer from "@/components/OrdersTableByCustomer.vue";
 import { trpcClient } from "@/utils/trpc";
 import { useDebouncedValue } from "@/utils/useDebouncedValue";
-import { useQueryParams } from "@/utils/useQueryParams";
+import { useDelayedLoading } from "@/utils/useDelayedLoading";
+import { usePageParam, useQueryParams } from "@/utils/useQueryParams";
 
 const getStatus = (query: string | string[] | undefined): OrderStatus[] => {
   const statusList = zOrderStatusArray.safeParse(query);
@@ -39,26 +45,55 @@ const getStatus = (query: string | string[] | undefined): OrderStatus[] => {
 };
 
 const { query, push } = useQueryParams();
+const page = usePageParam();
 
 const orderStatus = computed(() => getStatus(query.value.status));
+const search = computed(() => (typeof query.value.search === "string" ? query.value.search : ""));
+const sortBy = computed<OrderSort>(() => {
+  const parsed = zOrderSort.safeParse(query.value.sortBy);
+  return parsed.success ? parsed.data : "dateDesc";
+});
+const groupByCustomer = computed(() => query.value.group !== "0");
+
+const ordersInput = computed(() => ({
+  statuses: orderStatus.value,
+  page: page.value,
+  grouped: groupByCustomer.value,
+  search: search.value,
+  sortBy: sortBy.value,
+}));
+
 const {
   data: ordersData,
   isPending,
   isError,
+  isFetching,
   refetch,
 } = useQuery({
-  queryKey: ["orders", orderStatus],
-  queryFn: () => trpcClient.orders.query(orderStatus.value),
+  queryKey: ["orders", ordersInput],
+  queryFn: () => trpcClient.orders.query(ordersInput.value),
+  placeholderData: keepPreviousData,
+  staleTime: 30_000,
 });
+const showLoading = useDelayedLoading(isFetching, 500);
+
 const orderRows = computed<OrderRow[]>(() =>
-  (ordersData.value ?? []).map((order) => ({
+  (ordersData.value?.items ?? []).map((order) => ({
     ...order,
     created: new Date(order.created),
   })),
 );
 
+const pageCount = computed(() => ordersData.value?.pageCount ?? 0);
+const ordersCount = computed(() => ordersData.value?.count ?? 0);
+
+const withoutPage = () => {
+  const { page: _page, ...rest } = query.value;
+  return rest;
+};
+
 const setOrderStatus = (status: OrderStatus[]) => {
-  void push({ query: { ...query.value, status } });
+  void push({ query: { ...withoutPage(), status } });
 };
 const updateStatus = (status: OrderStatus) => () => {
   const newStatus = orderStatus.value.includes(status)
@@ -67,14 +102,13 @@ const updateStatus = (status: OrderStatus) => () => {
   setOrderStatus(newStatus);
 };
 
-const search = computed(() => (typeof query.value.search === "string" ? query.value.search : ""));
 const searchInput = ref(search.value);
 const debouncedSearch = useDebouncedValue(searchInput, 300);
 
 watch(debouncedSearch, (value) => {
   const normalized = value.toLowerCase();
   if (normalized === search.value) return;
-  void push({ query: { ...query.value, search: normalized }, replace: true });
+  void push({ query: { ...withoutPage(), search: normalized }, replace: true });
 });
 watch(search, (value) => {
   if (value !== searchInput.value.toLowerCase()) {
@@ -82,23 +116,24 @@ watch(search, (value) => {
   }
 });
 
-const groupByCustomer = computed(() => query.value.group !== "0");
 const toggleGroup = () => {
   const group = 1 - Number(groupByCustomer.value);
-  void push({ query: { ...query.value, group } });
+  void push({ query: { ...withoutPage(), group } });
 };
 const invertInnerSort = computed(() => query.value.sortBy === "date");
 
-const cardTitle = computed(() =>
-  isPending.value
-    ? "Chargement"
-    : `${String(orderRows.value.length)} commande${orderRows.value.length > 1 ? "s" : ""}`,
-);
+const cardTitle = computed(() => {
+  if (isPending.value) {
+    return "Chargement";
+  }
+  let title = `${String(ordersCount.value)} commande${ordersCount.value > 1 ? "s" : ""}`;
+  if (pageCount.value > 1) {
+    title += ` - Page ${String(page.value)} sur ${String(pageCount.value)}`;
+  }
+  return title;
+});
 
-const groupedOrders = computed(() =>
-  filterGroups(groupOrdersByCustomer(orderRows.value, invertInnerSort.value), search.value),
-);
-const filteredOrders = computed(() => filterOrders(orderRows.value, search.value));
+const groupedOrders = computed(() => groupOrdersByCustomer(orderRows.value, invertInnerSort.value));
 </script>
 
 <template>
@@ -144,11 +179,16 @@ const filteredOrders = computed(() => filterOrders(orderRows.value, search.value
             />
           </div>
         </div>
-        <div class="overflow-auto flex mt-2">
-          <OrdersTableByCustomer v-if="groupByCustomer" :items="groupedOrders" />
-          <OrdersTable v-else :items="filteredOrders" />
-        </div>
+        <LoadingOverlay :loading="showLoading">
+          <div class="overflow-auto flex flex-1 mt-2">
+            <OrdersTableByCustomer v-if="groupByCustomer" :items="groupedOrders" />
+            <OrdersTable v-else :items="orderRows" />
+          </div>
+        </LoadingOverlay>
       </CardBody>
+      <CardFooter v-if="pageCount > 1" class="flex justify-center pt-6 2xl:pt-8">
+        <AppPagination :count="pageCount" />
+      </CardFooter>
     </AppCard>
   </div>
 </template>

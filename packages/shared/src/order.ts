@@ -18,6 +18,21 @@ export type OrderStatus = (typeof ORDER_STATUS)[number];
 export const zOrderStatus = z.enum(ORDER_STATUS);
 export const zOrderStatusArray = z.array(zOrderStatus);
 
+export const ORDER_SORT = [
+  "date",
+  "dateDesc",
+  "name",
+  "nameDesc",
+  "distributor",
+  "distributorDesc",
+  "status",
+  "statusDesc",
+] as const;
+
+export type OrderSort = (typeof ORDER_SORT)[number];
+
+export const zOrderSort = z.enum(ORDER_SORT);
+
 export const CONTACT_MEAN = ["unknown", "in person", "phone", "mail"] as const;
 export type ContactMean = (typeof CONTACT_MEAN)[number];
 export const zContactMean = z.enum(CONTACT_MEAN);
@@ -44,12 +59,18 @@ export const zOrder = z.object({
 
 export type RawOrder = z.infer<typeof zOrder>;
 
-export type OrderRow = typeof orders.$inferSelect & {
+export type OrderRow = Omit<typeof orders.$inferSelect, "nmTitle"> & {
   customerName: string;
   isbn: string | null;
   distributor: string | null;
   phone: string | null;
   email: string | null;
+};
+
+export type PaginatedOrders = {
+  items: OrderRow[];
+  count: number;
+  pageCount: number;
 };
 
 export type CustomerOrders = {
@@ -59,7 +80,7 @@ export type CustomerOrders = {
     email: string | null;
   };
   orders: Array<
-    typeof orders.$inferSelect & {
+    Omit<typeof orders.$inferSelect, "nmTitle"> & {
       isbn: string | null;
       distributor: string | null;
     }

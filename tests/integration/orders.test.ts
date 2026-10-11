@@ -29,7 +29,7 @@ describe("orders", () => {
     const res = await newOrder({ ...baseOrder, customerId: customer.id }, TEST_USER);
     expect(res.type).toBe("success");
 
-    const orders = await getOrders(["new"]);
+    const { items: orders } = await getOrders({ statuses: ["new"] });
     expect(orders).toHaveLength(1);
     expect(orders[0].customerName).toBe(customer.fullname);
     expect(orders[0].itemTitle).toBe("Un livre");
@@ -43,7 +43,7 @@ describe("orders", () => {
   it("getOrder returns the order with its customer", async () => {
     const customer = await seedCustomer();
     await newOrder({ ...baseOrder, customerId: customer.id }, TEST_USER);
-    const orders = await getOrders(["new"]);
+    const { items: orders } = await getOrders({ statuses: ["new"] });
 
     const order = await getOrder(orders[0].id);
     expect(order?.customer.fullname).toBe(customer.fullname);
@@ -56,7 +56,7 @@ describe("orders", () => {
   it("setOrder updates an existing order", async () => {
     const customer = await seedCustomer();
     await newOrder({ ...baseOrder, customerId: customer.id }, TEST_USER);
-    const orders = await getOrders(["new"]);
+    const { items: orders } = await getOrders({ statuses: ["new"] });
 
     const res = await setOrder(
       { ...baseOrder, customerId: customer.id, itemTitle: "Titre modifié" },
@@ -72,10 +72,11 @@ describe("orders", () => {
   it("deleteOrder removes the order", async () => {
     const customer = await seedCustomer();
     await newOrder({ ...baseOrder, customerId: customer.id }, TEST_USER);
-    const orders = await getOrders(["new"]);
+    const { items: orders } = await getOrders({ statuses: ["new"] });
 
     const res = await deleteOrder(orders[0].id, TEST_USER);
     expect(res.type).toBe("success");
-    expect(await getOrders(["new"])).toHaveLength(0);
+    const { items } = await getOrders({ statuses: ["new"] });
+    expect(items).toHaveLength(0);
   });
 });

@@ -23,7 +23,8 @@ const updateSort = () => {
   if (selected.value === by) {
     by = selected.value + "Desc";
   }
-  void push({ query: { ...query.value, sortBy: by } });
+  const { page: _page, ...rest } = query.value;
+  void push({ query: { ...rest, sortBy: by } });
 };
 </script>
 

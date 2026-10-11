@@ -1,6 +1,6 @@
 import { ERROR_CODES } from "@livrelibre/shared/errors";
 import { ItemTypes, TVAValues, zItem } from "@livrelibre/shared/item";
-import { zOrder, zOrderStatusArray } from "@livrelibre/shared/order";
+import { zOrder, zOrderSort, zOrderStatusArray } from "@livrelibre/shared/order";
 import { CART_ITEM_KINDS } from "@livrelibre/shared/sale";
 import { norm } from "@livrelibre/shared/utils";
 import {
@@ -180,7 +180,26 @@ export const appRouter = router({
   }),
   order: authProcedure.input(zId).query(async ({ input }) => await getOrder(input)),
   itemOrders: authProcedure.input(zId).query(async ({ input }) => await getItemOrders(input)),
-  orders: authProcedure.input(zOrderStatusArray).query(async ({ input }) => await getOrders(input)),
+  orders: authProcedure
+    .input(
+      z.object({
+        statuses: zOrderStatusArray,
+        page: zPage.default(1),
+        grouped: z.boolean().default(true),
+        search: z.string().default(""),
+        sortBy: zOrderSort.default("dateDesc"),
+      }),
+    )
+    .query(
+      async ({ input }) =>
+        await getOrders({
+          statuses: input.statuses,
+          pageNumber: input.page,
+          grouped: input.grouped,
+          search: input.search,
+          sortBy: input.sortBy,
+        }),
+    ),
   customerOrders: authProcedure
     .input(zId)
     .query(async ({ input }) => await getCustomerActiveOrders(input)),

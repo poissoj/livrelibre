@@ -194,11 +194,13 @@ export const deleteCustomersByFullnameLike = async (pattern: string): Promise<vo
 
 export const seedOrder = async (overrides: Partial<typeof orders.$inferInsert> = {}) =>
   withDb(async (db) => {
+    const itemTitle = overrides.itemTitle ?? "Article E2E";
     const [row] = await db
       .insert(orders)
       .values({
         customerId: 1,
-        itemTitle: "Article E2E",
+        itemTitle,
+        nmTitle: norm(itemTitle),
         ordered: "new",
         customerNotified: false,
         paid: false,
@@ -209,6 +211,31 @@ export const seedOrder = async (overrides: Partial<typeof orders.$inferInsert> =
       })
       .returning();
     return row;
+  });
+
+/** Bulk-seeds `count` orders (single insert) with unique item titles. */
+export const seedOrders = async (
+  count: number,
+  overrides: Partial<typeof orders.$inferInsert> = {},
+) =>
+  withDb(async (db) => {
+    const itemTitle = overrides.itemTitle ?? "Article E2E";
+    const values = Array.from({ length: count }, (_, i) => {
+      const rowTitle = `${itemTitle} ${String(i).padStart(3, "0")}`;
+      return {
+        customerId: 1,
+        ordered: "new" as const,
+        customerNotified: false,
+        paid: false,
+        comment: "",
+        nb: 1,
+        contact: "unknown" as const,
+        ...overrides,
+        itemTitle: rowTitle,
+        nmTitle: norm(rowTitle),
+      };
+    });
+    return await db.insert(orders).values(values).returning();
   });
 
 export const deleteOrder = async (id: number): Promise<void> =>

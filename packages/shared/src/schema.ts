@@ -200,6 +200,7 @@ export const orders = pgTable(
       .references(() => customers.id),
     itemId: integer("itemId").references(() => items.id),
     itemTitle: varchar("itemTitle").notNull(),
+    nmTitle: varchar("nmTitle").notNull(),
     ordered: orderStatusEnum("ordered").notNull(),
     customerNotified: boolean("customerNotified").notNull(),
     paid: boolean("paid").notNull(),
@@ -210,6 +211,8 @@ export const orders = pgTable(
   (table) => [
     index("orders_customerId_idx").on(table.customerId),
     index("orders_ordered_idx").on(table.ordered),
+    index("orders_ordered_created_idx").on(table.ordered, table.created),
+    index("orders_nmTitle_idx").on(table.nmTitle),
     check("orders_nb_positive", sql`${table.nb} > 0`),
   ],
 );
