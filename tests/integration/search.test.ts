@@ -117,4 +117,36 @@ describe("getItems", () => {
     expect(pageCount).toBe(1);
     expect(items).toHaveLength(2);
   });
+
+  it("sorts same title and author by distributor, whatever the insertion order", async () => {
+    await seedItem({
+      isbn: "9780000000001",
+      title: "Dune",
+      nmTitle: "dune",
+      author: "Herbert",
+      nmAuthor: "herbert",
+      distributor: "Z",
+      nmDistributor: "z",
+    });
+    await seedItem({
+      isbn: "9780000000002",
+      title: "Dune",
+      nmTitle: "dune",
+      author: "Herbert",
+      nmAuthor: "herbert",
+      distributor: "A",
+      nmDistributor: "a",
+    });
+
+    const { items } = await getItems({ pageNumber: 1 });
+    expect(items.map((item) => item.distributor)).toEqual(["A", "Z"]);
+  });
+
+  it("breaks ties on otherwise identical items by id", async () => {
+    const first = await seedItem({ isbn: "9780000000001", title: "Dune", nmTitle: "dune" });
+    const second = await seedItem({ isbn: "9780000000002", title: "Dune", nmTitle: "dune" });
+
+    const { items } = await getItems({ pageNumber: 1 });
+    expect(items.map((item) => item.id)).toEqual([first.id, second.id]);
+  });
 });

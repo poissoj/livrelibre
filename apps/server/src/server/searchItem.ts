@@ -102,7 +102,7 @@ const doSearch = async (criteria: SQL | undefined, pageNumber: number) => {
     .select()
     .from(items)
     .where(criteria)
-    .orderBy(items.title)
+    .orderBy(items.title, items.author, items.distributor, items.id)
     .limit(ITEMS_PER_PAGE)
     .offset((pageNumber - 1) * ITEMS_PER_PAGE);
   return { items: dbItems, count: qty[0].count };
