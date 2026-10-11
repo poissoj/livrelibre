@@ -110,6 +110,27 @@ describe("input validation", () => {
     ).rejects.toMatchObject(BAD_REQUEST);
   });
 
+  it("rejects an unknown advanced search field", async () => {
+    await expect(caller.advancedSearch({ search: { foo: "bar" }, page: 1 })).rejects.toMatchObject(
+      BAD_REQUEST,
+    );
+  });
+
+  it("rejects invalid advanced search values", async () => {
+    await expect(
+      caller.advancedSearch({ search: { type: "nope" }, page: 1 }),
+    ).rejects.toMatchObject(BAD_REQUEST);
+    await expect(caller.advancedSearch({ search: { tva: "nope" }, page: 1 })).rejects.toMatchObject(
+      BAD_REQUEST,
+    );
+    await expect(
+      caller.advancedSearch({ search: { datebought: "nope" }, page: 1 }),
+    ).rejects.toMatchObject(BAD_REQUEST);
+    await expect(caller.advancedSearch({ search: { isbn: "x" }, page: 1 })).rejects.toMatchObject(
+      BAD_REQUEST,
+    );
+  });
+
   it("rejects an unknown selected customer", async () => {
     await expect(
       caller.selectCustomer({ customerId: 999999, asideCart: false }),

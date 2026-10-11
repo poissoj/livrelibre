@@ -26,6 +26,83 @@ describe("advancedSearch", () => {
     const { count } = await advancedSearch({ amount: "3" });
     expect(count).toBe(1);
   });
+
+  it("filters by author, ignoring case and diacritics", async () => {
+    await seedItem({ isbn: "9780000000001", author: "Émile Zola", nmAuthor: "emile zola" });
+    await seedItem({ isbn: "9780000000002", author: "Autre", nmAuthor: "autre" });
+
+    const { count } = await advancedSearch({ author: "émile zola" });
+    expect(count).toBe(1);
+  });
+
+  it("filters by publisher and distributor (normalized)", async () => {
+    await seedItem({
+      isbn: "9780000000001",
+      publisher: "Éditions du Seuil",
+      nmPublisher: "editions du seuil",
+      distributor: "Volumen",
+      nmDistributor: "volumen",
+    });
+    await seedItem({ isbn: "9780000000002", nmPublisher: "autre", nmDistributor: "autre" });
+
+    expect((await advancedSearch({ publisher: "éditions du seuil" })).count).toBe(1);
+    expect((await advancedSearch({ distributor: "VOLUMEN" })).count).toBe(1);
+  });
+
+  it("filters by keywords and comments (case-insensitive)", async () => {
+    await seedItem({ isbn: "9780000000001", keywords: "Policier", comments: "Coup de coeur" });
+    await seedItem({ isbn: "9780000000002", keywords: "Science-fiction", comments: "Réassort" });
+
+    expect((await advancedSearch({ keywords: "polic" })).count).toBe(1);
+    expect((await advancedSearch({ comments: "coeur" })).count).toBe(1);
+  });
+
+  it("filters by price, accepting a comma decimal separator", async () => {
+    await seedItem({ isbn: "9780000000001", price: "12.50" });
+    await seedItem({ isbn: "9780000000002", price: "9.90" });
+
+    expect((await advancedSearch({ price: "12,50" })).count).toBe(1);
+  });
+
+  it("filters by item type", async () => {
+    await seedItem({ isbn: "9780000000001", type: "magazine" });
+    await seedItem({ isbn: "9780000000002", type: "book" });
+
+    expect((await advancedSearch({ type: "magazine" })).count).toBe(1);
+  });
+
+  it("restricts to items in stock", async () => {
+    await seedItem({ isbn: "9780000000001", amount: 5 });
+    await seedItem({ isbn: "9780000000002", amount: 0 });
+
+    expect((await advancedSearch({ inStock: "1" })).count).toBe(1);
+  });
+
+  it("combines several fields with AND", async () => {
+    await seedItem({
+      isbn: "9780000000001",
+      title: "Dune",
+      nmTitle: "dune",
+      author: "Herbert",
+      nmAuthor: "herbert",
+    });
+    await seedItem({
+      isbn: "9780000000002",
+      title: "Dune",
+      nmTitle: "dune",
+      author: "Autre",
+      nmAuthor: "autre",
+    });
+
+    const { count } = await advancedSearch({ title: "dune", author: "herbert" });
+    expect(count).toBe(1);
+  });
+
+  it("ignores unknown fields instead of failing", async () => {
+    await seedItem({ isbn: "9780000000001" });
+
+    await expect(advancedSearch({ foo: "bar" })).resolves.toMatchObject({ count: 1 });
+  });
 });
 
 describe("getItems", () => {
