@@ -1,5 +1,6 @@
 import { db } from "@livrelibre/server/db/database";
-import { customers, items, orders, sales, users } from "@livrelibre/shared/schema";
+import { DISCOUNT_ITEM_TYPE, DISCOUNT_ITEM_TYPE_LABEL, ITEM_TYPES } from "@livrelibre/shared/item";
+import { customers, itemTypes, items, orders, sales, users } from "@livrelibre/shared/schema";
 import { norm } from "@livrelibre/shared/utils";
 import { type User } from "@server/auth";
 import { sql } from "drizzle-orm";
@@ -8,6 +9,32 @@ import { getTestDatabaseUri } from "../test-db.mts";
 
 export const TEST_USER: User = { id: 1, name: "admin", role: "admin" };
 
+/** Insère les types d'article par défaut (réamorcés après chaque `truncateAll`). */
+export const seedItemTypes = async () => {
+  await db
+    .insert(itemTypes)
+    .values(
+      Object.entries(ITEM_TYPES).map(([code, label], index) => ({
+        code,
+        label,
+        position: index,
+        active: true,
+        isDefault: code === "book",
+      })),
+    )
+    .onConflictDoNothing();
+  await db
+    .insert(itemTypes)
+    .values({
+      code: DISCOUNT_ITEM_TYPE,
+      label: DISCOUNT_ITEM_TYPE_LABEL,
+      position: 100,
+      active: false,
+      isDefault: false,
+    })
+    .onConflictDoNothing();
+};
+
 export const truncateAll = async () => {
   if (process.env.POSTGRES_URI !== getTestDatabaseUri()) {
     throw new Error(
@@ -15,8 +42,9 @@ export const truncateAll = async () => {
     );
   }
   await db.execute(
-    sql`TRUNCATE TABLE "users", "items", "cart", "asideCart", "sales", "customers", "purchases", "selectedCustomer", "orders" RESTART IDENTITY CASCADE`,
+    sql`TRUNCATE TABLE "users", "items", "cart", "asideCart", "sales", "customers", "purchases", "selectedCustomer", "orders", "itemTypes" RESTART IDENTITY CASCADE`,
   );
+  await seedItemTypes();
 };
 
 export const seedUser = async (overrides: Partial<typeof users.$inferInsert> = {}) => {

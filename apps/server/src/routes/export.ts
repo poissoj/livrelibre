@@ -1,7 +1,6 @@
 import { formatDate } from "@livrelibre/shared/date";
 import { ERROR_CODES } from "@livrelibre/shared/errors";
-import { ITEM_TYPES } from "@livrelibre/shared/item";
-import { items } from "@livrelibre/shared/schema";
+import { itemTypes, items } from "@livrelibre/shared/schema";
 import { type User } from "@server/auth";
 import { db } from "@server/db/database";
 import { logError } from "@server/utils/logError";
@@ -19,11 +18,15 @@ const csvCell = (value: string | number | undefined): string => {
 const formatNumber = (n: string | undefined) => n?.replace(".", ",") || "";
 
 const makeCSV = async () => {
-  const itemsList = await db
-    .select()
-    .from(items)
-    .where(ne(items.amount, 0))
-    .orderBy(items.distributor, items.author, items.title);
+  const [itemsList, typeRows] = await Promise.all([
+    db
+      .select()
+      .from(items)
+      .where(ne(items.amount, 0))
+      .orderBy(items.distributor, items.author, items.title),
+    db.select({ code: itemTypes.code, label: itemTypes.label }).from(itemTypes),
+  ]);
+  const labels = new Map(typeRows.map((row) => [row.code, row.label]));
   logger.info("Export stock", { count: itemsList.length });
   const HEADER = "Catégorie,Titre,Auteur·ice,Distributeur,ISBN,Qté,Valeur TTC\n";
   const csv =
@@ -31,7 +34,7 @@ const makeCSV = async () => {
     itemsList
       .map((item) =>
         [
-          ITEM_TYPES[item.type],
+          labels.get(item.type) ?? item.type,
           item.title,
           item.author,
           item.distributor,

@@ -1,6 +1,11 @@
 /* Usage: pnpm --filter @livrelibre/server seed */
-import type { BaseItem } from "@livrelibre/shared/item";
-import { customers, items, sales, users } from "@livrelibre/shared/schema";
+import {
+  DISCOUNT_ITEM_TYPE,
+  DISCOUNT_ITEM_TYPE_LABEL,
+  ITEM_TYPES,
+  type BaseItem,
+} from "@livrelibre/shared/item";
+import { customers, itemTypes, items, sales, users } from "@livrelibre/shared/schema";
 import { norm } from "@livrelibre/shared/utils";
 import { db } from "@server/db/database";
 import bcrypt from "bcrypt";
@@ -105,6 +110,31 @@ const main = async () => {
       await db.insert(users).values({ name: ADMIN_NAME, hash, role: "admin" });
       console.log(`L'utilisateur ${ADMIN_NAME} a été créé`);
     }
+
+    await db
+      .insert(itemTypes)
+      .values(
+        Object.entries(ITEM_TYPES).map(([code, label], index) => ({
+          code,
+          label,
+          position: index,
+          active: true,
+          isDefault: code === "book",
+        })),
+      )
+      .onConflictDoNothing();
+    console.log("Types d'article de démo insérés (ou déjà présents)");
+
+    await db
+      .insert(itemTypes)
+      .values({
+        code: DISCOUNT_ITEM_TYPE,
+        label: DISCOUNT_ITEM_TYPE_LABEL,
+        position: 100,
+        active: false,
+        isDefault: false,
+      })
+      .onConflictDoNothing();
 
     await db
       .insert(items)

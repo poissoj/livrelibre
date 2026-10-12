@@ -3,8 +3,8 @@ import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { formatDate } from "@livrelibre/shared/date";
 import { formatTVA } from "@livrelibre/shared/format";
-import { ITEM_TYPES, type ItemType, type TVA, TVAValues } from "@livrelibre/shared/item";
-import { ref } from "vue";
+import { type ItemType, type TVA, TVAValues } from "@livrelibre/shared/item";
+import { ref, watch } from "vue";
 import { toast } from "vue-sonner";
 
 import AppAlert from "@/components/AppAlert.vue";
@@ -18,6 +18,7 @@ import CardFooter from "@/components/CardFooter.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import FormRow from "@/components/FormRow.vue";
 import InputWithButton from "@/components/InputWithButton.vue";
+import useItemTypes from "@/lib/useItemTypes";
 import { getErrorMessage } from "@/utils/errors";
 import { isBookData } from "@/utils/guards";
 
@@ -30,7 +31,14 @@ const props = defineProps<{
   onSubmit: (data: FormFields) => Promise<ItemFormResult>;
 }>();
 
-const type = ref<ItemType>(props.data?.type ?? "book");
+const { activeTypes, defaultCode } = useItemTypes();
+
+const type = ref<ItemType>(props.data?.type ?? "");
+watch(defaultCode, (code) => {
+  if (!type.value && code) {
+    type.value = code;
+  }
+});
 const isbn = ref(props.data?.isbn ?? "");
 const author = ref(props.data?.author ?? "");
 const title = ref(props.data?.title ?? "");
@@ -47,7 +55,7 @@ const alert = ref<AlertMessage | null>(null);
 const isbnLoading = ref(false);
 
 const reset = () => {
-  type.value = "book";
+  type.value = defaultCode.value;
   isbn.value = "";
   author.value = "";
   title.value = "";
@@ -129,8 +137,8 @@ const isbnHandler = async () => {
           <div class="flex-1 [min-width:20rem] ml-md">
             <FormRow label="Type">
               <AppSelect v-model="type">
-                <option v-for="[key, label] in Object.entries(ITEM_TYPES)" :key="key" :value="key">
-                  {{ label }}
+                <option v-for="itemType in activeTypes" :key="itemType.code" :value="itemType.code">
+                  {{ itemType.label }}
                 </option>
               </AppSelect>
             </FormRow>

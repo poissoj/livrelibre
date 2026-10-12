@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { CustomerWithPurchase } from "@livrelibre/shared/customer";
 import { formatPrice } from "@livrelibre/shared/format";
+import { DISCOUNT_ITEM_TYPE } from "@livrelibre/shared/item";
 import { LOYALTY_DISCOUNT_TITLE, loyaltyDiscount } from "@livrelibre/shared/sale";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { computed, ref } from "vue";
@@ -37,7 +38,7 @@ const onSubmit = () => {
     price: String(-discount.value),
     title: LOYALTY_DISCOUNT_TITLE,
     kind: "loyaltyDiscount",
-    type: "book",
+    type: DISCOUNT_ITEM_TYPE,
     tva: "5.5",
   });
 };

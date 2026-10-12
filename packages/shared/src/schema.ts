@@ -16,7 +16,7 @@ import {
   varchar,
 } from "drizzle-orm/pg-core";
 
-import { ItemTypes, TVAValues } from "./item";
+import { TVAValues } from "./item";
 import { CONTACT_MEAN, ORDER_STATUS } from "./order";
 
 export const roleEnum = pgEnum("role", ["admin", "cashier"]);
@@ -30,7 +30,22 @@ export const users = pgTable("users", {
 
 export type User = typeof users.$inferSelect;
 
-export const itemTypeEnum = pgEnum("itemType", ItemTypes);
+/**
+ * Types d'article configurables. `code` est l'identifiant stable stocké dans
+ * `items.type`, `cart.type`, `asideCart.type` et `sales.itemType`.
+ */
+export const itemTypes = pgTable(
+  "itemTypes",
+  {
+    code: varchar("code", { length: 64 }).primaryKey(),
+    label: varchar("label").notNull(),
+    position: integer("position").notNull(),
+    active: boolean("active").notNull().default(true),
+    isDefault: boolean("isDefault").notNull().default(false),
+  },
+  (table) => [index("itemTypes_position_idx").on(table.position)],
+);
+export type ItemTypeRow = typeof itemTypes.$inferSelect;
 
 export const tvaEnum = pgEnum("tva", TVAValues);
 
@@ -38,7 +53,9 @@ export const items = pgTable(
   "items",
   {
     id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-    type: itemTypeEnum("type").notNull(),
+    type: varchar("type", { length: 64 })
+      .notNull()
+      .references(() => itemTypes.code),
     isbn: varchar("isbn", { length: 13 }).notNull(),
     author: varchar("author").notNull(),
     title: varchar("title").notNull(),
@@ -71,7 +88,9 @@ export type Item = typeof items.$inferSelect;
 
 const cartItemColumns = () => ({
   itemId: integer("itemId").references(() => items.id),
-  type: itemTypeEnum("type").notNull(),
+  type: varchar("type", { length: 64 })
+    .notNull()
+    .references(() => itemTypes.code),
   title: varchar("title").notNull(),
   price: numeric("price", { precision: 12, scale: 2 }).notNull(),
   tva: tvaEnum("tva").notNull(),
@@ -128,7 +147,9 @@ export const sales = pgTable(
   "sales",
   {
     id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-    itemType: itemTypeEnum("itemType").notNull(),
+    itemType: varchar("itemType", { length: 64 })
+      .notNull()
+      .references(() => itemTypes.code),
     price: numeric("price", { precision: 12, scale: 2 }).notNull(),
     quantity: integer("quantity").notNull(),
     title: varchar("title"),

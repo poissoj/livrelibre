@@ -1,5 +1,5 @@
 import { ERROR_CODES } from "@livrelibre/shared/errors";
-import { ItemTypes, TVAValues, zItem } from "@livrelibre/shared/item";
+import { TVAValues, zItem, zItemType } from "@livrelibre/shared/item";
 import { zOrder, zOrderSort, zOrderStatusArray } from "@livrelibre/shared/order";
 import { CART_ITEM_KINDS } from "@livrelibre/shared/sale";
 import { norm } from "@livrelibre/shared/utils";
@@ -37,6 +37,13 @@ import {
   setCustomer,
   setSelectedCustomer,
 } from "@server/server/customers";
+import {
+  createItemType,
+  deleteItemType,
+  getItemTypes,
+  itemTypeExists,
+  updateItemType,
+} from "@server/server/itemTypes";
 import { lastSales } from "@server/server/lastSales";
 import {
   deleteOrder,
@@ -83,10 +90,6 @@ const payCartSchema = z.object({
 type AdvancedSearchValueRule = { isValid: (value: string) => boolean; message: string };
 
 const ADVANCED_SEARCH_VALUE_RULES: Partial<Record<AdvancedSearchField, AdvancedSearchValueRule>> = {
-  type: {
-    isValid: (value) => z.enum(ItemTypes).safeParse(value).success,
-    message: ERROR_CODES.INVALID_TYPE,
-  },
   tva: {
     isValid: (value) => z.enum(TVAValues).safeParse(value).success,
     message: ERROR_CODES.INVALID_TVA,
@@ -153,7 +156,13 @@ export const appRouter = router({
           }
         }),
     )
-    .query(async ({ input }) => await advancedSearch(input.search, input.page)),
+    .query(async ({ input }) => {
+      const type = input.search.type;
+      if (type && !(await itemTypeExists(type))) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: ERROR_CODES.INVALID_TYPE });
+      }
+      return await advancedSearch(input.search, input.page);
+    }),
   asideCart: authProcedure.query(async ({ ctx }) => await getAsideCart(ctx.user.id)),
   bestsales: authProcedure.query(getBestSales),
   bookmarks: authProcedure.query(getBookmarks),
@@ -161,6 +170,7 @@ export const appRouter = router({
   items: authProcedure
     .input(zPage)
     .query(async ({ input }) => await getItems({ pageNumber: input })),
+  itemTypes: authProcedure.query(getItemTypes),
   customer: authProcedure.input(zId).query(async ({ input }) => await getCustomer(input)),
   customers: authProcedure
     .input(
@@ -249,6 +259,9 @@ export const appRouter = router({
       return await addISBNToCart(ctx.user.id, input);
     }),
   addItem: authProcedure.input(zItem).mutation(async ({ ctx, input }) => {
+    if (!(await itemTypeExists(input.type))) {
+      throw new TRPCError({ code: "BAD_REQUEST", message: ERROR_CODES.INVALID_ITEM_TYPE });
+    }
     logger.info("Add new item", { user: ctx.user, isbn: input.isbn });
     return await addItem(input);
   }),
@@ -258,11 +271,14 @@ export const appRouter = router({
         price: zPrice,
         title: z.string(),
         tva: z.enum(TVAValues),
-        type: z.enum(ItemTypes),
+        type: zItemType,
         kind: z.enum(CART_ITEM_KINDS).default("standalone"),
       }),
     )
     .mutation(async ({ input, ctx }) => {
+      if (!(await itemTypeExists(input.type))) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: ERROR_CODES.INVALID_ITEM_TYPE });
+      }
       await addNewItemToCart(ctx.user.id, input);
     }),
   addToCart: authProcedure
@@ -355,6 +371,9 @@ export const appRouter = router({
   updateItem: authProcedure
     .input(z.object({ item: zItem, id: zId }))
     .mutation(async ({ ctx, input }) => {
+      if (!(await itemTypeExists(input.item.type))) {
+        throw new TRPCError({ code: "BAD_REQUEST", message: ERROR_CODES.INVALID_ITEM_TYPE });
+      }
       logger.info("Update item", { user: ctx.user, itemId: input.id });
       return await updateItem(input.item, input.id);
     }),
@@ -451,6 +470,39 @@ export const appRouter = router({
   deleteUser: adminProcedure.input(zId).mutation(async ({ ctx, input }) => {
     await deleteUser(input, ctx.user.id);
     logger.info("User deleted", { user: ctx.user, userId: input });
+  }),
+  createItemType: adminProcedure
+    .input(
+      z.object({
+        code: zItemType,
+        label: z.string().trim().min(1, ERROR_CODES.INVALID_NAME),
+        position: z.number().int().nonnegative().optional(),
+        active: z.boolean().optional(),
+        isDefault: z.boolean().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await createItemType(input);
+      logger.info("Item type created", { user: ctx.user, code: input.code });
+    }),
+  updateItemType: adminProcedure
+    .input(
+      z.object({
+        code: zItemType,
+        label: z.string().trim().min(1, ERROR_CODES.INVALID_NAME).optional(),
+        position: z.number().int().nonnegative().optional(),
+        active: z.boolean().optional(),
+        isDefault: z.boolean().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { code, ...rest } = input;
+      await updateItemType(code, rest);
+      logger.info("Item type updated", { user: ctx.user, code });
+    }),
+  deleteItemType: adminProcedure.input(zItemType).mutation(async ({ ctx, input }) => {
+    await deleteItemType(input);
+    logger.info("Item type deleted", { user: ctx.user, code: input });
   }),
 });
 

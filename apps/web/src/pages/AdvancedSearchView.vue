@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { formatISODateFR } from "@livrelibre/shared/date";
 import { formatTVA } from "@livrelibre/shared/format";
-import { ITEM_TYPES } from "@livrelibre/shared/item";
 import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
 import { isIn } from "@livrelibre/shared/utils";
 import { keepPreviousData, useQuery } from "@tanstack/vue-query";
@@ -16,11 +15,14 @@ import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import ItemsTable from "@/components/ItemsTable.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
+import useItemTypes from "@/lib/useItemTypes";
 import { trpcClient } from "@/utils/trpc";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
 import { usePageParam, useQueryParams } from "@/utils/useQueryParams";
 
 const CARD_STYLES = "max-h-full overflow-hidden flex flex-col relative";
+
+const { label: itemTypeLabel } = useItemTypes();
 
 const FIELD_LABELS: Record<string, string> = {
   type: "Type",
@@ -40,8 +42,8 @@ const FIELD_LABELS: Record<string, string> = {
 const formatRow = ([key, value]: [string, string]) => {
   const fieldName = isIn(FIELD_LABELS, key) ? FIELD_LABELS[key] : key;
   let fieldValue = value;
-  if (key === "type" && isIn(ITEM_TYPES, value)) {
-    fieldValue = ITEM_TYPES[value];
+  if (key === "type") {
+    fieldValue = itemTypeLabel(value);
   } else if (key === "tva") {
     fieldValue = formatTVA(value) || "";
   } else if (key === "datebought") {

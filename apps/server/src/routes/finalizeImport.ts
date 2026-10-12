@@ -5,6 +5,7 @@ import { items } from "@livrelibre/shared/schema";
 import { norm } from "@livrelibre/shared/utils";
 import { type User } from "@server/auth";
 import { db } from "@server/db/database";
+import { getBookItemTypeCode } from "@server/server/itemTypes";
 import { logger } from "@server/utils/logger";
 import { sql } from "drizzle-orm";
 import type { Context } from "hono";
@@ -35,13 +36,18 @@ export const finalizeImportRoute = async (c: Context) => {
     isbns: data.map((row) => row.EAN),
   });
   const today = formatDate(new Date());
+  const bookType = await getBookItemTypeCode();
+  if (!bookType) {
+    logger.error("Import rejected", { user, reason: "NO_ITEM_TYPE" });
+    return c.json({ error: ERROR_CODES.IMPORT_FAILED }, 500);
+  }
   const booksToAdd: (typeof items.$inferInsert)[] = data.map((row) => ({
     amount: row.QTE,
     datebought: today,
     isbn: row.EAN,
     price: String(row.PRIX),
     tva: "5.5",
-    type: "book",
+    type: bookType,
     author: row.AUTEUR,
     nmAuthor: norm(row.AUTEUR),
     title: row.TITRE,

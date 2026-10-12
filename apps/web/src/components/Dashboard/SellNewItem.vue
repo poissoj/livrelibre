@@ -2,9 +2,9 @@
 import { faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { formatTVA } from "@livrelibre/shared/format";
-import { ITEM_TYPES, type ItemType, type TVA, TVAValues } from "@livrelibre/shared/item";
+import { type ItemType, type TVA, TVAValues } from "@livrelibre/shared/item";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
-import { ref } from "vue";
+import { ref, watch } from "vue";
 
 import AppAlert from "@/components/AppAlert.vue";
 import AppButton from "@/components/AppButton.vue";
@@ -15,15 +15,23 @@ import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import type { AlertMessage } from "@/components/form";
 import FormRow from "@/components/FormRow.vue";
+import useItemTypes from "@/lib/useItemTypes";
 import { getErrorMessage } from "@/utils/errors";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 
 const queryClient = useQueryClient();
+const { activeTypes, defaultCode } = useItemTypes();
 const price = ref<string | number>("");
 const title = ref("");
-const type = ref<ItemType>("book");
+const type = ref<ItemType>("");
 const tva = ref<TVA>("5.5");
 const alert = ref<AlertMessage | null>(null);
+
+watch(defaultCode, (code) => {
+  if (!type.value && code) {
+    type.value = code;
+  }
+});
 
 const { mutateAsync: addItem, isPending: addPending } = useMutation({
   mutationFn: (input: RouterInput["addNewItemToCart"]) => trpcClient.addNewItemToCart.mutate(input),
@@ -46,7 +54,7 @@ const onSubmit = async () => {
     });
     price.value = "";
     title.value = "";
-    type.value = "book";
+    type.value = defaultCode.value;
     tva.value = "5.5";
     alert.value = { type: "success", message: "Article ajouté au panier" };
   } catch {
@@ -68,8 +76,8 @@ const onSubmit = async () => {
         </FormRow>
         <FormRow label="Type">
           <AppSelect v-model="type">
-            <option v-for="[key, label] in Object.entries(ITEM_TYPES)" :key="key" :value="key">
-              {{ label }}
+            <option v-for="itemType in activeTypes" :key="itemType.code" :value="itemType.code">
+              {{ itemType.label }}
             </option>
           </AppSelect>
         </FormRow>

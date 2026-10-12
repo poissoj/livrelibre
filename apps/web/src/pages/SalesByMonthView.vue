@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { formatPrice } from "@livrelibre/shared/format";
-import { ITEM_TYPES } from "@livrelibre/shared/item";
 import { useQuery } from "@tanstack/vue-query";
 import { clsx } from "clsx";
 import { computed } from "vue";
@@ -16,12 +15,14 @@ import CategorySkeleton from "@/components/PaymentStats/CategorySkeleton.vue";
 import RestrictedContent from "@/components/RestrictedContent.vue";
 import StatsByTVA from "@/components/TVAStats/StatsByTVA.vue";
 import TVASkeleton from "@/components/TVAStats/TVASkeleton.vue";
+import useItemTypes from "@/lib/useItemTypes";
 import { trpcClient } from "@/utils/trpc";
 
 const TH_STYLES = "sticky top-0 bg-white";
 
 const route = useRoute();
 const router = useRouter();
+const { label: itemTypeLabel } = useItemTypes();
 
 const year = computed(() => String(route.params.year));
 const month = computed(() => String(route.params.month));
@@ -52,7 +53,7 @@ const monthLabel = computed(() =>
 const categories = computed(() =>
   (monthStats.value?.itemTypes ?? []).map((item) => ({
     ...item,
-    label: ITEM_TYPES[item.itemType],
+    label: itemTypeLabel(item.itemType),
   })),
 );
 </script>

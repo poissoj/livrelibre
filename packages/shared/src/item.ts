@@ -1,8 +1,14 @@
 import { z } from "zod";
 
+import { ERROR_CODES } from "./errors";
 import { zAmount, zDateISO, zIsbn, zPrice } from "./validation";
 
-export const ITEM_TYPES = {
+/**
+ * Libellés par défaut des types d'article. Ils servent à amorcer la table
+ * `itemTypes` et restent la source des libellés tant que la page de gestion des
+ * types (phase 2) n'est pas branchée sur la base.
+ */
+export const ITEM_TYPES: Record<string, string> = {
   postcard: "Carte postale",
   stationery: "Papeterie",
   game: "Jeu",
@@ -11,25 +17,28 @@ export const ITEM_TYPES = {
   unknown: "Inconnu",
   dvd: "DVD",
   deposit: "consigne",
-} as const;
+};
 
-export type ItemType = keyof typeof ITEM_TYPES;
-export const ItemTypes = [
-  "postcard",
-  "stationery",
-  "game",
-  "book",
-  "magazine",
-  "unknown",
-  "dvd",
-  "deposit",
-] as const;
+/** Type utilisé pour l'import DILICOM (articles créés / incrémentés). */
+export const BOOK_ITEM_TYPE = "book";
+
+/**
+ * Type dédié aux lignes de remise (fidélité). Masqué des listes (`active=false`)
+ * mais conservé comme type à part entière pour les statistiques et l'historique.
+ */
+export const DISCOUNT_ITEM_TYPE = "discount";
+export const DISCOUNT_ITEM_TYPE_LABEL = "Remise";
+
+/** Code d'un type d'article : identifiant stable stocké en base. */
+export type ItemType = string;
 
 export const TVAValues = ["20", "5.5", "2.1", "0"] as const;
 export type TVA = (typeof TVAValues)[number];
 
+export const zItemType = z.string().trim().min(1, ERROR_CODES.INVALID_ITEM_TYPE);
+
 export const zItem = z.object({
-  type: z.enum(ItemTypes),
+  type: zItemType,
   isbn: zIsbn,
   author: z.string(),
   title: z.string(),

@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { formatISODateFR } from "@livrelibre/shared/date";
 import { formatNumber, formatPrice, formatTVA } from "@livrelibre/shared/format";
-import { ITEM_TYPES, type ItemWithCount } from "@livrelibre/shared/item";
+import type { ItemWithCount } from "@livrelibre/shared/item";
+
+import useItemTypes from "@/lib/useItemTypes";
 
 import type { ItemOrder } from "./item";
 import StatusCircle from "./StatusCircle.vue";
@@ -12,13 +14,15 @@ const props = defineProps<{
   ordersError?: boolean;
 }>();
 
+const { label } = useItemTypes();
+
 const formatStringPrice = (price: string) => (price ? formatPrice(Number(price)) : "");
 </script>
 
 <template>
   <dl class="flex flex-wrap min-w-[24rem]">
     <dt class="[flex-basis:30%] p-sm font-medium">Type</dt>
-    <dd class="[flex:1_0_70%] p-sm">{{ ITEM_TYPES[props.item.type] }}</dd>
+    <dd class="[flex:1_0_70%] p-sm">{{ label(props.item.type) }}</dd>
     <dt class="[flex-basis:30%] p-sm font-medium">ISBN</dt>
     <dd class="[flex:1_0_70%] p-sm">{{ props.item.isbn }}</dd>
     <dt class="[flex-basis:30%] p-sm font-medium">Auteur·ice</dt>

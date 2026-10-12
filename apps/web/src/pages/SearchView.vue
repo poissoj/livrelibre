@@ -2,7 +2,7 @@
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { formatTVA } from "@livrelibre/shared/format";
-import { ITEM_TYPES, TVAValues } from "@livrelibre/shared/item";
+import { TVAValues } from "@livrelibre/shared/item";
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -15,8 +15,10 @@ import CardBody from "@/components/CardBody.vue";
 import CardFooter from "@/components/CardFooter.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import FormRow from "@/components/FormRow.vue";
+import useItemTypes from "@/lib/useItemTypes";
 
 const router = useRouter();
+const { activeTypes } = useItemTypes();
 
 const type = ref("");
 const isbn = ref("");
@@ -62,11 +64,11 @@ const onSubmit = async () => {
                 <AppSelect v-model="type">
                   <option value="">--ignorer--</option>
                   <option
-                    v-for="[key, label] in Object.entries(ITEM_TYPES)"
-                    :key="key"
-                    :value="key"
+                    v-for="itemType in activeTypes"
+                    :key="itemType.code"
+                    :value="itemType.code"
                   >
-                    {{ label }}
+                    {{ itemType.label }}
                   </option>
                 </AppSelect>
               </FormRow>
