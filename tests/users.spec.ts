@@ -22,9 +22,12 @@ test("un administrateur gère les utilisateurs", async ({ page }) => {
   await page.goto("/users");
 
   // Création
-  await page.getByLabel("Identifiant", { exact: true }).fill(NAME);
-  await page.getByLabel("Mot de passe", { exact: true }).fill(PASSWORD);
   await page.getByRole("button", { name: "Ajouter" }).click();
+  const newRow = page.locator("tbody tr").last();
+  await expect(newRow.locator('input[type="text"]')).toBeFocused();
+  await newRow.locator('input[type="text"]').fill(NAME);
+  await newRow.locator('input[type="password"]').fill(PASSWORD);
+  await newRow.getByRole("button", { name: "Enregistrer" }).click();
   await expect(page.getByText("L'utilisateur a été créé.")).toBeVisible();
   const row = page.getByRole("row").filter({ hasText: NAME });
   await expect(row).toBeVisible();

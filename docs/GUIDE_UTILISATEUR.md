@@ -218,8 +218,9 @@ Page `Import/Export` (`/import-export`) :
 
 Page `Utilisateurs` (`/users`), réservée aux administrateurs :
 
-- **Créer** — renseigner `Identifiant`, `Mot de passe` (au moins 8 caractères) et
-  `Rôle` (`Administrateur` ou `Caissier⋅ère`), puis `Ajouter`.
+- **Créer** — cliquer sur `Ajouter` sous le tableau, renseigner `Identifiant`,
+  `Mot de passe` (au moins 8 caractères) et `Rôle` dans la nouvelle ligne, puis
+  `Enregistrer` (ou `Annuler`).
 - **Modifier** — bouton `Éditer` sur une ligne : changer l'`Identifiant` et le
   `Rôle`, et éventuellement saisir un `Nouveau mot de passe` (laisser vide pour ne
   pas le changer), puis `Enregistrer`.
