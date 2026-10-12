@@ -5,6 +5,7 @@ import {
   faChartPie,
   faEdit,
   faFileAlt,
+  faGear,
   faLaptop,
   faSearchPlus,
   faTachometerAlt,
@@ -23,7 +24,7 @@ const salesPage = computed(() => (user.value?.role === "admin" ? "/sales" : "/to
 </script>
 
 <template>
-  <nav aria-label="Navigation principale" class="w-56 bg-gray text-white">
+  <nav aria-label="Navigation principale" class="w-56 bg-gray text-white overflow-auto">
     <ul>
       <li>
         <NavLink href="/" :icon="faTachometerAlt">Tableau de bord</NavLink>
@@ -63,6 +64,9 @@ const salesPage = computed(() => (user.value?.role === "admin" ? "/sales" : "/to
       </li>
       <li v-if="user?.role === 'admin'">
         <NavLink href="/users" :icon="faUserGear">Utilisateurs</NavLink>
+      </li>
+      <li v-if="user?.role === 'admin'">
+        <NavLink href="/settings" :icon="faGear">Réglages</NavLink>
       </li>
     </ul>
   </nav>

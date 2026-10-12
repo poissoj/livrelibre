@@ -42,6 +42,7 @@ import {
   deleteItemType,
   getItemTypes,
   itemTypeExists,
+  reorderItemTypes,
   updateItemType,
 } from "@server/server/itemTypes";
 import { lastSales } from "@server/server/lastSales";
@@ -504,6 +505,14 @@ export const appRouter = router({
     await deleteItemType(input);
     logger.info("Item type deleted", { user: ctx.user, code: input });
   }),
+  reorderItemTypes: adminProcedure
+    .input(
+      z.object({ codes: z.array(z.string().trim().min(1, ERROR_CODES.INVALID_ITEM_TYPE)).min(1) }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      await reorderItemTypes(input.codes);
+      logger.info("Item types reordered", { user: ctx.user, count: input.codes.length });
+    }),
 });
 
 export type AppRouter = typeof appRouter;

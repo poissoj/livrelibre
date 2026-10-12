@@ -34,11 +34,15 @@ const props = defineProps<{
 const { activeTypes, defaultCode } = useItemTypes();
 
 const type = ref<ItemType>(props.data?.type ?? "");
-watch(defaultCode, (code) => {
-  if (!type.value && code) {
-    type.value = code;
-  }
-});
+watch(
+  defaultCode,
+  (code) => {
+    if (!type.value && code) {
+      type.value = code;
+    }
+  },
+  { immediate: true },
+);
 const isbn = ref(props.data?.isbn ?? "");
 const author = ref(props.data?.author ?? "");
 const title = ref(props.data?.title ?? "");

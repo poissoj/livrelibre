@@ -92,6 +92,27 @@ describe("itemTypes", () => {
     });
   });
 
+  it("reorders types and normalizes positions", async () => {
+    const before = (await admin.itemTypes()).map((type) => type.code);
+    const [first, second] = before;
+    await admin.reorderItemTypes({ codes: [second, first, ...before.slice(2)] });
+
+    const after = await admin.itemTypes();
+    expect(after.map((type) => type.code)).toEqual([second, first, ...before.slice(2)]);
+    expect(after.map((type) => type.position)).toEqual(after.map((_, index) => index));
+  });
+
+  it("rejects setting an inactive type as default", async () => {
+    await expect(
+      admin.createItemType({ code: "cd", label: "CD", active: false, isDefault: true }),
+    ).rejects.toMatchObject({ code: "BAD_REQUEST" });
+    await expect(admin.updateItemType({ code: "discount", isDefault: true })).rejects.toMatchObject(
+      {
+        code: "BAD_REQUEST",
+      },
+    );
+  });
+
   it("restricts type management to admins", async () => {
     await expect(cashier.createItemType({ code: "cd", label: "CD" })).rejects.toMatchObject({
       code: "FORBIDDEN",

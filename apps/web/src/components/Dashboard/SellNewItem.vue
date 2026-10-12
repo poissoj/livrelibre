@@ -27,11 +27,15 @@ const type = ref<ItemType>("");
 const tva = ref<TVA>("5.5");
 const alert = ref<AlertMessage | null>(null);
 
-watch(defaultCode, (code) => {
-  if (!type.value && code) {
-    type.value = code;
-  }
-});
+watch(
+  defaultCode,
+  (code) => {
+    if (!type.value && code) {
+      type.value = code;
+    }
+  },
+  { immediate: true },
+);
 
 const { mutateAsync: addItem, isPending: addPending } = useMutation({
   mutationFn: (input: RouterInput["addNewItemToCart"]) => trpcClient.addNewItemToCart.mutate(input),

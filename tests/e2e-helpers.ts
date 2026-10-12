@@ -2,6 +2,7 @@ import {
   asideCart,
   cart,
   customers,
+  itemTypes,
   items,
   orders,
   purchases,
@@ -302,6 +303,12 @@ export const seedUser = async ({
   });
   return { name, password };
 };
+
+/** Deletes an item type by code (test cleanup). */
+export const deleteItemTypeByCode = async (code: string): Promise<void> =>
+  withDb(async (db) => {
+    await db.delete(itemTypes).where(eq(itemTypes.code, code));
+  });
 
 export const seedCashier = async (): Promise<{
   name: string;

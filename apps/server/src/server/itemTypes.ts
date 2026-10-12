@@ -42,6 +42,18 @@ export const getActiveItemTypes = async () =>
     .where(eq(itemTypes.active, true))
     .orderBy(asc(itemTypes.position), asc(itemTypes.label));
 
+/**
+ * Applique l'ordre fourni : `position = index` pour chaque code (0…n-1).
+ * Normalise au passage les positions dupliquées ou trouées.
+ */
+export const reorderItemTypes = async (codes: string[]): Promise<void> => {
+  await db.transaction(async (tx) => {
+    for (const [index, code] of codes.entries()) {
+      await tx.update(itemTypes).set({ position: index }).where(eq(itemTypes.code, code));
+    }
+  });
+};
+
 /** Code du type par défaut (drapeau `isDefault`, sinon premier type actif). */
 export const getDefaultItemTypeCode = async (): Promise<string | null> => {
   const flagged = await db
@@ -88,7 +100,10 @@ export const createItemType = async (input: ItemTypeInput): Promise<void> => {
   const empty = await db.select({ count: count() }).from(itemTypes);
   const position = input.position ?? (await nextPosition());
   const active = input.active ?? true;
-  const isDefault = input.isDefault ?? empty[0].count === 0;
+  if (input.isDefault === true && !active) {
+    throw new TRPCError({ code: "BAD_REQUEST", message: ERROR_CODES.ITEM_TYPE_INACTIVE_DEFAULT });
+  }
+  const isDefault = (input.isDefault ?? (empty[0].count === 0 && active)) && active;
   await db.transaction(async (tx) => {
     if (isDefault) {
       await clearOtherDefaults(tx, input.code);
@@ -98,7 +113,7 @@ export const createItemType = async (input: ItemTypeInput): Promise<void> => {
       label: input.label,
       position,
       active,
-      isDefault: isDefault && active,
+      isDefault,
     });
   });
 };
@@ -110,9 +125,12 @@ export const updateItemType = async (code: string, input: ItemTypeUpdate) => {
   }
   const current = rows[0];
   const active = input.active ?? current.active;
-  const isDefault = input.isDefault ?? current.isDefault;
+  if (input.isDefault === true && !active) {
+    throw new TRPCError({ code: "BAD_REQUEST", message: ERROR_CODES.ITEM_TYPE_INACTIVE_DEFAULT });
+  }
+  const isDefault = (input.isDefault ?? current.isDefault) && active;
   await db.transaction(async (tx) => {
-    if (isDefault && active) {
+    if (isDefault) {
       await clearOtherDefaults(tx, code);
     }
     await tx
@@ -121,7 +139,7 @@ export const updateItemType = async (code: string, input: ItemTypeUpdate) => {
         label: input.label ?? current.label,
         position: input.position ?? current.position,
         active,
-        isDefault: isDefault && active,
+        isDefault,
       })
       .where(eq(itemTypes.code, code));
   });

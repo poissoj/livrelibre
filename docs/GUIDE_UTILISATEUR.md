@@ -49,6 +49,7 @@ session en cours reste valide, il n'est pas nécessaire de se reconnecter.
 - `Statistiques` (`/stats`)
 - `Import/Export` (`/import-export`)
 - `Utilisateurs` (`/users`) — administrateur uniquement
+- `Réglages` (`/settings`) — administrateur uniquement
 
 **En-tête** :
 
@@ -227,12 +228,34 @@ Page `Utilisateurs` (`/users`), réservée aux administrateurs :
 Il est impossible de supprimer son propre compte, ni de supprimer ou rétrograder le
 dernier administrateur.
 
+## Réglages
+
+Page `Réglages` (`/settings`), réservée aux administrateurs. Elle regroupe les
+réglages de l'application, à commencer par les **types d'article**.
+
+**Types d'article** :
+
+- **Créer** — cliquer sur `Ajouter` sous le tableau, saisir le `Libellé` dans la
+  nouvelle ligne (le `Code` est généré automatiquement à partir du libellé et reste
+  figé), cocher `Défaut` le cas échéant, puis `Enregistrer` (ou `Annuler`).
+- **Modifier** — bouton `Éditer` : changer le `Libellé`, cocher/décocher `Actif`
+  (un type inactif n'apparaît plus dans les listes déroulantes) et `Défaut`, puis
+  `Enregistrer`.
+- **Réordonner** — boutons `▲`/`▼` sur chaque ligne pour déplacer le type dans la
+  liste (l'ordre est utilisé par les listes déroulantes).
+- **Supprimer** — possible uniquement si le type n'est utilisé par aucun article,
+  panier ou vente ; sinon le supprimer est refusé (utiliser `Actif` pour l'archiver).
+
+Le type par défaut sert de présélection pour les nouveaux articles ; l'import
+DILICOM crée toujours des articles de type `Livre` (`book`).
+
 ## Rôles et permissions
 
 | Fonction                                                                   | `admin`     | `cashier`                      |
 | -------------------------------------------------------------------------- | ----------- | ------------------------------ |
 | Ensemble des écrans (articles, client⋅es, commandes, stats, import/export) | Oui         | Oui                            |
 | Gestion des utilisateurs (`/users`)                                        | Oui         | Non                            |
+| Réglages (`/settings`, types d'article)                                    | Oui         | Non                            |
 | Ventes par mois (`/sales`)                                                 | Oui         | Non                            |
 | Ventes du jour (`/todaySales`)                                             | Oui         | Oui                            |
 | Consulter une vente passée                                                 | Oui         | Non (jour en cours uniquement) |

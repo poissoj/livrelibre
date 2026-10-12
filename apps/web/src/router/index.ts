@@ -25,6 +25,7 @@ const SalesByMonthView = () => import("@/pages/SalesByMonthView.vue");
 const SalesByDayView = () => import("@/pages/SalesByDayView.vue");
 const SalesView = () => import("@/pages/SalesView.vue");
 const SearchView = () => import("@/pages/SearchView.vue");
+const SettingsView = () => import("@/pages/SettingsView.vue");
 const StatsView = () => import("@/pages/StatsView.vue");
 const TodaySalesView = () => import("@/pages/TodaySalesView.vue");
 const UpdateItemView = () => import("@/pages/UpdateItemView.vue");
@@ -180,6 +181,12 @@ export const router = createRouter({
           name: "users",
           component: UsersView,
           meta: { title: "Utilisateurs" },
+        },
+        {
+          path: "settings",
+          name: "settings",
+          component: SettingsView,
+          meta: { title: "Réglages" },
         },
         {
           path: "quicksearch",

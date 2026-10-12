@@ -108,6 +108,7 @@ test("chaque page a un seul titre principal (h1)", async ({ page }) => {
     "/stats",
     "/add",
     "/order/new",
+    "/settings",
   ]) {
     await page.goto(path);
     await expect(page.getByRole("heading", { level: 1 })).toHaveCount(1);
