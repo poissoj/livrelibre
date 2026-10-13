@@ -17,5 +17,6 @@ export default defineConfig({
     setupFiles: ["./vitest.setup.ts"],
     include: ["integration/**/*.test.ts"],
     fileParallelism: false,
+    isolate: false,
   },
 });
