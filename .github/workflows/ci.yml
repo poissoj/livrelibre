@@ -57,9 +57,13 @@ jobs:
       - run: pnpm test:integration
 
   e2e:
-    name: E2E (Playwright)
+    name: E2E (Playwright, ${{ matrix.browser }})
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, firefox]
     env:
       POSTGRES_URI: postgres://postgres:postgres@localhost:5432/livrelibre_test
     services:
@@ -84,13 +88,13 @@ jobs:
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
-      - run: pnpm --filter @livrelibre/tests exec playwright install --with-deps chromium firefox
-      - run: pnpm test:e2e
-        timeout-minutes: 18
+      - run: pnpm --filter @livrelibre/tests exec playwright install --with-deps ${{ matrix.browser }}
+      - run: pnpm --filter @livrelibre/tests exec playwright test --project=${{ matrix.browser }}
+        timeout-minutes: 15
       - if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: playwright-report
+          name: playwright-report-${{ matrix.browser }}
           path: |
             playwright-report/
             test-results/

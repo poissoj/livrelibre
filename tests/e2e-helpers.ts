@@ -297,7 +297,7 @@ export const seedUser = async ({
   password: string;
   role?: "admin" | "cashier";
 }): Promise<{ name: string; password: string }> => {
-  const hash = await bcrypt.hash(password, 12);
+  const hash = await bcrypt.hash(password, 4);
   await withDb(async (db) => {
     await db.insert(users).values({ name, hash, role });
   });
@@ -316,7 +316,7 @@ export const seedCashier = async (): Promise<{
 }> => {
   const name = unique("cashier");
   const password = "cashier";
-  const hash = await bcrypt.hash(password, 12);
+  const hash = await bcrypt.hash(password, 4);
   await withDb(async (db) => {
     await db.insert(users).values({ name, hash, role: "cashier" });
   });

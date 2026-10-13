@@ -21,7 +21,7 @@ export default async function globalSetup() {
   const db = drizzle(client);
   await migrate(db, { migrationsFolder: MIGRATIONS_FOLDER });
 
-  const hash = await bcrypt.hash(E2E_USER.password, 12);
+  const hash = await bcrypt.hash(E2E_USER.password, 4);
   const existing = await db
     .select({ id: users.id })
     .from(users)

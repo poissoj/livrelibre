@@ -110,7 +110,8 @@ fournies par la configuration de test.
 ## Tests & outils
 
 - `pnpm test` — tests unitaires et d'intégration
-- `pnpm test:e2e` — tests de bout en bout (Playwright)
+- `pnpm test:e2e` — tests de bout en bout (Playwright, Chromium uniquement)
+- `pnpm test:e2e:all` — tests e2e sur Chromium et Firefox
 - `pnpm typecheck` — vérification des types
 - `pnpm lint` — lint
 - `pnpm check` — lint + typecheck
