@@ -34,11 +34,14 @@ export type User = typeof users.$inferSelect;
  * Types d'article configurables. `code` est l'identifiant stable stocké dans
  * `items.type`, `cart.type`, `asideCart.type` et `sales.itemType`.
  */
+export const tvaEnum = pgEnum("tva", TVAValues);
+
 export const itemTypes = pgTable(
   "itemTypes",
   {
     code: varchar("code", { length: 64 }).primaryKey(),
     label: varchar("label").notNull(),
+    tva: tvaEnum("tva").notNull(),
     position: integer("position").notNull(),
     active: boolean("active").notNull().default(true),
     isDefault: boolean("isDefault").notNull().default(false),
@@ -46,8 +49,6 @@ export const itemTypes = pgTable(
   (table) => [index("itemTypes_position_idx").on(table.position)],
 );
 export type ItemTypeRow = typeof itemTypes.$inferSelect;
-
-export const tvaEnum = pgEnum("tva", TVAValues);
 
 export const items = pgTable(
   "items",

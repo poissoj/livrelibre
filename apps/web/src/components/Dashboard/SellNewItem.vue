@@ -20,13 +20,18 @@ import { getErrorMessage } from "@/utils/errors";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 
 const queryClient = useQueryClient();
-const { activeTypes, defaultCode } = useItemTypes();
+const { activeTypes, defaultCode, tva: tvaForType } = useItemTypes();
 const price = ref<string | number>("");
 const title = ref("");
 const type = ref<ItemType>("");
 const tva = ref<TVA>("5.5");
 const alert = ref<AlertMessage | null>(null);
 
+// Changer de type pré-remplit la TVA avec celle du type (modifiable ensuite).
+watch(type, (code) => {
+  const value = tvaForType(code);
+  if (value) tva.value = value;
+});
 watch(
   defaultCode,
   (code) => {

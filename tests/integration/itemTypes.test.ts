@@ -1,5 +1,5 @@
 import { appRouter } from "@livrelibre/server/router";
-import { getBookItemTypeCode, getDefaultItemTypeCode } from "@server/server/itemTypes";
+import { getBookItemType, getDefaultItemTypeCode } from "@server/server/itemTypes";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { truncateAll } from "./helpers";
@@ -42,43 +42,47 @@ describe("itemTypes", () => {
   });
 
   it("uses book for imports and keeps the discount type hidden", async () => {
-    expect(await getBookItemTypeCode()).toBe("book");
+    expect((await getBookItemType())?.code).toBe("book");
     const types = await admin.itemTypes();
     expect(types.find((type) => type.code === "discount")?.active).toBe(false);
   });
 
   it("allows admins to create and rename a type", async () => {
-    await admin.createItemType({ code: "cd", label: "CD" });
+    await admin.createItemType({ code: "cd", label: "CD", tva: "5.5" });
     let types = await admin.itemTypes();
     expect(types.find((type) => type.code === "cd")?.label).toBe("CD");
+    expect(types.find((type) => type.code === "cd")?.tva).toBe("5.5");
 
-    await admin.updateItemType({ code: "cd", label: "CD audio" });
+    await admin.updateItemType({ code: "cd", label: "CD audio", tva: "20" });
     types = await admin.itemTypes();
     expect(types.find((type) => type.code === "cd")?.label).toBe("CD audio");
+    expect(types.find((type) => type.code === "cd")?.tva).toBe("20");
   });
 
   it("rejects a duplicate code", async () => {
-    await expect(admin.createItemType({ code: "book", label: "Livre" })).rejects.toMatchObject({
+    await expect(
+      admin.createItemType({ code: "book", label: "Livre", tva: "5.5" }),
+    ).rejects.toMatchObject({
       code: "CONFLICT",
     });
   });
 
   it("keeps a single default type", async () => {
-    await admin.createItemType({ code: "cd", label: "CD", isDefault: true });
+    await admin.createItemType({ code: "cd", label: "CD", tva: "20", isDefault: true });
     const types = await admin.itemTypes();
     expect(types.filter((type) => type.isDefault).map((type) => type.code)).toEqual(["cd"]);
     expect(await getDefaultItemTypeCode()).toBe("cd");
   });
 
   it("deletes an unused type", async () => {
-    await admin.createItemType({ code: "cd", label: "CD" });
+    await admin.createItemType({ code: "cd", label: "CD", tva: "20" });
     await admin.deleteItemType("cd");
     const types = await admin.itemTypes();
     expect(types.some((type) => type.code === "cd")).toBe(false);
   });
 
   it("refuses to delete a type used by an item", async () => {
-    await admin.createItemType({ code: "cd", label: "CD" });
+    await admin.createItemType({ code: "cd", label: "CD", tva: "20" });
     await admin.addItem({ ...baseItem, type: "cd" });
 
     await expect(admin.deleteItemType("cd")).rejects.toMatchObject({ code: "BAD_REQUEST" });
@@ -104,7 +108,7 @@ describe("itemTypes", () => {
 
   it("rejects setting an inactive type as default", async () => {
     await expect(
-      admin.createItemType({ code: "cd", label: "CD", active: false, isDefault: true }),
+      admin.createItemType({ code: "cd", label: "CD", tva: "20", active: false, isDefault: true }),
     ).rejects.toMatchObject({ code: "BAD_REQUEST" });
     await expect(admin.updateItemType({ code: "discount", isDefault: true })).rejects.toMatchObject(
       {
@@ -114,7 +118,9 @@ describe("itemTypes", () => {
   });
 
   it("restricts type management to admins", async () => {
-    await expect(cashier.createItemType({ code: "cd", label: "CD" })).rejects.toMatchObject({
+    await expect(
+      cashier.createItemType({ code: "cd", label: "CD", tva: "20" }),
+    ).rejects.toMatchObject({
       code: "FORBIDDEN",
     });
     await expect(cashier.deleteItemType("book")).rejects.toMatchObject({ code: "FORBIDDEN" });

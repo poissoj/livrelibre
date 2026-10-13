@@ -1,3 +1,4 @@
+import type { TVA } from "@livrelibre/shared/item";
 import { useQuery } from "@tanstack/vue-query";
 import { computed } from "vue";
 
@@ -22,6 +23,7 @@ export default function useItemTypes() {
       .sort((a, b) => a.position - b.position || a.label.localeCompare(b.label)),
   );
   const labels = computed(() => new Map(types.value.map((type) => [type.code, type.label])));
+  const tvas = computed(() => new Map(types.value.map((type) => [type.code, type.tva])));
   const defaultCode = computed(() => {
     const flagged = types.value.find((type) => type.isDefault);
     if (flagged) return flagged.code;
@@ -29,6 +31,7 @@ export default function useItemTypes() {
   });
 
   const label = (code: string): string => labels.value.get(code) ?? code;
+  const tva = (code: string): TVA | undefined => tvas.value.get(code);
 
-  return { types, activeTypes, defaultCode, label };
+  return { types, activeTypes, defaultCode, label, tva };
 }

@@ -8,6 +8,8 @@ import {
   faTimesCircle,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { formatTVA } from "@livrelibre/shared/format";
+import { type TVA, TVAValues } from "@livrelibre/shared/item";
 import { norm } from "@livrelibre/shared/utils";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { computed, nextTick, ref, useTemplateRef, watch } from "vue";
@@ -15,6 +17,7 @@ import { toast } from "vue-sonner";
 
 import AppButton from "@/components/AppButton.vue";
 import AppInput from "@/components/AppInput.vue";
+import AppSelect from "@/components/AppSelect.vue";
 import ConfirmationDialog from "@/components/ConfirmationDialog.vue";
 import useItemTypes from "@/lib/useItemTypes";
 import { type RouterInput, type RouterOutput, trpcClient } from "@/utils/trpc";
@@ -26,11 +29,13 @@ const queryClient = useQueryClient();
 
 const editingCode = ref<string | null>(null);
 const editLabel = ref("");
+const editTva = ref<TVA>("20");
 const editActive = ref(true);
 const editDefault = ref(false);
 
 const creating = ref(false);
 const newLabel = ref("");
+const newTva = ref<TVA>("20");
 const newIsDefault = ref(false);
 
 watch(editActive, (active) => {
@@ -66,6 +71,7 @@ const startEdit = (type: ItemTypeRow) => {
   creating.value = false;
   editingCode.value = type.code;
   editLabel.value = type.label;
+  editTva.value = type.tva;
   editActive.value = type.active;
   editDefault.value = type.isDefault;
 };
@@ -76,6 +82,7 @@ const cancelEdit = () => {
 const startCreate = async () => {
   editingCode.value = null;
   newLabel.value = "";
+  newTva.value = "20";
   newIsDefault.value = false;
   creating.value = true;
   await nextTick();
@@ -84,6 +91,7 @@ const startCreate = async () => {
 const cancelCreate = () => {
   creating.value = false;
   newLabel.value = "";
+  newTva.value = "20";
   newIsDefault.value = false;
 };
 const saveCreate = async () => {
@@ -92,6 +100,7 @@ const saveCreate = async () => {
     await createItemType({
       code: newCode.value,
       label: newLabel.value,
+      tva: newTva.value,
       isDefault: newIsDefault.value,
     });
     toast.success("Type d'article créé.");
@@ -122,6 +131,7 @@ const saveEdit = async () => {
     await updateItemType({
       code,
       label: editLabel.value,
+      tva: editTva.value,
       active: editActive.value,
       isDefault: editDefault.value,
     });
@@ -154,6 +164,7 @@ const removeType = async (code: string) => {
         <tr class="sticky top-0 bg-white z-10">
           <th scope="col" class="text-left w-40">Code</th>
           <th scope="col" class="text-left pl-3.5">Libellé</th>
+          <th scope="col" class="text-center w-24">TVA</th>
           <th scope="col" class="text-center w-24">Défaut</th>
           <th scope="col" class="text-center w-20">Actif</th>
           <th scope="col" class="text-center w-24">Ordre</th>
@@ -166,6 +177,14 @@ const removeType = async (code: string) => {
           <td>
             <AppInput v-if="editingCode === type.code" v-model="editLabel" type="text" required />
             <span v-else class="pl-3.5">{{ type.label }}</span>
+          </td>
+          <td class="text-center">
+            <AppSelect v-if="editingCode === type.code" v-model="editTva" class="font-number">
+              <option v-for="value in TVAValues" :key="value" :value="value">
+                {{ formatTVA(value) }}
+              </option>
+            </AppSelect>
+            <span v-else class="font-number">{{ formatTVA(type.tva) }}</span>
           </td>
           <td class="text-center">
             <input
@@ -236,6 +255,13 @@ const removeType = async (code: string) => {
           <td class="font-number">{{ newCode || "—" }}</td>
           <td class="">
             <AppInput ref="newLabelInput" v-model="newLabel" type="text" required />
+          </td>
+          <td class="text-center">
+            <AppSelect v-model="newTva" class="font-number">
+              <option v-for="value in TVAValues" :key="value" :value="value">
+                {{ formatTVA(value) }}
+              </option>
+            </AppSelect>
           </td>
           <td class="text-center">
             <input v-model="newIsDefault" type="checkbox" aria-label="Type par défaut" />

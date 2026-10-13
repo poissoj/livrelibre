@@ -1,6 +1,13 @@
 import { ERROR_CODES } from "@livrelibre/shared/errors";
-import { BOOK_ITEM_TYPE } from "@livrelibre/shared/item";
-import { asideCart, cart, itemTypes, items, sales } from "@livrelibre/shared/schema";
+import { BOOK_ITEM_TYPE, type TVA } from "@livrelibre/shared/item";
+import {
+  asideCart,
+  cart,
+  type ItemTypeRow,
+  itemTypes,
+  items,
+  sales,
+} from "@livrelibre/shared/schema";
 import { db, type Transaction } from "@server/db/database";
 import { TRPCError } from "@trpc/server";
 import { asc, count, eq, max, ne } from "drizzle-orm";
@@ -8,6 +15,7 @@ import { asc, count, eq, max, ne } from "drizzle-orm";
 export type ItemTypeInput = {
   code: string;
   label: string;
+  tva: TVA;
   position?: number | undefined;
   active?: boolean | undefined;
   isDefault?: boolean | undefined;
@@ -15,6 +23,7 @@ export type ItemTypeInput = {
 
 export type ItemTypeUpdate = {
   label?: string | undefined;
+  tva?: TVA | undefined;
   position?: number | undefined;
   active?: boolean | undefined;
   isDefault?: boolean | undefined;
@@ -54,29 +63,30 @@ export const reorderItemTypes = async (codes: string[]): Promise<void> => {
   });
 };
 
-/** Code du type par défaut (drapeau `isDefault`, sinon premier type actif). */
-export const getDefaultItemTypeCode = async (): Promise<string | null> => {
-  const flagged = await db
-    .select({ code: itemTypes.code })
-    .from(itemTypes)
-    .where(eq(itemTypes.isDefault, true))
-    .limit(1);
-  if (flagged.length > 0) return flagged[0].code;
+/** Type par défaut (drapeau `isDefault`, sinon premier type actif). */
+export const getDefaultItemType = async (): Promise<ItemTypeRow | null> => {
+  const flagged = await db.select().from(itemTypes).where(eq(itemTypes.isDefault, true)).limit(1);
+  if (flagged.length > 0) return flagged[0];
   const fallback = await db
-    .select({ code: itemTypes.code })
+    .select()
     .from(itemTypes)
     .where(eq(itemTypes.active, true))
     .orderBy(asc(itemTypes.position))
     .limit(1);
-  return fallback.length > 0 ? fallback[0].code : null;
+  return fallback.length > 0 ? fallback[0] : null;
 };
 
-/** Type utilisé pour l'import : `book`, sinon le type par défaut. */
-export const getBookItemTypeCode = async (): Promise<string | null> => {
-  if (await itemTypeExists(BOOK_ITEM_TYPE)) {
-    return BOOK_ITEM_TYPE;
-  }
-  return await getDefaultItemTypeCode();
+export const getDefaultItemTypeCode = async (): Promise<string | null> => {
+  const type = await getDefaultItemType();
+  return type?.code ?? null;
+};
+
+/** Type utilisé pour l'import : `book` (code + TVA), sinon le type par défaut. */
+export const getBookItemType = async (): Promise<{ code: string; tva: TVA } | null> => {
+  const rows = await db.select().from(itemTypes).where(eq(itemTypes.code, BOOK_ITEM_TYPE)).limit(1);
+  if (rows.length > 0) return { code: rows[0].code, tva: rows[0].tva };
+  const fallback = await getDefaultItemType();
+  return fallback ? { code: fallback.code, tva: fallback.tva } : null;
 };
 
 export const itemTypeExists = async (code: string): Promise<boolean> => {
@@ -111,6 +121,7 @@ export const createItemType = async (input: ItemTypeInput): Promise<void> => {
     await tx.insert(itemTypes).values({
       code: input.code,
       label: input.label,
+      tva: input.tva,
       position,
       active,
       isDefault,
@@ -137,6 +148,7 @@ export const updateItemType = async (code: string, input: ItemTypeUpdate) => {
       .update(itemTypes)
       .set({
         label: input.label ?? current.label,
+        tva: input.tva ?? current.tva,
         position: input.position ?? current.position,
         active,
         isDefault,

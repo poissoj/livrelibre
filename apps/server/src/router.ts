@@ -477,6 +477,7 @@ export const appRouter = router({
       z.object({
         code: zItemType,
         label: z.string().trim().min(1, ERROR_CODES.INVALID_NAME),
+        tva: z.enum(TVAValues),
         position: z.number().int().nonnegative().optional(),
         active: z.boolean().optional(),
         isDefault: z.boolean().optional(),
@@ -491,6 +492,7 @@ export const appRouter = router({
       z.object({
         code: zItemType,
         label: z.string().trim().min(1, ERROR_CODES.INVALID_NAME).optional(),
+        tva: z.enum(TVAValues).optional(),
         position: z.number().int().nonnegative().optional(),
         active: z.boolean().optional(),
         isDefault: z.boolean().optional(),

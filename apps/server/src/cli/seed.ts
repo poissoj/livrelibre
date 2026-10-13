@@ -114,9 +114,10 @@ const main = async () => {
     await db
       .insert(itemTypes)
       .values(
-        Object.entries(ITEM_TYPES).map(([code, label], index) => ({
+        Object.entries(ITEM_TYPES).map(([code, type], index) => ({
           code,
-          label,
+          label: type.label,
+          tva: type.tva,
           position: index,
           active: true,
           isDefault: code === "book",
@@ -130,6 +131,7 @@ const main = async () => {
       .values({
         code: DISCOUNT_ITEM_TYPE,
         label: DISCOUNT_ITEM_TYPE_LABEL,
+        tva: "5.5",
         position: 100,
         active: false,
         isDefault: false,

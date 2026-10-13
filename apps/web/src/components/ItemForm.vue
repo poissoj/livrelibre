@@ -31,18 +31,9 @@ const props = defineProps<{
   onSubmit: (data: FormFields) => Promise<ItemFormResult>;
 }>();
 
-const { activeTypes, defaultCode } = useItemTypes();
+const { activeTypes, defaultCode, tva: tvaForType } = useItemTypes();
 
 const type = ref<ItemType>(props.data?.type ?? "");
-watch(
-  defaultCode,
-  (code) => {
-    if (!type.value && code) {
-      type.value = code;
-    }
-  },
-  { immediate: true },
-);
 const isbn = ref(props.data?.isbn ?? "");
 const author = ref(props.data?.author ?? "");
 const title = ref(props.data?.title ?? "");
@@ -54,6 +45,21 @@ const comments = ref(props.data?.comments ?? "");
 const price = ref<string | number>(props.data?.price ?? "");
 const amount = ref<string | number>(props.data?.amount ?? "0");
 const tva = ref<TVA>(props.data?.tva ?? "5.5");
+
+// Changer de type pré-remplit la TVA avec celle du type (modifiable ensuite).
+watch(type, (code) => {
+  const value = tvaForType(code);
+  if (value) tva.value = value;
+});
+watch(
+  defaultCode,
+  (code) => {
+    if (!type.value && code) {
+      type.value = code;
+    }
+  },
+  { immediate: true },
+);
 
 const alert = ref<AlertMessage | null>(null);
 const isbnLoading = ref(false);

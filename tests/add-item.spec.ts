@@ -17,6 +17,10 @@ test("Ajouter un article", async ({ page }) => {
 
   await page.goto("/add");
   await expect(page.getByRole("combobox", { name: "Type" })).toHaveValue("book");
+  await expect(page.getByRole("combobox", { name: "TVA" })).toHaveValue("5.5");
+  await page.getByRole("combobox", { name: "Type" }).selectOption("game");
+  await expect(page.getByRole("combobox", { name: "TVA" })).toHaveValue("20");
+  await page.getByRole("combobox", { name: "Type" }).selectOption("book");
   await page.getByLabel("Titre").fill(TITLE);
   await page.getByLabel("Prix de vente").fill("12.50");
   await page.getByLabel("Quantité").fill("1");

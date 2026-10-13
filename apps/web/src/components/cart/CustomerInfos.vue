@@ -9,12 +9,14 @@ import { toast } from "vue-sonner";
 
 import AppButton from "@/components/AppButton.vue";
 import AppInput from "@/components/AppInput.vue";
+import useItemTypes from "@/lib/useItemTypes";
 import { getErrorMessage } from "@/utils/errors";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 
 const props = defineProps<{ customer: CustomerWithPurchase }>();
 
 const queryClient = useQueryClient();
+const { tva: tvaForType } = useItemTypes();
 const amount = computed(() =>
   props.customer.purchases.reduce((sum, purchase) => sum + purchase.amount, 0),
 );
@@ -39,7 +41,7 @@ const onSubmit = () => {
     title: LOYALTY_DISCOUNT_TITLE,
     kind: "loyaltyDiscount",
     type: DISCOUNT_ITEM_TYPE,
-    tva: "5.5",
+    tva: tvaForType(DISCOUNT_ITEM_TYPE) ?? "5.5",
   });
 };
 </script>

@@ -236,19 +236,21 @@ réglages de l'application, à commencer par les **types d'article**.
 
 **Types d'article** :
 
-- **Créer** — cliquer sur `Ajouter` sous le tableau, saisir le `Libellé` dans la
-  nouvelle ligne (le `Code` est généré automatiquement à partir du libellé et reste
-  figé), cocher `Défaut` le cas échéant, puis `Enregistrer` (ou `Annuler`).
-- **Modifier** — bouton `Éditer` : changer le `Libellé`, cocher/décocher `Actif`
-  (un type inactif n'apparaît plus dans les listes déroulantes) et `Défaut`, puis
-  `Enregistrer`.
+- **Créer** — cliquer sur `Ajouter` sous le tableau, saisir le `Libellé` et la
+  `TVA` dans la nouvelle ligne (le `Code` est généré automatiquement à partir du
+  libellé et reste figé), cocher `Défaut` le cas échéant, puis `Enregistrer` (ou
+  `Annuler`).
+- **Modifier** — bouton `Éditer` : changer le `Libellé`, la `TVA`, cocher/décocher
+  `Actif` (un type inactif n'apparaît plus dans les listes déroulantes) et
+  `Défaut`, puis `Enregistrer`.
 - **Réordonner** — boutons `▲`/`▼` sur chaque ligne pour déplacer le type dans la
   liste (l'ordre est utilisé par les listes déroulantes).
 - **Supprimer** — possible uniquement si le type n'est utilisé par aucun article,
   panier ou vente ; sinon le supprimer est refusé (utiliser `Actif` pour l'archiver).
 
-Le type par défaut sert de présélection pour les nouveaux articles ; l'import
-DILICOM crée toujours des articles de type `Livre` (`book`).
+Le type par défaut sert de présélection pour les nouveaux articles, et la `TVA` du
+type est pré-remplie (modifiable) dans le formulaire d'article. L'import DILICOM crée
+toujours des articles de type `Livre` (`book`), avec la TVA de ce type.
 
 ## Rôles et permissions
 
