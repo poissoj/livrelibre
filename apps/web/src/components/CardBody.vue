@@ -10,7 +10,7 @@ useScrollToTopOnPageChange(body);
 </script>
 
 <template>
-  <div ref="body" class="mt-md overflow-auto flex">
+  <div ref="body" class="mt-md pb-sm overflow-auto flex">
     <ErrorBoundary>
       <slot />
     </ErrorBoundary>

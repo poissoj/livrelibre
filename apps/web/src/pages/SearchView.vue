@@ -114,13 +114,13 @@ const onSubmit = async () => {
               </FormRow>
             </div>
           </div>
-          <CardFooter class="flex justify-end">
-            <AppButton type="submit" class="px-md">
-              <FontAwesomeIcon :icon="faSearch" class="mr-sm" />
-              Rechercher
-            </AppButton>
-          </CardFooter>
         </CardBody>
+        <CardFooter class="flex justify-end">
+          <AppButton type="submit" class="px-md">
+            <FontAwesomeIcon :icon="faSearch" class="mr-sm" />
+            Rechercher
+          </AppButton>
+        </CardFooter>
       </form>
     </AppCard>
   </div>

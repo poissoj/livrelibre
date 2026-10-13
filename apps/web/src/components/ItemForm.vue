@@ -212,7 +212,7 @@ const isbnHandler = async () => {
         </div>
       </CardBody>
       <CardFooter>
-        <div class="flex justify-end mb-sm">
+        <div class="flex justify-end">
           <slot />
         </div>
         <AppAlert v-if="alert" :type="alert.type" @dismiss="alert = null">
