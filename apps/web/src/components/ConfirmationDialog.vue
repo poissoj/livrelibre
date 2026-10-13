@@ -10,6 +10,9 @@ const props = defineProps<{ title: string; message: string }>();
 const emit = defineEmits<{ confirm: [] }>();
 
 const isOpen = ref(false);
+const open = () => {
+  isOpen.value = true;
+};
 const close = () => {
   isOpen.value = false;
 };
@@ -20,10 +23,12 @@ const confirm = () => {
 </script>
 
 <template>
-  <AppButton type="button" class="mr-auto !bg-danger" @click="isOpen = true">
-    <FontAwesomeIcon :icon="faTrash" class="mr-sm" />
-    Supprimer
-  </AppButton>
+  <slot name="trigger" :open="open">
+    <AppButton type="button" class="mr-auto !bg-danger" @click="open">
+      <FontAwesomeIcon :icon="faTrash" class="mr-sm" />
+      Supprimer
+    </AppButton>
+  </slot>
   <TransitionRoot appear :show="isOpen" as="template">
     <Dialog as="div" class="relative" @close="close">
       <TransitionChild

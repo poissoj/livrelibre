@@ -3,13 +3,16 @@ import { expect, test } from "@playwright/test";
 import { deleteSalesByTitleLike, login, seedSale, unique } from "./e2e-helpers";
 
 const TITLE = unique("Vente E2E");
+const DELETE_TITLE = unique("Vente suppression E2E");
 
 test.beforeAll(async () => {
   await deleteSalesByTitleLike(`${TITLE}%`);
+  await deleteSalesByTitleLike(`${DELETE_TITLE}%`);
 });
 
 test.afterAll(async () => {
   await deleteSalesByTitleLike(`${TITLE}%`);
+  await deleteSalesByTitleLike(`${DELETE_TITLE}%`);
 });
 
 test("Ventes, ventes du jour, statistiques et meilleures ventes", async ({ page }) => {
@@ -36,4 +39,24 @@ test("Ventes, ventes du jour, statistiques et meilleures ventes", async ({ page 
 
   await page.goto("/best-sales");
   await expect(page.getByRole("heading", { name: "Meilleures ventes" })).toBeVisible();
+});
+
+test("Supprimer une vente", async ({ page }) => {
+  await seedSale({ title: DELETE_TITLE });
+  await login(page);
+
+  await page.goto("/todaySales");
+
+  const row = page.getByRole("row").filter({ hasText: DELETE_TITLE });
+  await expect(row).toBeVisible();
+
+  const deleteButton = row.getByRole("button", { name: "Supprimer la vente" });
+  await deleteButton.click();
+
+  // La confirmation s'affiche avant toute suppression.
+  await expect(page.getByRole("heading", { name: "Supprimer la vente" })).toBeVisible();
+  await page.getByRole("button", { name: "Oui, supprimer" }).click();
+
+  // La vente est supprimée (suppression logique) : son bouton disparaît.
+  await expect(deleteButton).not.toBeVisible();
 });
