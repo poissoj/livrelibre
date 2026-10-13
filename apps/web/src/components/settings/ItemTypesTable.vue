@@ -251,7 +251,9 @@ const removeType = async (code: string) => {
             </div>
           </td>
         </tr>
-        <tr v-if="creating" key="new-type">
+      </TransitionGroup>
+      <tbody v-if="creating">
+        <tr>
           <td class="font-number">{{ newCode || "—" }}</td>
           <td class="">
             <AppInput ref="newLabelInput" v-model="newLabel" type="text" required />
@@ -282,7 +284,7 @@ const removeType = async (code: string) => {
             </div>
           </td>
         </tr>
-      </TransitionGroup>
+      </tbody>
     </table>
     <div v-if="!creating" class="mt-sm">
       <AppButton type="button" class="px-md" @click="startCreate">
