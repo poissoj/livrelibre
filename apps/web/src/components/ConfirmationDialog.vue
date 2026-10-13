@@ -46,11 +46,11 @@ const confirm = () => {
         <TransitionChild
           as="template"
           enter="ease-out duration-300"
-          enter-from="scale-95"
-          enter-to="scale-100"
+          enter-from="opacity-0 scale-95"
+          enter-to="opacity-100 scale-100"
           leave="ease-in duration-200"
-          leave-from="scale-100"
-          leave-to="scale-95"
+          leave-from="opacity-100 scale-100"
+          leave-to="opacity-0 scale-95"
         >
           <DialogPanel class="w-full max-w-lg space-y-4 bg-white p-8 rounded-xl">
             <DialogTitle class="font-bold">{{ props.title }}</DialogTitle>
