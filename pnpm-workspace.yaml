@@ -3,6 +3,14 @@ packages:
   - packages/*
   - tests
 
+# Since pnpm v11, `pnpm run` syncs dependencies before running a script
+# (verifyDepsBeforeRun defaults to "install"), re-checking the whole lockfile
+# against the registry via the supply-chain policies. At container startup that
+# is far too slow (registry requests time out), so the server never binds in
+# time on Render. The image is built with `pnpm install --frozen-lockfile`, so
+# there is nothing to sync at runtime.
+verifyDepsBeforeRun: false
+
 allowBuilds:
   bcrypt: true
   esbuild: true
