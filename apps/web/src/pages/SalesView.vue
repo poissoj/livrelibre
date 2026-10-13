@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { faSearchPlus } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import type { Sale } from "@livrelibre/server/server/sales";
 import { formatNumber, formatPrice } from "@livrelibre/shared/format";
 import { useQuery } from "@tanstack/vue-query";
@@ -10,6 +12,7 @@ import AppSkeleton from "@/components/AppSkeleton.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
+import LinkButton from "@/components/LinkButton.vue";
 import RestrictedContent from "@/components/RestrictedContent.vue";
 import { trpcClient } from "@/utils/trpc";
 
@@ -36,7 +39,13 @@ const goToSale = (sale: Sale) => {
   <RestrictedContent role="admin">
     <div class="[margin-left:10%] [margin-right:10%] flex-1">
       <AppCard class="mb-lg max-h-full overflow-hidden flex flex-col">
-        <CardTitle :level="1">Liste des ventes par mois</CardTitle>
+        <div class="flex items-center justify-between gap-md">
+          <CardTitle :level="1">Liste des ventes par mois</CardTitle>
+          <LinkButton to="/sales/search" class="px-md">
+            <FontAwesomeIcon :icon="faSearchPlus" class="mr-sm" />
+            Rechercher
+          </LinkButton>
+        </div>
         <CardBody>
           <ErrorMessage v-if="isError" :on-retry="refetch" />
           <AppSkeleton v-else-if="isPending" :height="380">

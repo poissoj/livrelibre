@@ -4,15 +4,21 @@ import { deleteSalesByTitleLike, login, seedSale, unique } from "./e2e-helpers";
 
 const TITLE = unique("Vente E2E");
 const DELETE_TITLE = unique("Vente suppression E2E");
+const SEARCH_TITLE = unique("Vente recherche E2E");
+const SEARCH_DELETED_TITLE = unique("Vente recherche supprimée E2E");
 
 test.beforeAll(async () => {
   await deleteSalesByTitleLike(`${TITLE}%`);
   await deleteSalesByTitleLike(`${DELETE_TITLE}%`);
+  await deleteSalesByTitleLike(`${SEARCH_TITLE}%`);
+  await deleteSalesByTitleLike(`${SEARCH_DELETED_TITLE}%`);
 });
 
 test.afterAll(async () => {
   await deleteSalesByTitleLike(`${TITLE}%`);
   await deleteSalesByTitleLike(`${DELETE_TITLE}%`);
+  await deleteSalesByTitleLike(`${SEARCH_TITLE}%`);
+  await deleteSalesByTitleLike(`${SEARCH_DELETED_TITLE}%`);
 });
 
 test("Ventes, ventes du jour, statistiques et meilleures ventes", async ({ page }) => {
@@ -59,4 +65,30 @@ test("Supprimer une vente", async ({ page }) => {
 
   // La vente est supprimée (suppression logique) : son bouton disparaît.
   await expect(deleteButton).not.toBeVisible();
+});
+
+test("Rechercher une vente", async ({ page }) => {
+  await seedSale({ title: SEARCH_TITLE, paymentType: "card" });
+  await login(page);
+
+  await page.goto("/sales/search");
+  await page.getByLabel("Titre").fill(SEARCH_TITLE);
+  await page.getByRole("button", { name: "Rechercher une vente" }).click();
+
+  await expect(page).toHaveURL(/\/sales\/search\?/);
+  await expect(page.getByText(SEARCH_TITLE)).toBeVisible();
+});
+
+test("Rechercher une vente supprimée", async ({ page }) => {
+  await seedSale({ title: SEARCH_DELETED_TITLE, deleted: true });
+  await login(page);
+
+  await page.goto("/sales/search");
+  await page.getByLabel("Titre").fill(SEARCH_DELETED_TITLE);
+  await page.getByRole("button", { name: "Rechercher une vente" }).click();
+  await expect(page.getByText("Aucun résultat.")).toBeVisible();
+
+  await page.getByLabel("Inclure les ventes supprimées").check();
+  await page.getByRole("button", { name: "Rechercher une vente" }).click();
+  await expect(page.getByText(SEARCH_DELETED_TITLE)).toBeVisible();
 });

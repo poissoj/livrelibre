@@ -192,6 +192,12 @@ Prix total, Panier, TVA, Paiement, ainsi qu'un bouton `Supprimer` pour annuler u
 vente. Un⋅e caissier⋅ère ne peut supprimer qu'une vente du jour ; la suppression
 d'une vente passée est réservée aux administrateurs.
 
+Un bouton `Rechercher` sur la page `Ventes` ouvre la recherche de ventes
+(`/sales/search`) : par titre, par plage de dates et par type de paiement. Les
+ventes supprimées sont masquées par défaut ; cocher « Inclure les ventes
+supprimées » les réaffiche. Les résultats sont paginés et renvoient vers le jour
+ou l'article correspondant.
+
 ![Ventes](./screenshots/ventes.png)
 
 ## Statistiques et meilleures ventes
@@ -260,6 +266,7 @@ toujours des articles de type `Livre` (`book`), avec la TVA de ce type.
 | Gestion des utilisateurs (`/users`)                                        | Oui         | Non                            |
 | Réglages (`/settings`, types d'article)                                    | Oui         | Non                            |
 | Ventes par mois (`/sales`)                                                 | Oui         | Non                            |
+| Recherche de ventes (`/sales/search`)                                      | Oui         | Non                            |
 | Ventes du jour (`/todaySales`)                                             | Oui         | Oui                            |
 | Consulter une vente passée                                                 | Oui         | Non (jour en cours uniquement) |
 | Supprimer une vente                                                        | Toute vente | Jour en cours uniquement       |

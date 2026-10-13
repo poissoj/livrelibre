@@ -23,6 +23,7 @@ const OrdersView = () => import("@/pages/OrdersView.vue");
 const QuickSearchView = () => import("@/pages/QuickSearchView.vue");
 const SalesByMonthView = () => import("@/pages/SalesByMonthView.vue");
 const SalesByDayView = () => import("@/pages/SalesByDayView.vue");
+const SalesSearchView = () => import("@/pages/SalesSearchView.vue");
 const SalesView = () => import("@/pages/SalesView.vue");
 const SearchView = () => import("@/pages/SearchView.vue");
 const SettingsView = () => import("@/pages/SettingsView.vue");
@@ -133,6 +134,12 @@ export const router = createRouter({
           name: "sales",
           component: SalesView,
           meta: { title: "Liste des ventes par mois" },
+        },
+        {
+          path: "sales/search",
+          name: "sales-search",
+          component: SalesSearchView,
+          meta: { title: "Rechercher une vente" },
         },
         {
           path: "sale/:year/:month",

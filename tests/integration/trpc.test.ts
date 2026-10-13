@@ -87,11 +87,13 @@ describe("trpc rbac", () => {
     await expect(cashier.salesByMonth({ month: "01", year: "2024" })).rejects.toMatchObject({
       code: "FORBIDDEN",
     });
+    await expect(cashier.searchSales({})).rejects.toMatchObject({ code: "FORBIDDEN" });
   });
 
   it("allows admins on admin-only procedures", async () => {
     await expect(admin.sales()).resolves.toBeDefined();
     await expect(admin.salesByMonth({ month: "01", year: "2024" })).resolves.toBeDefined();
+    await expect(admin.searchSales({})).resolves.toBeDefined();
   });
 
   it("restricts cashiers to the sales of the current day", async () => {

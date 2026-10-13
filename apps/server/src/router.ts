@@ -1,7 +1,7 @@
 import { ERROR_CODES } from "@livrelibre/shared/errors";
 import { TVAValues, zItem, zItemType } from "@livrelibre/shared/item";
 import { zOrder, zOrderSort, zOrderStatusArray } from "@livrelibre/shared/order";
-import { CART_ITEM_KINDS } from "@livrelibre/shared/sale";
+import { CART_ITEM_KINDS, PAYMENT_METHODS, type PaymentType } from "@livrelibre/shared/sale";
 import { norm } from "@livrelibre/shared/utils";
 import {
   zDateISO,
@@ -67,6 +67,7 @@ import {
   isAdvancedSearchField,
   searchItems,
 } from "@server/server/searchItem";
+import { searchSales } from "@server/server/searchSale";
 import { getStats } from "@server/server/stats";
 import { updateItem } from "@server/server/updateItem";
 import {
@@ -239,6 +240,35 @@ export const appRouter = router({
     )
     .query(async ({ input }) => await getSalesByMonth(input.month, input.year)),
   searchItem: authProcedure.input(zId).query(async ({ input }) => await getItem(input)),
+  searchSales: adminProcedure
+    .input(
+      z
+        .object({
+          title: z.string().trim().default(""),
+          dateFrom: zDateISO.optional(),
+          dateTo: zDateISO.optional(),
+          paymentType: z
+            .enum(Object.keys(PAYMENT_METHODS) as [PaymentType, ...PaymentType[]])
+            .optional(),
+          includeDeleted: z.boolean().default(false),
+          page: zPage.default(1),
+        })
+        .superRefine(({ dateFrom, dateTo }, ctx) => {
+          if (dateFrom && dateTo && dateFrom > dateTo) {
+            ctx.addIssue({ code: "custom", message: ERROR_CODES.INVALID_DATE, path: ["dateTo"] });
+          }
+        }),
+    )
+    .query(async ({ input }) =>
+      searchSales({
+        title: input.title,
+        dateFrom: input.dateFrom,
+        dateTo: input.dateTo,
+        paymentType: input.paymentType,
+        includeDeleted: input.includeDeleted,
+        pageNumber: input.page,
+      }),
+    ),
   stats: authProcedure.query(getStats),
   user: procedure.query(({ ctx }) => ctx.user),
   isbnSearch: authProcedure
