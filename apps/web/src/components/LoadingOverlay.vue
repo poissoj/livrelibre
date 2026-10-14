@@ -10,6 +10,7 @@ const props = withDefaults(defineProps<{ loading?: boolean }>(), {
 
 <template>
   <div
+    v-bind="$attrs"
     :class="clsx('flex flex-1', props.loading && 'bg-white opacity-40')"
     :aria-busy="props.loading"
   >

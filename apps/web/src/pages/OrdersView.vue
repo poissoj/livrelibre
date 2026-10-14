@@ -11,7 +11,7 @@ import {
   zOrderStatusArray,
 } from "@livrelibre/shared/order";
 import { keepPreviousData, useQuery } from "@tanstack/vue-query";
-import { computed, ref, watch } from "vue";
+import { computed, ref, useTemplateRef, watch } from "vue";
 
 import AppCard from "@/components/AppCard.vue";
 import AppInput from "@/components/AppInput.vue";
@@ -27,10 +27,14 @@ import { groupOrdersByCustomer } from "@/components/orders/group";
 import StatusTile from "@/components/orders/StatusTile.vue";
 import OrdersTable from "@/components/OrdersTable.vue";
 import OrdersTableByCustomer from "@/components/OrdersTableByCustomer.vue";
+import { useScrollToTopOnPageChange } from "@/utils/scroll";
 import { trpcClient } from "@/utils/trpc";
 import { useDebouncedValue } from "@/utils/useDebouncedValue";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
 import { usePageParam, useQueryParams } from "@/utils/useQueryParams";
+
+const scrollingDiv = useTemplateRef<HTMLDivElement>("scroll");
+useScrollToTopOnPageChange(scrollingDiv);
 
 const getStatus = (query: string | string[] | undefined): OrderStatus[] => {
   const statusList = zOrderStatusArray.safeParse(query);
@@ -179,8 +183,8 @@ const groupedOrders = computed(() => groupOrdersByCustomer(orderRows.value, inve
             />
           </div>
         </div>
-        <LoadingOverlay :loading="showLoading">
-          <div class="overflow-auto flex flex-1 mt-2">
+        <LoadingOverlay class="overflow-auto" :loading="showLoading">
+          <div ref="scroll" class="overflow-auto flex flex-1 mt-2">
             <OrdersTableByCustomer v-if="groupByCustomer" :items="groupedOrders" />
             <OrdersTable v-else :items="orderRows" />
           </div>
