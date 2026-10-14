@@ -2,16 +2,63 @@
 import { formatNumber } from "@livrelibre/shared/format";
 import { useQuery } from "@tanstack/vue-query";
 import { clsx } from "clsx";
+import { computed, ref, watch } from "vue";
 import { RouterLink } from "vue-router";
 
 import AppCard from "@/components/AppCard.vue";
+import AppInput from "@/components/AppInput.vue";
 import AppSkeleton from "@/components/AppSkeleton.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import { trpcClient } from "@/utils/trpc";
+import { useQueryParams } from "@/utils/useQueryParams";
 
 const TH_STYLES = "sticky top-0 bg-white";
+
+const { query, push } = useQueryParams();
+
+const qs = (key: string): string => {
+  const value = query.value[key];
+  return typeof value === "string" ? value : "";
+};
+
+const dateFrom = ref("");
+const dateTo = ref("");
+
+const syncFromQuery = () => {
+  dateFrom.value = qs("dateFrom");
+  dateTo.value = qs("dateTo");
+};
+syncFromQuery();
+watch(query, syncFromQuery);
+
+const searchInput = computed(() => {
+  const from = qs("dateFrom");
+  const to = qs("dateTo");
+  return {
+    ...(from ? { dateFrom: from } : {}),
+    ...(to ? { dateTo: to } : {}),
+  };
+});
+
+const onDateChange = () => {
+  const next: Record<string, string> = {};
+  for (const [key, value] of Object.entries(query.value)) {
+    next[key] = Array.isArray(value) ? (value[0] ?? "") : value;
+  }
+  if (dateFrom.value) {
+    next.dateFrom = dateFrom.value;
+  } else {
+    delete next.dateFrom;
+  }
+  if (dateTo.value) {
+    next.dateTo = dateTo.value;
+  } else {
+    delete next.dateTo;
+  }
+  void push({ query: next, replace: true });
+};
 
 const {
   data: bestSales,
@@ -19,8 +66,8 @@ const {
   isError,
   refetch,
 } = useQuery({
-  queryKey: ["bestsales"],
-  queryFn: () => trpcClient.bestsales.query(),
+  queryKey: ["bestsales", searchInput],
+  queryFn: () => trpcClient.bestsales.query(searchInput.value),
 });
 </script>
 
@@ -28,6 +75,16 @@ const {
   <div class="[margin-left:10%] [margin-right:10%] flex flex-1 flex-col gap-lg">
     <AppCard class="max-h-full overflow-hidden flex flex-col">
       <CardTitle :level="1">Meilleures ventes</CardTitle>
+      <form class="mt-sm flex flex-wrap gap-x-lg" @submit.prevent="onDateChange">
+        <label class="flex items-center gap-sm">
+          <span>Du</span>
+          <AppInput v-model="dateFrom" type="date" @change="onDateChange" />
+        </label>
+        <label class="flex items-center gap-sm">
+          <span>Au</span>
+          <AppInput v-model="dateTo" type="date" @change="onDateChange" />
+        </label>
+      </form>
       <CardBody>
         <ErrorMessage v-if="isError" :on-retry="refetch" />
         <AppSkeleton v-else-if="isPending" :height="500">

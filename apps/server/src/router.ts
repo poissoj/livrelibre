@@ -166,7 +166,21 @@ export const appRouter = router({
       return await advancedSearch(input.search, input.page);
     }),
   asideCart: authProcedure.query(async ({ ctx }) => await getAsideCart(ctx.user.id)),
-  bestsales: authProcedure.query(getBestSales),
+  bestsales: authProcedure
+    .input(
+      z
+        .object({
+          dateFrom: zDateISO.optional(),
+          dateTo: zDateISO.optional(),
+        })
+        .superRefine(({ dateFrom, dateTo }, ctx) => {
+          if (dateFrom && dateTo && dateFrom > dateTo) {
+            ctx.addIssue({ code: "custom", message: ERROR_CODES.INVALID_DATE, path: ["dateTo"] });
+          }
+        })
+        .default({}),
+    )
+    .query(async ({ input }) => getBestSales(input)),
   bookmarks: authProcedure.query(getBookmarks),
   cart: authProcedure.query(async ({ ctx }) => await getCart(ctx.user.id)),
   items: authProcedure

@@ -205,7 +205,9 @@ ou l'article correspondant.
 - **Statistiques** (`/stats`) — graphiques `Nombre de ventes par heure` et
   `Nombre de ventes par jour`.
 - **Meilleures ventes** (`/best-sales`) — classement (`#`, `Titre`, `Auteur·ice`,
-  `Vendus`, `En stock`).
+  `Vendus`, `En stock`). Un sélecteur de plage de dates (`Du`, `Au`) filtre les
+  ventes prises en compte ; la période est conservée dans l'URL et, sans date,
+  tout l'historique est utilisé.
 
 ![Statistiques](./screenshots/stats.png)
 

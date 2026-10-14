@@ -45,6 +45,8 @@ test("Ventes, ventes du jour, statistiques et meilleures ventes", async ({ page 
 
   await page.goto("/best-sales");
   await expect(page.getByRole("heading", { name: "Meilleures ventes" })).toBeVisible();
+  await expect(page.getByLabel("Du")).toBeVisible();
+  await expect(page.getByLabel("Au")).toBeVisible();
 });
 
 test("Supprimer une vente", async ({ page }) => {

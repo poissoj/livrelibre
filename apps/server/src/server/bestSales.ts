@@ -1,6 +1,6 @@
 import { items, sales } from "@livrelibre/shared/schema";
 import { db } from "@server/db/database";
-import { desc, eq, sum } from "drizzle-orm";
+import { type SQL, and, desc, eq, sql, sum } from "drizzle-orm";
 
 export type BestSale = {
   id: number;
@@ -10,7 +10,21 @@ export type BestSale = {
   count: string | null;
 };
 
-export const getBestSales = async (): Promise<BestSale[]> => {
+export const getBestSales = async ({
+  dateFrom,
+  dateTo,
+}: {
+  dateFrom?: string | undefined;
+  dateTo?: string | undefined;
+} = {}): Promise<BestSale[]> => {
+  const conditions: (SQL | undefined)[] = [eq(sales.deleted, false)];
+  if (dateFrom) {
+    conditions.push(sql`${sales.created} >= ${dateFrom}::date`);
+  }
+  if (dateTo) {
+    conditions.push(sql`${sales.created} < ${dateTo}::date + interval '1 day'`);
+  }
+
   const bestSales = await db
     .select({
       id: items.id,
@@ -21,7 +35,7 @@ export const getBestSales = async (): Promise<BestSale[]> => {
     })
     .from(sales)
     .innerJoin(items, eq(sales.itemId, items.id))
-    .where(eq(sales.deleted, false))
+    .where(and(...conditions))
     .groupBy(items.id, items.title, items.author, items.amount)
     .orderBy(({ count }) => [desc(count), items.title])
     .limit(100);
