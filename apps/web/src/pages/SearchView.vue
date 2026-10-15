@@ -61,7 +61,7 @@ const onSubmit = async () => {
           <div class="flex flex-wrap">
             <div class="flex-1 [min-width:20rem] ml-md">
               <FormRow label="Type">
-                <AppSelect v-model="type">
+                <AppSelect v-model="type" name="type">
                   <option value="">--ignorer--</option>
                   <option
                     v-for="itemType in activeTypes"
@@ -73,39 +73,52 @@ const onSubmit = async () => {
                 </AppSelect>
               </FormRow>
               <FormRow label="ISBN">
-                <AppInput v-model="isbn" type="text" :maxlength="13" />
+                <AppInput v-model="isbn" name="isbn" type="text" :maxlength="13" />
               </FormRow>
               <FormRow label="Auteur·ice">
-                <AppInput v-model="author" type="text" />
+                <AppInput v-model="author" name="author" type="text" />
               </FormRow>
               <FormRow label="Titre">
-                <AppInput v-model="title" type="text" />
+                <AppInput v-model="title" name="title" type="text" />
               </FormRow>
               <FormRow label="Maison d'édition">
-                <AppInput v-model="publisher" type="text" />
+                <AppInput v-model="publisher" name="publisher" type="text" />
               </FormRow>
               <FormRow label="Distributeur">
-                <AppInput v-model="distributor" type="text" />
+                <AppInput v-model="distributor" name="distributor" type="text" />
               </FormRow>
               <FormRow label="Mots-clés">
-                <AppInput v-model="keywords" type="text" />
+                <AppInput v-model="keywords" name="keywords" type="text" />
               </FormRow>
             </div>
             <div class="flex-1 [min-width:20rem] ml-md">
               <FormRow label="Date d’achat">
-                <AppInput v-model="datebought" type="date" />
+                <AppInput v-model="datebought" name="datebought" type="date" />
               </FormRow>
               <FormRow label="Commentaires">
-                <AppTextarea v-model="comments" />
+                <AppTextarea v-model="comments" name="comments" />
               </FormRow>
               <FormRow label="Prix de vente">
-                <AppInput v-model="price" type="number" :min="0" :step="0.01" class="font-number" />
+                <AppInput
+                  v-model="price"
+                  name="price"
+                  type="number"
+                  :min="0"
+                  :step="0.01"
+                  class="font-number"
+                />
               </FormRow>
               <FormRow label="Quantité">
-                <AppInput v-model="amount" type="number" :min="0" class="font-number" />
+                <AppInput
+                  v-model="amount"
+                  name="amount"
+                  type="number"
+                  :min="0"
+                  class="font-number"
+                />
               </FormRow>
               <FormRow label="TVA">
-                <AppSelect v-model="tva" class="font-number">
+                <AppSelect v-model="tva" name="tva" class="font-number">
                   <option value="">--ignorer--</option>
                   <option v-for="value in TVAValues" :key="value" :value="value">
                     {{ formatTVA(value) }}
