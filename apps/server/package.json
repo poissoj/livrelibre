@@ -20,6 +20,7 @@
     "./server/salesByMonth": "./src/server/salesByMonth.ts",
     "./server/searchItem": "./src/server/searchItem.ts",
     "./server/searchSale": "./src/server/searchSale.ts",
+    "./server/settings": "./src/server/settings.ts",
     "./server/stats": "./src/server/stats.ts",
     "./server/updateItem": "./src/server/updateItem.ts",
     "./utils/getBookData": "./src/utils/getBookData.ts"

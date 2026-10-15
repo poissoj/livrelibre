@@ -4,7 +4,11 @@ import { formatPrice } from "@livrelibre/shared/format";
 import { loyaltyDiscount } from "@livrelibre/shared/sale";
 import { RouterLink } from "vue-router";
 
+import useSettings from "@/lib/useSettings";
+
 const props = defineProps<{ items: CustomerWithTotal[] }>();
+
+const { loyaltyDiscountPercent } = useSettings();
 </script>
 
 <template>
@@ -42,7 +46,7 @@ const props = defineProps<{ items: CustomerWithTotal[] }>();
         <td>{{ item.contact }}</td>
         <td>{{ item.comment }}</td>
         <td class="text-right font-number pr-2">
-          {{ formatPrice(loyaltyDiscount(Number(item.total))) }}
+          {{ formatPrice(loyaltyDiscount(Number(item.total), loyaltyDiscountPercent)) }}
         </td>
         <td class="text-right font-number pr-2">
           {{ formatPrice(Number(item.total)) }}

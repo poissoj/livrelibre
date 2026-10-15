@@ -238,3 +238,14 @@ export const orders = pgTable(
     check("orders_nb_positive", sql`${table.nb} > 0`),
   ],
 );
+
+/**
+ * Réglages de l'application. Table singleton : une seule ligne, `id = 1`.
+ */
+export const settings = pgTable("settings", {
+  id: integer("id").primaryKey().default(1),
+  loyaltyDiscountPercent: numeric("loyaltyDiscountPercent", { precision: 5, scale: 2 })
+    .notNull()
+    .default("3"),
+});
+export type SettingsRow = typeof settings.$inferSelect;

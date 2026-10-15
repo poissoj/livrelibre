@@ -124,7 +124,8 @@ Le panier (`/cart`) regroupe les articles d'une vente.
    cours.
 3. **Remise de fidélité** — si un⋅e client⋅e est associé⋅e, une `Remise possible`
    peut être appliquée (`Appliquer`) ; elle ajoute une ligne
-   `Remise carte de fidélité` (3 %).
+   `Remise carte de fidélité`. Le pourcentage est paramétrable dans `Réglages`
+   (3 % par défaut).
 4. **Mettre de côté** — `Mettre de côté` suspend le panier courant (un seul
    panier en attente à la fois). Le bouton `Réactiver` de la carte
    `Panier en attente` le reprend.
@@ -240,7 +241,16 @@ dernier administrateur.
 ## Réglages
 
 Page `Réglages` (`/settings`), réservée aux administrateurs. Elle regroupe les
-réglages de l'application, à commencer par les **types d'article**.
+réglages de l'application : la **remise fidélité** et les **types d'article**.
+
+**Remise fidélité** :
+
+- **Pourcentage de remise fidélité** — taux appliqué au total des achats d'un⋅e
+  client⋅e (proposé dans le panier, affiché dans la liste des client⋅es). Saisir
+  une valeur entre 0 et 100, puis `Enregistrer`. La valeur par
+  défaut est 3 %.
+
+- Le montant de la remise, calculé automatiquement, est toujours modifiable manuellement dans le panier.
 
 **Types d'article** :
 
@@ -266,7 +276,7 @@ toujours des articles de type `Livre` (`book`), avec la TVA de ce type.
 | -------------------------------------------------------------------------- | ----------- | ------------------------------ |
 | Ensemble des écrans (articles, client⋅es, commandes, stats, import/export) | Oui         | Oui                            |
 | Gestion des utilisateurs (`/users`)                                        | Oui         | Non                            |
-| Réglages (`/settings`, types d'article)                                    | Oui         | Non                            |
+| Réglages (`/settings`, remise fidélité, types d'article)                   | Oui         | Non                            |
 | Ventes par mois (`/sales`)                                                 | Oui         | Non                            |
 | Recherche de ventes (`/sales/search`)                                      | Oui         | Non                            |
 | Ventes du jour (`/todaySales`)                                             | Oui         | Oui                            |

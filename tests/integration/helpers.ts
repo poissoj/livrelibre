@@ -1,6 +1,15 @@
 import { db } from "@livrelibre/server/db/database";
 import { DISCOUNT_ITEM_TYPE, DISCOUNT_ITEM_TYPE_LABEL, ITEM_TYPES } from "@livrelibre/shared/item";
-import { customers, itemTypes, items, orders, sales, users } from "@livrelibre/shared/schema";
+import {
+  customers,
+  itemTypes,
+  items,
+  orders,
+  sales,
+  settings,
+  users,
+} from "@livrelibre/shared/schema";
+import { DEFAULT_SETTINGS } from "@livrelibre/shared/settings";
 import { norm } from "@livrelibre/shared/utils";
 import { type User } from "@server/auth";
 import { sql } from "drizzle-orm";
@@ -44,9 +53,18 @@ export const truncateAll = async () => {
     );
   }
   await db.execute(
-    sql`TRUNCATE TABLE "users", "items", "cart", "asideCart", "sales", "customers", "purchases", "selectedCustomer", "orders", "itemTypes" RESTART IDENTITY CASCADE`,
+    sql`TRUNCATE TABLE "users", "items", "cart", "asideCart", "sales", "customers", "purchases", "selectedCustomer", "orders", "itemTypes", "settings" RESTART IDENTITY CASCADE`,
   );
   await seedItemTypes();
+  await seedSettings();
+};
+
+/** Réinsère la ligne de réglages par défaut (singleton `id = 1`). */
+export const seedSettings = async () => {
+  await db
+    .insert(settings)
+    .values({ id: 1, loyaltyDiscountPercent: String(DEFAULT_SETTINGS.loyaltyDiscountPercent) })
+    .onConflictDoNothing();
 };
 
 export const seedUser = async (overrides: Partial<typeof users.$inferInsert> = {}) => {

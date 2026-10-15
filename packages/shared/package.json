@@ -14,6 +14,7 @@
     "./pagination": "./src/pagination.ts",
     "./sale": "./src/sale.ts",
     "./schema": "./src/schema.ts",
+    "./settings": "./src/settings.ts",
     "./utils": "./src/utils.ts",
     "./validation": "./src/validation.ts"
   },

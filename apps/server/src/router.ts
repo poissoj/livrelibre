@@ -2,6 +2,7 @@ import { ERROR_CODES } from "@livrelibre/shared/errors";
 import { TVAValues, zItem, zItemType } from "@livrelibre/shared/item";
 import { zOrder, zOrderSort, zOrderStatusArray } from "@livrelibre/shared/order";
 import { CART_ITEM_KINDS, PAYMENT_METHODS, type PaymentType } from "@livrelibre/shared/sale";
+import { zSettings } from "@livrelibre/shared/settings";
 import { norm } from "@livrelibre/shared/utils";
 import {
   zDateISO,
@@ -68,6 +69,7 @@ import {
   searchItems,
 } from "@server/server/searchItem";
 import { searchSales } from "@server/server/searchSale";
+import { getSettings, updateSettings } from "@server/server/settings";
 import { getStats } from "@server/server/stats";
 import { updateItem } from "@server/server/updateItem";
 import {
@@ -284,6 +286,7 @@ export const appRouter = router({
       }),
     ),
   stats: authProcedure.query(getStats),
+  settings: authProcedure.query(getSettings),
   user: procedure.query(({ ctx }) => ctx.user),
   isbnSearch: authProcedure
     .input(
@@ -559,6 +562,10 @@ export const appRouter = router({
       await reorderItemTypes(input.codes);
       logger.info("Item types reordered", { user: ctx.user, count: input.codes.length });
     }),
+  updateSettings: adminProcedure.input(zSettings).mutation(async ({ ctx, input }) => {
+    logger.info("Update settings", { user: ctx.user, ...input });
+    return await updateSettings(input);
+  }),
 });
 
 export type AppRouter = typeof appRouter;

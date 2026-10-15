@@ -45,6 +45,7 @@ export const ERROR_CODES = {
   INVALID_TYPE: "INVALID_TYPE",
   INVALID_ITEM_TYPE: "INVALID_ITEM_TYPE",
   INVALID_TVA: "INVALID_TVA",
+  INVALID_DISCOUNT_PERCENT: "INVALID_DISCOUNT_PERCENT",
   // REST routes
   UNAUTHENTICATED: "UNAUTHENTICATED",
   INVALID_CREDENTIALS: "INVALID_CREDENTIALS",
@@ -101,6 +102,7 @@ export const ERROR_MESSAGES: Record<ErrorCode, string> = {
   INVALID_TYPE: "Type d'article invalide.",
   INVALID_ITEM_TYPE: "Type d'article inconnu.",
   INVALID_TVA: "Taux de TVA invalide.",
+  INVALID_DISCOUNT_PERCENT: "Le pourcentage de remise doit être compris entre 0 et 100.",
   UNAUTHENTICATED: "Non authentifié·e.",
   INVALID_CREDENTIALS: "Identifiants invalides.",
   MISSING_USERNAME: "Identifiant manquant.",

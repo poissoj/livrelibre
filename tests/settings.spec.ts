@@ -72,3 +72,23 @@ test("Réglages est réservé aux administrateurs", async ({ page }) => {
     await deleteUser(cashier.name);
   }
 });
+
+test("un administrateur modifie le pourcentage de remise fidélité", async ({ page }) => {
+  await login(page);
+  await page.goto("/settings");
+
+  const input = page.getByLabel("Pourcentage de remise fidélité (%)");
+  await expect(input).toHaveValue("3");
+  await input.fill("7.5");
+  await page.getByRole("button", { name: "Enregistrer" }).click();
+  await expect(page.getByText("Réglages enregistrés.")).toBeVisible();
+
+  // Le réglage est persisté : il est rechargé depuis l'API.
+  await page.reload();
+  await expect(page.getByLabel("Pourcentage de remise fidélité (%)")).toHaveValue("7.5");
+
+  // Rétablit la valeur par défaut pour ne pas perturber les autres tests.
+  await page.getByLabel("Pourcentage de remise fidélité (%)").fill("3");
+  await page.getByRole("button", { name: "Enregistrer" }).click();
+  await expect(page.getByText("Réglages enregistrés.")).toBeVisible();
+});

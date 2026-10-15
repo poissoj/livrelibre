@@ -4,12 +4,13 @@ import { formatPrice } from "@livrelibre/shared/format";
 import { DISCOUNT_ITEM_TYPE } from "@livrelibre/shared/item";
 import { LOYALTY_DISCOUNT_TITLE, loyaltyDiscount } from "@livrelibre/shared/sale";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import { toast } from "vue-sonner";
 
 import AppButton from "@/components/AppButton.vue";
 import AppInput from "@/components/AppInput.vue";
 import useItemTypes from "@/lib/useItemTypes";
+import useSettings from "@/lib/useSettings";
 import { getErrorMessage } from "@/utils/errors";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 
@@ -17,11 +18,18 @@ const props = defineProps<{ customer: CustomerWithPurchase }>();
 
 const queryClient = useQueryClient();
 const { tva: tvaForType } = useItemTypes();
+const { loyaltyDiscountPercent } = useSettings();
 const amount = computed(() =>
   props.customer.purchases.reduce((sum, purchase) => sum + purchase.amount, 0),
 );
-const discount = ref(loyaltyDiscount(amount.value));
+const discount = ref(loyaltyDiscount(amount.value, loyaltyDiscountPercent.value));
 const applied = ref<number | undefined>(undefined);
+
+watch(loyaltyDiscountPercent, (percent) => {
+  if (applied.value === undefined) {
+    discount.value = loyaltyDiscount(amount.value, percent);
+  }
+});
 
 const { mutate: addDiscount, isPending: isApplying } = useMutation({
   mutationFn: (input: RouterInput["addNewItemToCart"]) => trpcClient.addNewItemToCart.mutate(input),
