@@ -131,4 +131,13 @@ test("applique la remise fidélité au panier", async ({ page }) => {
 
   await page.getByRole("button", { name: "Appliquer" }).click();
   await expect(page.getByText("Remise carte de fidélité")).toBeVisible();
+  await expect(page.getByText(/Remise de .* appliquée/)).toBeVisible();
+
+  // Retirer la remise du panier doit faire réapparaître le formulaire.
+  await page
+    .getByRole("row", { name: /Remise carte de fidélité/ })
+    .getByRole("button", { name: "Enlever du panier" })
+    .click();
+  await expect(page.getByText("Remise possible:")).toBeVisible();
+  await expect(page.getByText(/Remise de .* appliquée/)).not.toBeVisible();
 });
