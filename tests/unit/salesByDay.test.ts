@@ -1,27 +1,11 @@
-import type { Item } from "@livrelibre/shared/item";
 import { resolveSale } from "@server/server/sales/resolveSale";
-import type { DbSale } from "@server/server/sales/types";
+import type { DbSale, SaleItem } from "@server/server/sales/types";
 import { describe, expect, it } from "vitest";
 
-const makeItem = (overrides: Partial<Item> = {}): Item => ({
-  id: 1,
-  type: "book",
-  isbn: "9782070413119",
+const makeSaleItem = (overrides: Partial<SaleItem> = {}): SaleItem => ({
   author: "Antoine de Saint-Exupéry",
   title: "Le Petit Prince",
-  publisher: "Gallimard",
-  distributor: "Gallimard",
-  keywords: null,
-  datebought: "2024-01-15",
-  comments: null,
-  price: "8.90",
   amount: 5,
-  tva: "5.5",
-  starred: false,
-  nmAuthor: "antoine de saint-exupery",
-  nmTitle: "le petit prince",
-  nmPublisher: "gallimard",
-  nmDistributor: "gallimard",
   ...overrides,
 });
 
@@ -41,7 +25,7 @@ const makeDbSale = (overrides: Partial<DbSale> = {}): DbSale => ({
 
 describe("resolveSale", () => {
   it("returns a full item sale when the item exists", () => {
-    const result = resolveSale(makeDbSale(), new Map([[1, makeItem()]]));
+    const result = resolveSale(makeDbSale(), makeSaleItem());
 
     expect(result.itemId).toBe(1);
     expect(result.price).toBe(8.9);
@@ -51,7 +35,7 @@ describe("resolveSale", () => {
   });
 
   it("degrades to an unlisted sale when the item is missing", () => {
-    const result = resolveSale(makeDbSale({ itemId: 42, title: "Vente orpheline" }), new Map());
+    const result = resolveSale(makeDbSale({ itemId: 42, title: "Vente orpheline" }), undefined);
 
     expect(result.itemId).toBeNull();
     expect(result.title).toBe("Vente orpheline");
@@ -62,7 +46,7 @@ describe("resolveSale", () => {
   it("keeps standalone sales (no itemId) as unlisted", () => {
     const result = resolveSale(
       makeDbSale({ itemId: null, title: "Article indépendant" }),
-      new Map(),
+      undefined,
     );
 
     expect(result.itemId).toBeNull();

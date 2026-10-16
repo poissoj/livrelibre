@@ -1,34 +1,34 @@
-import type { Item } from "@livrelibre/shared/schema";
-
-import type { DbSale, Sale } from "./types";
+import type { DbSale, Sale, SaleItem } from "./types";
 
 /**
  * Turns a raw sales row into a display sale. When the referenced item can no
  * longer be found, the sale degrades gracefully to an "unlisted" sale instead
  * of failing the whole day's aggregation.
  */
-export const resolveSale = (sale: DbSale, itemById: Map<number, Item>): Sale => {
-  if (sale.itemId) {
-    const item = itemById.get(sale.itemId);
-    if (item) {
-      return {
-        ...item,
-        itemId: sale.itemId,
-        price: sale.price,
-        paymentType: sale.paymentType,
-        quantity: sale.quantity,
-        deleted: sale.deleted,
-        id: sale.id,
-        linkedToCustomer: sale.linkedToCustomer,
-      };
-    }
+export const resolveSale = (sale: DbSale, item: SaleItem | undefined): Sale => {
+  if (sale.itemId && item) {
+    return {
+      ...item,
+      itemId: sale.itemId,
+      price: sale.price,
+      tva: sale.tva,
+      paymentType: sale.paymentType,
+      quantity: sale.quantity,
+      deleted: sale.deleted,
+      id: sale.id,
+      linkedToCustomer: sale.linkedToCustomer,
+    };
   }
   return {
-    ...sale,
-    paymentType: sale.paymentType,
-    itemId: null,
-    deleted: sale.deleted,
     id: sale.id,
+    itemId: null,
     receiptId: sale.receiptId,
+    title: sale.title,
+    tva: sale.tva,
+    price: sale.price,
+    paymentType: sale.paymentType,
+    quantity: sale.quantity,
+    deleted: sale.deleted,
+    linkedToCustomer: sale.linkedToCustomer,
   };
 };

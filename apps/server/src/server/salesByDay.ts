@@ -2,25 +2,26 @@ import { ERROR_CODES } from "@livrelibre/shared/errors";
 import type { TVA } from "@livrelibre/shared/item";
 import { type PaymentType } from "@livrelibre/shared/sale";
 import { items, sales } from "@livrelibre/shared/schema";
-import { isDefined } from "@livrelibre/shared/utils";
 import { type User } from "@server/auth";
 import { db } from "@server/db/database";
 import { logger } from "@server/utils/logger";
 import { TRPCError } from "@trpc/server";
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 
 import { resolveSale } from "./sales/resolveSale";
 import type { Sale } from "./sales/types";
 
-const getCurrentDate = async () => {
-  const rows = await db.execute<{ today: string }>(
-    sql`SELECT to_char(CURRENT_DATE, 'YYYY-MM-DD') AS today`,
-  );
-  return rows[0].today;
-};
-
 export const getSalesByDay = async (date: string, options?: { restrictToToday?: boolean }) => {
-  const effectiveDate = options?.restrictToToday ? await getCurrentDate() : date;
+  const dayFilter = options?.restrictToToday
+    ? and(
+        sql`${sales.soldAt} >= CURRENT_DATE`,
+        sql`${sales.soldAt} < CURRENT_DATE + interval '1 day'`,
+      )
+    : and(
+        sql`${sales.soldAt} >= ${date}::date`,
+        sql`${sales.soldAt} < ${date}::date + interval '1 day'`,
+      );
+
   const dbSales = await db
     .select({
       id: sales.id,
@@ -33,21 +34,23 @@ export const getSalesByDay = async (date: string, options?: { restrictToToday?: 
       quantity: sales.quantity,
       deleted: sales.deleted,
       linkedToCustomer: sales.linkedToCustomer,
+      joinedItemId: items.id,
+      itemTitle: items.title,
+      itemAuthor: items.author,
+      itemAmount: items.amount,
     })
     .from(sales)
-    .where(
-      and(
-        sql`${sales.soldAt} >= ${effectiveDate}::date`,
-        sql`${sales.soldAt} < ${effectiveDate}::date + interval '1 day'`,
-      ),
-    )
+    .leftJoin(items, eq(sales.itemId, items.id))
+    .where(dayFilter)
     .orderBy(sales.soldAt, sales.receiptId, sales.title);
 
-  const itemIds = dbSales.map((s) => s.itemId).filter(isDefined);
-  const itemList = await db.select().from(items).where(inArray(items.id, itemIds));
-
-  const itemById = new Map(itemList.map((item) => [item.id, item]));
-  const missingItemIds = itemIds.filter((id) => !itemById.has(id));
+  const missingItemIds = [
+    ...new Set(
+      dbSales
+        .filter((sale) => sale.itemId != null && sale.joinedItemId == null)
+        .map((sale) => sale.itemId),
+    ),
+  ];
   if (missingItemIds.length > 0) {
     logger.warn("Sales reference missing items", { itemIds: missingItemIds });
   }
@@ -92,7 +95,11 @@ export const getSalesByDay = async (date: string, options?: { restrictToToday?: 
       cartTotal += sale.price;
     }
 
-    salesList.push(resolveSale(sale, itemById));
+    const item =
+      sale.joinedItemId != null
+        ? { title: sale.itemTitle ?? "", author: sale.itemAuthor ?? "", amount: sale.itemAmount ?? 0 }
+        : undefined;
+    salesList.push(resolveSale(sale, item));
   }
   if (salesList.length > 0) {
     carts.push({ sales: salesList, total: cartTotal });
