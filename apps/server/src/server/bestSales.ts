@@ -19,10 +19,10 @@ export const getBestSales = async ({
 } = {}): Promise<BestSale[]> => {
   const conditions: (SQL | undefined)[] = [eq(sales.deleted, false)];
   if (dateFrom) {
-    conditions.push(sql`${sales.created} >= ${dateFrom}::date`);
+    conditions.push(sql`${sales.soldAt} >= ${dateFrom}::date`);
   }
   if (dateTo) {
-    conditions.push(sql`${sales.created} < ${dateTo}::date + interval '1 day'`);
+    conditions.push(sql`${sales.soldAt} < ${dateTo}::date + interval '1 day'`);
   }
 
   const bestSales = await db

@@ -11,11 +11,11 @@ export const lastSales = async (id: number) => {
 
   const lastSales = await db
     .select({
-      month: sql`to_char(${sales.created}, 'YYYY-MM')`,
+      month: sql`to_char(${sales.soldAt}, 'YYYY-MM')`,
       count: sum(sales.quantity),
     })
     .from(sales)
-    .where(and(eq(sales.itemId, id), eq(sales.deleted, false), gte(sales.created, start)))
+    .where(and(eq(sales.itemId, id), eq(sales.deleted, false), gte(sales.soldAt, start)))
     .groupBy(({ month }) => month)
     .orderBy(({ month }) => month);
 

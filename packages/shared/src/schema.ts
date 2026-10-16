@@ -155,6 +155,7 @@ export const sales = pgTable(
     quantity: integer("quantity").notNull(),
     title: varchar("title"),
     created: timestamp("created", { withTimezone: true }).notNull().defaultNow(),
+    soldAt: timestamp("soldAt", { withTimezone: true }).notNull().defaultNow(),
     tva: tvaEnum("tva").notNull(),
     linkedToCustomer: boolean("linkedToCustomer").notNull(),
     itemId: integer("itemId").references(() => items.id),
@@ -165,7 +166,7 @@ export const sales = pgTable(
   (table) => [
     index("sales_itemId_idx").on(table.itemId),
     index("sales_deleted_idx").on(table.deleted),
-    index("sales_created_idx").on(table.created),
+    index("sales_soldAt_idx").on(table.soldAt),
     index("sales_receiptId_idx").on(table.receiptId),
     check("sales_quantity_positive", sql`${table.quantity} > 0`),
   ],

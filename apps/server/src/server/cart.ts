@@ -1,4 +1,4 @@
-import { formatDate } from "@livrelibre/shared/date";
+import { formatDate, parseLocalDate } from "@livrelibre/shared/date";
 import { ERROR_CODES } from "@livrelibre/shared/errors";
 import type { ItemType, TVA } from "@livrelibre/shared/item";
 import {
@@ -83,10 +83,10 @@ export const payCart = async (userId: number, data: PaymentFormData) => {
     const customer = await getSelectedCustomer(userId, false, tx);
     const now = new Date();
     // If the date is today, we want to save the time too
-    const created = formatDate(now) === data.paymentDate ? now : new Date(data.paymentDate);
+    const soldAt = formatDate(now) === data.paymentDate ? now : parseLocalDate(data.paymentDate);
     const salesList: (typeof sales.$inferInsert)[] = cartItems.map((item) => ({
       receiptId,
-      created,
+      soldAt,
       itemId: item.itemId,
       itemType: item.type,
       price: toMoneyString(Number(item.price) * item.quantity),

@@ -6,15 +6,15 @@ export const getSalesByMonth = async (month: string, year: string) => {
   const monthStart = `${year}-${month}-01`;
   const reqSales = db
     .select({
-      date: sql<string>`to_char(${sales.created}, 'YYYY-MM-dd')`,
+      date: sql<string>`to_char(${sales.soldAt}, 'YYYY-MM-dd')`,
       count: sum(sql`CASE WHEN ${sales.deleted} THEN 0 ELSE ${sales.quantity} END`).mapWith(Number),
       total: sum(sql`CASE WHEN ${sales.deleted} THEN 0 ELSE ${sales.price} END`),
     })
     .from(sales)
     .where(
       and(
-        sql`${sales.created} >= ${monthStart}::date`,
-        sql`${sales.created} < ${monthStart}::date + interval '1 month'`,
+        sql`${sales.soldAt} >= ${monthStart}::date`,
+        sql`${sales.soldAt} < ${monthStart}::date + interval '1 month'`,
       ),
     )
     .groupBy(({ date }) => date)
@@ -30,8 +30,8 @@ export const getSalesByMonth = async (month: string, year: string) => {
     .where(
       and(
         eq(sales.deleted, false),
-        sql`${sales.created} >= ${monthStart}::date`,
-        sql`${sales.created} < ${monthStart}::date + interval '1 month'`,
+        sql`${sales.soldAt} >= ${monthStart}::date`,
+        sql`${sales.soldAt} < ${monthStart}::date + interval '1 month'`,
       ),
     )
     .groupBy(sales.paymentType, sales.tva)
@@ -46,8 +46,8 @@ export const getSalesByMonth = async (month: string, year: string) => {
     .where(
       and(
         eq(sales.deleted, false),
-        sql`${sales.created} >= ${monthStart}::date`,
-        sql`${sales.created} < ${monthStart}::date + interval '1 month'`,
+        sql`${sales.soldAt} >= ${monthStart}::date`,
+        sql`${sales.soldAt} < ${monthStart}::date + interval '1 month'`,
       ),
     )
     .groupBy(sales.itemType)

@@ -58,6 +58,7 @@ test.beforeAll(async () => {
       quantity: 1,
       title: itemTitle,
       created: new Date(`${saleDate}T12:00:00Z`),
+      soldAt: new Date(`${saleDate}T12:00:00Z`),
       tva: "5.5" as const,
       linkedToCustomer: false,
       itemId: item.id,
@@ -76,7 +77,7 @@ test.afterAll(async () => {
 
   await db
     .delete(sales)
-    .where(sql`CAST(${sales.created} AS date) = ${saleDate} AND ${sales.receiptId} = ${receiptId}`);
+    .where(sql`CAST(${sales.soldAt} AS date) = ${saleDate} AND ${sales.receiptId} = ${receiptId}`);
   if (itemId != null) {
     await db.delete(items).where(eq(items.id, itemId));
   }

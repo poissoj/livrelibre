@@ -1,6 +1,6 @@
 import { sales } from "@livrelibre/shared/schema";
 import { db } from "@server/db/database";
-import { count, eq, sql } from "drizzle-orm";
+import { and, count, eq, sql } from "drizzle-orm";
 
 export const getStats = async (): Promise<{
   hours: { hour: number; count: number }[];
@@ -8,17 +8,24 @@ export const getStats = async (): Promise<{
 }> => {
   const hours = await db
     .select({
-      hour: sql`extract(hour from ${sales.created})`.mapWith(Number),
+      hour: sql`extract(hour from ${sales.soldAt})`.mapWith(Number),
       count: count(),
     })
     .from(sales)
-    .where(eq(sales.deleted, false))
+    .where(
+      and(
+        eq(sales.deleted, false),
+        // Only sales recorded on the day they happened carry a meaningful hour;
+        // backdated sales are stored at local midnight and would skew the histogram.
+        sql`${sales.soldAt}::date = ${sales.created}::date`,
+      ),
+    )
     .groupBy(({ hour }) => hour)
-    .having(sql`extract(hour from ${sales.created}) between 8 and 21`)
+    .having(sql`extract(hour from ${sales.soldAt}) between 8 and 21`)
     .orderBy(({ hour }) => hour);
   const days = await db
     .select({
-      day: sql`extract(dow from ${sales.created})`.mapWith(Number),
+      day: sql`extract(dow from ${sales.soldAt})`.mapWith(Number),
       count: count(),
     })
     .from(sales)

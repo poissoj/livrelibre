@@ -7,7 +7,8 @@ describe("getStats", () => {
   beforeEach(truncateAll);
 
   it("groups sales by hour and day of week", async () => {
-    await seedSale({ created: new Date("2024-01-05T10:00:00+01:00") });
+    const soldAt = new Date("2024-01-05T10:00:00+01:00");
+    await seedSale({ created: soldAt, soldAt });
 
     const { hours, days } = await getStats();
     expect(hours).toEqual([{ hour: 10, count: 1 }]);
@@ -15,15 +16,18 @@ describe("getStats", () => {
   });
 
   it("excludes sales outside the 8-21 hour window", async () => {
-    await seedSale({ created: new Date("2024-01-05T03:00:00+01:00") });
+    const soldAt = new Date("2024-01-05T03:00:00+01:00");
+    await seedSale({ created: soldAt, soldAt });
 
     const { hours } = await getStats();
     expect(hours).toHaveLength(0);
   });
 
   it("excludes deleted sales", async () => {
+    const soldAt = new Date("2024-01-05T10:00:00+01:00");
     await seedSale({
-      created: new Date("2024-01-05T10:00:00+01:00"),
+      created: soldAt,
+      soldAt,
       deleted: true,
     });
 

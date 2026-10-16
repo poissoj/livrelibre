@@ -23,7 +23,7 @@ const toSale = (dbSale: DBSale): Sale => ({
 export const getSales = async (): Promise<Sale[]> => {
   const dbSales = await db
     .select({
-      month: sql<string>`to_char(${sales.created}, 'YYYY-MM')`,
+      month: sql<string>`to_char(${sales.soldAt}, 'YYYY-MM')`,
       amount: sum(sales.price).mapWith(Number),
       count: sum(sales.quantity).mapWith(Number),
       ht: sql`round(sum((${sales.price} * 100) / (100 + ${sales.tva}::TEXT::numeric)), 2)`.mapWith(

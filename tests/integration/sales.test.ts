@@ -103,12 +103,12 @@ describe("sales", () => {
     await seedSale({
       title: "Le Petit Prince",
       paymentType: "cash",
-      created: new Date("2024-01-05T10:00:00Z"),
+      soldAt: new Date("2024-01-05T10:00:00Z"),
     });
     await seedSale({
       title: "Les Misérables",
       paymentType: "card",
-      created: new Date("2024-02-10T10:00:00Z"),
+      soldAt: new Date("2024-02-10T10:00:00Z"),
     });
 
     const byTitle = await searchSales({ title: "petit" });
@@ -125,12 +125,12 @@ describe("sales", () => {
     await seedSale({
       title: "Vente supprimée",
       deleted: true,
-      created: new Date("2024-01-05T10:00:00Z"),
+      soldAt: new Date("2024-01-05T10:00:00Z"),
     });
     await seedSale({
       title: "Vente active",
       deleted: false,
-      created: new Date("2024-01-05T11:00:00Z"),
+      soldAt: new Date("2024-01-05T11:00:00Z"),
     });
 
     const without = await searchSales({});
@@ -152,7 +152,7 @@ describe("sales", () => {
         deleted: false,
         paymentType: "cash" as const,
         receiptId: 1,
-        created: new Date("2024-01-05T10:00:00Z"),
+        soldAt: new Date("2024-01-05T10:00:00Z"),
       })),
     );
 

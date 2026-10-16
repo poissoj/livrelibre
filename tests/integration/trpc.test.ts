@@ -98,10 +98,10 @@ describe("trpc rbac", () => {
 
   it("restricts cashiers to the sales of the current day", async () => {
     await seedSale({
-      created: new Date("2024-01-05T12:00:00Z"),
+      soldAt: new Date("2024-01-05T12:00:00Z"),
       quantity: 2,
     });
-    await seedSale({ created: new Date(), quantity: 1 });
+    await seedSale({ soldAt: new Date(), quantity: 1 });
 
     const cashierResult = await cashier.salesByDay("2024-01-05");
     expect(cashierResult.salesCount).toBe(1);
@@ -111,11 +111,11 @@ describe("trpc rbac", () => {
   });
 
   it("lets a cashier delete a sale of the day but not an older one", async () => {
-    const todaySale = await seedSale({ created: new Date() });
+    const todaySale = await seedSale({ soldAt: new Date() });
     await expect(cashier.deleteSale({ saleId: todaySale.id })).resolves.toBeUndefined();
 
     const oldSale = await seedSale({
-      created: new Date("2024-01-05T12:00:00Z"),
+      soldAt: new Date("2024-01-05T12:00:00Z"),
     });
     await expect(cashier.deleteSale({ saleId: oldSale.id })).rejects.toMatchObject({
       code: "FORBIDDEN",
@@ -124,13 +124,13 @@ describe("trpc rbac", () => {
 
   it("lets an admin delete an older sale", async () => {
     const oldSale = await seedSale({
-      created: new Date("2024-01-05T12:00:00Z"),
+      soldAt: new Date("2024-01-05T12:00:00Z"),
     });
     await expect(admin.deleteSale({ saleId: oldSale.id })).resolves.toBeUndefined();
   });
 
   it("rejects anonymous on deleteSale", async () => {
-    const sale = await seedSale({ created: new Date() });
+    const sale = await seedSale({ soldAt: new Date() });
     await expect(anonymous.deleteSale({ saleId: sale.id })).rejects.toMatchObject({
       code: "UNAUTHORIZED",
     });

@@ -16,7 +16,7 @@ const saleColumns = {
   tva: sales.tva,
   paymentType: sales.paymentType,
   deleted: sales.deleted,
-  date: sql<string>`to_char(${sales.created}, 'YYYY-MM-DD')`,
+  date: sql<string>`to_char(${sales.soldAt}, 'YYYY-MM-DD')`,
 };
 
 export const searchSales = async ({
@@ -46,10 +46,10 @@ export const searchSales = async ({
     );
   }
   if (dateFrom) {
-    conditions.push(sql`${sales.created} >= ${dateFrom}::date`);
+    conditions.push(sql`${sales.soldAt} >= ${dateFrom}::date`);
   }
   if (dateTo) {
-    conditions.push(sql`${sales.created} < ${dateTo}::date + interval '1 day'`);
+    conditions.push(sql`${sales.soldAt} < ${dateTo}::date + interval '1 day'`);
   }
   if (paymentType) {
     conditions.push(eq(sales.paymentType, paymentType));
@@ -72,7 +72,7 @@ export const searchSales = async ({
       .from(sales)
       .leftJoin(items, eq(sales.itemId, items.id))
       .where(where)
-      .orderBy(desc(sales.created), desc(sales.id))
+      .orderBy(desc(sales.soldAt), desc(sales.id))
       .limit(ITEMS_PER_PAGE)
       .offset(offset),
   ]);

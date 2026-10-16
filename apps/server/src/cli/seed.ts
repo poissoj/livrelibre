@@ -188,6 +188,7 @@ const main = async () => {
             quantity: seed.quantity,
             title: item.title,
             created: daysAgo(seed.daysAgo),
+            soldAt: daysAgo(seed.daysAgo),
             tva: item.tva,
             linkedToCustomer: false,
             itemId: item.id,
