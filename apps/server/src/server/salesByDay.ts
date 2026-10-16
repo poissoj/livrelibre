@@ -97,7 +97,11 @@ export const getSalesByDay = async (date: string, options?: { restrictToToday?: 
 
     const item =
       sale.joinedItemId != null
-        ? { title: sale.itemTitle ?? "", author: sale.itemAuthor ?? "", amount: sale.itemAmount ?? 0 }
+        ? {
+            title: sale.itemTitle ?? "",
+            author: sale.itemAuthor ?? "",
+            amount: sale.itemAmount ?? 0,
+          }
         : undefined;
     salesList.push(resolveSale(sale, item));
   }
