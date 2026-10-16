@@ -19,10 +19,8 @@
     "@tanstack/vue-query": "5.104.1",
     "@trpc/client": "11.19.0",
     "clsx": "2.1.1",
-    "echarts": "6.1.0",
     "vue": "3.5.43",
     "vue-content-loader": "2.0.1",
-    "vue-echarts": "8.3.1",
     "vue-router": "5.4.0",
     "vue-sonner": "2.0.9"
   },

@@ -1,16 +1,15 @@
 <script setup lang="ts">
 import { useQuery } from "@tanstack/vue-query";
-import { computed, defineAsyncComponent } from "vue";
+import { computed } from "vue";
 import { ContentLoader } from "vue-content-loader";
 
 import AppCard from "@/components/AppCard.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
+import SalesByDay from "@/components/Charts/SalesByDay.vue";
+import SalesByHour from "@/components/Charts/SalesByHour.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import { trpcClient } from "@/utils/trpc";
-
-const SalesByHour = defineAsyncComponent(() => import("@/components/Charts/SalesByHour.vue"));
-const SalesByDay = defineAsyncComponent(() => import("@/components/Charts/SalesByDay.vue"));
 
 const DAYS = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
 
