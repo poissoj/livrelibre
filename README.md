@@ -13,13 +13,6 @@ Une [démo en ligne](https://livrelibre.onrender.com/) est accessible.
 
 Pour se connecter, utiliser les identifiants `admin/admin`
 
-## Rôles
-
-- **`admin`** : accès complet
-- **`cashier`** : gère la caisse du jour. Toutes les opérations sont autorisées, sauf
-  l'accès aux ventes passées : la page Ventes et la suppression d'une vente sont
-  limités à la journée en cours.
-
 ## Guide utilisateur
 
 Le détail des parcours (recherche, caisse, client⋅es, commandes, ventes,

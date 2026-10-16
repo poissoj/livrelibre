@@ -85,6 +85,29 @@ pnpm start
 
 `pnpm start` lance le serveur Hono qui sert à la fois l'API et l'application sur http://localhost:3001.
 
+## Mise à jour
+
+Pour mettre à jour une installation existante, récupérez la nouvelle version,
+mettez à jour les dépendances, appliquez les migrations puis reconstruisez et
+redémarrez :
+
+```
+git pull
+pnpm install
+pnpm migrate:db
+pnpm build
+pnpm start
+```
+
+Par précaution, sauvegardez votre base avant d'appliquer les migrations :
+
+```
+pg_dump livrelibre > livrelibre-$(date +%F).sql
+```
+
+Si l'application tourne via un gestionnaire de services (systemd, PM2…),
+redémarrez-le à la dernière étape au lieu de relancer `pnpm start` à la main.
+
 ## Tests
 
 Les tests sont regroupés dans le package `@livrelibre/tests`. Ils utilisent une

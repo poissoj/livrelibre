@@ -238,6 +238,13 @@ Page `Utilisateurs` (`/users`), réservée aux administrateurs :
 Il est impossible de supprimer son propre compte, ni de supprimer ou rétrograder le
 dernier administrateur.
 
+### Rôles
+
+- **`admin`** : accès complet
+- **`cashier`** : gère la caisse du jour. Toutes les opérations sont autorisées, sauf
+  l'accès aux ventes passées : la page Ventes et la suppression d'une vente sont
+  limités à la journée en cours.
+
 ## Réglages
 
 Page `Réglages` (`/settings`), réservée aux administrateurs. Elle regroupe les
