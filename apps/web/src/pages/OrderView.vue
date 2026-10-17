@@ -19,6 +19,7 @@ import NoResults from "@/components/NoResults.vue";
 import type { OrderFormData } from "@/components/orderForm";
 import OrderForm from "@/components/OrderForm.vue";
 import { queryKeys } from "@/lib/queryKeys";
+import { refreshOrdersRelated } from "@/utils/invalidations";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 import { useQueryParams } from "@/utils/useQueryParams";
 
@@ -45,6 +46,7 @@ const { mutateAsync: updateOrder, isPending: updatePending } = useMutation({
   onSuccess(result) {
     if (result.type === "success") {
       void queryClient.invalidateQueries({ queryKey: queryKeys.orders.detail(id.value) });
+      void refreshOrdersRelated(queryClient);
       toast.success(result.msg);
       void router.push({ path: "/orders", query: query.value });
     } else {
@@ -55,6 +57,9 @@ const { mutateAsync: updateOrder, isPending: updatePending } = useMutation({
 
 const deleteMutation = useMutation({
   mutationFn: (input: RouterInput["deleteOrder"]) => trpcClient.deleteOrder.mutate(input),
+  async onSuccess() {
+    await refreshOrdersRelated(queryClient);
+  },
 });
 
 const submit = async (orderInput: RawOrder) => {

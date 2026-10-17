@@ -62,16 +62,27 @@ test("Grouper, ouvrir et modifier une commande", async ({ page }) => {
   await page.getByLabel("État").selectOption({ label: "Reçu" });
   await page.getByRole("button", { name: "Modifier", exact: true }).click();
   await expect(page.getByText("La commande a été modifiée")).toBeVisible();
+
+  await expect(page).toHaveURL(/\/orders(\?|$)/);
+  const updatedRow = page.getByRole("row").filter({ hasText: itemTitle });
+  await expect(updatedRow.getByRole("img", { name: "Reçu" })).toBeVisible();
+  await expect(updatedRow).toContainText(customer.fullname);
+  await expect(updatedRow).toContainText(item.isbn);
 });
 
 test("Supprimer une commande", async ({ page }) => {
-  const { order } = await makeOrder("supprimer");
+  const { order, itemTitle } = await makeOrder("supprimer");
   await login(page);
-  await page.goto(`/order/${String(order.id)}`);
+  await page.goto("/orders");
+  await expect(page.getByRole("row").filter({ hasText: itemTitle })).toBeVisible();
+
+  await page.getByRole("row").filter({ hasText: itemTitle }).click();
+  await expect(page).toHaveURL(new RegExp(`/order/${String(order.id)}`));
 
   await page.getByRole("button", { name: "Supprimer", exact: true }).click();
   await page.getByRole("button", { name: "Oui, supprimer" }).click();
   await expect(page).toHaveURL("/orders");
+  await expect(page.getByRole("row").filter({ hasText: itemTitle })).toHaveCount(0);
 });
 
 test("Pagination de la liste des commandes", async ({ page }) => {

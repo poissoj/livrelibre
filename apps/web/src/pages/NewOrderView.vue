@@ -2,7 +2,7 @@
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import type { RawOrder } from "@livrelibre/shared/order";
-import { useMutation, useQuery } from "@tanstack/vue-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { toast } from "vue-sonner";
@@ -12,6 +12,7 @@ import ErrorMessage from "@/components/ErrorMessage.vue";
 import type { OrderFormData } from "@/components/orderForm";
 import OrderForm from "@/components/OrderForm.vue";
 import { queryKeys } from "@/lib/queryKeys";
+import { refreshOrdersRelated } from "@/utils/invalidations";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 
 const route = useRoute();
@@ -31,11 +32,13 @@ const {
   enabled: itemIdStr !== "",
 });
 
+const queryClient = useQueryClient();
 const { mutateAsync: createOrder, isPending: createPending } = useMutation({
   mutationFn: (input: RouterInput["newOrder"]) => trpcClient.newOrder.mutate(input),
-  onSuccess(result) {
+  async onSuccess(result) {
     if (result.type === "success") {
       toast.success(result.msg);
+      await refreshOrdersRelated(queryClient);
       void router.push("/orders");
     } else {
       toast.error(result.msg);

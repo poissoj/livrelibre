@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { toast } from "vue-sonner";
 
 import { queryKeys } from "@/lib/queryKeys";
+import { refreshOrdersRelated } from "@/utils/invalidations";
 import { type RouterInput, type RouterOutput, trpcClient } from "@/utils/trpc";
 
 const props = defineProps<{ order: OrderRow }>();
@@ -23,7 +24,7 @@ const { mutate: setNotified, isPending: isUpdating } = useMutation({
       (oldData) =>
         oldData ? { ...oldData, customerNotified: variables.customerNotified } : undefined,
     );
-    void queryClient.invalidateQueries({ queryKey: queryKeys.orders.root });
+    void refreshOrdersRelated(queryClient);
   },
 });
 

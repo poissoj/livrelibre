@@ -15,3 +15,11 @@ export const refreshCartRelated = (queryClient: QueryClient): Promise<unknown[]>
     queryClient.invalidateQueries({ queryKey: queryKeys.items.quicksearchRoot }),
     queryClient.invalidateQueries({ queryKey: queryKeys.items.advancedSearchRoot }),
   ]);
+
+/** Invalidate the order list and the per-customer / per-item order views. */
+export const refreshOrdersRelated = (queryClient: QueryClient): Promise<unknown[]> =>
+  Promise.all([
+    queryClient.invalidateQueries({ queryKey: queryKeys.orders.root }),
+    queryClient.invalidateQueries({ queryKey: queryKeys.customers.ordersRoot }),
+    queryClient.invalidateQueries({ queryKey: queryKeys.items.ordersRoot }),
+  ]);
