@@ -52,7 +52,7 @@ const itemId = ref<number | null>(props.data.itemId ?? null);
 const itemTitle = ref(props.data.itemTitle ?? props.data.item?.title ?? "");
 const contact = ref<ContactMeanType>(props.data.contact ?? "unknown");
 const comment = ref(props.data.comment ?? "");
-const nb = ref<number | string>(props.data.nb ?? 1);
+const nb = ref<number>(props.data.nb ?? 1);
 const ordered = ref<OrderStatus>(props.data.ordered ?? "new");
 const paid = ref(props.data.paid ?? false);
 const customerNotified = ref(props.data.customerNotified ?? false);
@@ -113,7 +113,7 @@ const submit = async () => {
       customerNotified: customerNotified.value,
       paid: paid.value,
       comment: comment.value,
-      nb: Number(nb.value),
+      nb: nb.value,
       contact: contact.value,
     });
   } catch (error) {
