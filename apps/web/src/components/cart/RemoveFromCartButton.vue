@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 
 import AppButton from "@/components/AppButton.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 
 const props = defineProps<{ id: number }>();
@@ -12,7 +13,7 @@ const queryClient = useQueryClient();
 const { mutate, isPending } = useMutation({
   mutationFn: (input: RouterInput["removeFromCart"]) => trpcClient.removeFromCart.mutate(input),
   onSuccess() {
-    void queryClient.invalidateQueries({ queryKey: ["cart"] });
+    void queryClient.invalidateQueries({ queryKey: queryKeys.cart.root });
   },
 });
 </script>

@@ -15,6 +15,7 @@ import type { FormFields } from "@/components/itemForm";
 import ItemForm from "@/components/ItemForm.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import NoResults from "@/components/NoResults.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 
 const CARD_TITLE = "Modifier un article";
@@ -30,7 +31,7 @@ const {
   isError,
   refetch,
 } = useQuery({
-  queryKey: ["searchItem", id],
+  queryKey: () => queryKeys.items.detail(id.value),
   queryFn: () => trpcClient.searchItem.query(id.value),
 });
 const { mutateAsync: updateItem } = useMutation({
@@ -42,9 +43,9 @@ const submit = async (data: FormFields) => {
   const payload = { ...data, amount: Number(data.amount) };
   const result = await updateItem({ item: payload, id: id.value });
   if (result.type === "success") {
-    await queryClient.invalidateQueries({ queryKey: ["searchItem", id.value] });
-    void queryClient.invalidateQueries({ queryKey: ["items"] });
-    void queryClient.invalidateQueries({ queryKey: ["advancedSearch"] });
+    await queryClient.invalidateQueries({ queryKey: queryKeys.items.detail(id.value) });
+    void queryClient.invalidateQueries({ queryKey: queryKeys.items.root });
+    void queryClient.invalidateQueries({ queryKey: queryKeys.items.advancedSearchRoot });
     void router.push(`/item/${String(id.value)}?status=updated`);
   }
   return result;

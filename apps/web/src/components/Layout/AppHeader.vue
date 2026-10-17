@@ -7,8 +7,8 @@ import { computed } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 
 import { APP_NAME } from "@/lib/config";
+import { cartQueryOptions } from "@/lib/queries";
 import useUser from "@/lib/useUser";
-import { trpcClient } from "@/utils/trpc";
 
 import QuickSearch from "./QuickSearch.vue";
 
@@ -17,10 +17,7 @@ const BUTTON_STYLES = "text-white [padding:14px_16px] hover:[background-color:rg
 const { user } = useUser();
 const router = useRouter();
 const queryClient = useQueryClient();
-const cart = useQuery({
-  queryKey: ["cart"],
-  queryFn: () => trpcClient.cart.query(),
-});
+const cart = useQuery(cartQueryOptions());
 
 const cartError = computed(() => cart.isError.value);
 const cartCount = computed(() => cart.data.value?.count ?? 0);

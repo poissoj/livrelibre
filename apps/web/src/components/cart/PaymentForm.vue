@@ -10,6 +10,7 @@ import { toast } from "vue-sonner";
 import AppButton from "@/components/AppButton.vue";
 import AppInput from "@/components/AppInput.vue";
 import AppSelect from "@/components/AppSelect.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import { getErrorMessage } from "@/utils/errors";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 
@@ -21,10 +22,10 @@ const { mutateAsync: payCart, isPending: isPaying } = useMutation({
   mutationFn: (input: RouterInput["payCart"]) => trpcClient.payCart.mutate(input),
   meta: { errorToast: false },
   onSuccess() {
-    void queryClient.invalidateQueries({ queryKey: ["cart"] });
-    void queryClient.invalidateQueries({ queryKey: ["customers"] });
-    void queryClient.invalidateQueries({ queryKey: ["selectedCustomer"] });
-    void queryClient.invalidateQueries({ queryKey: ["searchCustomer"] });
+    void queryClient.invalidateQueries({ queryKey: queryKeys.cart.root });
+    void queryClient.invalidateQueries({ queryKey: queryKeys.customers.root });
+    void queryClient.invalidateQueries({ queryKey: queryKeys.cart.selectedCustomer });
+    void queryClient.invalidateQueries({ queryKey: queryKeys.customers.searchRoot });
   },
   onError(error) {
     toast.error(getErrorMessage(error));

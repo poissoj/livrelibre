@@ -15,6 +15,7 @@ import { useRoute, useRouter } from "vue-router";
 import AppButton from "@/components/AppButton.vue";
 import AppInput from "@/components/AppInput.vue";
 import { APP_NAME } from "@/lib/config";
+import { queryKeys } from "@/lib/queryKeys";
 import { getErrorMessage, getRestErrorMessage } from "@/utils/errors";
 import { isUser } from "@/utils/guards";
 
@@ -53,7 +54,7 @@ const onSubmit = async () => {
         errorMsg.value = getRestErrorMessage(parsed, "Impossible de vous connecter.");
         return;
       }
-      queryClient.setQueryData(["user"], parsed);
+      queryClient.setQueryData(queryKeys.user.root, parsed);
       await router.push(redirectTarget.value);
     } else {
       const body: unknown = await res.json().catch(() => null);

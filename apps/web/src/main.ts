@@ -11,10 +11,9 @@ import "vue-sonner/style.css";
 import { toast } from "vue-sonner";
 
 import "@/global.css";
-import { USER_QUERY_OPTIONS } from "@/lib/userQuery";
+import { userQueryOptions } from "@/lib/queries";
 import { router } from "@/router";
 import { getErrorMessage, logUnexpectedError } from "@/utils/errors";
-import { trpcClient } from "@/utils/trpc";
 
 import App from "./App.vue";
 
@@ -73,12 +72,7 @@ const queryClient = new QueryClient({
   }),
 });
 
-const fetchUser = () =>
-  queryClient.query({
-    queryKey: ["user"],
-    queryFn: () => trpcClient.user.query(),
-    ...USER_QUERY_OPTIONS,
-  });
+const fetchUser = () => queryClient.query(userQueryOptions());
 
 router.beforeEach(async (to) => {
   // Null means a transient failure (network, 5xx): stay logged in and let the

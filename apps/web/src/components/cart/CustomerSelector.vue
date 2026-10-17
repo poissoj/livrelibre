@@ -9,6 +9,7 @@ import AppButton from "@/components/AppButton.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import type { CustomerSelection } from "@/components/orderForm";
 import SelectCustomer from "@/components/SelectCustomer.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import { getErrorMessage } from "@/utils/errors";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 
@@ -19,7 +20,7 @@ const {
   isSuccess,
   isError,
 } = useQuery({
-  queryKey: ["selectedCustomer"],
+  queryKey: queryKeys.cart.selectedCustomer,
   queryFn: () => trpcClient.selectedCustomer.query(),
 });
 const queryClient = useQueryClient();
@@ -27,7 +28,7 @@ const { mutate: selectCustomer } = useMutation({
   mutationFn: (input: RouterInput["selectCustomer"]) => trpcClient.selectCustomer.mutate(input),
   meta: { errorToast: false },
   onSuccess() {
-    void queryClient.invalidateQueries({ queryKey: ["selectedCustomer"] });
+    void queryClient.invalidateQueries({ queryKey: queryKeys.cart.selectedCustomer });
   },
   onError(error) {
     toast.error(getErrorMessage(error));

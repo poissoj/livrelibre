@@ -4,19 +4,18 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 
 import AppButton from "@/components/AppButton.vue";
+import { cartQueryOptions } from "@/lib/queries";
+import { queryKeys } from "@/lib/queryKeys";
 import { trpcClient } from "@/utils/trpc";
 
 const queryClient = useQueryClient();
-const { data: cart, isSuccess: cartSuccess } = useQuery({
-  queryKey: ["cart"],
-  queryFn: () => trpcClient.cart.query(),
-});
+const { data: cart, isSuccess: cartSuccess } = useQuery(cartQueryOptions());
 const { mutate, isPending } = useMutation({
   mutationFn: () => trpcClient.reactivateCart.mutate(),
   onSuccess() {
     void Promise.all([
-      queryClient.invalidateQueries({ queryKey: ["cart"] }),
-      queryClient.invalidateQueries({ queryKey: ["asideCart"] }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.cart.root }),
+      queryClient.invalidateQueries({ queryKey: queryKeys.cart.aside }),
     ]);
   },
 });

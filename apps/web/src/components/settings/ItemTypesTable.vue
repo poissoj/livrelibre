@@ -19,6 +19,7 @@ import AppButton from "@/components/AppButton.vue";
 import AppInput from "@/components/AppInput.vue";
 import AppSelect from "@/components/AppSelect.vue";
 import ConfirmationDialog from "@/components/ConfirmationDialog.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import useItemTypes from "@/lib/useItemTypes";
 import { type RouterInput, type RouterOutput, trpcClient } from "@/utils/trpc";
 
@@ -51,7 +52,7 @@ const newCode = computed(() =>
 );
 
 const invalidate = async () => {
-  await queryClient.invalidateQueries({ queryKey: ["itemTypes"] });
+  await queryClient.invalidateQueries({ queryKey: queryKeys.settings.itemTypes });
 };
 
 const { mutateAsync: updateItemType } = useMutation({

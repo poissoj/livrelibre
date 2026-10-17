@@ -1,5 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 
+import { queryKeys } from "@/lib/queryKeys";
+
 import { type RouterInput, trpcClient } from "./trpc";
 
 export const useBookmark = () => {
@@ -7,8 +9,8 @@ export const useBookmark = () => {
   const mutation = useMutation({
     mutationFn: (input: RouterInput["star"]) => trpcClient.star.mutate(input),
     onSuccess(_data, vars) {
-      void queryClient.invalidateQueries({ queryKey: ["bookmarks"] });
-      void queryClient.invalidateQueries({ queryKey: ["searchItem", vars.id] });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.items.bookmarks });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.items.detail(vars.id) });
     },
   });
   const star = (id: number, starred: boolean) => {

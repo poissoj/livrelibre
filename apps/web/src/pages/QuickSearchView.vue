@@ -11,6 +11,7 @@ import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import ItemsTable from "@/components/ItemsTable.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import { useTitle } from "@/lib/useTitle";
 import { trpcClient } from "@/utils/trpc";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
@@ -37,10 +38,12 @@ const {
   isFetching,
   refetch,
 } = useQuery({
-  queryKey: [
-    "quicksearch",
-    () => ({ search: search.value, page: page.value, inStock: inStock.value }),
-  ],
+  queryKey: () =>
+    queryKeys.items.quicksearch({
+      search: search.value,
+      page: page.value,
+      inStock: inStock.value,
+    }),
   queryFn: () =>
     trpcClient.quicksearch.query({
       search: search.value,

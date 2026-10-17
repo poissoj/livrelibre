@@ -13,6 +13,7 @@ import ErrorMessage from "@/components/ErrorMessage.vue";
 import ItemsCard from "@/components/ItemsCard.vue";
 import ItemsTable from "@/components/ItemsTable.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import { useTitle } from "@/lib/useTitle";
 import { trpcClient } from "@/utils/trpc";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
@@ -27,7 +28,7 @@ const {
   isFetching,
   refetch,
 } = useQuery({
-  queryKey: ["items", page],
+  queryKey: () => queryKeys.items.list(page.value),
   queryFn: () => trpcClient.items.query(page.value),
   placeholderData: keepPreviousData,
 });

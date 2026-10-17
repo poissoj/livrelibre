@@ -27,6 +27,7 @@ import { groupOrdersByCustomer } from "@/components/orders/group";
 import StatusTile from "@/components/orders/StatusTile.vue";
 import OrdersTable from "@/components/OrdersTable.vue";
 import OrdersTableByCustomer from "@/components/OrdersTableByCustomer.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import { useScrollToTopOnPageChange } from "@/utils/scroll";
 import { trpcClient } from "@/utils/trpc";
 import { useDebouncedValue } from "@/utils/useDebouncedValue";
@@ -74,7 +75,7 @@ const {
   isFetching,
   refetch,
 } = useQuery({
-  queryKey: ["orders", ordersInput],
+  queryKey: () => queryKeys.orders.list(ordersInput.value),
   queryFn: () => trpcClient.orders.query(ordersInput.value),
   placeholderData: keepPreviousData,
   staleTime: 30_000,

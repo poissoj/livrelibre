@@ -20,6 +20,7 @@ import LinkButton from "@/components/LinkButton.vue";
 import NoResults from "@/components/NoResults.vue";
 import PurchasesTable from "@/components/PurchasesTable.vue";
 import StatusCircle from "@/components/StatusCircle.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import { getErrorMessage } from "@/utils/errors";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 
@@ -36,7 +37,7 @@ const {
   isError,
   refetch: refetchCustomer,
 } = useQuery({
-  queryKey: ["customer", id],
+  queryKey: () => queryKeys.customers.detail(id.value),
   queryFn: () => trpcClient.customer.query(id.value),
 });
 const {
@@ -44,14 +45,14 @@ const {
   isError: ordersError,
   refetch: refetchOrders,
 } = useQuery({
-  queryKey: ["customerOrders", id],
+  queryKey: () => queryKeys.customers.orders(id.value),
   queryFn: () => trpcClient.customerOrders.query(id.value),
 });
 const { mutateAsync: saveCustomer, isPending: savePending } = useMutation({
   mutationFn: (input: RouterInput["updateCustomer"]) => trpcClient.updateCustomer.mutate(input),
   meta: { errorToast: false },
   onSuccess() {
-    void queryClient.invalidateQueries({ queryKey: ["customer"] });
+    void queryClient.invalidateQueries({ queryKey: queryKeys.customers.detailRoot });
   },
 });
 const deleteMutation = useMutation({

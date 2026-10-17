@@ -9,6 +9,7 @@ import { computed, ref } from "vue";
 
 import { COMMON_STYLES } from "@/components/formControls";
 import type { ItemValue, NewItem } from "@/components/selectItem";
+import { queryKeys } from "@/lib/queryKeys";
 import { trpcClient } from "@/utils/trpc";
 import { useDebouncedValue } from "@/utils/useDebouncedValue";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
@@ -27,7 +28,7 @@ const {
   isError,
   isFetching,
 } = useQuery({
-  queryKey: ["quicksearch", () => ({ search: debouncedSearch.value })],
+  queryKey: () => queryKeys.items.quicksearch({ search: debouncedSearch.value }),
   queryFn: () => trpcClient.quicksearch.query({ search: debouncedSearch.value }),
   staleTime: 60000,
   placeholderData: keepPreviousData,

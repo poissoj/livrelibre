@@ -5,6 +5,7 @@ import { toast } from "vue-sonner";
 
 import AppButton from "@/components/AppButton.vue";
 import AppInput from "@/components/AppInput.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import useSettings from "@/lib/useSettings";
 import { trpcClient } from "@/utils/trpc";
 
@@ -22,7 +23,7 @@ const { mutate: save, isPending } = useMutation({
     trpcClient.updateSettings.mutate({ loyaltyDiscountPercent: value }),
   async onSuccess() {
     toast.success("Réglages enregistrés.");
-    await queryClient.invalidateQueries({ queryKey: ["settings"] });
+    await queryClient.invalidateQueries({ queryKey: queryKeys.settings.root });
   },
 });
 

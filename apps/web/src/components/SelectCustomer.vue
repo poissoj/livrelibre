@@ -8,6 +8,7 @@ import { computed, ref } from "vue";
 
 import { COMMON_STYLES } from "@/components/formControls";
 import type { CustomerSelection } from "@/components/orderForm";
+import { queryKeys } from "@/lib/queryKeys";
 import { trpcClient } from "@/utils/trpc";
 import { useDebouncedValue } from "@/utils/useDebouncedValue";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
@@ -30,7 +31,7 @@ const {
   isError,
   isFetching,
 } = useQuery({
-  queryKey: ["searchCustomer", debouncedQuery],
+  queryKey: () => queryKeys.customers.search(debouncedQuery.value),
   queryFn: () => trpcClient.searchCustomer.query(debouncedQuery.value),
   staleTime: 60000,
   placeholderData: keepPreviousData,

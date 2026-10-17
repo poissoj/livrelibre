@@ -18,6 +18,7 @@ import ErrorMessage from "@/components/ErrorMessage.vue";
 import ItemDetails from "@/components/ItemDetails.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import NoResults from "@/components/NoResults.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import { useTitle } from "@/lib/useTitle";
 import { trpcClient } from "@/utils/trpc";
 import { useAddToCart } from "@/utils/useAddToCart";
@@ -35,11 +36,11 @@ const {
   isError,
   refetch,
 } = useQuery({
-  queryKey: ["searchItem", () => props.id],
+  queryKey: () => queryKeys.items.detail(props.id),
   queryFn: () => trpcClient.searchItem.query(props.id),
 });
 const { data: orders, isError: ordersError } = useQuery({
-  queryKey: ["itemOrders", () => props.id],
+  queryKey: () => queryKeys.items.orders(props.id),
   queryFn: () => trpcClient.itemOrders.query(props.id),
 });
 
@@ -59,7 +60,7 @@ const submitAddToCart = () => {
     { id: props.id, quantity: Number(quantity.value) },
     {
       onSuccess() {
-        void queryClient.invalidateQueries({ queryKey: ["searchItem"] });
+        void queryClient.invalidateQueries({ queryKey: queryKeys.items.detailRoot });
       },
     },
   );

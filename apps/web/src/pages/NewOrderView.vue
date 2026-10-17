@@ -11,6 +11,7 @@ import AppButton from "@/components/AppButton.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import type { OrderFormData } from "@/components/orderForm";
 import OrderForm from "@/components/OrderForm.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import { getErrorMessage } from "@/utils/errors";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 
@@ -26,7 +27,7 @@ const {
   isError: itemError,
   refetch: refetchItem,
 } = useQuery({
-  queryKey: ["searchItem", Number(itemIdStr)],
+  queryKey: queryKeys.items.detail(Number(itemIdStr)),
   queryFn: () => trpcClient.searchItem.query(Number(itemIdStr)),
   enabled: itemIdStr !== "",
 });

@@ -28,6 +28,7 @@ import type { CustomerSelection, OrderFormData } from "@/components/orderForm";
 import SelectCustomer from "@/components/SelectCustomer.vue";
 import type { NewItem } from "@/components/selectItem";
 import SelectItem from "@/components/SelectItem.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import { getErrorMessage } from "@/utils/errors";
 import { trpcClient } from "@/utils/trpc";
 
@@ -82,7 +83,7 @@ const submit = async () => {
         return;
       }
       const result = await queryClient.query({
-        queryKey: ["isbnSearch", isbn.value],
+        queryKey: queryKeys.items.isbn(isbn.value),
         queryFn: () => trpcClient.isbnSearch.query(isbn.value),
       });
       if (result.count === 0) {

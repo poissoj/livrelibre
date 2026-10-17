@@ -7,6 +7,7 @@ import AppCard from "@/components/AppCard.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import { trpcClient } from "@/utils/trpc";
 
 import BookmarksSkeleton from "./BookmarksSkeleton.vue";
@@ -17,7 +18,7 @@ const {
   isError,
   refetch,
 } = useQuery({
-  queryKey: ["bookmarks"],
+  queryKey: queryKeys.items.bookmarks,
   queryFn: () => trpcClient.bookmarks.query(),
 });
 </script>

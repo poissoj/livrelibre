@@ -18,6 +18,7 @@ import LinkButton from "@/components/LinkButton.vue";
 import NoResults from "@/components/NoResults.vue";
 import type { OrderFormData } from "@/components/orderForm";
 import OrderForm from "@/components/OrderForm.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import { getErrorMessage } from "@/utils/errors";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 import { useQueryParams } from "@/utils/useQueryParams";
@@ -36,7 +37,7 @@ const {
   isError,
   refetch,
 } = useQuery({
-  queryKey: ["order", id],
+  queryKey: () => queryKeys.orders.detail(id.value),
   queryFn: () => trpcClient.order.query(id.value),
 });
 
@@ -45,7 +46,7 @@ const { mutateAsync: updateOrder, isPending: updatePending } = useMutation({
   meta: { errorToast: false },
   onSuccess(result) {
     if (result.type === "success") {
-      void queryClient.invalidateQueries({ queryKey: ["order", id.value] });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.orders.detail(id.value) });
       toast.success(result.msg);
       void router.push({ path: "/orders", query: query.value });
     } else {

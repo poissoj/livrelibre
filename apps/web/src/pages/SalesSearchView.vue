@@ -18,6 +18,7 @@ import ErrorMessage from "@/components/ErrorMessage.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import RestrictedContent from "@/components/RestrictedContent.vue";
 import SalesSearchTable from "@/components/Sales/SalesSearchTable.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import useUser from "@/lib/useUser";
 import { trpcClient } from "@/utils/trpc";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
@@ -89,7 +90,7 @@ const {
   isFetching,
   refetch,
 } = useQuery({
-  queryKey: ["searchSales", () => searchInput.value],
+  queryKey: () => queryKeys.sales.search(searchInput.value),
   queryFn: () => trpcClient.searchSales.query(searchInput.value),
   placeholderData: keepPreviousData,
   enabled: isAdmin,

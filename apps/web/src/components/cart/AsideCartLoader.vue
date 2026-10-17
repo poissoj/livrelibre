@@ -6,19 +6,11 @@ import AppCard from "@/components/AppCard.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
-import { trpcClient } from "@/utils/trpc";
+import { asideCartQueryOptions } from "@/lib/queries";
 
 import ReactivateButton from "./ReactivateButton.vue";
 
-const {
-  data: asideCart,
-  isError,
-  isSuccess,
-  refetch,
-} = useQuery({
-  queryKey: ["asideCart"],
-  queryFn: () => trpcClient.asideCart.query(),
-});
+const { data: asideCart, isError, isSuccess, refetch } = useQuery(asideCartQueryOptions());
 </script>
 
 <template>

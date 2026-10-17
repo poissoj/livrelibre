@@ -9,6 +9,7 @@ import CardTitle from "@/components/CardTitle.vue";
 import SalesByDay from "@/components/Charts/SalesByDay.vue";
 import SalesByHour from "@/components/Charts/SalesByHour.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import { trpcClient } from "@/utils/trpc";
 
 const DAYS = ["Dimanche", "Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi"];
@@ -19,7 +20,7 @@ const {
   isError,
   refetch,
 } = useQuery({
-  queryKey: ["stats"],
+  queryKey: queryKeys.sales.stats,
   queryFn: () => trpcClient.stats.query(),
 });
 

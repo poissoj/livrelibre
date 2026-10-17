@@ -15,6 +15,7 @@ import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import ItemsTable from "@/components/ItemsTable.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import useItemTypes from "@/lib/useItemTypes";
 import { trpcClient } from "@/utils/trpc";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
@@ -86,7 +87,7 @@ const {
   isFetching,
   refetch,
 } = useQuery({
-  queryKey: ["advancedSearch", () => ({ search: searchQuery.value, page: page.value })],
+  queryKey: () => queryKeys.items.advancedSearch({ search: searchQuery.value, page: page.value }),
   queryFn: () => trpcClient.advancedSearch.query({ search: searchQuery.value, page: page.value }),
   placeholderData: keepPreviousData,
 });

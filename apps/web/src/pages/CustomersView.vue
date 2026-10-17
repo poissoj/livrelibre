@@ -16,6 +16,7 @@ import ErrorMessage from "@/components/ErrorMessage.vue";
 import ItemsCard from "@/components/ItemsCard.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import { useTitle } from "@/lib/useTitle";
 import { trpcClient } from "@/utils/trpc";
 import { useDebouncedValue } from "@/utils/useDebouncedValue";
@@ -41,7 +42,7 @@ const {
   isFetching,
   refetch,
 } = useQuery({
-  queryKey: ["customers", query],
+  queryKey: () => queryKeys.customers.list(query.value),
   queryFn: () => trpcClient.customers.query(query.value),
   placeholderData: keepPreviousData,
 });

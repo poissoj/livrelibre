@@ -11,6 +11,7 @@ import AppSkeleton from "@/components/AppSkeleton.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import { trpcClient } from "@/utils/trpc";
 import { useQueryParams } from "@/utils/useQueryParams";
 
@@ -66,7 +67,7 @@ const {
   isError,
   refetch,
 } = useQuery({
-  queryKey: ["bestsales", searchInput],
+  queryKey: () => queryKeys.sales.best(searchInput.value),
   queryFn: () => trpcClient.bestsales.query(searchInput.value),
 });
 </script>

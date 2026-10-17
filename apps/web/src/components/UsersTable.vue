@@ -9,6 +9,7 @@ import AppButton from "@/components/AppButton.vue";
 import AppInput from "@/components/AppInput.vue";
 import AppSelect from "@/components/AppSelect.vue";
 import ConfirmationDialog from "@/components/ConfirmationDialog.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import { type RouterOutput, trpcClient } from "@/utils/trpc";
 
 type Role = "admin" | "cashier";
@@ -51,7 +52,7 @@ const { mutateAsync: deleteUser } = useMutation({
 });
 
 const invalidateUsers = async () => {
-  await queryClient.invalidateQueries({ queryKey: ["users"] });
+  await queryClient.invalidateQueries({ queryKey: queryKeys.settings.users });
 };
 
 const startCreate = async () => {

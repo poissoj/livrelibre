@@ -3,6 +3,7 @@ import type { OrderRow } from "@livrelibre/shared/order";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { toast } from "vue-sonner";
 
+import { queryKeys } from "@/lib/queryKeys";
 import { type RouterInput, type RouterOutput, trpcClient } from "@/utils/trpc";
 
 const props = defineProps<{ order: OrderRow }>();
@@ -17,10 +18,12 @@ const { mutate: setNotified, isPending: isUpdating } = useMutation({
         variables.customerNotified ? "" : "non "
       }prévenue.`,
     );
-    queryClient.setQueryData<RouterOutput["order"]>(["order", props.order.id], (oldData) =>
-      oldData ? { ...oldData, customerNotified: variables.customerNotified } : undefined,
+    queryClient.setQueryData<RouterOutput["order"]>(
+      queryKeys.orders.detail(props.order.id),
+      (oldData) =>
+        oldData ? { ...oldData, customerNotified: variables.customerNotified } : undefined,
     );
-    void queryClient.invalidateQueries({ queryKey: ["orders"] });
+    void queryClient.invalidateQueries({ queryKey: queryKeys.orders.root });
   },
 });
 

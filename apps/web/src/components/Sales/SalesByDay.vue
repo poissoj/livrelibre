@@ -14,6 +14,7 @@ import SalesSkeleton from "@/components/Sales/SalesSkeleton.vue";
 import SalesTable from "@/components/Sales/SalesTable.vue";
 import StatsByTVA from "@/components/TVAStats/StatsByTVA.vue";
 import TVASkeleton from "@/components/TVAStats/TVASkeleton.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import { useTitle } from "@/lib/useTitle";
 import { useScrollRestoration } from "@/utils/scroll";
 import { trpcClient } from "@/utils/trpc";
@@ -29,7 +30,7 @@ const {
   isError,
   refetch,
 } = useQuery({
-  queryKey: ["salesByDay", () => props.date],
+  queryKey: () => queryKeys.sales.byDay(props.date),
   queryFn: () => trpcClient.salesByDay.query(props.date),
 });
 

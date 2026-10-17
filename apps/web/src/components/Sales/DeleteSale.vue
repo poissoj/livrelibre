@@ -5,6 +5,7 @@ import { useMutation, useQueryClient } from "@tanstack/vue-query";
 
 import AppButton from "@/components/AppButton.vue";
 import ConfirmationDialog from "@/components/ConfirmationDialog.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 
 const props = defineProps<{ saleId: number }>();
@@ -13,7 +14,7 @@ const queryClient = useQueryClient();
 const { mutate, isPending } = useMutation({
   mutationFn: (input: RouterInput["deleteSale"]) => trpcClient.deleteSale.mutate(input),
   onSuccess() {
-    void queryClient.invalidateQueries({ queryKey: ["salesByDay"] });
+    void queryClient.invalidateQueries({ queryKey: queryKeys.sales.byDayRoot });
   },
 });
 </script>

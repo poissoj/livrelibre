@@ -15,6 +15,7 @@ import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import RestrictedContent from "@/components/RestrictedContent.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import useUser from "@/lib/useUser";
 import { trpcClient } from "@/utils/trpc";
 
@@ -29,7 +30,7 @@ const {
   isError,
   refetch,
 } = useQuery({
-  queryKey: ["sales"],
+  queryKey: queryKeys.sales.root,
   queryFn: () => trpcClient.sales.query(),
   enabled: isAdmin,
 });

@@ -7,6 +7,7 @@ import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import SalesByMonth from "@/components/Charts/SalesByMonth.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import { trpcClient } from "@/utils/trpc";
 
 const props = defineProps<{ id: number }>();
@@ -17,7 +18,7 @@ const {
   isError,
   refetch,
 } = useQuery({
-  queryKey: ["lastSales", () => props.id],
+  queryKey: () => queryKeys.items.lastSales(props.id),
   queryFn: () => trpcClient.lastSales.query(props.id),
 });
 </script>

@@ -17,17 +17,9 @@ import PaymentForm from "@/components/cart/PaymentForm.vue";
 import QuickAdd from "@/components/cart/QuickAdd.vue";
 import type { ISBNError } from "@/components/cart/types";
 import ErrorMessage from "@/components/ErrorMessage.vue";
-import { trpcClient } from "@/utils/trpc";
+import { cartQueryOptions } from "@/lib/queries";
 
-const {
-  data: cart,
-  isPending,
-  isError,
-  refetch,
-} = useQuery({
-  queryKey: ["cart"],
-  queryFn: () => trpcClient.cart.query(),
-});
+const { data: cart, isPending, isError, refetch } = useQuery(cartQueryOptions());
 const errors = ref<ISBNError[]>([]);
 
 const addError = (error: ISBNError) => {

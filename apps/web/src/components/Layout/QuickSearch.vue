@@ -6,6 +6,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { toast } from "vue-sonner";
 
+import { queryKeys } from "@/lib/queryKeys";
 import { getErrorMessage } from "@/utils/errors";
 import { trpcClient } from "@/utils/trpc";
 
@@ -23,7 +24,7 @@ const submit = async () => {
     isLoading.value = true;
     try {
       const result = await queryClient.query({
-        queryKey: ["isbnSearch", value],
+        queryKey: queryKeys.items.isbn(value),
         queryFn: () => trpcClient.isbnSearch.query(value),
       });
       if (result.count === 0) {

@@ -9,6 +9,8 @@ import { toast } from "vue-sonner";
 
 import AppButton from "@/components/AppButton.vue";
 import AppInput from "@/components/AppInput.vue";
+import { cartQueryOptions } from "@/lib/queries";
+import { queryKeys } from "@/lib/queryKeys";
 import useItemTypes from "@/lib/useItemTypes";
 import useSettings from "@/lib/useSettings";
 import { getErrorMessage } from "@/utils/errors";
@@ -24,10 +26,7 @@ const amount = computed(() =>
 );
 const discount = ref(loyaltyDiscount(amount.value, loyaltyDiscountPercent.value));
 
-const { data: cart } = useQuery({
-  queryKey: ["cart"],
-  queryFn: () => trpcClient.cart.query(),
-});
+const { data: cart } = useQuery(cartQueryOptions());
 const discountItem = computed(() =>
   cart.value?.items.find((item) => item.title === LOYALTY_DISCOUNT_TITLE),
 );
@@ -45,7 +44,7 @@ const { mutate: addDiscount, isPending: isApplying } = useMutation({
   mutationFn: (input: RouterInput["addNewItemToCart"]) => trpcClient.addNewItemToCart.mutate(input),
   meta: { errorToast: false },
   onSuccess() {
-    void queryClient.invalidateQueries({ queryKey: ["cart"] });
+    void queryClient.invalidateQueries({ queryKey: queryKeys.cart.root });
   },
   onError(error) {
     toast.error(getErrorMessage(error));

@@ -15,6 +15,7 @@ import CategorySkeleton from "@/components/PaymentStats/CategorySkeleton.vue";
 import RestrictedContent from "@/components/RestrictedContent.vue";
 import StatsByTVA from "@/components/TVAStats/StatsByTVA.vue";
 import TVASkeleton from "@/components/TVAStats/TVASkeleton.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import useItemTypes from "@/lib/useItemTypes";
 import useUser from "@/lib/useUser";
 import { trpcClient } from "@/utils/trpc";
@@ -37,7 +38,7 @@ const {
   isError,
   refetch,
 } = useQuery({
-  queryKey: ["salesByMonth", params],
+  queryKey: () => queryKeys.sales.byMonth(params.value),
   queryFn: () => trpcClient.salesByMonth.query(params.value),
   enabled: isAdmin,
 });
