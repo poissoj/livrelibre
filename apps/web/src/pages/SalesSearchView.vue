@@ -18,7 +18,6 @@ import ErrorMessage from "@/components/ErrorMessage.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import RestrictedContent from "@/components/RestrictedContent.vue";
 import SalesSearchTable from "@/components/Sales/SalesSearchTable.vue";
-import { useTitle } from "@/lib/useTitle";
 import { trpcClient } from "@/utils/trpc";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
 import { usePageParam, useQueryParams } from "@/utils/useQueryParams";
@@ -104,8 +103,6 @@ const cardTitle = computed(() => {
   }
   return value;
 });
-
-useTitle("Rechercher une vente");
 </script>
 
 <template>

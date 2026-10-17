@@ -1,9 +1,14 @@
 import { type MaybeRefOrGetter, toValue, watchEffect } from "vue";
 
-import { APP_NAME } from "./config";
+import { formatPageTitle } from "./pageTitle";
 
+/**
+ * Overrides the document title for routes whose title depends on loaded data
+ * (item name, search term, page number…). Static titles belong to `meta.title`
+ * (applied by the router); this composable takes precedence once mounted.
+ */
 export const useTitle = (title: MaybeRefOrGetter<string>): void => {
   watchEffect(() => {
-    document.title = `${toValue(title)} | ${APP_NAME}`;
+    document.title = formatPageTitle(toValue(title));
   });
 };

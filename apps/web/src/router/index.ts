@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
 
 import ProtectedLayout from "@/components/Layout/ProtectedLayout.vue";
-import { APP_NAME } from "@/lib/config";
+import { formatPageTitle } from "@/lib/pageTitle";
 
 const NotFoundView = () => import("@/pages/NotFoundView.vue");
 const AddItemView = () => import("@/pages/AddItemView.vue");
@@ -213,6 +213,5 @@ export const router = createRouter({
 });
 
 router.afterEach((to) => {
-  const title = typeof to.meta.title === "string" ? to.meta.title : "";
-  document.title = title ? `${title} | ${APP_NAME}` : APP_NAME;
+  document.title = formatPageTitle(to.meta.title);
 });

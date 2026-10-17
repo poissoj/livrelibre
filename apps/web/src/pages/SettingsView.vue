@@ -5,9 +5,6 @@ import CardTitle from "@/components/CardTitle.vue";
 import RestrictedContent from "@/components/RestrictedContent.vue";
 import ItemTypesTable from "@/components/settings/ItemTypesTable.vue";
 import LoyaltyDiscountForm from "@/components/settings/LoyaltyDiscountForm.vue";
-import { useTitle } from "@/lib/useTitle";
-
-useTitle("Réglages");
 </script>
 
 <template>

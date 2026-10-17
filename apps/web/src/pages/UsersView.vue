@@ -7,11 +7,8 @@ import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import RestrictedContent from "@/components/RestrictedContent.vue";
 import UsersTable from "@/components/UsersTable.vue";
-import { useTitle } from "@/lib/useTitle";
 import useUser from "@/lib/useUser";
 import { trpcClient } from "@/utils/trpc";
-
-useTitle("Utilisateurs");
 
 const { user: currentUser } = useUser();
 

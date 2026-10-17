@@ -43,7 +43,7 @@ const { data: orders, isError: ordersError } = useQuery({
   queryFn: () => trpcClient.itemOrders.query(props.id),
 });
 
-useTitle(() => (item.value ? `${item.value.title} | Voir un article` : "Voir un article"));
+useTitle(() => item.value?.title ?? "Voir un article");
 
 const { star, mutation: bookmarkMutation } = useBookmark();
 const bookmarkPending = bookmarkMutation.isPending;

@@ -12,11 +12,8 @@ import CardBody from "@/components/CardBody.vue";
 import CardFooter from "@/components/CardFooter.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import type { AlertMessage } from "@/components/form";
-import { useTitle } from "@/lib/useTitle";
 import { getErrorMessage } from "@/utils/errors";
 import { trpcClient } from "@/utils/trpc";
-
-useTitle("Changer mon mot de passe");
 
 const currentPassword = ref("");
 const newPassword = ref("");
