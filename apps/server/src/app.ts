@@ -21,6 +21,11 @@ export const app = new Hono();
 
 const MAX_IMPORT_FILE_SIZE = 10 * 1024 * 1024;
 
+// Hashed assets never change for a given filename: cache them for a year.
+const IMMUTABLE_CACHE = "public, max-age=31536000, immutable";
+// Unhashed public files (fonts, favicon): cache for a week.
+const STATIC_CACHE = "public, max-age=604800";
+
 // Security headers
 app.use("*", async (c, next) => {
   await next();
@@ -89,6 +94,18 @@ if (env.NODE_ENV === "production") {
       root: distRoot,
       rewriteRequestPath: (path) =>
         path.startsWith("/api/") || path.includes(".") ? path : "/index.html",
+      onFound: (_path, c) => {
+        const reqPath = c.req.path;
+        if (reqPath.startsWith("/assets/")) {
+          // Vite hashes asset filenames, so they can be cached forever.
+          c.header("Cache-Control", IMMUTABLE_CACHE);
+        } else if (reqPath.startsWith("/fonts/") || reqPath === "/favicon.ico") {
+          c.header("Cache-Control", STATIC_CACHE);
+        } else {
+          // index.html and SPA routes: always revalidate so deployments are picked up.
+          c.header("Cache-Control", "no-cache");
+        }
+      },
     }),
   );
 }
