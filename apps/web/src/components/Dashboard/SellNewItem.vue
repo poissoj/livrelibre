@@ -15,9 +15,9 @@ import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import type { AlertMessage } from "@/components/form";
 import FormRow from "@/components/FormRow.vue";
-import { queryKeys } from "@/lib/queryKeys";
 import useItemTypes from "@/lib/useItemTypes";
 import { getErrorMessage } from "@/utils/errors";
+import { refreshCartRelated } from "@/utils/invalidations";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 
 const queryClient = useQueryClient();
@@ -47,7 +47,7 @@ const { mutateAsync: addItem, isPending: addPending } = useMutation({
   mutationFn: (input: RouterInput["addNewItemToCart"]) => trpcClient.addNewItemToCart.mutate(input),
   meta: { errorToast: false },
   async onSuccess() {
-    await queryClient.invalidateQueries({ queryKey: queryKeys.cart.root });
+    await refreshCartRelated(queryClient);
   },
   onError(error) {
     alert.value = { type: "error", message: getErrorMessage(error) };

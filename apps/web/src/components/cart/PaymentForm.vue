@@ -5,13 +5,11 @@ import { formatDate } from "@livrelibre/shared/date";
 import { PAYMENT_METHODS, type PaymentType } from "@livrelibre/shared/sale";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { ref } from "vue";
-import { toast } from "vue-sonner";
 
 import AppButton from "@/components/AppButton.vue";
 import AppInput from "@/components/AppInput.vue";
 import AppSelect from "@/components/AppSelect.vue";
 import { queryKeys } from "@/lib/queryKeys";
-import { getErrorMessage } from "@/utils/errors";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 
 const queryClient = useQueryClient();
@@ -20,15 +18,11 @@ const paymentType = ref<PaymentType>("cash");
 
 const { mutateAsync: payCart, isPending: isPaying } = useMutation({
   mutationFn: (input: RouterInput["payCart"]) => trpcClient.payCart.mutate(input),
-  meta: { errorToast: false },
   onSuccess() {
     void queryClient.invalidateQueries({ queryKey: queryKeys.cart.root });
     void queryClient.invalidateQueries({ queryKey: queryKeys.customers.root });
     void queryClient.invalidateQueries({ queryKey: queryKeys.cart.selectedCustomer });
     void queryClient.invalidateQueries({ queryKey: queryKeys.customers.searchRoot });
-  },
-  onError(error) {
-    toast.error(getErrorMessage(error));
   },
 });
 
@@ -39,7 +33,7 @@ const onSubmit = async () => {
       paymentType: paymentType.value,
     });
   } catch {
-    // handled by onError
+    // Handled by the global mutation error handler.
   }
 };
 </script>

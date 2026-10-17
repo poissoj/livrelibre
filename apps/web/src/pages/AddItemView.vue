@@ -1,16 +1,22 @@
 <script setup lang="ts">
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { useMutation } from "@tanstack/vue-query";
+import { useMutation, useQueryClient } from "@tanstack/vue-query";
 
 import AppButton from "@/components/AppButton.vue";
 import type { FormFields } from "@/components/itemForm";
 import ItemForm from "@/components/ItemForm.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 
+const queryClient = useQueryClient();
 const { mutateAsync: addItem, isPending: addPending } = useMutation({
   mutationFn: (input: RouterInput["addItem"]) => trpcClient.addItem.mutate(input),
   meta: { errorToast: false },
+  onSuccess() {
+    void queryClient.invalidateQueries({ queryKey: queryKeys.items.root });
+    void queryClient.invalidateQueries({ queryKey: queryKeys.items.advancedSearchRoot });
+  },
 });
 
 const submit = async (data: FormFields) => {

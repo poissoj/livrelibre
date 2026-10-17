@@ -21,7 +21,6 @@ import NoResults from "@/components/NoResults.vue";
 import PurchasesTable from "@/components/PurchasesTable.vue";
 import StatusCircle from "@/components/StatusCircle.vue";
 import { queryKeys } from "@/lib/queryKeys";
-import { getErrorMessage } from "@/utils/errors";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 
 const CARD_TITLE = "Modifier un⋅e client⋅e";
@@ -57,7 +56,6 @@ const { mutateAsync: saveCustomer, isPending: savePending } = useMutation({
 });
 const deleteMutation = useMutation({
   mutationFn: (input: RouterInput["deleteCustomer"]) => trpcClient.deleteCustomer.mutate(input),
-  meta: { errorToast: false },
 });
 
 const submit = async (customer: CustomerFormFields) =>
@@ -68,8 +66,8 @@ const deleteCustomer = async () => {
     const res = await deleteMutation.mutateAsync({ id: id.value });
     toast.success(res.msg);
     await router.push("/customers");
-  } catch (error) {
-    toast.error(getErrorMessage(error));
+  } catch {
+    // Handled by the global mutation error handler.
   }
 };
 

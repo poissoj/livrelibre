@@ -5,15 +5,13 @@ import { DISCOUNT_ITEM_TYPE } from "@livrelibre/shared/item";
 import { LOYALTY_DISCOUNT_TITLE, loyaltyDiscount } from "@livrelibre/shared/sale";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed, ref, watch } from "vue";
-import { toast } from "vue-sonner";
 
 import AppButton from "@/components/AppButton.vue";
 import AppInput from "@/components/AppInput.vue";
 import { cartQueryOptions } from "@/lib/queries";
-import { queryKeys } from "@/lib/queryKeys";
 import useItemTypes from "@/lib/useItemTypes";
 import useSettings from "@/lib/useSettings";
-import { getErrorMessage } from "@/utils/errors";
+import { refreshCartRelated } from "@/utils/invalidations";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 
 const props = defineProps<{ customer: CustomerWithPurchase }>();
@@ -42,12 +40,8 @@ watch(loyaltyDiscountPercent, (percent) => {
 
 const { mutate: addDiscount, isPending: isApplying } = useMutation({
   mutationFn: (input: RouterInput["addNewItemToCart"]) => trpcClient.addNewItemToCart.mutate(input),
-  meta: { errorToast: false },
-  onSuccess() {
-    void queryClient.invalidateQueries({ queryKey: queryKeys.cart.root });
-  },
-  onError(error) {
-    toast.error(getErrorMessage(error));
+  async onSuccess() {
+    await refreshCartRelated(queryClient);
   },
 });
 

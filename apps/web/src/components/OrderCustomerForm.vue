@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { faCheckCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { useMutation } from "@tanstack/vue-query";
+import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
 
@@ -10,7 +10,7 @@ import AppInput from "@/components/AppInput.vue";
 import AppTextarea from "@/components/AppTextarea.vue";
 import type { CustomerFormFields, SelectedCustomer } from "@/components/customerForm";
 import FormRow from "@/components/FormRow.vue";
-import { getErrorMessage } from "@/utils/errors";
+import { queryKeys } from "@/lib/queryKeys";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 
 const emit = defineEmits<{
@@ -24,9 +24,13 @@ const email = ref("");
 const contact = ref("");
 const comment = ref("");
 
+const queryClient = useQueryClient();
 const { mutateAsync: createCustomer, isPending: isSubmitting } = useMutation({
   mutationFn: (input: RouterInput["updateCustomer"]) => trpcClient.updateCustomer.mutate(input),
-  meta: { errorToast: false },
+  onSuccess() {
+    void queryClient.invalidateQueries({ queryKey: queryKeys.customers.root });
+    void queryClient.invalidateQueries({ queryKey: queryKeys.customers.searchRoot });
+  },
 });
 
 const submit = async () => {
@@ -50,8 +54,8 @@ const submit = async () => {
     } else {
       toast.error(resp.msg);
     }
-  } catch (error) {
-    toast.error(getErrorMessage(error));
+  } catch {
+    // Handled by the global mutation error handler.
   }
 };
 </script>

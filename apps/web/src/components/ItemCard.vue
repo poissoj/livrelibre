@@ -2,7 +2,7 @@
 import { faStar as emptyStar } from "@fortawesome/free-regular-svg-icons";
 import { faBook, faCartPlus, faEdit, faSpinner, faStar } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { useQuery, useQueryClient } from "@tanstack/vue-query";
+import { useQuery } from "@tanstack/vue-query";
 import { ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
@@ -28,7 +28,6 @@ const props = defineProps<{ id: number }>();
 
 const route = useRoute();
 const router = useRouter();
-const queryClient = useQueryClient();
 
 const {
   data: item,
@@ -56,14 +55,7 @@ const dismissStatus = () => {
 };
 
 const submitAddToCart = () => {
-  addToCart(
-    { id: props.id, quantity: Number(quantity.value) },
-    {
-      onSuccess() {
-        void queryClient.invalidateQueries({ queryKey: queryKeys.items.detailRoot });
-      },
-    },
-  );
+  addToCart({ id: props.id, quantity: Number(quantity.value) });
 };
 </script>
 

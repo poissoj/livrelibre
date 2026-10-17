@@ -19,7 +19,6 @@ import NoResults from "@/components/NoResults.vue";
 import type { OrderFormData } from "@/components/orderForm";
 import OrderForm from "@/components/OrderForm.vue";
 import { queryKeys } from "@/lib/queryKeys";
-import { getErrorMessage } from "@/utils/errors";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 import { useQueryParams } from "@/utils/useQueryParams";
 
@@ -43,7 +42,6 @@ const {
 
 const { mutateAsync: updateOrder, isPending: updatePending } = useMutation({
   mutationFn: (input: RouterInput["updateOrder"]) => trpcClient.updateOrder.mutate(input),
-  meta: { errorToast: false },
   onSuccess(result) {
     if (result.type === "success") {
       void queryClient.invalidateQueries({ queryKey: queryKeys.orders.detail(id.value) });
@@ -53,21 +51,17 @@ const { mutateAsync: updateOrder, isPending: updatePending } = useMutation({
       toast.error(result.msg);
     }
   },
-  onError(error) {
-    toast.error(getErrorMessage(error));
-  },
 });
 
 const deleteMutation = useMutation({
   mutationFn: (input: RouterInput["deleteOrder"]) => trpcClient.deleteOrder.mutate(input),
-  meta: { errorToast: false },
 });
 
 const submit = async (orderInput: RawOrder) => {
   try {
     await updateOrder({ order: orderInput, id: id.value });
   } catch {
-    // handled by onError
+    // Handled by the global mutation error handler.
   }
 };
 
@@ -80,8 +74,8 @@ const deleteOrder = async () => {
     } else {
       toast.error(res.msg);
     }
-  } catch (error) {
-    toast.error(getErrorMessage(error));
+  } catch {
+    // Handled by the global mutation error handler.
   }
 };
 

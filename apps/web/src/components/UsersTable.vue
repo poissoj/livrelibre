@@ -35,25 +35,29 @@ const newPassword = ref("");
 const newRole = ref<Role>("cashier");
 const newNameInput = useTemplateRef<InstanceType<typeof AppInput>>("newNameInput");
 
+const invalidateUsers = async () => {
+  await queryClient.invalidateQueries({ queryKey: queryKeys.settings.users });
+};
+
 const { mutateAsync: createUser } = useMutation({
   mutationFn: (input: { name: string; password: string; role: Role }) =>
     trpcClient.createUser.mutate(input),
+  onSuccess: invalidateUsers,
 });
 const { mutateAsync: updateUser } = useMutation({
   mutationFn: (input: { id: number; name: string; role: Role }) =>
     trpcClient.updateUser.mutate(input),
+  onSuccess: invalidateUsers,
 });
 const { mutateAsync: resetUserPassword } = useMutation({
   mutationFn: (input: { id: number; password: string }) =>
     trpcClient.resetUserPassword.mutate(input),
+  onSuccess: invalidateUsers,
 });
 const { mutateAsync: deleteUser } = useMutation({
   mutationFn: (id: number) => trpcClient.deleteUser.mutate(id),
+  onSuccess: invalidateUsers,
 });
-
-const invalidateUsers = async () => {
-  await queryClient.invalidateQueries({ queryKey: queryKeys.settings.users });
-};
 
 const startCreate = async () => {
   editingId.value = null;
@@ -76,7 +80,6 @@ const saveCreate = async () => {
     await createUser({ name: newName.value, password: newPassword.value, role: newRole.value });
     toast.success("L'utilisateur a été créé.");
     cancelCreate();
-    await invalidateUsers();
   } catch {
     // Erreur déjà signalée par le gestionnaire global.
   }
@@ -103,7 +106,6 @@ const saveEdit = async () => {
     }
     toast.success("L'utilisateur a été modifié.");
     cancelEdit();
-    await invalidateUsers();
   } catch {
     // Erreur déjà signalée par le gestionnaire global.
   }
@@ -112,7 +114,6 @@ const removeUser = async (id: number) => {
   try {
     await deleteUser(id);
     toast.success("L'utilisateur a été supprimé.");
-    await invalidateUsers();
   } catch {
     // Erreur déjà signalée par le gestionnaire global.
   }

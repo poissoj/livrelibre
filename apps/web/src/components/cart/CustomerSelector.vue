@@ -2,7 +2,6 @@
 import { faEdit, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
-import { toast } from "vue-sonner";
 
 import AppAlert from "@/components/AppAlert.vue";
 import AppButton from "@/components/AppButton.vue";
@@ -10,7 +9,6 @@ import LinkButton from "@/components/LinkButton.vue";
 import type { CustomerSelection } from "@/components/orderForm";
 import SelectCustomer from "@/components/SelectCustomer.vue";
 import { queryKeys } from "@/lib/queryKeys";
-import { getErrorMessage } from "@/utils/errors";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 
 import CustomerInfos from "./CustomerInfos.vue";
@@ -26,12 +24,8 @@ const {
 const queryClient = useQueryClient();
 const { mutate: selectCustomer } = useMutation({
   mutationFn: (input: RouterInput["selectCustomer"]) => trpcClient.selectCustomer.mutate(input),
-  meta: { errorToast: false },
   onSuccess() {
     void queryClient.invalidateQueries({ queryKey: queryKeys.cart.selectedCustomer });
-  },
-  onError(error) {
-    toast.error(getErrorMessage(error));
   },
 });
 

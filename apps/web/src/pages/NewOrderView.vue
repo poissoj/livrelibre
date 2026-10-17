@@ -12,7 +12,6 @@ import ErrorMessage from "@/components/ErrorMessage.vue";
 import type { OrderFormData } from "@/components/orderForm";
 import OrderForm from "@/components/OrderForm.vue";
 import { queryKeys } from "@/lib/queryKeys";
-import { getErrorMessage } from "@/utils/errors";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 
 const route = useRoute();
@@ -34,7 +33,6 @@ const {
 
 const { mutateAsync: createOrder, isPending: createPending } = useMutation({
   mutationFn: (input: RouterInput["newOrder"]) => trpcClient.newOrder.mutate(input),
-  meta: { errorToast: false },
   onSuccess(result) {
     if (result.type === "success") {
       toast.success(result.msg);
@@ -43,16 +41,13 @@ const { mutateAsync: createOrder, isPending: createPending } = useMutation({
       toast.error(result.msg);
     }
   },
-  onError(error) {
-    toast.error(getErrorMessage(error));
-  },
 });
 
 const submit = async (order: RawOrder) => {
   try {
     await createOrder(order);
   } catch {
-    // handled by onError
+    // Handled by the global mutation error handler.
   }
 };
 

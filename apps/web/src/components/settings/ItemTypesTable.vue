@@ -57,15 +57,19 @@ const invalidate = async () => {
 
 const { mutateAsync: updateItemType } = useMutation({
   mutationFn: (input: RouterInput["updateItemType"]) => trpcClient.updateItemType.mutate(input),
+  onSuccess: invalidate,
 });
 const { mutateAsync: deleteItemType } = useMutation({
   mutationFn: (code: string) => trpcClient.deleteItemType.mutate(code),
+  onSuccess: invalidate,
 });
 const { mutateAsync: createItemType } = useMutation({
   mutationFn: (input: RouterInput["createItemType"]) => trpcClient.createItemType.mutate(input),
+  onSuccess: invalidate,
 });
 const { mutateAsync: reorderItemTypes } = useMutation({
   mutationFn: (input: RouterInput["reorderItemTypes"]) => trpcClient.reorderItemTypes.mutate(input),
+  onSuccess: invalidate,
 });
 
 const startEdit = (type: ItemTypeRow) => {
@@ -106,7 +110,6 @@ const saveCreate = async () => {
     });
     toast.success("Type d'article créé.");
     cancelCreate();
-    await invalidate();
   } catch {
     // Erreur déjà signalée par le gestionnaire global.
   }
@@ -119,7 +122,6 @@ const move = async (index: number, delta: number) => {
   [codes[index], codes[target]] = [codes[target], codes[index]];
   try {
     await reorderItemTypes({ codes });
-    await invalidate();
   } catch {
     // Erreur déjà signalée par le gestionnaire global.
   }
@@ -138,7 +140,6 @@ const saveEdit = async () => {
     });
     toast.success("Type d'article modifié.");
     cancelEdit();
-    await invalidate();
   } catch {
     // Erreur déjà signalée par le gestionnaire global.
   }
@@ -148,7 +149,6 @@ const removeType = async (code: string) => {
   try {
     await deleteItemType(code);
     toast.success("Type d'article supprimé.");
-    await invalidate();
   } catch {
     // Erreur déjà signalée par le gestionnaire global.
   }

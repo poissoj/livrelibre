@@ -1,17 +1,23 @@
 <script setup lang="ts">
 import { faPlus, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
-import { useMutation } from "@tanstack/vue-query";
+import { useMutation, useQueryClient } from "@tanstack/vue-query";
 
 import AppButton from "@/components/AppButton.vue";
 import type { CustomerFormFields } from "@/components/customerForm";
 import CustomerForm from "@/components/CustomerForm.vue";
 import LinkButton from "@/components/LinkButton.vue";
+import { queryKeys } from "@/lib/queryKeys";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 
+const queryClient = useQueryClient();
 const { mutateAsync: saveCustomer, isPending: savePending } = useMutation({
   mutationFn: (input: RouterInput["updateCustomer"]) => trpcClient.updateCustomer.mutate(input),
   meta: { errorToast: false },
+  onSuccess() {
+    void queryClient.invalidateQueries({ queryKey: queryKeys.customers.root });
+    void queryClient.invalidateQueries({ queryKey: queryKeys.customers.searchRoot });
+  },
 });
 
 const submit = async (customer: CustomerFormFields) => await saveCustomer({ customer });
