@@ -64,7 +64,6 @@ const showCustomerForm = ref(false);
 
 const created = ref(toInputDate(props.data.created));
 const isbn = ref(props.data.item?.isbn ?? "");
-const itemId = ref<number | null>(props.data.itemId ?? null);
 const itemTitle = ref(props.data.itemTitle ?? props.data.item?.title ?? "");
 const contact = ref<ContactMeanType>(props.data.contact ?? "unknown");
 const comment = ref(props.data.comment ?? "");
@@ -72,7 +71,6 @@ const nb = ref<number>(props.data.nb ?? 1);
 const ordered = ref<OrderStatus>(props.data.ordered ?? "new");
 const paid = ref(props.data.paid ?? false);
 const customerNotified = ref(props.data.customerNotified ?? false);
-const customerId = ref<number | null>(props.data.customerId ?? props.data.customer?.id ?? null);
 
 const toggleCustomerForm = () => {
   showCustomerForm.value = !showCustomerForm.value;
@@ -80,37 +78,55 @@ const toggleCustomerForm = () => {
 
 const updateCustomer = (value: CustomerSelection | null) => {
   customer.value = value;
-  customerId.value = value?.id ?? null;
 };
 
 const updateItem = (value: Item | NewItem | null) => {
+  const previousId = item.value?.id ?? null;
+  const previousIsbn = item.value && "isbn" in item.value ? item.value.isbn : "";
   item.value = value;
-  itemId.value = value?.id ?? null;
-  itemTitle.value = value?.title ?? "";
-  isbn.value = value && "isbn" in value ? value.isbn : "";
+
+  if (value && !("isbn" in value)) {
+    // Unlisted item: the title is whatever the user typed.
+    itemTitle.value = value.title;
+  } else if (value === null || value.id !== previousId) {
+    // Keep an order-specific title when the same item is re-emitted by the
+    // combobox (e.g. on blur); only replace it on an actual change.
+    itemTitle.value = value?.title ?? "";
+  }
+
+  // Only mirror the selected item's ISBN while the field still reflects the
+  // previous selection. This keeps a manually typed ISBN from being overwritten.
+  if (isbn.value === previousIsbn) {
+    isbn.value = value && "isbn" in value ? value.isbn : "";
+  }
+};
+
+const lookupByIsbn = async (value: string) => {
+  if (!/^\d{10,13}$/.test(value)) {
+    toast.error("ISBN invalide");
+    return;
+  }
+  const result = await queryClient.query({
+    queryKey: queryKeys.items.isbn(value),
+    queryFn: () => trpcClient.isbnSearch.query(value),
+  });
+  if (result.count === 0) {
+    toast.info("Aucun article trouvé pour cet ISBN");
+  }
+  updateItem(result.items[0] ?? null);
 };
 
 const submit = async () => {
   try {
-    if (isbn.value && !itemId.value) {
-      if (!/^\d{10,13}$/.test(isbn.value)) {
-        toast.error("ISBN invalide");
-        return;
-      }
-      const result = await queryClient.query({
-        queryKey: queryKeys.items.isbn(isbn.value),
-        queryFn: () => trpcClient.isbnSearch.query(isbn.value),
-      });
-      if (result.count === 0) {
-        toast.info("Aucun article trouvé pour cet ISBN");
-      }
-      updateItem(result.items[0] ?? null);
+    const selectedIsbn = item.value && "isbn" in item.value ? item.value.isbn : "";
+    if (isbn.value && (!item.value?.id || isbn.value !== selectedIsbn)) {
+      await lookupByIsbn(isbn.value);
       return;
     }
     const parsed = orderFormSchema.safeParse({
       created: created.value,
-      customerId: customerId.value,
-      itemId: itemId.value,
+      customerId: customer.value?.id ?? null,
+      itemId: item.value?.id ?? null,
       itemTitle: itemTitle.value,
       ordered: ordered.value,
       customerNotified: customerNotified.value,

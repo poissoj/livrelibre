@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { Combobox, ComboboxInput, ComboboxOption, ComboboxOptions } from "@headlessui/vue";
 import { keepPreviousData, useQuery } from "@tanstack/vue-query";
 import { clsx } from "clsx";
-import { computed, ref } from "vue";
+import { computed, onMounted, ref, useTemplateRef, watch } from "vue";
 
 import { COMMON_STYLES } from "@/components/formControls";
 import type { CustomerSelection } from "@/components/orderForm";
@@ -41,11 +41,24 @@ const filteredCustomers = computed(() => results.value || []);
 const inputStyles = computed(() =>
   props.fullWidth ? COMMON_STYLES : COMMON_STYLES.replace("w-full", "w-fit"),
 );
+
+const REQUIRED_MESSAGE = "Merci de sélectionner un⋅e client⋅e";
+const container = useTemplateRef<HTMLDivElement>("container");
+
+// Keep the native validation bubble but show a domain-specific message.
+const syncValidity = () => {
+  const input = container.value?.querySelector("input");
+  if (!input) return;
+  input.setCustomValidity(props.required && customer.value === null ? REQUIRED_MESSAGE : "");
+};
+
+onMounted(syncValidity);
+watch([customer, () => props.required], syncValidity);
 </script>
 
 <template>
   <Combobox v-model="customer" by="id">
-    <div :class="clsx('relative', props.fullWidth ? 'w-full' : 'w-fit')">
+    <div ref="container" :class="clsx('relative', props.fullWidth ? 'w-full' : 'w-fit')">
       <ComboboxInput
         :class="clsx(inputStyles, props.inputClass)"
         aria-label="Rechercher un⋅e client⋅e"

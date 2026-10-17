@@ -3,8 +3,8 @@ import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { formatDate } from "@livrelibre/shared/date";
 import { formatTVA } from "@livrelibre/shared/format";
-import { type ItemType, type TVA, TVAValues } from "@livrelibre/shared/item";
-import { ref, watch } from "vue";
+import { TVAValues } from "@livrelibre/shared/item";
+import { reactive, ref, watch } from "vue";
 import { toast } from "vue-sonner";
 
 import AppAlert from "@/components/AppAlert.vue";
@@ -33,29 +33,44 @@ const props = defineProps<{
 
 const { activeTypes, defaultCode, tva: tvaForType } = useItemTypes();
 
-const type = ref<ItemType>(props.data?.type ?? "");
-const isbn = ref(props.data?.isbn ?? "");
-const author = ref(props.data?.author ?? "");
-const title = ref(props.data?.title ?? "");
-const publisher = ref(props.data?.publisher ?? "");
-const distributor = ref(props.data?.distributor ?? "");
-const keywords = ref(props.data?.keywords ?? "");
-const datebought = ref(props.data?.datebought ?? formatDate(new Date()));
-const comments = ref(props.data?.comments ?? "");
-const price = ref<string | number>(props.data?.price ?? "");
-const amount = ref<string | number>(props.data?.amount ?? "0");
-const tva = ref<TVA>(props.data?.tva ?? "5.5");
+type ItemFormState = Omit<FormFields, "price" | "amount"> & {
+  price: string | number;
+  amount: string | number;
+};
+
+const createEmptyState = (): ItemFormState => {
+  const type = defaultCode.value;
+  return {
+    type,
+    isbn: "",
+    author: "",
+    title: "",
+    publisher: "",
+    distributor: "",
+    keywords: "",
+    datebought: formatDate(new Date()),
+    comments: "",
+    price: "",
+    amount: "0",
+    tva: tvaForType(type) ?? "5.5",
+  };
+};
+
+const form = reactive<ItemFormState>(props.data ? { ...props.data } : createEmptyState());
 
 // Changer de type pré-remplit la TVA avec celle du type (modifiable ensuite).
-watch(type, (code) => {
-  const value = tvaForType(code);
-  if (value) tva.value = value;
-});
+watch(
+  () => form.type,
+  (code) => {
+    const value = tvaForType(code);
+    if (value) form.tva = value;
+  },
+);
 watch(
   defaultCode,
   (code) => {
-    if (!type.value && code) {
-      type.value = code;
+    if (!form.type && code) {
+      form.type = code;
     }
   },
   { immediate: true },
@@ -65,33 +80,13 @@ const alert = ref<AlertMessage | null>(null);
 const isbnLoading = ref(false);
 
 const reset = () => {
-  type.value = defaultCode.value;
-  isbn.value = "";
-  author.value = "";
-  title.value = "";
-  publisher.value = "";
-  distributor.value = "";
-  keywords.value = "";
-  datebought.value = formatDate(new Date());
-  comments.value = "";
-  price.value = "";
-  amount.value = "0";
-  tva.value = "5.5";
+  Object.assign(form, createEmptyState());
 };
 
 const buildPayload = (): FormFields => ({
-  type: type.value,
-  isbn: isbn.value,
-  author: author.value,
-  title: title.value,
-  publisher: publisher.value,
-  distributor: distributor.value,
-  keywords: keywords.value,
-  datebought: datebought.value,
-  comments: comments.value,
-  price: String(price.value),
-  amount: String(amount.value),
-  tva: tva.value,
+  ...form,
+  price: String(form.price),
+  amount: String(form.amount),
 });
 
 const submit = async () => {
@@ -112,7 +107,7 @@ const submit = async () => {
 };
 
 const isbnSearch = async () => {
-  const value = isbn.value;
+  const value = form.isbn;
   if (!value || !/^\d{10,13}$/.test(value)) return;
   const response = await fetch(`/api/book/${value}`);
   if (!response.ok) {
@@ -122,9 +117,9 @@ const isbnSearch = async () => {
   if (!isBookData(parsed)) {
     throw new Error("Réponse serveur invalide");
   }
-  title.value = parsed.title;
-  author.value = parsed.author;
-  publisher.value = parsed.publisher;
+  form.title = parsed.title;
+  form.author = parsed.author;
+  form.publisher = parsed.publisher;
 };
 
 const isbnHandler = async () => {
@@ -151,7 +146,7 @@ const isbnHandler = async () => {
         <div class="flex flex-wrap">
           <div class="flex-1 [min-width:20rem] ml-md">
             <FormRow label="Type">
-              <AppSelect v-model="type" name="type">
+              <AppSelect v-model="form.type" name="type">
                 <option v-for="itemType in activeTypes" :key="itemType.code" :value="itemType.code">
                   {{ itemType.label }}
                 </option>
@@ -159,7 +154,7 @@ const isbnHandler = async () => {
             </FormRow>
             <FormRow label="ISBN" group>
               <InputWithButton
-                v-model="isbn"
+                v-model="form.isbn"
                 name="isbn"
                 type="text"
                 aria-label="ISBN"
@@ -179,31 +174,31 @@ const isbnHandler = async () => {
               </ButtonWithInput>
             </FormRow>
             <FormRow label="Auteur·ice">
-              <AppInput v-model="author" name="author" type="text" />
+              <AppInput v-model="form.author" name="author" type="text" />
             </FormRow>
             <FormRow label="Titre">
-              <AppInput v-model="title" name="title" type="text" required />
+              <AppInput v-model="form.title" name="title" type="text" required />
             </FormRow>
             <FormRow label="Maison d'édition">
-              <AppInput v-model="publisher" name="publisher" type="text" />
+              <AppInput v-model="form.publisher" name="publisher" type="text" />
             </FormRow>
             <FormRow label="Distributeur">
-              <AppInput v-model="distributor" name="distributor" type="text" />
+              <AppInput v-model="form.distributor" name="distributor" type="text" />
             </FormRow>
             <FormRow label="Mots-clés">
-              <AppInput v-model="keywords" name="keywords" type="text" />
+              <AppInput v-model="form.keywords" name="keywords" type="text" />
             </FormRow>
           </div>
           <div class="flex-1 [min-width:20rem] ml-md">
             <FormRow label="Date d’achat">
-              <AppInput v-model="datebought" name="datebought" type="date" />
+              <AppInput v-model="form.datebought" name="datebought" type="date" />
             </FormRow>
             <FormRow label="Commentaires">
-              <AppTextarea v-model="comments" name="comments" />
+              <AppTextarea v-model="form.comments" name="comments" />
             </FormRow>
             <FormRow label="Prix de vente">
               <AppInput
-                v-model="price"
+                v-model="form.price"
                 name="price"
                 type="number"
                 :step="0.01"
@@ -212,10 +207,16 @@ const isbnHandler = async () => {
               />
             </FormRow>
             <FormRow label="Quantité">
-              <AppInput v-model="amount" name="amount" type="number" :min="0" class="font-number" />
+              <AppInput
+                v-model="form.amount"
+                name="amount"
+                type="number"
+                :min="0"
+                class="font-number"
+              />
             </FormRow>
             <FormRow label="TVA">
-              <AppSelect v-model="tva" name="tva" class="font-number">
+              <AppSelect v-model="form.tva" name="tva" class="font-number">
                 <option v-for="value in TVAValues" :key="value" :value="value">
                   {{ formatTVA(value) }}
                 </option>
@@ -228,7 +229,7 @@ const isbnHandler = async () => {
         <div class="flex justify-end">
           <slot />
         </div>
-        <AppAlert v-if="alert" :type="alert.type" @dismiss="alert = null">
+        <AppAlert v-if="alert" :type="alert.type" class="mt-sm" @dismiss="alert = null">
           {{ alert.message }}
         </AppAlert>
       </CardFooter>

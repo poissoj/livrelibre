@@ -9,7 +9,7 @@ export type CustomerSelection = Pick<
   "id" | "fullname" | "phone" | "email" | "contact" | "comment"
 >;
 
-export type OrderFormData = Partial<Omit<RawOrder, "created">> & {
+export type OrderFormData = Partial<Omit<RawOrder, "created" | "customerId" | "itemId">> & {
   created: Date;
   customer?: Customer | null;
   item?: Item | null;

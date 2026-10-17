@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { zCustomer } from "@livrelibre/shared/customer";
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 
 import AppAlert from "@/components/AppAlert.vue";
 import AppCard from "@/components/AppCard.vue";
@@ -21,27 +21,39 @@ const props = defineProps<{
   onSubmit: (data: CustomerFormFields) => Promise<CustomerFormResult>;
 }>();
 
-const fullname = ref(props.data?.fullname ?? "");
-const phone = ref(props.data?.phone ?? "");
-const email = ref(props.data?.email ?? "");
-const contact = ref(props.data?.contact ?? "");
-const comment = ref(props.data?.comment ?? "");
+type CustomerFormState = {
+  fullname: string;
+  phone: string;
+  email: string;
+  contact: string;
+  comment: string;
+};
+
+const createEmptyState = (): CustomerFormState => ({
+  fullname: "",
+  phone: "",
+  email: "",
+  contact: "",
+  comment: "",
+});
+
+const form = reactive<CustomerFormState>({
+  fullname: props.data?.fullname ?? "",
+  phone: props.data?.phone ?? "",
+  email: props.data?.email ?? "",
+  contact: props.data?.contact ?? "",
+  comment: props.data?.comment ?? "",
+});
 const alert = ref<AlertMessage | null>(null);
 
 const buildPayload = (): CustomerFormFields => ({
-  fullname: fullname.value,
-  phone: phone.value || null,
-  email: email.value || null,
-  contact: contact.value,
-  comment: comment.value,
+  ...form,
+  phone: form.phone || null,
+  email: form.email || null,
 });
 
 const reset = () => {
-  fullname.value = "";
-  phone.value = "";
-  email.value = "";
-  contact.value = "";
-  comment.value = "";
+  Object.assign(form, createEmptyState());
 };
 
 const submit = async () => {
@@ -70,19 +82,19 @@ const submit = async () => {
       <CardBody class="flex-col gap-5">
         <div class="flex flex-wrap flex-col">
           <FormRow label="Nom complet">
-            <AppInput v-model="fullname" type="text" required />
+            <AppInput v-model="form.fullname" type="text" required />
           </FormRow>
           <FormRow label="Téléphone">
-            <AppInput v-model="phone" type="tel" />
+            <AppInput v-model="form.phone" type="tel" />
           </FormRow>
           <FormRow label="Email">
-            <AppInput v-model="email" type="email" />
+            <AppInput v-model="form.email" type="email" />
           </FormRow>
           <FormRow label="Remarque contact">
-            <AppInput v-model="contact" type="text" />
+            <AppInput v-model="form.contact" type="text" />
           </FormRow>
           <FormRow label="Commentaires">
-            <AppTextarea v-model="comment" />
+            <AppTextarea v-model="form.comment" />
           </FormRow>
         </div>
       </CardBody>
