@@ -67,7 +67,7 @@ test("Réglages est réservé aux administrateurs", async ({ page }) => {
     await login(page, cashier);
     await expect(page.getByRole("link", { name: "Réglages" })).toHaveCount(0);
     await page.goto("/settings");
-    await expect(page.getByText(/autorisé à accéder/)).toBeVisible();
+    await expect(page).toHaveURL("/");
   } finally {
     await deleteUser(cashier.name);
   }
