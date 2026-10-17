@@ -5,6 +5,7 @@ import type { Sale } from "@livrelibre/server/server/sales";
 import { formatNumber, formatPrice } from "@livrelibre/shared/format";
 import { useQuery } from "@tanstack/vue-query";
 import { clsx } from "clsx";
+import { computed } from "vue";
 import { RouterLink, useRouter } from "vue-router";
 
 import AppCard from "@/components/AppCard.vue";
@@ -14,11 +15,14 @@ import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import LinkButton from "@/components/LinkButton.vue";
 import RestrictedContent from "@/components/RestrictedContent.vue";
+import useUser from "@/lib/useUser";
 import { trpcClient } from "@/utils/trpc";
 
 const TH_STYLES = "sticky top-0 bg-white";
 
 const router = useRouter();
+const { user } = useUser();
+const isAdmin = computed(() => user.value?.role === "admin");
 const {
   data: sales,
   isPending,
@@ -27,6 +31,7 @@ const {
 } = useQuery({
   queryKey: ["sales"],
   queryFn: () => trpcClient.sales.query(),
+  enabled: isAdmin,
 });
 
 const makeSaleURL = (sale: Sale) => `/sale/${sale.month.split("/").reverse().join("/")}`;

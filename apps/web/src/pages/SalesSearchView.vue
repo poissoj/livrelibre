@@ -18,6 +18,7 @@ import ErrorMessage from "@/components/ErrorMessage.vue";
 import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import RestrictedContent from "@/components/RestrictedContent.vue";
 import SalesSearchTable from "@/components/Sales/SalesSearchTable.vue";
+import useUser from "@/lib/useUser";
 import { trpcClient } from "@/utils/trpc";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
 import { usePageParam, useQueryParams } from "@/utils/useQueryParams";
@@ -79,6 +80,8 @@ const onSubmit = async () => {
   await push({ query: next });
 };
 
+const { user } = useUser();
+const isAdmin = computed(() => user.value?.role === "admin");
 const {
   data: results,
   isSuccess,
@@ -89,6 +92,7 @@ const {
   queryKey: ["searchSales", () => searchInput.value],
   queryFn: () => trpcClient.searchSales.query(searchInput.value),
   placeholderData: keepPreviousData,
+  enabled: isAdmin,
 });
 const showLoading = useDelayedLoading(isFetching, 500);
 

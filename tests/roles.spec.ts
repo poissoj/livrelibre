@@ -21,10 +21,10 @@ test("Rôle caissier : accès restreint aux ventes", async ({ page }) => {
   );
 
   await page.goto("/sales");
-  await expect(page.getByText(/autorisé à accéder/)).toBeVisible();
+  await expect(page).toHaveURL("/");
 
   await page.goto("/sale/2024/01");
-  await expect(page.getByText(/autorisé à accéder/)).toBeVisible();
+  await expect(page).toHaveURL("/");
 
   await page.goto("/todaySales");
   await expect(page.getByRole("heading", { name: "Répartition par TVA" })).toBeVisible();

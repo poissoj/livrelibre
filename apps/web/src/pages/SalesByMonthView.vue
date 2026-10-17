@@ -16,6 +16,7 @@ import RestrictedContent from "@/components/RestrictedContent.vue";
 import StatsByTVA from "@/components/TVAStats/StatsByTVA.vue";
 import TVASkeleton from "@/components/TVAStats/TVASkeleton.vue";
 import useItemTypes from "@/lib/useItemTypes";
+import useUser from "@/lib/useUser";
 import { trpcClient } from "@/utils/trpc";
 
 const TH_STYLES = "sticky top-0 bg-white";
@@ -23,6 +24,8 @@ const TH_STYLES = "sticky top-0 bg-white";
 const route = useRoute();
 const router = useRouter();
 const { label: itemTypeLabel } = useItemTypes();
+const { user } = useUser();
+const isAdmin = computed(() => user.value?.role === "admin");
 
 const year = computed(() => String(route.params.year));
 const month = computed(() => String(route.params.month));
@@ -36,6 +39,7 @@ const {
 } = useQuery({
   queryKey: ["salesByMonth", params],
   queryFn: () => trpcClient.salesByMonth.query(params.value),
+  enabled: isAdmin,
 });
 
 const formatDate = (date: string) => date.split("-").reverse().join("/");

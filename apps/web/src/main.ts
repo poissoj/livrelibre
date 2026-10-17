@@ -81,20 +81,25 @@ const fetchUser = () =>
   });
 
 router.beforeEach(async (to) => {
-  let loggedIn: boolean;
-  try {
-    const user = await fetchUser();
-    loggedIn = user.role !== "anonymous";
-  } catch {
-    // Erreur transitoire (réseau, 500) : ne pas déconnecter l'utilisateur.
-    // La vue ciblée affichera l'erreur ; une nouvelle tentative aura lieu à la
-    // prochaine navigation.
+  // Null means a transient failure (network, 5xx): stay logged in and let the
+  // target view surface the error. Expired sessions are not transient: the
+  // endpoint answers `{ role: "anonymous" }` and redirects to /login below.
+  const user = await fetchUser().catch(() => null);
+  if (!user) {
     return true;
   }
+  const loggedIn = user.role !== "anonymous";
   if (to.path === "/login") {
     return loggedIn ? { path: "/" } : true;
   }
-  return loggedIn ? true : loginRedirect(to.fullPath);
+  if (!loggedIn) {
+    return loginRedirect(to.fullPath);
+  }
+  if (to.meta.role && user.role !== to.meta.role) {
+    toast.error("Vous n’êtes pas autorisé à accéder à cette partie.");
+    return { path: "/" };
+  }
+  return true;
 });
 
 const app = createApp(App);

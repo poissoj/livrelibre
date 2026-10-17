@@ -3,7 +3,7 @@ import useUser from "@/lib/useUser";
 
 import AppAlert from "./AppAlert.vue";
 
-const props = defineProps<{ role: string }>();
+const props = defineProps<{ role: "admin" | "cashier" }>();
 
 const { user } = useUser();
 </script>

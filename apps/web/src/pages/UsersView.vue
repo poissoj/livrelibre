@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useQuery } from "@tanstack/vue-query";
+import { computed } from "vue";
 
 import AppCard from "@/components/AppCard.vue";
 import CardBody from "@/components/CardBody.vue";
@@ -11,6 +12,7 @@ import useUser from "@/lib/useUser";
 import { trpcClient } from "@/utils/trpc";
 
 const { user: currentUser } = useUser();
+const isAdmin = computed(() => currentUser.value?.role === "admin");
 
 const {
   data: users,
@@ -19,6 +21,7 @@ const {
 } = useQuery({
   queryKey: ["users"],
   queryFn: () => trpcClient.users.query(),
+  enabled: isAdmin,
 });
 </script>
 

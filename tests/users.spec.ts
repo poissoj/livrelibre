@@ -67,8 +67,18 @@ test("le lien Utilisateurs est réservé aux administrateurs", async ({ page }) 
   try {
     await login(page, cashier);
     await expect(page.getByRole("link", { name: "Utilisateurs" })).toHaveCount(0);
+
+    const userRequests: string[] = [];
+    page.on("request", (request) => {
+      const url = request.url();
+      if (url.includes("/api/trpc/") && /(^|[,/])users([,?]|$)/.test(url)) {
+        userRequests.push(url);
+      }
+    });
+
     await page.goto("/users");
-    await expect(page.getByText(/autorisé à accéder/)).toBeVisible();
+    await expect(page).toHaveURL("/");
+    expect(userRequests).toHaveLength(0);
   } finally {
     await deleteUser(cashier.name);
   }

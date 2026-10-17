@@ -31,7 +31,8 @@ const logout = async () => {
   } catch {
     // Déconnexion locale même si l'appel serveur échoue.
   } finally {
-    await queryClient.resetQueries({ queryKey: ["user"] });
+    await queryClient.cancelQueries();
+    queryClient.clear();
     await router.push("/login");
   }
 };
