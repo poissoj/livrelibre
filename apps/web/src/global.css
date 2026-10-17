@@ -63,7 +63,7 @@ body,
 @font-face {
   font-family: "Roboto Mono";
   font-style: normal;
-  font-weight: regular;
+  font-weight: 400;
   src: url(/fonts/Roboto-Mono.woff2) format("woff2");
   font-display: fallback;
 }
