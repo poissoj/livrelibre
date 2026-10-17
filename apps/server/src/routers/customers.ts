@@ -1,3 +1,4 @@
+import { zCustomer } from "@livrelibre/shared/customer";
 import { ERROR_CODES } from "@livrelibre/shared/errors";
 import { norm } from "@livrelibre/shared/utils";
 import { zId, zPage } from "@livrelibre/shared/validation";
@@ -40,13 +41,7 @@ export const customerRoutes = {
     .input(
       z.object({
         customerId: zId.optional(),
-        customer: z.object({
-          fullname: z.string().trim().min(1, ERROR_CODES.INVALID_NAME),
-          phone: z.string().nullable(),
-          email: z.string().nullable(),
-          contact: z.string(),
-          comment: z.string(),
-        }),
+        customer: zCustomer,
       }),
     )
     .mutation(async ({ input, ctx }) => {

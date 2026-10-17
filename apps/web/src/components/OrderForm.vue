@@ -2,16 +2,19 @@
 import { faAt, faPhone, faUserPlus, faWalking } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { toInputDate } from "@livrelibre/shared/date";
+import { ERROR_CODES } from "@livrelibre/shared/errors";
 import type { Item } from "@livrelibre/shared/item";
 import {
   type ContactMean as ContactMeanType,
   type OrderStatus,
   type RawOrder,
   STATUS_LABEL,
+  zOrder,
 } from "@livrelibre/shared/order";
 import { useQueryClient } from "@tanstack/vue-query";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
+import { z } from "zod";
 
 import AppButton from "@/components/AppButton.vue";
 import AppCard from "@/components/AppCard.vue";
@@ -29,7 +32,7 @@ import SelectCustomer from "@/components/SelectCustomer.vue";
 import type { NewItem } from "@/components/selectItem";
 import SelectItem from "@/components/SelectItem.vue";
 import { queryKeys } from "@/lib/queryKeys";
-import { getErrorMessage } from "@/utils/errors";
+import { formatValidationIssues, getErrorMessage } from "@/utils/errors";
 import { trpcClient } from "@/utils/trpc";
 
 const props = defineProps<{
@@ -38,6 +41,18 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{ submit: [order: RawOrder] }>();
+
+const MISSING_CUSTOMER = "Merci de sélectionner un⋅e client⋅e";
+const MISSING_ITEM = "Merci de renseigner le titre ou l'ISBN de l'article";
+
+const orderFormSchema = zOrder.extend({
+  customerId: z.number(MISSING_CUSTOMER).int().positive(MISSING_CUSTOMER),
+  itemTitle: z.string().trim().min(1, MISSING_ITEM),
+  nb: z.coerce
+    .number(ERROR_CODES.INVALID_NB)
+    .int(ERROR_CODES.INVALID_NB)
+    .positive(ERROR_CODES.INVALID_NB),
+});
 
 const queryClient = useQueryClient();
 
@@ -92,21 +107,8 @@ const submit = async () => {
       updateItem(result.items[0] ?? null);
       return;
     }
-    if (!customerId.value) {
-      toast.info("Merci de sélectionner un⋅e client⋅e");
-      return;
-    }
-    if (!itemTitle.value) {
-      toast.info("Merci de renseigner le titre ou l'ISBN de l'article");
-      return;
-    }
-    const parsedDate = new Date(created.value);
-    if (Number.isNaN(parsedDate.getTime())) {
-      toast.error("Date invalide");
-      return;
-    }
-    emit("submit", {
-      created: parsedDate.toISOString(),
+    const parsed = orderFormSchema.safeParse({
+      created: created.value,
       customerId: customerId.value,
       itemId: itemId.value,
       itemTitle: itemTitle.value,
@@ -117,6 +119,11 @@ const submit = async () => {
       nb: nb.value,
       contact: contact.value,
     });
+    if (!parsed.success) {
+      toast.error(formatValidationIssues(parsed.error.issues));
+      return;
+    }
+    emit("submit", { ...parsed.data, created: new Date(parsed.data.created).toISOString() });
   } catch (error) {
     toast.error(getErrorMessage(error));
   }

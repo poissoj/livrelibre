@@ -24,6 +24,13 @@ const MESSAGE_BY_CODE = new Map(Object.entries(ERROR_MESSAGES));
  */
 export const translateErrorCode = (code: string): string | undefined => MESSAGE_BY_CODE.get(code);
 
+/**
+ * Formats client-side validation issues (shared error codes or already-written
+ * French messages) into a single user-facing string.
+ */
+export const formatValidationIssues = (issues: Array<{ message: string }>): string =>
+  issues.map((issue) => translateErrorCode(issue.message) ?? issue.message).join(" · ");
+
 /** Détecte un échec réseau (fetch/offline), par opposition à une erreur serveur. */
 export const isNetworkError = (error: unknown): boolean => {
   if (error instanceof TypeError) {

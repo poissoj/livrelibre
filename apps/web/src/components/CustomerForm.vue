@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { zCustomer } from "@livrelibre/shared/customer";
 import { ref } from "vue";
 
 import AppAlert from "@/components/AppAlert.vue";
@@ -9,7 +10,7 @@ import CardBody from "@/components/CardBody.vue";
 import CardFooter from "@/components/CardFooter.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import FormRow from "@/components/FormRow.vue";
-import { getErrorMessage } from "@/utils/errors";
+import { formatValidationIssues, getErrorMessage } from "@/utils/errors";
 
 import type { CustomerFormFields, CustomerFormResult } from "./customerForm";
 import type { AlertMessage } from "./form";
@@ -44,8 +45,14 @@ const reset = () => {
 };
 
 const submit = async () => {
+  const payload = buildPayload();
+  const parsed = zCustomer.safeParse(payload);
+  if (!parsed.success) {
+    alert.value = { type: "error", message: formatValidationIssues(parsed.error.issues) };
+    return;
+  }
   try {
-    const { type, msg: message } = await props.onSubmit(buildPayload());
+    const { type, msg: message } = await props.onSubmit(payload);
     alert.value = { type, message };
     if (type === "success" && props.data === undefined) {
       reset();

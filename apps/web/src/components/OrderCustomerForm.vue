@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { faCheckCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { zCustomer } from "@livrelibre/shared/customer";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
 import { ref } from "vue";
 import { toast } from "vue-sonner";
@@ -11,6 +12,7 @@ import AppTextarea from "@/components/AppTextarea.vue";
 import type { CustomerFormFields, SelectedCustomer } from "@/components/customerForm";
 import FormRow from "@/components/FormRow.vue";
 import { queryKeys } from "@/lib/queryKeys";
+import { formatValidationIssues } from "@/utils/errors";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 
 const emit = defineEmits<{
@@ -34,10 +36,6 @@ const { mutateAsync: createCustomer, isPending: isSubmitting } = useMutation({
 });
 
 const submit = async () => {
-  if (!fullname.value.trim()) {
-    toast.error("Le nom est requis");
-    return;
-  }
   const customer: CustomerFormFields = {
     fullname: fullname.value,
     phone: phone.value || null,
@@ -45,6 +43,11 @@ const submit = async () => {
     contact: contact.value,
     comment: comment.value,
   };
+  const parsed = zCustomer.safeParse(customer);
+  if (!parsed.success) {
+    toast.error(formatValidationIssues(parsed.error.issues));
+    return;
+  }
   try {
     const resp = await createCustomer({ customer });
     if (resp.type === "success") {

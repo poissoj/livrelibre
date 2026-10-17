@@ -19,11 +19,11 @@ import CardTitle from "@/components/CardTitle.vue";
 import FormRow from "@/components/FormRow.vue";
 import InputWithButton from "@/components/InputWithButton.vue";
 import useItemTypes from "@/lib/useItemTypes";
-import { getErrorMessage } from "@/utils/errors";
+import { formatValidationIssues, getErrorMessage } from "@/utils/errors";
 import { isBookData } from "@/utils/guards";
 
 import type { AlertMessage } from "./form";
-import type { FormFields, ItemFormResult } from "./itemForm";
+import { type FormFields, type ItemFormResult, zItemForm } from "./itemForm";
 
 const props = defineProps<{
   title: string;
@@ -95,6 +95,11 @@ const buildPayload = (): FormFields => ({
 });
 
 const submit = async () => {
+  const parsed = zItemForm.safeParse(buildPayload());
+  if (!parsed.success) {
+    alert.value = { type: "error", message: formatValidationIssues(parsed.error.issues) };
+    return;
+  }
   try {
     const { type: resultType, msg: message } = await props.onSubmit(buildPayload());
     alert.value = { type: resultType, message };

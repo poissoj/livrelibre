@@ -11,13 +11,19 @@ import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useQueryClient } from "@tanstack/vue-query";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import { z } from "zod";
 
 import AppButton from "@/components/AppButton.vue";
 import AppInput from "@/components/AppInput.vue";
 import { APP_NAME } from "@/lib/config";
 import { queryKeys } from "@/lib/queryKeys";
-import { getErrorMessage, getRestErrorMessage } from "@/utils/errors";
+import { formatValidationIssues, getErrorMessage, getRestErrorMessage } from "@/utils/errors";
 import { isUser } from "@/utils/guards";
+
+const loginSchema = z.object({
+  username: z.string().trim().min(1, "Veuillez saisir votre identifiant."),
+  password: z.string().min(1, "Veuillez saisir votre mot de passe."),
+});
 
 const router = useRouter();
 const route = useRoute();
@@ -38,15 +44,17 @@ const isSubmitting = ref(false);
 const errorMsg = ref("");
 
 const onSubmit = async () => {
+  const parsed = loginSchema.safeParse({ username: username.value, password: password.value });
+  if (!parsed.success) {
+    errorMsg.value = formatValidationIssues(parsed.error.issues);
+    return;
+  }
   isSubmitting.value = true;
   try {
     const res = await fetch("/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: username.value,
-        password: password.value,
-      }),
+      body: JSON.stringify(parsed.data),
     });
     if (res.ok) {
       const parsed: unknown = await res.json();

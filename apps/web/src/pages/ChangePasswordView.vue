@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { faEye, faEyeSlash, faKey, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { zPassword } from "@livrelibre/shared/validation";
 import { useMutation } from "@tanstack/vue-query";
 import { ref } from "vue";
+import { z } from "zod";
 
 import AppAlert from "@/components/AppAlert.vue";
 import AppButton from "@/components/AppButton.vue";
@@ -12,8 +14,19 @@ import CardBody from "@/components/CardBody.vue";
 import CardFooter from "@/components/CardFooter.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import type { AlertMessage } from "@/components/form";
-import { getErrorMessage } from "@/utils/errors";
+import { formatValidationIssues, getErrorMessage } from "@/utils/errors";
 import { trpcClient } from "@/utils/trpc";
+
+const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Le mot de passe actuel est requis."),
+    newPassword: zPassword,
+    confirmPassword: z.string(),
+  })
+  .refine((values) => values.newPassword === values.confirmPassword, {
+    message: "Les deux mots de passe ne correspondent pas.",
+    path: ["confirmPassword"],
+  });
 
 const currentPassword = ref("");
 const newPassword = ref("");
@@ -31,18 +44,20 @@ const { mutateAsync: changePassword, isPending } = useMutation({
 });
 
 const onSubmit = async () => {
-  if (newPassword.value !== confirmPassword.value) {
-    alert.value = {
-      type: "error",
-      message: "Les deux mots de passe ne correspondent pas.",
-    };
+  const parsed = changePasswordSchema.safeParse({
+    currentPassword: currentPassword.value,
+    newPassword: newPassword.value,
+    confirmPassword: confirmPassword.value,
+  });
+  if (!parsed.success) {
+    alert.value = { type: "error", message: formatValidationIssues(parsed.error.issues) };
     return;
   }
   alert.value = null;
   try {
     await changePassword({
-      currentPassword: currentPassword.value,
-      newPassword: newPassword.value,
+      currentPassword: parsed.data.currentPassword,
+      newPassword: parsed.data.newPassword,
     });
     currentPassword.value = "";
     newPassword.value = "";
