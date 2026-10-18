@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { faSearch, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import type { AppRouter } from "@livrelibre/server/router";
 import { formatDate } from "@livrelibre/shared/date";
+import { ERROR_MESSAGES } from "@livrelibre/shared/errors";
 import { formatTVA } from "@livrelibre/shared/format";
 import { TVAValues } from "@livrelibre/shared/item";
+import { isTRPCClientError } from "@trpc/client";
 import { reactive, ref, watch } from "vue";
 import { toast } from "vue-sonner";
 
@@ -20,7 +23,7 @@ import FormRow from "@/components/FormRow.vue";
 import InputWithButton from "@/components/InputWithButton.vue";
 import useItemTypes from "@/lib/useItemTypes";
 import { formatValidationIssues, getErrorMessage } from "@/utils/errors";
-import { isBookData } from "@/utils/guards";
+import { trpcClient } from "@/utils/trpc";
 
 import type { AlertMessage } from "./form";
 import { type FormFields, type ItemFormResult, zItemForm } from "./itemForm";
@@ -109,17 +112,10 @@ const submit = async () => {
 const isbnSearch = async () => {
   const value = form.isbn;
   if (!value || !/^\d{10,13}$/.test(value)) return;
-  const response = await fetch(`/api/book/${value}`);
-  if (!response.ok) {
-    throw new Error(String(response.status));
-  }
-  const parsed: unknown = await response.json();
-  if (!isBookData(parsed)) {
-    throw new Error("Réponse serveur invalide");
-  }
-  form.title = parsed.title;
-  form.author = parsed.author;
-  form.publisher = parsed.publisher;
+  const data = await trpcClient.bookData.query(value);
+  form.title = data.title;
+  form.author = data.author;
+  form.publisher = data.publisher;
 };
 
 const isbnHandler = async () => {
@@ -127,10 +123,10 @@ const isbnHandler = async () => {
   try {
     await isbnSearch();
   } catch (error) {
-    if (error instanceof Error && error.message === "404") {
-      toast.warning("Aucun résultat pour cet ISBN");
+    if (isTRPCClientError<AppRouter>(error) && error.data?.code === "NOT_FOUND") {
+      toast.warning(ERROR_MESSAGES.BOOK_NOT_FOUND);
     } else {
-      toast.error("Impossible de récupérer les données");
+      toast.error(getErrorMessage(error));
     }
   } finally {
     isbnLoading.value = false;

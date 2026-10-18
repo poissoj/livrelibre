@@ -9,7 +9,6 @@ import { authMiddleware } from "./auth";
 import { createContext } from "./context";
 import { env } from "./env";
 import { appRouter } from "./router";
-import { bookRoute } from "./routes/book";
 import { exportRoute } from "./routes/export";
 import { finalizeImportRoute } from "./routes/finalizeImport";
 import { importFileRoute } from "./routes/importFile";
@@ -46,7 +45,6 @@ app.use("/api/finalizeImport", bodyLimit({ maxSize: MAX_IMPORT_FILE_SIZE }));
 // REST routes
 app.post("/api/login", loginRoute);
 app.post("/api/logout", logoutRoute);
-app.get("/api/book/:isbn", bookRoute);
 app.get("/api/export", exportRoute);
 app.post("/api/importFile", importFileRoute);
 app.post("/api/finalizeImport", finalizeImportRoute);

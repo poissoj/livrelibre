@@ -12,8 +12,8 @@ export const getBookData = async (isbn: string): Promise<BookData | null> => {
     return null;
   }
   const url = env.ISBN_SEARCH_URL + isbn;
-  // Transport/HTTP errors must reach the caller (see bookRoute). Only a valid
-  // page without any book details means "not found".
+  // Transport/HTTP errors must reach the caller (see the `bookData` procedure).
+  // Only a valid page without any book details means "not found".
   const body = await got(url, {
     timeout: { request: 5000 },
     retry: { limit: 1 },

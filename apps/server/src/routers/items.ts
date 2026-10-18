@@ -1,6 +1,6 @@
 import { ERROR_CODES } from "@livrelibre/shared/errors";
 import { TVAValues, zItem } from "@livrelibre/shared/item";
-import { zDateISO, zId, zIsbn, zPage } from "@livrelibre/shared/validation";
+import { zDateISO, zId, zIsbn, zIsbnLookup, zPage } from "@livrelibre/shared/validation";
 import { addItem } from "@server/server/addItem";
 import { getBookmarks, starItem } from "@server/server/bookmarks";
 import { itemTypeExists } from "@server/server/itemTypes";
@@ -13,8 +13,11 @@ import {
   searchItems,
 } from "@server/server/searchItem";
 import { updateItem } from "@server/server/updateItem";
+import { getBookData } from "@server/utils/getBookData";
+import { logError, logWarn } from "@server/utils/logError";
 import { logger } from "@server/utils/logger";
 import { TRPCError } from "@trpc/server";
+import { HTTPError } from "got";
 import { z } from "zod";
 
 import { authProcedure } from "../procedures";
@@ -82,6 +85,21 @@ export const itemRoutes = {
     .input(zPage)
     .query(async ({ input }) => await getItems({ pageNumber: input })),
   searchItem: authProcedure.input(zId).query(async ({ input }) => await getItem(input)),
+  bookData: authProcedure.input(zIsbnLookup).query(async ({ ctx, input }) => {
+    logger.info("Fetch book data", { isbn: input, user: ctx.user });
+    const data = await getBookData(input).catch((error: unknown): never => {
+      if (error instanceof HTTPError && error.response.statusCode === 404) {
+        logWarn("getBookData.notFound", error, { isbn: input, user: ctx.user });
+        throw new TRPCError({ code: "NOT_FOUND", message: ERROR_CODES.BOOK_NOT_FOUND });
+      }
+      logError("getBookData", error, { isbn: input, user: ctx.user });
+      throw new TRPCError({ code: "BAD_GATEWAY", message: ERROR_CODES.BOOK_FETCH_FAILED });
+    });
+    if (data === null) {
+      throw new TRPCError({ code: "NOT_FOUND", message: ERROR_CODES.BOOK_NOT_FOUND });
+    }
+    return data;
+  }),
   quicksearch: authProcedure
     .input(
       z.object({

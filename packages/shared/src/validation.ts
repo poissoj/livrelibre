@@ -41,6 +41,12 @@ export const zIsbn = z
   .trim()
   .regex(/^\d{0,13}$/, ERROR_CODES.INVALID_ISBN);
 
+/** ISBN used for the external book lookup: 10 to 13 digits. */
+export const zIsbnLookup = z
+  .string(ERROR_CODES.INVALID_ISBN)
+  .trim()
+  .regex(/^\d{10,13}$/, ERROR_CODES.INVALID_ISBN);
+
 export const zDateISO = z.iso.date(ERROR_CODES.INVALID_DATE);
 
 /** Accepts a date-only string or an ISO datetime string. */

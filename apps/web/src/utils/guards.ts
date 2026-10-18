@@ -1,17 +1,6 @@
-import type { BookData } from "@livrelibre/server/utils/getBookData";
 import type { DilicomRowWithId } from "@livrelibre/shared/dilicomItem";
 
 import type { RouterOutput } from "./trpc";
-
-export const isBookData = (value: unknown): value is BookData =>
-  typeof value === "object" &&
-  value !== null &&
-  "title" in value &&
-  typeof value.title === "string" &&
-  "author" in value &&
-  typeof value.author === "string" &&
-  "publisher" in value &&
-  typeof value.publisher === "string";
 
 export const isUser = (value: unknown): value is RouterOutput["user"] =>
   typeof value === "object" &&

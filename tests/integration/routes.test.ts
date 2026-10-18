@@ -104,19 +104,6 @@ describe("REST routes", () => {
     });
   });
 
-  describe("GET /api/book/:isbn", () => {
-    it("rejects anonymous users", async () => {
-      const res = await app.request("/api/book/9780000000001");
-      expect(res.status).toBe(401);
-    });
-
-    it("rejects an invalid isbn", async () => {
-      const cookie = await authCookie();
-      const res = await app.request("/api/book/abc", { headers: { cookie } });
-      expect(res.status).toBe(400);
-    });
-  });
-
   describe("POST /api/finalizeImport", () => {
     it("rejects anonymous users", async () => {
       const res = await app.request("/api/finalizeImport", {

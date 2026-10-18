@@ -1,19 +1,16 @@
 import { type Server, createServer } from "node:http";
 
-import { app } from "@livrelibre/server/app";
-import { db } from "@livrelibre/server/db/database";
-import { users } from "@livrelibre/shared/schema";
+import { appRouter } from "@livrelibre/server/router";
 import { env } from "@server/env";
-import bcrypt from "bcrypt";
-import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
-
-import { truncateAll } from "./helpers";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 const FOUND_ISBN = "9780000000001";
 const EMPTY_ISBN = "9780000000002";
 const REMOTE_404_ISBN = "9780000000003";
 
 const ORIGINAL_ISBN_SEARCH_URL = env.ISBN_SEARCH_URL;
+
+const caller = appRouter.createCaller({ user: { id: 1, name: "admin", role: "admin" } });
 
 let server: Server;
 let baseUrl: string;
@@ -62,69 +59,36 @@ afterAll(async () => {
   });
 });
 
-const seedUserWithPassword = async (name: string, password: string) => {
-  const hash = await bcrypt.hash(password, 4);
-  const rows = await db.insert(users).values({ name, hash, role: "admin" }).returning();
-  return rows[0];
-};
-
-const authCookie = async () => {
-  await seedUserWithPassword("admin", "secret");
-  const res = await app.request("/api/login", {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify({ username: "admin", password: "secret" }),
-  });
-  return res.headers.get("set-cookie")?.split(";")[0] ?? "";
-};
-
-describe("GET /api/book/:isbn", () => {
-  beforeEach(truncateAll);
-
+describe("bookData", () => {
   it("returns the book data when the page has details", async () => {
-    const cookie = await authCookie();
-    const res = await app.request(`/api/book/${FOUND_ISBN}`, {
-      headers: { cookie },
-    });
-
-    expect(res.status).toBe(200);
-    await expect(res.json()).resolves.toEqual({
+    await expect(caller.bookData(FOUND_ISBN)).resolves.toEqual({
       title: "Titre trouvé",
       author: "Auteur trouvé",
       publisher: "Éditeur trouvé",
     });
   });
 
-  it("returns 404 when the page has no book details", async () => {
-    const cookie = await authCookie();
-    const res = await app.request(`/api/book/${EMPTY_ISBN}`, {
-      headers: { cookie },
+  it("throws NOT_FOUND when the page has no book details", async () => {
+    await expect(caller.bookData(EMPTY_ISBN)).rejects.toMatchObject({
+      code: "NOT_FOUND",
+      message: "BOOK_NOT_FOUND",
     });
-
-    expect(res.status).toBe(404);
-    await expect(res.json()).resolves.toEqual({ error: "BOOK_NOT_FOUND" });
   });
 
-  it("returns 404 when the remote responds with 404", async () => {
-    const cookie = await authCookie();
-    const res = await app.request(`/api/book/${REMOTE_404_ISBN}`, {
-      headers: { cookie },
+  it("throws NOT_FOUND when the remote responds with 404", async () => {
+    await expect(caller.bookData(REMOTE_404_ISBN)).rejects.toMatchObject({
+      code: "NOT_FOUND",
+      message: "BOOK_NOT_FOUND",
     });
-
-    expect(res.status).toBe(404);
-    await expect(res.json()).resolves.toEqual({ error: "BOOK_NOT_FOUND" });
   });
 
-  it("returns 500 on a transport error", async () => {
-    const cookie = await authCookie();
+  it("throws BAD_GATEWAY on a transport error", async () => {
     env.ISBN_SEARCH_URL = "http://127.0.0.1:9/";
     try {
-      const res = await app.request(`/api/book/${FOUND_ISBN}`, {
-        headers: { cookie },
+      await expect(caller.bookData(FOUND_ISBN)).rejects.toMatchObject({
+        code: "BAD_GATEWAY",
+        message: "BOOK_FETCH_FAILED",
       });
-
-      expect(res.status).toBe(500);
-      await expect(res.json()).resolves.toEqual({ error: "BOOK_FETCH_FAILED" });
     } finally {
       env.ISBN_SEARCH_URL = baseUrl;
     }
