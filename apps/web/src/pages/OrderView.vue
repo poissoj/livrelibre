@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { faCheckCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import type { RawOrder } from "@livrelibre/shared/order";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
@@ -10,11 +10,11 @@ import { toast } from "vue-sonner";
 import AppButton from "@/components/AppButton.vue";
 import AppCard from "@/components/AppCard.vue";
 import AppSkeleton from "@/components/AppSkeleton.vue";
+import BackButton from "@/components/BackButton.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ConfirmationDialog from "@/components/ConfirmationDialog.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
-import LinkButton from "@/components/LinkButton.vue";
 import NoResults from "@/components/NoResults.vue";
 import type { OrderFormData } from "@/components/orderForm";
 import OrderForm from "@/components/OrderForm.vue";
@@ -122,10 +122,7 @@ const data = computed<OrderFormData | undefined>(() => {
         message="Êtes-vous sûr⋅e de vouloir supprimer cette commande ? Cette action ne peut pas être annulée."
         @confirm="deleteOrder"
       />
-      <LinkButton :to="{ path: '/orders', query: query }" class="mr-2 px-md !bg-gray-medium">
-        <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
-        Retour
-      </LinkButton>
+      <BackButton :fallback="{ path: '/orders', query }" class="mr-2 px-md !bg-gray-medium" />
       <AppButton type="submit" class="px-md" :disabled="updatePending">
         <FontAwesomeIcon :icon="faCheckCircle" class="mr-sm" />
         Modifier

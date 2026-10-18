@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { faCheckCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { formatPrice } from "@livrelibre/shared/format";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
@@ -10,13 +10,13 @@ import { toast } from "vue-sonner";
 import AppButton from "@/components/AppButton.vue";
 import AppCard from "@/components/AppCard.vue";
 import AppSkeleton from "@/components/AppSkeleton.vue";
+import BackButton from "@/components/BackButton.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ConfirmationDialog from "@/components/ConfirmationDialog.vue";
 import type { CustomerFormFields } from "@/components/customerForm";
 import CustomerForm from "@/components/CustomerForm.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
-import LinkButton from "@/components/LinkButton.vue";
 import NoResults from "@/components/NoResults.vue";
 import PurchasesTable from "@/components/PurchasesTable.vue";
 import StatusCircle from "@/components/StatusCircle.vue";
@@ -106,10 +106,7 @@ const total = computed(() => customer.value?.purchases.reduce((sum, p) => sum + 
           message="Êtes-vous sûr⋅e de vouloir supprimer ce⋅tte client⋅e ? Cette action ne peut pas être annulée."
           @confirm="deleteCustomer"
         />
-        <LinkButton to="/customers" class="mr-2 px-md !bg-gray-medium">
-          <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
-          Retour
-        </LinkButton>
+        <BackButton fallback="/customers" class="mr-2 px-md !bg-gray-medium" />
         <AppButton type="submit" class="px-md" :disabled="savePending">
           <FontAwesomeIcon :icon="faCheckCircle" class="mr-sm" />
           Modifier

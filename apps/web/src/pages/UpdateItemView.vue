@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { faCheckCircle, faTimesCircle } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/vue-query";
 import { computed } from "vue";
@@ -8,12 +8,12 @@ import { useRoute, useRouter } from "vue-router";
 import AppButton from "@/components/AppButton.vue";
 import AppCard from "@/components/AppCard.vue";
 import AppSkeleton from "@/components/AppSkeleton.vue";
+import BackButton from "@/components/BackButton.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardTitle from "@/components/CardTitle.vue";
 import ErrorMessage from "@/components/ErrorMessage.vue";
 import type { FormFields } from "@/components/itemForm";
 import ItemForm from "@/components/ItemForm.vue";
-import LinkButton from "@/components/LinkButton.vue";
 import NoResults from "@/components/NoResults.vue";
 import { queryKeys } from "@/lib/queryKeys";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
@@ -89,10 +89,7 @@ const formData = computed<FormFields | undefined>(() => {
       </CardBody>
     </AppCard>
     <ItemForm v-else :title="CARD_TITLE" :data="formData" :on-submit="submit">
-      <LinkButton :to="`/item/${String(id)}`" class="mr-2 px-md !bg-gray-medium">
-        <FontAwesomeIcon :icon="faTimesCircle" class="mr-sm" />
-        Retour
-      </LinkButton>
+      <BackButton :fallback="`/item/${String(id)}`" class="mr-2 px-md !bg-gray-medium" />
       <AppButton type="submit" class="px-md">
         <FontAwesomeIcon :icon="faCheckCircle" class="mr-sm" />
         Modifier
