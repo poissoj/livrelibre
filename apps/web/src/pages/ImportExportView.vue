@@ -18,10 +18,14 @@ import ButtonAnchor from "@/components/ButtonAnchor.vue";
 import CardBody from "@/components/CardBody.vue";
 import CardFooter from "@/components/CardFooter.vue";
 import CardTitle from "@/components/CardTitle.vue";
-import { getErrorMessage, getRestErrorMessage } from "@/utils/errors";
+import { apiFetch, isApiError } from "@/utils/api";
+import { getErrorMessage } from "@/utils/errors";
 import { isDilicomRows } from "@/utils/guards";
 
 type FileData = { filename: string; data: DilicomRowWithId[] };
+
+const isImportResult = (body: unknown): body is { status: string } =>
+  typeof body === "object" && body !== null && "status" in body && typeof body.status === "string";
 
 const file = ref<FileData | null>(null);
 const selectedFile = ref<File | null>(null);
@@ -48,23 +52,15 @@ const importFile = async () => {
   try {
     const formData = new FormData();
     formData.append("dilicom", selected);
-    const response = await fetch("/api/importFile", {
-      method: "POST",
-      body: formData,
-    });
-    if (!response.ok) {
-      const body: unknown = await response.json().catch(() => null);
-      toast.error(getRestErrorMessage(body, "Erreur lors de l'import du fichier."));
-      return;
-    }
-    const parsed: unknown = await response.json();
-    if (!isDilicomRows(parsed)) {
-      toast.error("Réponse du serveur invalide.");
-      return;
-    }
-    file.value = { filename: selected.name, data: parsed };
+    const rows = await apiFetch(
+      "/api/importFile",
+      { method: "POST", body: formData },
+      isDilicomRows,
+      "Erreur lors de l'import du fichier.",
+    );
+    file.value = { filename: selected.name, data: rows };
   } catch (error) {
-    toast.error(getErrorMessage(error));
+    toast.error(isApiError(error) ? error.message : getErrorMessage(error));
   } finally {
     isSubmitting.value = false;
   }
@@ -76,22 +72,23 @@ const finalizeImport = async () => {
   if (!file.value) return;
   isImporting.value = true;
   try {
-    const response = await fetch("/api/finalizeImport", {
-      method: "POST",
-      body: JSON.stringify(file.value.data),
-    });
-    if (!response.ok) {
-      const body: unknown = await response.json().catch(() => null);
-      toast.error(getRestErrorMessage(body, "Erreur lors de l'import."));
-      return;
-    }
+    await apiFetch(
+      "/api/finalizeImport",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(file.value.data),
+      },
+      isImportResult,
+      "Erreur lors de l'import.",
+    );
     const nb = nbItems.value;
     toast.success(
       `Le fichier a été importé correctement (${String(nb)} article${nb > 1 ? "s" : ""}).`,
     );
     resetImport();
   } catch (error) {
-    toast.error(getErrorMessage(error));
+    toast.error(isApiError(error) ? error.message : getErrorMessage(error));
   } finally {
     isImporting.value = false;
   }

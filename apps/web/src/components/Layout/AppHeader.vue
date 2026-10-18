@@ -9,6 +9,8 @@ import { RouterLink, useRouter } from "vue-router";
 import { APP_NAME } from "@/lib/config";
 import { cartQueryOptions } from "@/lib/queries";
 import useUser from "@/lib/useUser";
+import { apiFetch } from "@/utils/api";
+import { isUser } from "@/utils/guards";
 
 import QuickSearch from "./QuickSearch.vue";
 
@@ -24,7 +26,7 @@ const cartCount = computed(() => cart.data.value?.count ?? 0);
 
 const logout = async () => {
   try {
-    await fetch("/api/logout", { method: "POST" });
+    await apiFetch("/api/logout", { method: "POST" }, isUser);
   } catch {
     // Déconnexion locale même si l'appel serveur échoue.
   } finally {

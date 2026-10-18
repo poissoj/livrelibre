@@ -17,7 +17,8 @@ import AppButton from "@/components/AppButton.vue";
 import AppInput from "@/components/AppInput.vue";
 import { APP_NAME } from "@/lib/config";
 import { queryKeys } from "@/lib/queryKeys";
-import { formatValidationIssues, getErrorMessage, getRestErrorMessage } from "@/utils/errors";
+import { apiFetch, isApiError } from "@/utils/api";
+import { formatValidationIssues, getErrorMessage } from "@/utils/errors";
 import { isUser } from "@/utils/guards";
 
 const loginSchema = z.object({
@@ -51,25 +52,22 @@ const onSubmit = async () => {
   }
   isSubmitting.value = true;
   try {
-    const res = await fetch("/api/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(parsed.data),
-    });
-    if (res.ok) {
-      const parsed: unknown = await res.json();
-      if (!isUser(parsed)) {
-        errorMsg.value = getRestErrorMessage(parsed, "Impossible de vous connecter.");
-        return;
-      }
-      queryClient.setQueryData(queryKeys.user.root, parsed);
-      await router.push(redirectTarget.value);
-    } else {
-      const body: unknown = await res.json().catch(() => null);
-      errorMsg.value = getRestErrorMessage(body, "Impossible de vous connecter.");
-    }
+    const user = await apiFetch(
+      "/api/login",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(parsed.data),
+      },
+      isUser,
+      "Impossible de vous connecter.",
+    );
+    queryClient.setQueryData(queryKeys.user.root, user);
+    await router.push(redirectTarget.value);
   } catch (error) {
-    errorMsg.value = getErrorMessage(error, "Impossible de vous connecter.");
+    errorMsg.value = isApiError(error)
+      ? error.message
+      : getErrorMessage(error, "Impossible de vous connecter.");
   } finally {
     isSubmitting.value = false;
   }
