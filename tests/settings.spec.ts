@@ -25,37 +25,42 @@ test("un administrateur gère les types d'article", async ({ page }) => {
   await newRow.getByRole("button", { name: "Enregistrer" }).click();
   await expect(page.getByText("Type d'article créé.")).toBeVisible();
 
-  const row = page.getByRole("row").filter({ hasText: CODE });
+  const row = page.getByRole("row").filter({ hasText: LABEL });
   await expect(row).toHaveCount(1);
 
-  const codeColumn = () => page.locator("tbody tr td:first-child").allInnerTexts();
-  const indexBefore = (await codeColumn()).indexOf(CODE);
+  const labelColumn = async () =>
+    (await page.locator("tbody tr td:first-child").allInnerTexts()).map((label) => label.trim());
+  const indexBefore = (await labelColumn()).indexOf(LABEL);
   await expect(row.getByRole("button", { name: "Monter" })).toBeEnabled();
   const reordered = page.waitForResponse((response) => response.url().includes("reorderItemTypes"));
   await row.getByRole("button", { name: "Monter" }).click();
   await reordered;
-  await expect.poll(async () => (await codeColumn()).indexOf(CODE)).toBe(indexBefore - 1);
+  await expect.poll(async () => (await labelColumn()).indexOf(LABEL)).toBe(indexBefore - 1);
 
-  await expect(row.getByRole("button", { name: "Éditer" })).toBeEnabled();
-  await row.getByRole("button", { name: "Éditer" }).click();
-  await row.locator('input[type="text"]').fill(EDITED_LABEL);
-  await row.getByRole("button", { name: "Enregistrer" }).click();
+  // Pendant l'édition, le libellé est remplacé par un champ : on cible la ligne par sa position.
+  const editRow = page.locator("tbody tr").nth(indexBefore - 1);
+  await expect(editRow.getByRole("button", { name: "Éditer" })).toBeEnabled();
+  await editRow.getByRole("button", { name: "Éditer" }).click();
+  await editRow.locator('input[type="text"]').fill(EDITED_LABEL);
+  await editRow.getByRole("button", { name: "Enregistrer" }).click();
   await expect(page.getByText("Type d'article modifié.")).toBeVisible();
-  await expect(page.getByRole("row").filter({ hasText: CODE })).toContainText(EDITED_LABEL);
+  await expect(page.getByRole("row").filter({ hasText: EDITED_LABEL })).toContainText(EDITED_LABEL);
 
-  const deleteRow = page.getByRole("row").filter({ hasText: CODE });
+  const deleteRow = page.getByRole("row").filter({ hasText: EDITED_LABEL });
   await expect(deleteRow.getByRole("button", { name: "Supprimer" })).toBeEnabled();
   await deleteRow.getByRole("button", { name: "Supprimer" }).click();
   await page.getByRole("button", { name: "Oui, supprimer" }).click();
   await expect(page.getByText("Type d'article supprimé.")).toBeVisible();
-  await expect(page.getByRole("row").filter({ hasText: CODE })).toHaveCount(0);
+  await expect(page.getByRole("row").filter({ hasText: EDITED_LABEL })).toHaveCount(0);
 });
 
 test("le défaut est refusé pour un type inactif", async ({ page }) => {
   await login(page);
   await page.goto("/settings");
 
-  const row = page.getByRole("row").filter({ hasText: "discount" });
+  const labelColumn = async () =>
+    (await page.locator("tbody tr td:first-child").allInnerTexts()).map((label) => label.trim());
+  const row = page.locator("tbody tr").nth((await labelColumn()).indexOf("Remise"));
   await expect(row.getByRole("button", { name: "Éditer" })).toBeEnabled();
   await row.getByRole("button", { name: "Éditer" }).click();
   await expect(row.getByRole("checkbox", { name: "Type par défaut" })).toBeDisabled();

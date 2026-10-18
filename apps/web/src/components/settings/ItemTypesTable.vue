@@ -163,7 +163,6 @@ const removeType = async (code: string) => {
       </caption>
       <thead>
         <tr class="sticky top-0 bg-white z-10">
-          <th scope="col" class="text-left w-40">Code</th>
           <th scope="col" class="text-left pl-3.5">Libellé</th>
           <th scope="col" class="text-center w-24">TVA</th>
           <th scope="col" class="text-center w-24">Défaut</th>
@@ -174,7 +173,6 @@ const removeType = async (code: string) => {
       </thead>
       <TransitionGroup tag="tbody" move-class="transition-transform duration-500 ease-in-out">
         <tr v-for="(type, index) in types" :key="type.code">
-          <td class="font-number">{{ type.code }}</td>
           <td>
             <AppInput v-if="editingCode === type.code" v-model="editLabel" type="text" required />
             <span v-else class="pl-3.5">{{ type.label }}</span>
@@ -255,7 +253,6 @@ const removeType = async (code: string) => {
       </TransitionGroup>
       <tbody v-if="creating">
         <tr>
-          <td class="font-number">{{ newCode || "—" }}</td>
           <td class="">
             <AppInput ref="newLabelInput" v-model="newLabel" type="text" required />
           </td>

@@ -262,9 +262,9 @@ réglages de l'application : la **remise fidélité** et les **types d'article**
 **Types d'article** :
 
 - **Créer** — cliquer sur `Ajouter` sous le tableau, saisir le `Libellé` et la
-  `TVA` dans la nouvelle ligne (le `Code` est généré automatiquement à partir du
-  libellé et reste figé), cocher `Défaut` le cas échéant, puis `Enregistrer` (ou
-  `Annuler`).
+  `TVA` dans la nouvelle ligne (un identifiant interne est généré automatiquement
+  à partir du libellé et reste figé), cocher `Défaut` le cas échéant, puis
+  `Enregistrer` (ou `Annuler`).
 - **Modifier** — bouton `Éditer` : changer le `Libellé`, la `TVA`, cocher/décocher
   `Actif` (un type inactif n'apparaît plus dans les listes déroulantes) et
   `Défaut`, puis `Enregistrer`.

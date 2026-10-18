@@ -78,7 +78,7 @@ export const ERROR_MESSAGES: Record<ErrorCode, string> = {
   ITEM_ALREADY_EXISTS: "Un article avec cet ISBN existe déjà.",
   ITEM_INVALID: "Article invalide.",
   ITEM_TYPE_NOT_FOUND: "Type d'article inconnu.",
-  ITEM_TYPE_ALREADY_EXISTS: "Un type d'article avec ce code existe déjà.",
+  ITEM_TYPE_ALREADY_EXISTS: "Un type d'article avec ce libellé existe déjà.",
   ITEM_TYPE_IN_USE: "Ce type d'article est utilisé et ne peut pas être supprimé.",
   ITEM_TYPE_INACTIVE_DEFAULT: "Un type inactif ne peut pas être défini par défaut.",
   SALE_NOT_TODAY: "Vous ne pouvez supprimer qu'une vente du jour.",
