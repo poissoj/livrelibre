@@ -5,6 +5,27 @@ caisse, gestion des client⋅es et des commandes, consultation des ventes,
 statistiques, import/export. Pour une présentation générale, voir le
 [README](../README.md).
 
+## Sommaire
+
+- [Se connecter](#se-connecter)
+- [Changer son mot de passe](#changer-son-mot-de-passe)
+- [L'interface](#linterface)
+- [Tableau de bord](#tableau-de-bord)
+- [Rechercher un article](#rechercher-un-article)
+- [Ajouter / modifier un article](#ajouter--modifier-un-article)
+- [La caisse (panier)](#la-caisse-panier)
+- [Cycle de vie du stock](#cycle-de-vie-du-stock)
+- [Gérer les client⋅es](#gérer-les-clientes)
+- [Remise fidélité](#remise-fidélité)
+- [Gérer les commandes](#gérer-les-commandes)
+- [Consulter les ventes](#consulter-les-ventes)
+- [Statistiques et meilleures ventes](#statistiques-et-meilleures-ventes)
+- [Import / export](#import--export)
+- [Gérer les utilisateurs](#gérer-les-utilisateurs)
+- [Réglages](#réglages)
+- [Rôles et permissions](#rôles-et-permissions)
+- [Annexe — tables de référence](#annexe--tables-de-référence)
+
 ## Se connecter
 
 Depuis la page **Connexion** (`/login`) :
@@ -74,8 +95,10 @@ La page d'accueil (`/`) présente :
 
 Trois points d'entrée :
 
-- **Recherche rapide** (en-tête) — taper un `ISBN, titre, auteur·ice`. Utiliser
-  `/quicksearch` pour les résultats paginés.
+- **Recherche rapide** (en-tête) — saisir un `ISBN, titre, auteur·ice` puis
+  valider. Les résultats textuels s'affichent dans une liste paginée
+  (`/quicksearch`) ; un ISBN de 10 chiffres ou plus ouvre directement la fiche
+  de l'article.
 - **Recherche avancée** (`/search`) — formulaire détaillé : `Type`, `ISBN`,
   `Auteur·ice`, `Titre`, `Maison d'édition`, `Distributeur`, `Mots-clés`,
   `Date d'achat`, `Commentaires`, `Prix de vente`, `Quantité`, `TVA`. Le bouton
@@ -125,7 +148,9 @@ Le panier (`/cart`) regroupe les articles d'une vente.
 3. **Remise de fidélité** — si un⋅e client⋅e est associé⋅e, une `Remise possible`
    peut être appliquée (`Appliquer`) ; elle ajoute une ligne
    `Remise carte de fidélité`. Le pourcentage est paramétrable dans `Réglages`
-   (3 % par défaut).
+   (3 % par défaut). Lorsque la vente est encaissée avec une remise, l'historique
+   d'achats du⋅de la client⋅e est remis à zéro : le total affiché sur sa fiche
+   repart de 0.
 4. **Mettre de côté** — `Mettre de côté` suspend le panier courant (un seul
    panier en attente à la fois). Le bouton `Réactiver` de la carte
    `Panier en attente` le reprend.
@@ -135,11 +160,31 @@ Le panier (`/cart`) regroupe les articles d'une vente.
 
 ![Panier et paiement](./screenshots/panier.png)
 
+## Cycle de vie du stock
+
+Le stock affiché est le stock disponible.
+
+- L'ajout d'un article au panier décrémente immédiatement son stock.
+- Retirer une ligne du panier réincrémente le stock correspondant.
+- Un ajout est refusé si la quantité demandée dépasse le stock disponible.
+- Mettre le panier de côté ne modifie pas le stock : les articles restent
+  réservés.
+- Payer ne décrémente pas une seconde fois le stock : la réservation faite à
+  l'ajout au panier devient définitive.
+- Supprimer une vente réincrémente le stock des articles concernés (voir
+  [Consulter les ventes](#consulter-les-ventes)).
+- Les articles non répertoriés et les lignes de remise n'ont pas d'incidence sur
+  le stock.
+- L'import DILICOM incrémente le stock des articles existants et crée le stock
+  des nouveaux articles (voir [Import / export](#import--export)).
+- La quantité d'un article peut être corrigée avec `Modifier` depuis sa fiche.
+
 ## Gérer les client⋅es
 
 - **Liste** (`/customers`) — recherche par `Nom, prénom`, case `Avec achats`,
   bouton `Nouveau client`. Colonnes : `Nom`, `Téléphone`, `Mail`,
-  `Remarque contact`, `Commentaire`, `Remise`, `Total`.
+  `Remarque contact`, `Commentaire`, `Remise`, `Total`. Le calcul de la remise
+  est détaillé dans [Remise fidélité](#remise-fidélité).
 - **Créer** (`/customer/new`) — renseigner `Nom complet` (requis), `Téléphone`,
   `Email`, `Remarque contact`, `Commentaires`, puis `Ajouter`. Un nom déjà
   existant est refusé.
@@ -150,6 +195,26 @@ Le panier (`/cart`) regroupe les articles d'une vente.
   dialogue de confirmation, sauf si le⋅la client⋅e a des commandes.
 
 ![Client⋅es](./screenshots/clients.png)
+
+## Remise fidélité
+
+La remise fidélité est disponible lorsqu'un⋅e client⋅e est associé⋅e au panier.
+Le pourcentage est défini dans `Réglages` (3 % par défaut). Il s'applique au
+total des achats enregistrés pour le⋅la client⋅e ; ce total et la remise
+calculée apparaissent dans la liste des client⋅es (colonnes `Total` et `Remise`).
+
+Dans le panier :
+
+1. Associer le⋅la client⋅e à la vente.
+2. Vérifier le montant proposé dans `Remise possible` ; il peut être modifié
+   avant l'application.
+3. Cliquer sur `Appliquer` : une ligne `Remise carte de fidélité` est ajoutée au
+   panier.
+4. Pour modifier une remise déjà appliquée, retirer cette ligne du panier puis
+   appliquer la nouvelle remise.
+
+Lorsque la vente est encaissée avec une remise, l'historique d'achats du⋅de la
+client⋅e est remis à zéro : le total affiché sur sa fiche repart de 0.
 
 ## Gérer les commandes
 
@@ -190,8 +255,11 @@ Le panier (`/cart`) regroupe les articles d'une vente.
 
 Dans le détail d'un jour, la table indique Stock, Titre, Auteur·ice, Quantité,
 Prix total, Panier, TVA, Paiement, ainsi qu'un bouton `Supprimer` pour annuler une
-vente. Un⋅e caissier⋅ère ne peut supprimer qu'une vente du jour ; la suppression
-d'une vente passée est réservée aux administrateurs.
+vente. La vente est conservée en base avec un statut « supprimé » (elle reste
+visible, barrée, dans le détail du jour), elle est exclue des statistiques et les
+articles sont remis en stock (voir [Cycle de vie du stock](#cycle-de-vie-du-stock)).
+Un⋅e caissier⋅ère ne peut supprimer qu'une vente du jour ; la suppression d'une
+vente passée est réservée aux administrateurs.
 
 Un bouton `Rechercher` sur la page `Ventes` ouvre la recherche de ventes
 (`/sales/search`) : par titre, par plage de dates et par type de paiement. Les
@@ -214,12 +282,35 @@ ou l'article correspondant.
 
 ## Import / export
 
-Page `Import/Export` (`/import-export`) :
+La page `Import/Export` (`/import-export`) comporte deux volets.
 
-- **Importer un fichier DILICOM** — sélectionner un fichier `.csv`, `.slk` ou
-  `.xlsx` puis `Envoyer`. Un aperçu s'affiche ; cliquer sur `Valider` pour
-  confirmer ou `Annuler`. Un message indique le nombre d'articles importés.
-- **Export du stock** — bouton `Télécharger` pour obtenir le stock au format CSV.
+### Importer un fichier DILICOM
+
+1. Sélectionner un fichier `.csv`, `.slk` ou `.xlsx`.
+2. Cliquer sur `Envoyer`. Un aperçu des articles à importer s'affiche.
+3. Vérifier l'aperçu, puis cliquer sur `Valider` pour confirmer ou sur `Annuler`
+   pour abandonner l'import. `Annuler` n'écrit rien en base.
+4. Un message indique le nombre d'articles importés.
+
+L'import accepte jusqu'à 1 000 lignes après fusion des doublons. Les lignes
+ayant le même EAN sont fusionnées et leurs quantités additionnées.
+
+- Pour un ISBN déjà présent, le stock est incrémenté et le prix est mis à jour ;
+  le type, la TVA, le titre, l'auteur et les autres champs ne sont pas modifiés.
+- Pour un nouvel ISBN, l'article est créé avec le type `Livre` (`book`) et sa
+  TVA, ou avec le type d'article par défaut si `book` n'existe plus.
+  L'application tente de compléter les informations via le service de recherche
+  ISBN ; en cas d'échec, les données du fichier sont utilisées.
+
+### Exporter le stock
+
+Cliquer sur `Télécharger` pour obtenir le stock au format CSV :
+
+- encodage UTF-8 et séparateur virgule ;
+- nom du fichier : `stocks-AAAA-MM-JJ.csv` ;
+- seuls les articles dont le stock est supérieur à zéro sont exportés ;
+- colonnes : `Catégorie`, `Titre`, `Auteur·ice`, `Distributeur`, `ISBN`, `Qté`,
+  `Valeur TTC` (prix unitaire).
 
 ![Import / export](./screenshots/import-export.png)
 
@@ -243,9 +334,11 @@ dernier administrateur.
 ### Rôles
 
 - **`admin`** : accès complet
-- **`cashier`** : gère la caisse du jour. Toutes les opérations sont autorisées, sauf
-  l'accès aux ventes passées : la page Ventes et la suppression d'une vente sont
-  limités à la journée en cours.
+- **`cashier`** : gère la caisse du jour. Il ou elle a accès aux écrans courants
+  (articles, client⋅es, commandes, statistiques, import/export), mais pas à la
+  gestion des utilisateurs, aux réglages, aux ventes par mois ni à la recherche
+  de ventes. La page `Ventes` mène directement aux ventes du jour, et seule la
+  suppression d'une vente du jour est autorisée.
 
 ## Réglages
 
@@ -259,7 +352,7 @@ réglages de l'application : la **remise fidélité** et les **types d'article**
   une valeur entre 0 et 100, puis `Enregistrer`. La valeur par
   défaut est 3 %.
 
-- Le montant de la remise, calculé automatiquement, est toujours modifiable manuellement dans le panier.
+- Le montant de la remise, calculé automatiquement, est toujours modifiable manuellement dans le panier. Les règles d'utilisation sont détaillées dans [Remise fidélité](#remise-fidélité).
 
 **Types d'article** :
 
@@ -276,8 +369,11 @@ réglages de l'application : la **remise fidélité** et les **types d'article**
   panier ou vente ; sinon le supprimer est refusé (utiliser `Actif` pour l'archiver).
 
 Le type par défaut sert de présélection pour les nouveaux articles, et la `TVA` du
-type est pré-remplie (modifiable) dans le formulaire d'article. L'import DILICOM crée
-toujours des articles de type `Livre` (`book`), avec la TVA de ce type.
+type est pré-remplie (modifiable) dans le formulaire d'article. L'import DILICOM
+crée les nouveaux articles avec le type `Livre` (`book`) et sa TVA ; si ce type
+n'existe plus, le type d'article par défaut est utilisé. Pour un ISBN déjà
+présent, le stock est incrémenté et le prix mis à jour ; les autres champs ne
+sont pas modifiés.
 
 ![Réglages](./screenshots/settings.png)
 
@@ -299,10 +395,11 @@ partie. » en cas d'accès non permis.
 
 ## Annexe — tables de référence
 
-**Types d'articles** : Livre (par défaut), Carte postale, Papeterie, Jeu, Revue,
-DVD, Consigne, Inconnu.
+**Types d'articles** (valeurs initiales, configurables dans `Réglages`) : Livre
+(par défaut), Carte postale, Papeterie, Jeu, Revue, DVD, Consigne, Inconnu.
 
-**Taux de TVA** : `20`, `5.5` (par défaut), `2.1`, `0`.
+**Taux de TVA** : `20`, `5.5`, `2.1`, `0`. Le taux pré-rempli dépend de la TVA du
+type d'article par défaut (initialement `Livre`, 5,5 %).
 
 **Types de paiement** : `Espèces`, `Carte bleue`, `Chèque`, `Chèque lire`,
 `Virement`.
