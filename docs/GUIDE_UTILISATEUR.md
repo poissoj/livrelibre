@@ -238,6 +238,8 @@ Page `Utilisateurs` (`/users`), réservée aux administrateurs :
 Il est impossible de supprimer son propre compte, ni de supprimer ou rétrograder le
 dernier administrateur.
 
+![Utilisateurs](./screenshots/users.png)
+
 ### Rôles
 
 - **`admin`** : accès complet
@@ -276,6 +278,8 @@ réglages de l'application : la **remise fidélité** et les **types d'article**
 Le type par défaut sert de présélection pour les nouveaux articles, et la `TVA` du
 type est pré-remplie (modifiable) dans le formulaire d'article. L'import DILICOM crée
 toujours des articles de type `Livre` (`book`), avec la TVA de ce type.
+
+![Réglages](./screenshots/settings.png)
 
 ## Rôles et permissions
 
