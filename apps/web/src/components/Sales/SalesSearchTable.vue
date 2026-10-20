@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { formatPrice, formatTVA } from "@livrelibre/shared/format";
-import { PAYMENT_METHODS } from "@livrelibre/shared/sale";
 import { clsx } from "clsx";
 import { RouterLink } from "vue-router";
 
+import usePaymentMethods from "@/lib/usePaymentMethods";
 import type { RouterOutput } from "@/utils/trpc";
 
 type Sales = RouterOutput["searchSales"]["sales"];
 
 const props = defineProps<{ sales: Sales }>();
 
+const { label } = usePaymentMethods();
 const TH_STYLES = "sticky top-0 bg-white";
 
 const makeDayURL = (date: string) => `/sale/${date.split("-").join("/")}`;
@@ -57,7 +58,7 @@ const formatDate = (date: string) => date.split("-").reverse().join("/");
         <td class="p-sm text-right font-number">{{ sale.quantity }}</td>
         <td class="p-sm text-right font-number">{{ formatPrice(sale.price) }}</td>
         <td class="p-sm text-right font-number">{{ formatTVA(sale.tva) }}</td>
-        <td class="p-sm">{{ PAYMENT_METHODS[sale.paymentType] }}</td>
+        <td class="p-sm">{{ label(sale.paymentType) }}</td>
       </tr>
     </tbody>
   </table>

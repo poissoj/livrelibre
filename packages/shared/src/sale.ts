@@ -1,12 +1,6 @@
-export const PAYMENT_METHODS = {
-  cash: "Espèces",
-  card: "Carte bleue",
-  check: "Chèque",
-  "check-lire": "Chèque lire",
-  transfer: "Virement",
-} as const;
+import type { PaymentMethodCode } from "./paymentMethod";
 
-export type PaymentType = keyof typeof PAYMENT_METHODS;
+export type PaymentType = PaymentMethodCode;
 
 export const LOYALTY_DISCOUNT_TITLE = "Remise carte de fidélité";
 

@@ -64,6 +64,7 @@ export const queryKeys = {
   settings: {
     root: ["settings"] as const,
     itemTypes: ["itemTypes"] as const,
+    paymentMethods: ["paymentMethods"] as const,
     users: ["users"] as const,
   },
 };

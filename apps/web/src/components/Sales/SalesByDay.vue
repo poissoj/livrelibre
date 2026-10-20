@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { formatPrice } from "@livrelibre/shared/format";
-import { PAYMENT_METHODS } from "@livrelibre/shared/sale";
 import { useQuery } from "@tanstack/vue-query";
 import { computed, useTemplateRef } from "vue";
 
@@ -15,12 +14,14 @@ import SalesTable from "@/components/Sales/SalesTable.vue";
 import StatsByTVA from "@/components/TVAStats/StatsByTVA.vue";
 import TVASkeleton from "@/components/TVAStats/TVASkeleton.vue";
 import { queryKeys } from "@/lib/queryKeys";
+import usePaymentMethods from "@/lib/usePaymentMethods";
 import { useTitle } from "@/lib/useTitle";
 import { useScrollRestoration } from "@/utils/scroll";
 import { trpcClient } from "@/utils/trpc";
 
 const props = defineProps<{ date: string }>();
 
+const { label } = usePaymentMethods();
 const root = useTemplateRef<HTMLElement>("root");
 useScrollRestoration(root);
 
@@ -47,7 +48,7 @@ const salesTitle = computed(() =>
 const categories = computed(() =>
   (dayStats.value?.paymentMethods ?? []).map((method) => ({
     ...method,
-    label: PAYMENT_METHODS[method.type],
+    label: label(method.type),
   })),
 );
 </script>

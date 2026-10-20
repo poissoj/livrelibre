@@ -17,19 +17,20 @@ test.afterAll(async () => {
 test("un administrateur gère les types d'article", async ({ page }) => {
   await login(page);
   await page.goto("/settings");
+  const card = page.getByRole("region", { name: "Types d'article" });
 
-  await page.getByRole("button", { name: "Ajouter" }).click();
-  await expect(page.locator('tbody input[type="text"]')).toBeFocused();
-  const newRow = page.locator("tbody tr").last();
+  await card.getByRole("button", { name: "Ajouter" }).click();
+  await expect(card.locator('tbody input[type="text"]')).toBeFocused();
+  const newRow = card.locator("tbody tr").last();
   await newRow.locator('input[type="text"]').fill(LABEL);
   await newRow.getByRole("button", { name: "Enregistrer" }).click();
   await expect(page.getByText("Type d'article créé.")).toBeVisible();
 
-  const row = page.getByRole("row").filter({ hasText: LABEL });
+  const row = card.getByRole("row").filter({ hasText: LABEL });
   await expect(row).toHaveCount(1);
 
   const labelColumn = async () =>
-    (await page.locator("tbody tr td:first-child").allInnerTexts()).map((label) => label.trim());
+    (await card.locator("tbody tr td:first-child").allInnerTexts()).map((label) => label.trim());
   const indexBefore = (await labelColumn()).indexOf(LABEL);
   await expect(row.getByRole("button", { name: "Monter" })).toBeEnabled();
   const reordered = page.waitForResponse((response) => response.url().includes("reorderItemTypes"));
@@ -38,29 +39,30 @@ test("un administrateur gère les types d'article", async ({ page }) => {
   await expect.poll(async () => (await labelColumn()).indexOf(LABEL)).toBe(indexBefore - 1);
 
   // Pendant l'édition, le libellé est remplacé par un champ : on cible la ligne par sa position.
-  const editRow = page.locator("tbody tr").nth(indexBefore - 1);
+  const editRow = card.locator("tbody tr").nth(indexBefore - 1);
   await expect(editRow.getByRole("button", { name: "Éditer" })).toBeEnabled();
   await editRow.getByRole("button", { name: "Éditer" }).click();
   await editRow.locator('input[type="text"]').fill(EDITED_LABEL);
   await editRow.getByRole("button", { name: "Enregistrer" }).click();
   await expect(page.getByText("Type d'article modifié.")).toBeVisible();
-  await expect(page.getByRole("row").filter({ hasText: EDITED_LABEL })).toContainText(EDITED_LABEL);
+  await expect(card.getByRole("row").filter({ hasText: EDITED_LABEL })).toContainText(EDITED_LABEL);
 
-  const deleteRow = page.getByRole("row").filter({ hasText: EDITED_LABEL });
+  const deleteRow = card.getByRole("row").filter({ hasText: EDITED_LABEL });
   await expect(deleteRow.getByRole("button", { name: "Supprimer" })).toBeEnabled();
   await deleteRow.getByRole("button", { name: "Supprimer" }).click();
   await page.getByRole("button", { name: "Oui, supprimer" }).click();
   await expect(page.getByText("Type d'article supprimé.")).toBeVisible();
-  await expect(page.getByRole("row").filter({ hasText: EDITED_LABEL })).toHaveCount(0);
+  await expect(card.getByRole("row").filter({ hasText: EDITED_LABEL })).toHaveCount(0);
 });
 
 test("le défaut est refusé pour un type inactif", async ({ page }) => {
   await login(page);
   await page.goto("/settings");
+  const card = page.getByRole("region", { name: "Types d'article" });
 
   const labelColumn = async () =>
-    (await page.locator("tbody tr td:first-child").allInnerTexts()).map((label) => label.trim());
-  const row = page.locator("tbody tr").nth((await labelColumn()).indexOf("Remise"));
+    (await card.locator("tbody tr td:first-child").allInnerTexts()).map((label) => label.trim());
+  const row = card.locator("tbody tr").nth((await labelColumn()).indexOf("Remise"));
   await expect(row.getByRole("button", { name: "Éditer" })).toBeEnabled();
   await row.getByRole("button", { name: "Éditer" }).click();
   await expect(row.getByRole("checkbox", { name: "Type par défaut" })).toBeDisabled();

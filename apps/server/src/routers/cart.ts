@@ -1,5 +1,6 @@
 import { ERROR_CODES } from "@livrelibre/shared/errors";
 import { TVAValues, zItemType } from "@livrelibre/shared/item";
+import { zPaymentMethodCode } from "@livrelibre/shared/paymentMethod";
 import { CART_ITEM_KINDS } from "@livrelibre/shared/sale";
 import { zDateISO, zId, zPrice, zQuantity } from "@livrelibre/shared/validation";
 import {
@@ -22,7 +23,7 @@ import { authProcedure } from "../procedures";
 
 const payCartSchema = z.object({
   paymentDate: zDateISO,
-  paymentType: z.enum(["cash", "card", "check", "check-lire", "transfer"]),
+  paymentType: zPaymentMethodCode,
 });
 
 export const cartRoutes = {

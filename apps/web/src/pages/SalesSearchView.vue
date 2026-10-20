@@ -2,7 +2,6 @@
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { ITEMS_PER_PAGE } from "@livrelibre/shared/pagination";
-import { PAYMENT_METHODS, type PaymentType } from "@livrelibre/shared/sale";
 import { keepPreviousData, useQuery } from "@tanstack/vue-query";
 import { computed, ref, watch } from "vue";
 
@@ -19,6 +18,7 @@ import LoadingOverlay from "@/components/LoadingOverlay.vue";
 import RestrictedContent from "@/components/RestrictedContent.vue";
 import SalesSearchTable from "@/components/Sales/SalesSearchTable.vue";
 import { queryKeys } from "@/lib/queryKeys";
+import usePaymentMethods from "@/lib/usePaymentMethods";
 import useUser from "@/lib/useUser";
 import { trpcClient } from "@/utils/trpc";
 import { useDelayedLoading } from "@/utils/useDelayedLoading";
@@ -50,8 +50,10 @@ const syncFromQuery = () => {
 syncFromQuery();
 watch(query, syncFromQuery);
 
-const isPaymentType = (value: string): value is PaymentType =>
-  Object.prototype.hasOwnProperty.call(PAYMENT_METHODS, value);
+const { methods } = usePaymentMethods();
+
+const isPaymentType = (value: string): boolean =>
+  methods.value.some((method) => method.code === value);
 
 const payment = computed(() => {
   const value = qs("paymentType");
@@ -133,8 +135,8 @@ const cardTitle = computed(() => {
               <span>Paiement</span>
               <AppSelect v-model="paymentType">
                 <option value="">--ignorer--</option>
-                <option v-for="(label, value) in PAYMENT_METHODS" :key="value" :value="value">
-                  {{ label }}
+                <option v-for="method in methods" :key="method.code" :value="method.code">
+                  {{ method.label }}
                 </option>
               </AppSelect>
             </label>

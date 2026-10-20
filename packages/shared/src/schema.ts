@@ -50,6 +50,23 @@ export const itemTypes = pgTable(
 );
 export type ItemTypeRow = typeof itemTypes.$inferSelect;
 
+/**
+ * Moyens de paiement configurables. `code` est l'identifiant stable stocké dans
+ * `sales.paymentType`.
+ */
+export const paymentMethods = pgTable(
+  "paymentMethods",
+  {
+    code: varchar("code", { length: 64 }).primaryKey(),
+    label: varchar("label").notNull(),
+    position: integer("position").notNull(),
+    active: boolean("active").notNull().default(true),
+    isDefault: boolean("isDefault").notNull().default(false),
+  },
+  (table) => [index("paymentMethods_position_idx").on(table.position)],
+);
+export type PaymentMethodRow = typeof paymentMethods.$inferSelect;
+
 export const items = pgTable(
   "items",
   {
@@ -132,14 +149,6 @@ export const asideCart = pgTable(
   ],
 );
 
-export const paymentTypeEnum = pgEnum("paymentType", [
-  "cash",
-  "card",
-  "check",
-  "check-lire",
-  "transfer",
-]);
-
 export const SALES_RECEIPT_ID_SEQ = "sales_receipt_id_seq";
 
 export const salesReceiptIdSeq = pgSequence(SALES_RECEIPT_ID_SEQ);
@@ -161,7 +170,9 @@ export const sales = pgTable(
     itemId: integer("itemId").references(() => items.id),
     receiptId: integer("receiptId").notNull(),
     deleted: boolean("deleted").notNull(),
-    paymentType: paymentTypeEnum("paymentType").notNull(),
+    paymentType: varchar("paymentType", { length: 64 })
+      .notNull()
+      .references(() => paymentMethods.code),
   },
   (table) => [
     index("sales_itemId_idx").on(table.itemId),

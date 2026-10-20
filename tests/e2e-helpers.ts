@@ -5,6 +5,7 @@ import {
   itemTypes,
   items,
   orders,
+  paymentMethods,
   purchases,
   sales,
   selectedCustomer,
@@ -308,6 +309,12 @@ export const seedUser = async ({
 export const deleteItemTypeByCode = async (code: string): Promise<void> =>
   withDb(async (db) => {
     await db.delete(itemTypes).where(eq(itemTypes.code, code));
+  });
+
+/** Deletes a payment method by code (test cleanup). */
+export const deletePaymentMethodByCode = async (code: string): Promise<void> =>
+  withDb(async (db) => {
+    await db.delete(paymentMethods).where(eq(paymentMethods.code, code));
   });
 
 export const seedCashier = async (): Promise<{

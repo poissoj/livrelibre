@@ -5,7 +5,15 @@ import {
   ITEM_TYPES,
   type BaseItem,
 } from "@livrelibre/shared/item";
-import { customers, itemTypes, items, sales, users } from "@livrelibre/shared/schema";
+import { INITIAL_PAYMENT_METHODS } from "@livrelibre/shared/paymentMethod";
+import {
+  customers,
+  itemTypes,
+  items,
+  paymentMethods,
+  sales,
+  users,
+} from "@livrelibre/shared/schema";
 import { norm } from "@livrelibre/shared/utils";
 import { db } from "@server/db/database";
 import bcrypt from "bcrypt";
@@ -110,6 +118,20 @@ const main = async () => {
       await db.insert(users).values({ name: ADMIN_NAME, hash, role: "admin" });
       console.log(`L'utilisateur ${ADMIN_NAME} a été créé`);
     }
+
+    await db
+      .insert(paymentMethods)
+      .values(
+        Object.entries(INITIAL_PAYMENT_METHODS).map(([code, label], index) => ({
+          code,
+          label,
+          position: index,
+          active: true,
+          isDefault: code === "cash",
+        })),
+      )
+      .onConflictDoNothing();
+    console.log("Moyens de paiement de démo insérés (ou déjà présents)");
 
     await db
       .insert(itemTypes)

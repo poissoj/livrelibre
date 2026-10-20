@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { formatNumber, formatPrice, formatTVA } from "@livrelibre/shared/format";
-import { PAYMENT_METHODS } from "@livrelibre/shared/sale";
 import { clsx } from "clsx";
 
+import usePaymentMethods from "@/lib/usePaymentMethods";
 import type { RouterOutput } from "@/utils/trpc";
 
 type TStats = RouterOutput["salesByMonth"]["stats"];
 
 defineProps<{ stats: TStats }>();
 
+const { label } = usePaymentMethods();
 const TH_STYLES = "sticky top-0 bg-white";
 </script>
 
@@ -27,7 +28,7 @@ const TH_STYLES = "sticky top-0 bg-white";
     </thead>
     <tbody class="[line-height:1.9rem]">
       <tr v-for="(stat, i) in stats" :key="i">
-        <td>{{ PAYMENT_METHODS[stat.paymentType] }}</td>
+        <td>{{ label(stat.paymentType) }}</td>
         <td class="text-right font-number">{{ formatTVA(stat.tva) }}</td>
         <td class="text-right font-number">{{ formatNumber(stat.nb) }}</td>
         <td class="text-right font-number">

@@ -155,8 +155,9 @@ Le panier (`/cart`) regroupe les articles d'une vente.
    panier en attente à la fois). Le bouton `Réactiver` de la carte
    `Panier en attente` le reprend.
 5. **Payer** — renseigner la `Date` et le `Type` de paiement, puis cliquer sur
-   `Payer`. Types disponibles : `Espèces`, `Carte bleue`, `Chèque`,
-   `Chèque lire`, `Virement`.
+   `Payer`. La liste des moyens de paiement est configurable dans `Réglages`
+   (initialement `Espèces`, `Carte bleue`, `Chèque`, `Chèque lire` et
+   `Virement`) ; seuls les moyens actifs sont proposés.
 
 ![Panier et paiement](./screenshots/panier.png)
 
@@ -343,7 +344,8 @@ dernier administrateur.
 ## Réglages
 
 Page `Réglages` (`/settings`), réservée aux administrateurs. Elle regroupe les
-réglages de l'application : la **remise fidélité** et les **types d'article**.
+réglages de l'application : la **remise fidélité**, les **types d'article** et les
+**moyens de paiement**.
 
 **Remise fidélité** :
 
@@ -375,6 +377,22 @@ n'existe plus, le type d'article par défaut est utilisé. Pour un ISBN déjà
 présent, le stock est incrémenté et le prix mis à jour ; les autres champs ne
 sont pas modifiés.
 
+**Moyens de paiement** :
+
+- **Créer** — cliquer sur `Ajouter` sous le tableau, saisir le `Libellé` (un
+  identifiant interne est généré automatiquement à partir du libellé et reste
+  figé), cocher `Défaut` le cas échéant, puis `Enregistrer` (ou `Annuler`).
+- **Modifier** — bouton `Éditer` : changer le `Libellé`, cocher/décocher `Actif`
+  (un moyen inactif n'apparaît plus dans le panier) et `Défaut`, puis
+  `Enregistrer`.
+- **Réordonner** — boutons `▲`/`▼` pour modifier l'ordre des listes déroulantes.
+- **Supprimer** — possible uniquement si aucune vente n'utilise le moyen de
+  paiement ; sinon, le désactiver avec `Actif`.
+- Le moyen par défaut est présélectionné dans le panier. Au moins un moyen doit
+  rester actif.
+- Renommer un moyen de paiement modifie son affichage dans l'historique des
+  ventes ; le code interne reste inchangé.
+
 ![Réglages](./screenshots/settings.png)
 
 ## Rôles et permissions
@@ -383,7 +401,7 @@ sont pas modifiés.
 | -------------------------------------------------------------------------- | ----------- | ------------------------------ |
 | Ensemble des écrans (articles, client⋅es, commandes, stats, import/export) | Oui         | Oui                            |
 | Gestion des utilisateurs (`/users`)                                        | Oui         | Non                            |
-| Réglages (`/settings`, remise fidélité, types d'article)                   | Oui         | Non                            |
+| Réglages (`/settings`, remise fidélité, types, moyens de paiement)         | Oui         | Non                            |
 | Ventes par mois (`/sales`)                                                 | Oui         | Non                            |
 | Recherche de ventes (`/sales/search`)                                      | Oui         | Non                            |
 | Ventes du jour (`/todaySales`)                                             | Oui         | Oui                            |
@@ -401,5 +419,5 @@ partie. » en cas d'accès non permis.
 **Taux de TVA** : `20`, `5.5`, `2.1`, `0`. Le taux pré-rempli dépend de la TVA du
 type d'article par défaut (initialement `Livre`, 5,5 %).
 
-**Types de paiement** : `Espèces`, `Carte bleue`, `Chèque`, `Chèque lire`,
-`Virement`.
+**Moyens de paiement** (valeurs initiales, configurables dans `Réglages`) :
+`Espèces`, `Carte bleue`, `Chèque`, `Chèque lire`, `Virement`.

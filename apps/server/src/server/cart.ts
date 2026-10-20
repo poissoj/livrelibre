@@ -22,6 +22,7 @@ import {
   resetCustomer,
   setSelectedCustomer,
 } from "@server/server/customers";
+import { paymentMethodExists } from "@server/server/paymentMethods";
 import { logger } from "@server/utils/logger";
 import { TRPCError } from "@trpc/server";
 import { and, eq, isNotNull, sql } from "drizzle-orm";
@@ -64,6 +65,12 @@ export type PaymentFormData = {
 };
 
 export const payCart = async (userId: number, data: PaymentFormData) => {
+  if (!(await paymentMethodExists(data.paymentType, { activeOnly: true }))) {
+    throw new TRPCError({
+      code: "BAD_REQUEST",
+      message: ERROR_CODES.INVALID_PAYMENT_METHOD,
+    });
+  }
   return await db.transaction(async (tx) => {
     // Delete first and lock the rows so concurrent payments cannot sell the
     // same cart twice: a second transaction will block, then see no rows.

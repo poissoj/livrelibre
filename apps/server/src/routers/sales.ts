@@ -1,5 +1,5 @@
 import { ERROR_CODES } from "@livrelibre/shared/errors";
-import { PAYMENT_METHODS, type PaymentType } from "@livrelibre/shared/sale";
+import { zPaymentMethodCode } from "@livrelibre/shared/paymentMethod";
 import { zDateISO, zId, zPage } from "@livrelibre/shared/validation";
 import { getBestSales } from "@server/server/bestSales";
 import { lastSales } from "@server/server/lastSales";
@@ -51,9 +51,7 @@ export const saleRoutes = {
           title: z.string().trim().default(""),
           dateFrom: zDateISO.optional(),
           dateTo: zDateISO.optional(),
-          paymentType: z
-            .enum(Object.keys(PAYMENT_METHODS) as [PaymentType, ...PaymentType[]])
-            .optional(),
+          paymentType: zPaymentMethodCode.optional(),
           includeDeleted: z.boolean().default(false),
           page: zPage.default(1),
         })

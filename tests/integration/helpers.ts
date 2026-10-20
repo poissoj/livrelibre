@@ -1,10 +1,12 @@
 import { db } from "@livrelibre/server/db/database";
 import { DISCOUNT_ITEM_TYPE, DISCOUNT_ITEM_TYPE_LABEL, ITEM_TYPES } from "@livrelibre/shared/item";
+import { INITIAL_PAYMENT_METHODS } from "@livrelibre/shared/paymentMethod";
 import {
   customers,
   itemTypes,
   items,
   orders,
+  paymentMethods,
   sales,
   settings,
   users,
@@ -46,6 +48,22 @@ export const seedItemTypes = async () => {
     .onConflictDoNothing();
 };
 
+/** Insère les moyens de paiement par défaut (réamorcés après chaque `truncateAll`). */
+export const seedPaymentMethods = async () => {
+  await db
+    .insert(paymentMethods)
+    .values(
+      Object.entries(INITIAL_PAYMENT_METHODS).map(([code, label], index) => ({
+        code,
+        label,
+        position: index,
+        active: true,
+        isDefault: code === "cash",
+      })),
+    )
+    .onConflictDoNothing();
+};
+
 export const truncateAll = async () => {
   if (process.env.POSTGRES_URI !== getTestDatabaseUri()) {
     throw new Error(
@@ -53,9 +71,10 @@ export const truncateAll = async () => {
     );
   }
   await db.execute(
-    sql`TRUNCATE TABLE "users", "items", "cart", "asideCart", "sales", "customers", "purchases", "selectedCustomer", "orders", "itemTypes", "settings" RESTART IDENTITY CASCADE`,
+    sql`TRUNCATE TABLE "users", "items", "cart", "asideCart", "sales", "customers", "purchases", "selectedCustomer", "orders", "itemTypes", "paymentMethods", "settings" RESTART IDENTITY CASCADE`,
   );
   await seedItemTypes();
+  await seedPaymentMethods();
   await seedSettings();
 };
 

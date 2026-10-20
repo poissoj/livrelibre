@@ -12,8 +12,8 @@ commandes et les client⋅es, et fournit des statistiques sur l'activité.
 
 - Gestion des articles et du stock (ISBN, TVA, types d'article configurables)
 - Caisse : panier, ajout par ISBN, association d'un⋅e client⋅e, remise fidélité
-  et paiement
-- Gestion des client⋅es et de leur historique d'achats
+  et moyens de paiement configurables
+- Gestion des client⋅es et de leur total d'achats
 - Commandes fournisseurs et suivi de leur état
 - Ventes, statistiques et meilleures ventes
 - Import de fichiers DILICOM et export du stock au format CSV

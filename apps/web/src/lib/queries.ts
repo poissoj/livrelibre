@@ -35,6 +35,13 @@ export const itemTypesQueryOptions = () =>
     staleTime: Infinity,
   });
 
+export const paymentMethodsQueryOptions = () =>
+  queryOptions({
+    queryKey: queryKeys.settings.paymentMethods,
+    queryFn: () => trpcClient.paymentMethods.query(),
+    staleTime: Infinity,
+  });
+
 export const settingsQueryOptions = () =>
   queryOptions({
     queryKey: queryKeys.settings.root,

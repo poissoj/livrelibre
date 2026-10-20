@@ -162,7 +162,7 @@ const removeType = async (code: string) => {
         Types d'article
       </caption>
       <thead>
-        <tr class="sticky top-0 bg-white z-10">
+        <tr>
           <th scope="col" class="text-left pl-3.5">Libellé</th>
           <th scope="col" class="text-center w-24">TVA</th>
           <th scope="col" class="text-center w-24">Défaut</th>

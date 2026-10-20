@@ -12,6 +12,7 @@
     "./item": "./src/item.ts",
     "./order": "./src/order.ts",
     "./pagination": "./src/pagination.ts",
+    "./paymentMethod": "./src/paymentMethod.ts",
     "./sale": "./src/sale.ts",
     "./schema": "./src/schema.ts",
     "./settings": "./src/settings.ts",

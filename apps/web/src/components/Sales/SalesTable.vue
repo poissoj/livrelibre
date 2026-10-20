@@ -2,10 +2,10 @@
 import { faUser } from "@fortawesome/free-regular-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { formatNumber, formatPrice, formatTVA } from "@livrelibre/shared/format";
-import { PAYMENT_METHODS } from "@livrelibre/shared/sale";
 import { clsx } from "clsx";
 import { RouterLink } from "vue-router";
 
+import usePaymentMethods from "@/lib/usePaymentMethods";
 import type { RouterOutput } from "@/utils/trpc";
 
 import DeleteSale from "./DeleteSale.vue";
@@ -15,6 +15,7 @@ type Sale = Carts[number]["sales"][number];
 
 const props = defineProps<{ carts: Carts }>();
 
+const { label } = usePaymentMethods();
 const TH_STYLES = "sticky top-0 bg-white";
 
 const saleAmount = (sale: Sale) => ("amount" in sale ? sale.amount : undefined);
@@ -74,7 +75,7 @@ const saleLinked = (sale: Sale) => ("linkedToCustomer" in sale ? sale.linkedToCu
         </td>
         <td class="p-sm text-right font-number">{{ formatTVA(sale.tva) }}</td>
         <td class="p-sm whitespace-nowrap">
-          {{ PAYMENT_METHODS[sale.paymentType] }}
+          {{ label(sale.paymentType) }}
         </td>
         <td class="p-sm pr-3">
           <DeleteSale v-if="!sale.deleted" :sale-id="sale.id" />
