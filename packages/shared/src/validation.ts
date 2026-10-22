@@ -36,6 +36,9 @@ export const zPositivePrice = z
   .regex(/^\d{1,10}([.,]\d{1,2})?$/, ERROR_CODES.INVALID_AMOUNT)
   .transform((value) => value.replace(",", "."));
 
+/** Optional non-negative amount, used for the cash received in the cart. */
+export const zOptionalPositivePrice = zPositivePrice.or(z.literal("")).optional();
+
 export const zIsbn = z
   .string(ERROR_CODES.INVALID_ISBN)
   .trim()

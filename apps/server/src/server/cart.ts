@@ -1,6 +1,7 @@
 import { formatDate, parseLocalDate } from "@livrelibre/shared/date";
 import { ERROR_CODES } from "@livrelibre/shared/errors";
 import type { ItemType, TVA } from "@livrelibre/shared/item";
+import { CASH_PAYMENT_METHOD_CODE } from "@livrelibre/shared/paymentMethod";
 import {
   type CartItemKind,
   LOYALTY_DISCOUNT_TITLE,
@@ -62,6 +63,7 @@ export const getCart = async (userId: number) => {
 export type PaymentFormData = {
   paymentDate: string;
   paymentType: PaymentType;
+  amount?: string | undefined;
 };
 
 export const payCart = async (userId: number, data: PaymentFormData) => {
@@ -131,8 +133,14 @@ export const payCart = async (userId: number, data: PaymentFormData) => {
       linkedToCustomer: customerId != null,
       loyaltyDiscount: hasDiscount,
     });
+    // The cash amount is optional: when omitted, no change is computed.
+    const change =
+      data.paymentType === CASH_PAYMENT_METHOD_CODE && data.amount
+        ? roundMoney(Number(data.amount) - total)
+        : null;
     return {
       success: true,
+      change,
     };
   });
 };

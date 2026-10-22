@@ -2,8 +2,9 @@
 import { faCheckCircle } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { formatDate } from "@livrelibre/shared/date";
+import { CASH_PAYMENT_METHOD_CODE } from "@livrelibre/shared/paymentMethod";
 import { useMutation, useQueryClient } from "@tanstack/vue-query";
-import { ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 
 import AppButton from "@/components/AppButton.vue";
 import AppInput from "@/components/AppInput.vue";
@@ -12,10 +13,14 @@ import { queryKeys } from "@/lib/queryKeys";
 import usePaymentMethods from "@/lib/usePaymentMethods";
 import { type RouterInput, trpcClient } from "@/utils/trpc";
 
+const emit = defineEmits<{ change: [value: number | null] }>();
+
 const queryClient = useQueryClient();
 const { activeMethods, defaultCode } = usePaymentMethods();
 const paymentDate = ref(formatDate(new Date()));
 const paymentType = ref("");
+const amount = ref<string | number>("");
+const isCash = computed(() => paymentType.value === CASH_PAYMENT_METHOD_CODE);
 
 watch(
   [activeMethods, defaultCode],
@@ -40,10 +45,12 @@ const { mutateAsync: payCart, isPending: isPaying } = useMutation({
 
 const onSubmit = async () => {
   try {
-    await payCart({
+    const res = await payCart({
       paymentDate: paymentDate.value,
       paymentType: paymentType.value,
+      amount: String(amount.value),
     });
+    emit("change", res.change);
   } catch {
     // Handled by the global mutation error handler.
   }
@@ -64,6 +71,17 @@ const onSubmit = async () => {
         {{ method.label }}
       </option>
     </AppSelect>
+    <template v-if="isCash">
+      <label for="cash" class="sr-only">Espèces</label>
+      <AppInput
+        id="cash"
+        v-model="amount"
+        type="number"
+        :step="0.01"
+        :min="0"
+        class="!w-28 font-number"
+      />
+    </template>
     <AppButton type="submit" class="[padding:10px_15px]" :disabled="isPaying || !paymentType">
       <FontAwesomeIcon :icon="faCheckCircle" />
       <span class="ml-sm">Payer</span>

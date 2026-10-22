@@ -2,7 +2,13 @@ import { ERROR_CODES } from "@livrelibre/shared/errors";
 import { TVAValues, zItemType } from "@livrelibre/shared/item";
 import { zPaymentMethodCode } from "@livrelibre/shared/paymentMethod";
 import { CART_ITEM_KINDS } from "@livrelibre/shared/sale";
-import { zDateISO, zId, zPrice, zQuantity } from "@livrelibre/shared/validation";
+import {
+  zDateISO,
+  zId,
+  zOptionalPositivePrice,
+  zPrice,
+  zQuantity,
+} from "@livrelibre/shared/validation";
 import {
   addISBNToCart,
   addNewItemToCart,
@@ -24,6 +30,7 @@ import { authProcedure } from "../procedures";
 const payCartSchema = z.object({
   paymentDate: zDateISO,
   paymentType: zPaymentMethodCode,
+  amount: zOptionalPositivePrice,
 });
 
 export const cartRoutes = {

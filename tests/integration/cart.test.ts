@@ -81,6 +81,7 @@ describe("cart", () => {
       paymentType: "cash",
     });
     expect(res.success).toBe(true);
+    expect(res.change).toBeNull();
 
     const salesRows = await db.select().from(sales);
     expect(salesRows).toHaveLength(1);
@@ -89,6 +90,34 @@ describe("cart", () => {
 
     const cartData = await getCart(user.id);
     expect(cartData.count).toBe(0);
+  });
+
+  it("payCart computes the change from an optional cash amount", async () => {
+    const user = await seedUser();
+    const item = await seedItem({ amount: 5, price: "10.00" });
+    await addToCart(user.id, item.id);
+
+    const res = await payCart(user.id, {
+      paymentDate: "2024-01-05",
+      paymentType: "cash",
+      amount: "20.50",
+    });
+    expect(res.success).toBe(true);
+    expect(res.change).toBe(10.5);
+  });
+
+  it("payCart ignores the amount for a non-cash payment", async () => {
+    const user = await seedUser();
+    const item = await seedItem({ amount: 5, price: "10.00" });
+    await addToCart(user.id, item.id);
+
+    const res = await payCart(user.id, {
+      paymentDate: "2024-01-05",
+      paymentType: "card",
+      amount: "20.50",
+    });
+    expect(res.success).toBe(true);
+    expect(res.change).toBeNull();
   });
 
   it("payCart cannot sell the same cart twice concurrently", async () => {

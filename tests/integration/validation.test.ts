@@ -104,6 +104,20 @@ describe("input validation", () => {
     await expect(caller.newOrder({ ...baseOrder, nb: 1.5 })).rejects.toMatchObject(BAD_REQUEST);
   });
 
+  it("accepts an optional cash amount", async () => {
+    const payment = { paymentDate: "2024-01-05", paymentType: "cash" };
+
+    // The cart is empty, so the request reaches business validation instead of
+    // being rejected by the input schema.
+    await expect(caller.payCart(payment)).rejects.toMatchObject({
+      code: "PRECONDITION_FAILED",
+    });
+    await expect(caller.payCart({ ...payment, amount: "" })).rejects.toMatchObject({
+      code: "PRECONDITION_FAILED",
+    });
+    await expect(caller.payCart({ ...payment, amount: "abc" })).rejects.toMatchObject(BAD_REQUEST);
+  });
+
   it("rejects a non-numeric advanced search price", async () => {
     await expect(
       caller.advancedSearch({ search: { price: "abc" }, page: 1 }),
