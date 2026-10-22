@@ -143,6 +143,16 @@ describe("getOrders pagination", () => {
     expect(result.items[0].itemTitle).toBe("Été");
   });
 
+  it("searches on the normalized item title with a diacritic search term", async () => {
+    const customer = await seedCustomer();
+    await seedOrder({ customerId: customer.id, itemTitle: "Les luttes fécondes" });
+    await seedOrder({ customerId: customer.id, itemTitle: "Hiver" });
+
+    const result = await getOrders({ statuses: ["new"], grouped: false, search: "féconde" });
+    expect(result.count).toBe(1);
+    expect(result.items[0].itemTitle).toBe("Les luttes fécondes");
+  });
+
   it("returns no result when no status is selected", async () => {
     const result = await getOrders({ statuses: [] });
     expect(result).toEqual({ items: [], count: 0, pageCount: 0 });

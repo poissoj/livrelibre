@@ -127,6 +127,13 @@
       "when": 1792508295155,
       "tag": "0017_crazy_veda",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1792664576606,
+      "tag": "0018_fix_order_title_normalization",
+      "breakpoints": true
     }
   ]
 }
