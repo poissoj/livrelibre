@@ -21,12 +21,16 @@ import { CONTACT_MEAN, ORDER_STATUS } from "./order";
 
 export const roleEnum = pgEnum("role", ["admin", "cashier"]);
 
-export const users = pgTable("users", {
-  id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
-  name: varchar("name", { length: 256 }).notNull(),
-  hash: char("hash", { length: 60 }).notNull(),
-  role: roleEnum("role").notNull(),
-});
+export const users = pgTable(
+  "users",
+  {
+    id: integer("id").primaryKey().generatedAlwaysAsIdentity(),
+    name: varchar("name", { length: 256 }).notNull(),
+    hash: char("hash", { length: 60 }).notNull(),
+    role: roleEnum("role").notNull(),
+  },
+  (table) => [uniqueIndex("users_name_unique").on(table.name)],
+);
 
 export type User = typeof users.$inferSelect;
 
@@ -46,7 +50,13 @@ export const itemTypes = pgTable(
     active: boolean("active").notNull().default(true),
     isDefault: boolean("isDefault").notNull().default(false),
   },
-  (table) => [index("itemTypes_position_idx").on(table.position)],
+  (table) => [
+    index("itemTypes_position_idx").on(table.position),
+    uniqueIndex("itemTypes_isDefault_unique")
+      .on(table.isDefault)
+      .where(sql`${table.isDefault}`),
+    check("itemTypes_default_active", sql`NOT ${table.isDefault} OR ${table.active}`),
+  ],
 );
 export type ItemTypeRow = typeof itemTypes.$inferSelect;
 
@@ -63,7 +73,13 @@ export const paymentMethods = pgTable(
     active: boolean("active").notNull().default(true),
     isDefault: boolean("isDefault").notNull().default(false),
   },
-  (table) => [index("paymentMethods_position_idx").on(table.position)],
+  (table) => [
+    index("paymentMethods_position_idx").on(table.position),
+    uniqueIndex("paymentMethods_isDefault_unique")
+      .on(table.isDefault)
+      .where(sql`${table.isDefault}`),
+    check("paymentMethods_default_active", sql`NOT ${table.isDefault} OR ${table.active}`),
+  ],
 );
 export type PaymentMethodRow = typeof paymentMethods.$inferSelect;
 
