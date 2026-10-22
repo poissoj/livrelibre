@@ -96,7 +96,11 @@ test("conserve la position de scroll de la liste des ventes du jour", async ({ p
   const itemLinks = page.getByRole("link", { name: itemTitle });
   await expect(itemLinks).toHaveCount(salesCount);
 
-  const scroller = page.locator("main div.overflow-auto").first();
+  // AppMain wraps the page in a layout-level `.overflow-auto` that does not scroll:
+  // target the closest scrollable ancestor of the page title (SalesByDay's root).
+  const scroller = page
+    .getByRole("heading", { name: /^Ventes du / })
+    .locator("xpath=ancestor::div[contains(@class,'overflow-auto')][1]");
   await expect(scroller).toBeVisible();
 
   const expectedTop = await scroller.evaluate((el) => {

@@ -21,7 +21,11 @@ test("remonte en haut de la liste des client⋅es au changement de page", async 
 
   await expect(page.getByRole("link", { name: "Page 2" })).toBeVisible();
 
-  const scroller = page.locator("main .overflow-auto").first();
+  // AppMain wraps the page in a layout-level `.overflow-auto` that does not scroll:
+  // target the closest scrollable ancestor of the list instead.
+  const scroller = page
+    .getByRole("table", { name: "Liste des client⋅es" })
+    .locator("xpath=ancestor::div[contains(@class,'overflow-auto')][1]");
   await expect(scroller).toBeVisible();
 
   const expectedTop = await scroller.evaluate((el) => {
