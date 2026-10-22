@@ -153,6 +153,25 @@ describe("getOrders pagination", () => {
     expect(result.items[0].itemTitle).toBe("Les luttes fécondes");
   });
 
+  it("returns every order of a matching customer in grouped mode", async () => {
+    const matching = await seedCustomer({ fullname: "Alice", nmFullname: "alice" });
+    const other = await seedCustomer({ fullname: "Bob", nmFullname: "bob" });
+    await seedOrder({ customerId: matching.id, itemTitle: "Les luttes fécondes" });
+    await seedOrder({ customerId: matching.id, itemTitle: "Hiver" });
+    await seedOrder({ customerId: matching.id, itemTitle: "Ancienne commande", ordered: "done" });
+    await seedOrder({ customerId: other.id, itemTitle: "Un autre livre" });
+
+    const result = await getOrders({ statuses: ["new"], search: "féconde" });
+    expect(result.count).toBe(2);
+    expect(result.pageCount).toBe(1);
+    expect(result.items).toHaveLength(2);
+    expect(result.items.every((order) => order.customerId === matching.id)).toBe(true);
+    expect(result.items.map((order) => order.itemTitle).sort()).toEqual([
+      "Hiver",
+      "Les luttes fécondes",
+    ]);
+  });
+
   it("returns no result when no status is selected", async () => {
     const result = await getOrders({ statuses: [] });
     expect(result).toEqual({ items: [], count: 0, pageCount: 0 });

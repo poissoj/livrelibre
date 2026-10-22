@@ -130,6 +130,7 @@ export const getOrders = async ({
   if (statuses.length === 0) {
     return { items: [], count: 0, pageCount: 0 };
   }
+  const statusFilter = inArray(orders.ordered, statuses);
   const where = buildOrderWhere(statuses, search);
   const offset = (pageNumber - 1) * ITEMS_PER_PAGE;
   const groupOffset = (pageNumber - 1) * ORDERS_GROUPS_PER_PAGE;
@@ -159,12 +160,20 @@ export const getOrders = async ({
     };
   }
 
-  const countPromise = db
-    .select({ count: count() })
+  // The search selects the customer groups to display; every order of those
+  // customers (matching the status filter) is then returned, not only the
+  // orders matching the search.
+  const matchingCustomerIds = db
+    .select({ customerId: orders.customerId })
     .from(orders)
     .innerJoin(customers, eq(orders.customerId, customers.id))
     .leftJoin(items, eq(orders.itemId, items.id))
-    .where(where);
+    .where(where)
+    .groupBy(orders.customerId);
+  const countPromise = db
+    .select({ count: count() })
+    .from(orders)
+    .where(and(statusFilter, inArray(orders.customerId, matchingCustomerIds)));
   const groupCountPromise = db
     .select({ count: countDistinct(orders.customerId) })
     .from(orders)
@@ -198,7 +207,7 @@ export const getOrders = async ({
     .from(orders)
     .innerJoin(customers, eq(orders.customerId, customers.id))
     .leftJoin(items, eq(orders.itemId, items.id))
-    .where(and(where, inArray(orders.customerId, customerIds)))
+    .where(and(statusFilter, inArray(orders.customerId, customerIds)))
     .orderBy(desc(orders.created), asc(orders.id));
   return { items: rows, count: total, pageCount };
 };
