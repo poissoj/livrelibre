@@ -82,7 +82,7 @@ const onSubmit = async () => {
           <AppInput v-model="price" type="number" class="font-number" :step="0.01" required />
         </FormRow>
         <FormRow label="Titre">
-          <AppInput v-model="title" type="text" placeholder="Article indépendant" />
+          <AppInput v-model="title" type="text" name="title" placeholder="Article indépendant" />
         </FormRow>
         <FormRow label="Type">
           <AppSelect v-model="type">
