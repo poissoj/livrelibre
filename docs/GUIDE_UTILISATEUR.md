@@ -347,15 +347,6 @@ Page `Réglages` (`/settings`), réservée aux administrateurs. Elle regroupe le
 réglages de l'application : la **remise fidélité**, les **types d'article** et les
 **moyens de paiement**.
 
-**Remise fidélité** :
-
-- **Pourcentage de remise fidélité** — taux appliqué au total des achats d'un⋅e
-  client⋅e (proposé dans le panier, affiché dans la liste des client⋅es). Saisir
-  une valeur entre 0 et 100, puis `Enregistrer`. La valeur par
-  défaut est 3 %.
-
-- Le montant de la remise, calculé automatiquement, est toujours modifiable manuellement dans le panier. Les règles d'utilisation sont détaillées dans [Remise fidélité](#remise-fidélité).
-
 **Types d'article** :
 
 - **Créer** — cliquer sur `Ajouter` sous le tableau, saisir le `Libellé` et la
@@ -377,6 +368,8 @@ n'existe plus, le type d'article par défaut est utilisé. Pour un ISBN déjà
 présent, le stock est incrémenté et le prix mis à jour ; les autres champs ne
 sont pas modifiés.
 
+![Réglages types d'article](./screenshots/settings-item-types.png)
+
 **Moyens de paiement** :
 
 - **Créer** — cliquer sur `Ajouter` sous le tableau, saisir le `Libellé` (un
@@ -393,7 +386,16 @@ sont pas modifiés.
 - Renommer un moyen de paiement modifie son affichage dans l'historique des
   ventes ; le code interne reste inchangé.
 
-![Réglages](./screenshots/settings.png)
+**Remise fidélité** :
+
+- **Pourcentage de remise fidélité** — taux appliqué au total des achats d'un⋅e
+  client⋅e (proposé dans le panier, affiché dans la liste des client⋅es). Saisir
+  une valeur entre 0 et 100, puis `Enregistrer`. La valeur par
+  défaut est 3 %.
+
+- Le montant de la remise, calculé automatiquement, est toujours modifiable manuellement dans le panier. Les règles d'utilisation sont détaillées dans [Remise fidélité](#remise-fidélité).
+
+![Réglages moyens de paiment](./screenshots/settings-payment-types.png)
 
 ## Rôles et permissions
 
