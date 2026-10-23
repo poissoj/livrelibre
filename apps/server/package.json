@@ -36,31 +36,31 @@
     "lint": "eslint ."
   },
   "dependencies": {
-    "@hono/node-server": "2.1.4",
+    "@hono/node-server": "2.1.5",
     "@hono/trpc-server": "0.4.2",
     "@livrelibre/shared": "workspace:*",
-    "@trpc/server": "11.19.0",
-    "basic-ftp": "6.2.2",
-    "bcrypt": "6.0.0",
+    "@trpc/server": "catalog:",
+    "basic-ftp": "6.2.3",
+    "bcrypt": "catalog:",
     "cheerio": "1.2.0",
-    "date-fns": "4.4.0",
-    "dotenv": "18.0.6",
-    "drizzle-orm": "0.45.2",
-    "got": "16.0.0",
-    "hono": "4.13.13",
-    "postgres": "3.4.9",
+    "date-fns": "catalog:",
+    "dotenv": "catalog:",
+    "drizzle-orm": "catalog:",
+    "got": "16.1.0",
+    "hono": "catalog:",
+    "postgres": "catalog:",
     "winston": "3.19.0",
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz",
-    "zod": "4.6.5"
+    "zod": "catalog:"
   },
   "devDependencies": {
-    "@types/bcrypt": "6.0.0",
-    "@types/node": "26.6.4",
+    "@types/bcrypt": "catalog:",
+    "@types/node": "catalog:",
     "drizzle-kit": "0.31.11",
-    "eslint": "10.12.0",
+    "eslint": "catalog:",
     "tsup": "8.5.1",
     "tsx": "4.23.15",
-    "typescript": "6.0.3",
-    "typescript-eslint": "8.71.1"
+    "typescript": "catalog:",
+    "typescript-eslint": "catalog:"
   }
 }

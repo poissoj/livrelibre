@@ -3,6 +3,23 @@ packages:
   - packages/*
   - tests
 
+# Shared dependency versions across the monorepo. Reference them in a
+# package.json with the `catalog:` protocol instead of a version range.
+catalog:
+  "@trpc/server": 11.19.0
+  "@types/bcrypt": 6.0.0
+  "@types/node": 26.6.5
+  bcrypt: 6.0.0
+  date-fns: 4.4.0
+  dotenv: 18.0.9
+  drizzle-orm: 0.45.4
+  eslint: 10.13.0
+  hono: 4.13.13
+  postgres: 3.4.9
+  typescript: 6.0.3
+  typescript-eslint: 8.72.0
+  zod: 4.6.7
+
 # Since pnpm v11, `pnpm run` syncs dependencies before running a script
 # (verifyDepsBeforeRun defaults to "install"), re-checking the whole lockfile
 # against the registry via the supply-chain policies. At container startup that
