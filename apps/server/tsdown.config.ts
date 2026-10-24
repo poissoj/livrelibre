@@ -7,8 +7,9 @@ export default defineConfig({
   sourcemap: true,
   tsconfig: "tsconfig.json",
   deps: {
-    alwaysBundle: ["@livrelibre/shared"],
+    alwaysBundle: ["@livrelibre/shared/**"],
   },
+  outExtensions: () => ({ js: ".js" }),
   dts: false,
   target: false,
 });
