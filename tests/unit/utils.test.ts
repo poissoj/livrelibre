@@ -28,6 +28,10 @@ describe("sanitize", () => {
     expect(sanitize("a{b}")).toBe("a\\{b\\}");
   });
 
+  it("escapes all regex metacharacters", () => {
+    expect(sanitize(String.raw`\^$.*+?()[]{}|`)).toBe(String.raw`\\\^\$\.\*\+\?\(\)\[\]\{\}\|`);
+  });
+
   it("leaves plain strings unchanged", () => {
     expect(sanitize("plain")).toBe("plain");
   });
