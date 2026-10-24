@@ -1,11 +1,14 @@
-import { defineConfig } from "tsup";
+import { defineConfig } from "tsdown";
 
 export default defineConfig({
   entry: ["src/index.ts"],
   format: ["esm"],
-  bundle: true,
   clean: true,
   sourcemap: true,
   tsconfig: "tsconfig.json",
-  noExternal: ["@livrelibre/shared"],
+  deps: {
+    alwaysBundle: ["@livrelibre/shared"],
+  },
+  dts: false,
+  target: false,
 });
